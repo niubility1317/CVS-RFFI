@@ -58,6 +58,7 @@ RUN_STRONG = '20261127-phase1-lora-w24-strong-source-s2026112997-r01'
 RUN_COLOR = '20261127-phase1-lora-w24-colored-source-s2026112999-r01'
 RUN_GAIN = '20261127-phase1-lora-w24-task-gain-s2026113003-r01'
 RUN_COV = '20261127-phase1-lora-w24-local-covariance-s2026113005-r01'
+RUN_VIEW = '20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01'
 ARMS = ('pamf_only', 'frozen_pamf_ce', 'joint')
 PL = 'joint_clean_pl'
 FIXED_PL = 'fixed_e104_clean_pl'
@@ -73,9 +74,11 @@ CONSTANT_GAIN, ADAPT_GAIN = 'constant_gain', 'adaptive_gain'
 GAIN_ARMS = (CONSTANT_GAIN, ADAPT_GAIN)
 DIAGONAL_COV, CROSS_COV = 'diagonal_covariance', 'cross_chirp_covariance'
 COV_ARMS = (DIAGONAL_COV, CROSS_COV)
-AUGMENTED_ARMS = (*STRONG_ARMS, *COLOR_ARMS, *GAIN_ARMS, *COV_ARMS)
+MEAN_VIEW, HARD_VIEW = 'mean_view_risk', 'hard_view_risk'
+VIEW_ARMS = (MEAN_VIEW, HARD_VIEW)
+AUGMENTED_ARMS = (*STRONG_ARMS, *COLOR_ARMS, *GAIN_ARMS, *COV_ARMS, *VIEW_ARMS)
 PARENT_TRIALS = {RUN_FEATURE: CONTINUATION_ARMS, RUN_REFINE: REFINE_ARMS, RUN_STRONG: STRONG_ARMS,
-                 RUN_COLOR: COLOR_ARMS, RUN_GAIN: GAIN_ARMS, RUN_COV: COV_ARMS}
+                 RUN_COLOR: COLOR_ARMS, RUN_GAIN: GAIN_ARMS, RUN_COV: COV_ARMS, RUN_VIEW: VIEW_ARMS}
 PARENT_ARMS = tuple(arm for arms in PARENT_TRIALS.values() for arm in arms)
 PARENT_CONTROLS = {candidate: control for control, candidate in PARENT_TRIALS.values()}
 PSEUDO_ARMS = {RUN_PL: PL, RUN_FIXED_PL: FIXED_PL}
@@ -89,6 +92,8 @@ STRONG_SEED, STRONG_STEPS = 2026112997, 10000
 COLOR_SEED = 2026112999
 GAIN_SEED = 2026113003
 COV_SEED, COV_STEPS = 2026113005, 9000
+VIEW_SEED, VIEW_STEPS, VIEW_BATCH = 2026113007, 12000, 8
+VIEW_TILT, VIEW_TEMPERATURE = .75, .25
 FIXED_PL_COMMIT = '37215dd615d0f651ffebe87d6aaba6af0ab7a847'
 STRONG_COMMIT = '76385bf9174440cc4e437a47bfc2fd7aff1b1fcb'
 CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
@@ -139,7 +144,18 @@ def boot(rt, device):
     return contract, classifier, g, tracker
 
 
-def clean_pseudo_loss(f, anchor, clean_u, restored_u, *, preserve_feature=False):
+def reduce_view_risk(loss, tilt):
+    """Reduce two classification losses from the same physical source packet."""
+    mean = loss.mean(0)
+    if not tilt:
+        return mean
+    # Centering preserves equal-view loss and avoids magnifying large common losses.
+    deviation = (loss - mean) / VIEW_TEMPERATURE
+    soft_max = VIEW_TEMPERATURE * (deviation.logsumexp(0) - .69314718056)
+    return mean + tilt * soft_max
+
+
+def clean_pseudo_loss(f, anchor, clean_u, restored_u, *, preserve_feature=False, view_tilt=None):
     with torch.no_grad():
         teacher = anchor(clean_u)
         confidence, pseudo = teacher[0].softmax(-1).max(-1)
@@ -152,29 +168,41 @@ def clean_pseudo_loss(f, anchor, clean_u, restored_u, *, preserve_feature=False)
         return ce, accepted, feature
     if not active.any():
         return confidence.new_zeros(()), accepted
+    if view_tilt is not None:
+        views = restored_u.unflatten(0, (2, len(clean_u)))[:, active].flatten(0, 1)
+        loss = F.cross_entropy(f(views)[0], pseudo[active].repeat(2), reduction='none').reshape(2, -1)
+        return reduce_view_risk(loss, view_tilt).sum() / len(clean_u), accepted
     loss = F.cross_entropy(f(restored_u[active])[0],pseudo[active],reduction='sum') / len(clean_u)
     return loss, accepted
 
 
-def loss_parts(g, f, anchor, tracker, generic, raw, label, rng, *, pseudo=False, preserve_feature=False):
+def loss_parts(g, f, anchor, tracker, generic, raw, label, rng, *, pseudo=False, preserve_feature=False, view_tilt=None):
     labeled = len(label)
     if labeled == 0 or len(raw) != 2 * labeled:
         raise ValueError('Expected equal labeled and unlabeled IQ groups, with labels only for the first group')
     raw = raw / raw.abs().square().mean(-1,keepdim=True).clamp_min(1e-12).sqrt()
     clean = tracker.aperture(raw)
-    disturbed = tracker.aperture(generic(raw.unflatten(-1,(8,1024)), rng).flatten(-2))
-    base, scale = normalize_aperture(disturbed)
+    views = 1 if view_tilt is None else 2
+    noisy = [tracker.aperture(generic(raw.unflatten(-1, (8,1024)), rng).flatten(-2)) for _ in range(views)]
+    base, scale = normalize_aperture(torch.cat(noisy) if views == 2 else noisy[0])
     restore = recovered(g, tracker, base)
+    restored = restore.unflatten(0, (views, len(raw)))
     clean_input, _ = normalize_aperture(clean[:labeled])
     clean_out = recovered(g, tracker, clean_input)
-    f_restore, f_clean, f_clean_out = f(torch.cat((restore[:labeled], clean_input, clean_out)))[0].split(labeled)
+    f_restore, f_clean, f_clean_out = f(torch.cat((restored[:, :labeled].flatten(0, 1),
+                                                  clean_input, clean_out)))[0].split((views*labeled,labeled,labeled))
     with torch.no_grad():
         teacher = anchor(clean_input)[0].softmax(-1)
-    restore_ce = F.cross_entropy(f_restore, label)
+    if views == 2:
+        ce_views = F.cross_entropy(f_restore, label.repeat(2), reduction='none').reshape(2, labeled)
+        restore_ce = reduce_view_risk(ce_views, view_tilt).mean()
+    else:
+        restore_ce = F.cross_entropy(f_restore, label)
     clean_ce = .5 * (F.cross_entropy(f_clean, label) + F.cross_entropy(f_clean_out, label))
     anchor_kl = .5 * (F.kl_div(f_clean.log_softmax(-1),teacher,reduction='batchmean')
                       + F.kl_div(f_clean_out.log_softmax(-1),teacher,reduction='batchmean'))
-    target = real_iq(clean/scale)[..., :CENTER]
+    paired_clean = torch.cat((clean, clean)) if views == 2 else clean
+    target = real_iq(paired_clean/scale)[..., :CENTER]
     change = (restore[..., :CENTER]-target).permute(0,1,3,2).contiguous()
     ref = target.permute(0,1,3,2).contiguous()
     error = torch.fft.fft(torch.view_as_complex(change),norm='ortho')[...,1:].abs().square()
@@ -185,7 +213,10 @@ def loss_parts(g, f, anchor, tracker, generic, raw, label, rng, *, pseudo=False,
     parts = (restore_ce,clean_ce,anchor_kl,spectral,amplitude,identity)
     if pseudo:
         clean_u, _ = normalize_aperture(clean[labeled:])
-        parts += clean_pseudo_loss(f,anchor,clean_u,restore[labeled:],preserve_feature=preserve_feature)
+        parts += clean_pseudo_loss(f,anchor,clean_u,restored[:, labeled:].flatten(0, 1),
+                                   preserve_feature=preserve_feature,view_tilt=view_tilt)
+    if views == 2:
+        parts += ((ce_views[0] - ce_views[1]).abs().mean().detach(),)
     return torch.stack(parts)
 
 
@@ -194,7 +225,7 @@ def norm_gradient(values):
 
 
 def source_parent(run):
-    return RUN_STRONG if run in (RUN_COLOR,RUN_GAIN,RUN_COV) else RUN_FIXED_PL
+    return RUN_STRONG if run in (RUN_COLOR,RUN_GAIN,RUN_COV,RUN_VIEW) else RUN_FIXED_PL
 
 
 def parent_modes(parent):
@@ -219,6 +250,8 @@ def training_recipe(arm):
         return STRONG_SEED, STRONG_STEPS, 4e-5, RUN_FIXED_PL
     if arm in COLOR_ARMS:
         return COLOR_SEED, STRONG_STEPS, 4e-5, RUN_STRONG
+    if arm in VIEW_ARMS:
+        return VIEW_SEED, VIEW_STEPS, 4e-5, RUN_STRONG
     if arm in COV_ARMS:
         return COV_SEED, COV_STEPS, 8e-5, RUN_STRONG
     if arm in GAIN_ARMS:
@@ -271,6 +304,9 @@ def fit(config, arm, *, smoke, device='cuda:0'):
         groups.append(dict(params=f.parameters(), lr=3e-5))
     optimizer = torch.optim.AdamW(groups,weight_decay=1e-4)
     steps = 1 if smoke else budget
+    view_fit = arm in VIEW_ARMS
+    view_tilt = (VIEW_TILT if arm == HARD_VIEW else 0.) if view_fit else None
+    batch = 2 if smoke else VIEW_BATCH if view_fit else BATCH
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,steps,eta_min=2e-6)
     order = np.random.default_rng(seed)
     rng = torch.Generator(device=device).manual_seed(seed)
@@ -281,14 +317,15 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     pseudo = arm in USE_PSEUDO
     preserve_feature = arm == FEATURE
     weights = torch.tensor((1.,.65,.3,.30,.25,1.5) + ((1.,0.) if pseudo else ())
-                           + ((FEATURE_WEIGHT if preserve_feature else 0.,) if continuation else ()),device=device)
+                           + ((FEATURE_WEIGHT if preserve_feature else 0.,) if continuation else ())
+                           + ((0.,) if view_fit else ()),device=device)
     start = monotonic()
     ce_norm = None
     pseudo_ce_norm = None
     feature_norm = None
     accepted = torch.zeros((),device=device)
     for step in range(1,steps+1):
-        l = order.choice(len(labeled), BATCH if not smoke else 2, replace=False)
+        l = order.choice(len(labeled), batch, replace=False)
         u = order.choice(len(unlabeled),len(l),replace=False)
         raw = np.concatenate((labeled[l],unlabeled[u]))
         raw = tensor(raw.view('float32'),device).view(torch.complex64)
@@ -299,7 +336,7 @@ def fit(config, arm, *, smoke, device='cuda:0'):
                 torch.testing.assert_close(recovered(g,tracker,aperture),recovered(g.parent,tracker,aperture),
                                            rtol=0.,atol=0.)
         optimizer.zero_grad(set_to_none=True)
-        parts = loss_parts(g,f,anchor,tracker,generic,raw,target,rng,pseudo=pseudo,preserve_feature=continuation)
+        parts = loss_parts(g,f,anchor,tracker,generic,raw,target,rng,pseudo=pseudo,preserve_feature=continuation,view_tilt=view_tilt)
         if pseudo:
             accepted += parts[7].detach()
         if not torch.isfinite(parts).all():
@@ -308,8 +345,8 @@ def fit(config, arm, *, smoke, device='cuda:0'):
             ce_norm = norm_gradient(torch.autograd.grad(parts[0],g_parameters,allow_unused=True,retain_graph=True))
             if not (0 < ce_norm < float('inf')):
                 raise ValueError('No supervised CE gradient reaches the restorer')
-        if smoke and arm == FIXED_PL:
-            if parts[-1] == 0:
+        if smoke and (arm == FIXED_PL or view_fit):
+            if parts[7] == 0:
                 raise ValueError('Real-checkpoint smoke needs accepted clean U_s pseudo labels')
             pseudo_ce_norm = norm_gradient(torch.autograd.grad(
                 parts[6],g_parameters,allow_unused=True,retain_graph=True))
@@ -335,8 +372,8 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     if device.startswith('cuda'):
         torch.cuda.synchronize()
     proof = dict(arm=arm, steps=steps, seed=seed, g_parent=checkpoint_parent, f_parent=AUG_RUN,
-                 L_s=len(labeled), U_s=len(unlabeled), labeled_exposures=steps*(2 if smoke else BATCH),
-                 unlabeled_exposures=steps*(2 if smoke else BATCH), U_TX_reads=0, V_reads=0, target_reads=0,
+                 L_s=len(labeled), U_s=len(unlabeled), labeled_exposures=steps*batch,
+                 unlabeled_exposures=steps*batch, U_TX_reads=0, V_reads=0, target_reads=0,
                  practical_reads=0, trace_reads=0, G_trainable=learn_g, F_trainable=learn_f)
     if pseudo:
         proof.update(U_PL_teacher=AUG_RUN,U_PL_threshold=PL_THRESHOLD,U_PL_accepted=int(accepted))
@@ -348,6 +385,8 @@ def fit(config, arm, *, smoke, device='cuda:0'):
         proof['adaptive_gain'] = arm == ADAPT_GAIN
     if covariance_fit:
         proof['cross_chirp_covariance'] = arm == CROSS_COV
+    if view_fit:
+        proof.update(views_per_packet=2,view_tilt=view_tilt,view_temperature=VIEW_TEMPERATURE)
     if arm in AUGMENTED_ARMS:
         proof.update(strong_fraction=STRONG_FRACTION if generic.enabled else 0.,
                      strong_snr_db=list(STRONG_SNR_DB),strong_exposures=int(generic.selected))
@@ -357,7 +396,7 @@ def fit(config, arm, *, smoke, device='cuda:0'):
                    gradients=gradients, worker_seconds=monotonic()-start,
                    peak_cuda_bytes=torch.cuda.max_memory_allocated() if device.startswith('cuda') else 0,
                    G_parameters=sum(x.numel() for x in g.parameters()),F_parameters=sum(x.numel() for x in f.parameters()))
-    if smoke and arm == FIXED_PL:
+    if smoke and (arm == FIXED_PL or view_fit):
         summary['pseudo_CE_to_G_norm'] = pseudo_ce_norm
     if smoke and preserve_feature:
         summary['feature_to_G_norm'] = feature_norm
@@ -402,10 +441,15 @@ def load_row(root, arm, contract, f0, g0, device):
         raise ValueError('Unexpected amplitude calibration')
     if covariance_fit and proof.get('cross_chirp_covariance') is not (arm == CROSS_COV):
         raise ValueError('Unexpected spectral covariance mode')
+    if arm in VIEW_ARMS and (proof.get('views_per_packet'),proof.get('view_tilt'),proof.get('view_temperature'),
+                             proof['labeled_exposures'],proof['unlabeled_exposures']) != (
+                                 2,VIEW_TILT if arm == HARD_VIEW else 0.,VIEW_TEMPERATURE,
+                                 budget*VIEW_BATCH,budget*VIEW_BATCH):
+        raise ValueError('Unexpected same-packet view objective')
     if arm in AUGMENTED_ARMS:
         strong_count = proof['strong_exposures']
         enabled = arm != STRONG_CONTROL
-        total = proof['labeled_exposures'] + proof['unlabeled_exposures']
+        total = (proof['labeled_exposures'] + proof['unlabeled_exposures']) * proof.get('views_per_packet',1)
         exposure_ok = 0 < strong_count <= total if enabled else strong_count == 0
         if (not exposure_ok or proof['strong_fraction'] != (STRONG_FRACTION if enabled else 0.)
                 or proof['strong_snr_db'] != list(STRONG_SNR_DB)):
@@ -535,7 +579,7 @@ def qualifies(scores, candidate=CANDIDATE):
         controls.append(control)
     if candidate in PARENT_CONTROLS:
         control = scores[PARENT_CONTROLS[candidate]]
-        parent = scores[STRONG if candidate in (COLOR,ADAPT_GAIN,CROSS_COV) else FIXED_PL]
+        parent = scores[STRONG if candidate in (COLOR,ADAPT_GAIN,CROSS_COV,HARD_VIEW) else FIXED_PL]
         if (test['low_urban_correct'] <= control['low_urban_correct']
                 or test['by_scene']['clean'] < parent['by_scene']['clean']):
             return False
@@ -749,6 +793,7 @@ def main():
     pseudo_options.add_argument('--colored-source',dest='run_id',action='store_const',const=RUN_COLOR)
     pseudo_options.add_argument('--task-gain',dest='run_id',action='store_const',const=RUN_GAIN)
     pseudo_options.add_argument('--local-covariance',dest='run_id',action='store_const',const=RUN_COV)
+    pseudo_options.add_argument('--paired-view-risk',dest='run_id',action='store_const',const=RUN_VIEW)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -794,7 +839,7 @@ def main():
         gpu_preferences = {RUN: [3,0,7,2,6,5], RUN_PL: [2,6,5], RUN_FIXED_PL: [7,2,3,0,6,5],
                            RUN_FEATURE: [0,3,7,2,6,5], RUN_REFINE: [7,3,0,2,6,5],
                            RUN_STRONG: [7,0,3,2,6,5], RUN_COLOR: [0,3,7,2,6,5], RUN_GAIN: [7,2,0,3,6,5],
-                           RUN_COV: [7,6,0,3,2,5]}
+                           RUN_COV: [7,6,0,3,2,5], RUN_VIEW: [7,0,2,6,3,5]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),

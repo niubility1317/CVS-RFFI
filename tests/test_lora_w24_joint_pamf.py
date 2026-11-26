@@ -356,3 +356,61 @@ def test_cross_covariance_source_gate_and_formal_reference_use_strong_parent():
     for case in experiment.FULL_CASES:
         proof = experiment.formal_receipt(case,experiment.RUN_COV)
         assert proof['reference_run']==experiment.RUN_STRONG and proof['modes'][-2:]==[parent,candidate]
+
+
+
+def test_hard_view_risk_gives_more_gradient_to_the_harder_realization():
+    loss = torch.tensor([[3., 2., 1.], [1., 2., 3.]],requires_grad=True)
+    mean = experiment.reduce_view_risk(loss,0.)
+    risk = experiment.reduce_view_risk(loss,experiment.VIEW_TILT)
+    torch.testing.assert_close(mean,torch.full((3,),2.))
+    torch.testing.assert_close(risk,experiment.reduce_view_risk(loss.flip(0),experiment.VIEW_TILT))
+    assert risk[0] > mean[0] and risk[2] > mean[2] and risk[1] == mean[1]
+    grad, = torch.autograd.grad(risk.sum(),loss)
+    assert grad[0,0] > grad[1,0] > 0 and grad[1,2] > grad[0,2] > 0
+    torch.testing.assert_close(grad.sum(0),torch.ones(3))
+
+
+def test_same_clean_u_pseudo_label_applies_to_both_disturbed_views_without_true_labels():
+    clean = torch.tensor([[10.,0.,0.],[0.,0.,0.],[0.,0.,10.]],requires_grad=True)
+    disturbed = torch.randn(2,3,3,generator=torch.Generator().manual_seed(3),requires_grad=True)
+    reader = lambda z: (z,)
+    before, accepted = experiment.clean_pseudo_loss(reader,reader,clean,disturbed.flatten(0,1),view_tilt=0.)
+    ce = torch.nn.functional.cross_entropy(disturbed[:, (0,2)].flatten(0,1),torch.tensor([0,2,0,2]),reduction='sum')
+    torch.testing.assert_close(before,ce/6)
+    risk, accepted_hard = experiment.clean_pseudo_loss(
+        reader,reader,clean,disturbed.flatten(0,1),view_tilt=experiment.VIEW_TILT)
+    assert accepted == accepted_hard == 2 and risk > before
+    risk.backward()
+    assert clean.grad is None
+    assert disturbed.grad[:, (0,2)].abs().sum() > 0
+    assert not disturbed.grad[:, 1].any()
+
+
+def test_hard_view_loss_uses_identical_draws_and_keeps_other_losses_equal(monkeypatch):
+    r = torch.Generator().manual_seed(8)
+    raw = torch.randn(6,8192,generator=r,dtype=torch.complex64)
+    label = torch.tensor([1,2,3])
+    f = Reader()
+    g = nn.Parameter(torch.tensor(.3))
+    monkeypatch.setattr(experiment,'wide_delta',lambda g,tracker,iq: g * iq[..., :384])
+
+    def parts(tilt):
+        draws=[]
+        def generic(x,rng):
+            noisy = x + torch.randn(x.shape,dtype=x.dtype,generator=rng)
+            draws.append(noisy)
+            return noisy
+        result = experiment.loss_parts(g,f,f,Tracker(),generic,raw,label,torch.Generator().manual_seed(10),
+                                       pseudo=True,view_tilt=tilt)
+        assert len(draws) == 2 and not torch.equal(*draws)
+        return result,draws
+
+    mean, common = parts(0.)
+    hard, matched = parts(experiment.VIEW_TILT)
+    for a,b in zip(common,matched,strict=True):
+        torch.testing.assert_close(a,b,rtol=0,atol=0)
+    assert hard[0] > mean[0]
+    torch.testing.assert_close(hard[1:6],mean[1:6],rtol=0,atol=0)
+    torch.testing.assert_close(hard[7:],mean[7:],rtol=0,atol=0)
+    assert experiment.formal_receipt(experiment.FULL_CASES[0],experiment.RUN_VIEW)['reference_run']==experiment.RUN_STRONG
