@@ -70,22 +70,27 @@ def diagnostics(received, noise, learned, phase, same, capped):
 
 
 @torch.no_grad()
-def render(f, g, tracker, received, signal, device):
+def receive_center(g, tracker, received, signal, device):
     original = received_aperture(received, device)
     learned = .5 * wide_delta(g, tracker, original)
-    base = complex_iq(original[..., :CENTER])
     observed, noiseless = native_aperture(received), native_aperture(signal)
     noise = complex_iq(tensor(model_iq(observed-noiseless, center_rms(observed)), device)[..., :CENTER])
-    real_edit = complex_iq(learned)
     _, phase, _, _ = coordinates(tracker, original[..., :CENTER])
+    return original, complex_iq(learned), noise, phase
+
+
+@torch.no_grad()
+def render(f, g, tracker, received, signal, device):
+    original, real_edit, noise, phase = receive_center(g, tracker, received, signal, device)
+    base = complex_iq(original[..., :CENTER])
     same, capped, projected_exact, exact = oracle_edits(base, noise, real_edit, phase)
     info = diagnostics(base, noise, real_edit, phase, same, capped)
     if not np.isfinite(info).all() or (info[:, 0] > CAP + 1e-5).any():
         raise ValueError('The actual W24 half edit violates its registered RMS limit')
     results = [classify_aperture(f, original)]
-    for edit in (learned, real_iq(same), real_iq(capped), real_iq(projected_exact), real_iq(exact)):
+    for edit in (real_edit, same, capped, projected_exact, exact):
         candidate = original.clone()
-        candidate[..., :CENTER] += edit
+        candidate[..., :CENTER] += real_iq(edit)
         results.append(classify_aperture(f, candidate))
     return np.stack(results), info
 
@@ -114,7 +119,8 @@ def full_components(scene, item, *, verify=False):
     return received, signal.astype(np.complex64)
 
 
-def predict(rt):
+def predict(rt, *, modes=MODES, render_fn=render, summary_fn=summarize,
+            measurement_shape=(len(METRICS),), clean_reference=0, waveform_fields=None):
     activate(rt)
     root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
     contract = source_contract(source)
@@ -126,11 +132,11 @@ def predict(rt):
     u = native(source, 'U_s', contract['counts']['U_s'])[0]
     for scene in ('clean', VIEWS[-1]):
         received, signal = full_components(scene, (0, SOURCE[0], u), verify=True)
-        rows, measurements = render(f, g, tracker, received[None], signal[None], device)
-        if rows.shape != (len(MODES), 1) or measurements.shape != (1, len(METRICS)):
+        rows, measurements = render_fn(f, g, tracker, received[None], signal[None], device)
+        if rows.shape != (len(modes), 1) or measurements.shape != (1, *measurement_shape):
             raise ValueError('Real source-only W24 smoke produced malformed results')
-        if scene == 'clean' and not np.array_equal(rows[2:], np.repeat(rows[:1], len(MODES)-2, axis=0)):
-            raise ValueError('Clean oracle rows differ from direct')
+        if scene == 'clean' and not np.all(rows[2:] == rows[clean_reference]):
+            raise ValueError('Clean oracle rows differ from the registered control')
     write(root/'smoke.json', dict(status='PASS', source_u_count=1, candidate_parent=PARENT,
           parameters=frozen['parameters'], target_reads=0, source_truth_reads=0))
 
@@ -145,10 +151,10 @@ def predict(rt):
             for offset in range(0, len(jobs), BATCH):
                 chunk = [next(stream) for _ in range(min(BATCH, len(jobs)-offset))]
                 received, signal = (np.stack(a) for a in zip(*chunk, strict=True))
-                batches.append(render(f, g, tracker, received, signal, device))
+                batches.append(render_fn(f, g, tracker, received, signal, device))
             decisions, info = zip(*batches, strict=True)
             output[scene] = np.concatenate(decisions, axis=1)
-            metrics[scene] = summarize(np.concatenate(info), scene == 'clean')
+            metrics[scene] = summary_fn(np.concatenate(info), scene == 'clean')
             print('W24_EDIT_BUDGET_PREDICTED', scene, len(jobs), flush=True)
 
     previous = parent/FULL
@@ -163,17 +169,17 @@ def predict(rt):
     out = root/FULL
     out.mkdir()
     np.savez(out/'predictions.npz', **output)
-    write(out/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(MODES), views=list(VIEWS),
+    write(out/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(modes), views=list(VIEWS),
           physical_ids=ids, target_reads=0, source_truth_reads=0,
           waveform=dict(route=FULL, oracle_only=True, learned_parent=PARENT, projected_half_cap=CAP,
-                        direct_and_learned_parity=True, dose_by_scene=metrics)))
+                        direct_and_learned_parity=True, dose_by_scene=metrics, **(waveform_fields or {}))))
 
 
-def score(runtime):
+def score(runtime, *, modes=MODES, contrasts=CONTRASTS):
     rt = read(runtime)
     root, source = Path(rt['run_root']), Path(rt['source_root'])
-    frozen_source_panel(source, root/FULL, MODES)
-    score_source(runtime, modes=MODES, output=root/FULL, contrasts=CONTRASTS)
+    frozen_source_panel(source, root/FULL, modes)
+    score_source(runtime, modes=modes, output=root/FULL, contrasts=contrasts)
 
 
 def main():
@@ -185,25 +191,44 @@ def main():
     for phase in ('dispatch', 'predict-source', 'score-source'):
         actions.add_parser(phase).add_argument('runtime', type=Path)
     pub = actions.add_parser('publish')
+    pub.add_argument('--band-direction', action='store_true')
     for name in ('repo', 'context', 'ssh-config', 'output'):
         pub.add_argument('--'+name, type=Path, required=True)
     args = parser.parse_args()
     if args.action == 'dispatch':
         dispatch(args.runtime, entry=__file__)
     elif args.action == 'predict-source':
-        predict(read(args.runtime))
+        rt = read(args.runtime)
+        if rt.get('band_direction'):
+            from experiments.pamf_lora_main.w24_band_direction import predict_bands
+
+            predict_bands(rt)
+        else:
+            predict(rt)
     elif args.action == 'score-source':
-        score(args.runtime)
+        if read(args.runtime).get('band_direction'):
+            from experiments.pamf_lora_main.w24_band_direction import CONTRASTS as contrasts, MODES as modes
+
+            score(args.runtime, modes=modes, contrasts=contrasts)
+        else:
+            score(args.runtime)
     else:
         ctx = read(args.context)
         rt = {key:ctx[key] for key in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(rt['project'])
         runs, releases = project/'runs', project/'releases'
-        rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
-                  release_root=str(releases/f'{RUN}-release'), run_root=str(runs/RUN),
+        run = RUN
+        if args.band_direction:
+            from experiments.pamf_lora_main.w24_band_direction import RUN as band_run
+
+            run = band_run
+            rt['band_direction'] = True
+        rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
+                  release_root=str(releases/f'{run}-release'), run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'), classifier_root=str(runs/AUG_RUN),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),
-                  training_release_root=str(releases/f'{TRAIN_RUN}-release'), allowed_gpus=[5,6,3,0], cpu_workers=8)
+                  training_release_root=str(releases/f'{TRAIN_RUN}-release'),
+                  allowed_gpus=[0, 3, 5, 6] if args.band_direction else [5, 6, 3, 0], cpu_workers=8)
         rt['external_releases'] = [rt[k] for k in ('source_root','classifier_root','w24_release_root','training_release_root')]
         rt['external_releases'].append(str(runs/PARENT))
         release(args.repo, args.output, rt, args.ssh_config)
