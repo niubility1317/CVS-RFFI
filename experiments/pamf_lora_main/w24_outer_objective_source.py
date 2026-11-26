@@ -47,7 +47,8 @@ def recipe_for(training, *, joint_edges=False):
     return replace(training.RECIPE, name=NAME, finalize_calibration=no_gate)
 
 
-def objective_for(archived, *, joint_edges=False, band_direction_weight=None, refine_band=False, white_corruption=None):
+def objective_for(archived, *, joint_edges=False, band_direction_weight=None, refine_band=False,
+                  white_corruption=None, severity_weighted=None):
     # This reuses the original module's coordinates, source perturbation and loss primitives.
     import torch
 
@@ -57,6 +58,8 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
         from experiments.pamf_lora_main.w24_band_refine import EDIT_WEIGHT, band_edit_risk
     if white_corruption is not None:
         from experiments.pamf_lora_main.w24_white_corruption import training_observations
+    if severity_weighted is not None:
+        from experiments.pamf_lora_main.w24_severity_weight import disturbance, redistribution, waveform_per_chirp
 
     risk = archived.waveform_risk
     window = archived.WIDE
@@ -100,12 +103,26 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
             received = y.unflatten(0, data.shape[:2])[-2:, :2, [0, 7]]
             outer_identity = risk(plain, received)
             n_disturbed -= 6
-        half_risk = risk(half, ground)
-        outer_disturbed = risk(half[:n_disturbed, [0, 7]], ground[:n_disturbed, [0, 7]])
-        inner_disturbed = risk(half[:n_disturbed, 1:-1], ground[:n_disturbed, 1:-1])
+        if severity_weighted is None:
+            half_risk = risk(half, ground)
+            outer_disturbed = risk(half[:n_disturbed, [0, 7]], ground[:n_disturbed, [0, 7]])
+            inner_disturbed = risk(half[:n_disturbed, 1:-1], ground[:n_disturbed, 1:-1])
+        else:
+            chirp_risk = waveform_per_chirp(half, ground)
+            half_risk = chirp_risk.mean()
+            outer_disturbed = chirp_risk[:n_disturbed, [0, 7]].mean()
+            inner_disturbed = chirp_risk[:n_disturbed, 1:-1].mean()
+            # Keep unweighted losses on the identity samples and the weak-detail probe.
+            paired = chirp_risk[:n_disturbed].unflatten(0, (-1, 3))[:, :2]
+            paired_risk = .5 * (paired[..., [0, 7]].mean(-1) + paired[..., 1:-1].mean(-1))
+            count = len(paired)
+            severity = disturbance(data[:count, :2, :, :window], center[:count])
+            correction, upper_risk = redistribution(paired_risk, severity)
         # Per-chirp averaging gives 1/4 to the two outer chirps. Transfer 1/4 of
         # the disturbed part of that loss from the six inner chirps to the outer two.
         balanced_risk = half_risk + .25 * (n_disturbed / len(half)) * (outer_disturbed - inner_disturbed)
+        if severity_weighted and with_identity:
+            balanced_risk = balanced_risk + (paired_risk.numel() / len(half)) * correction
         a_weight, b_weight, c_weight = recipe.loss_weights(step)
         values = torch.stack((risk(coarse, ground), risk(first, ground), risk(final, ground), balanced_risk,
                               preserve, consistency, (corruption / (.01 + variance.detach())).log1p().mean(),
@@ -114,6 +131,8 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
                                      .30, c_weight, .07, .015, .35, .35))
         loss = values @ weights
         report = torch.cat((values, outer_disturbed[None], inner_disturbed[None]))
+        if severity_weighted is not None:
+            report = torch.cat((report, upper_risk[None], correction[None]))
         if band_direction_weight is not None or refine_band:
             # Undo the chirp RMS normalization, retaining the dechirped frame.
             # Keep the two matched noisy views and leave the probe/clean losses intact.

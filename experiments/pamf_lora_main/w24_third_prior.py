@@ -44,7 +44,10 @@ WHITE_RUN = '20261126-phase1-lora-w24-white-corruption-s2026112991-r01'
 WHITE_ARMS = ('archive_noise', 'stationary_noise')
 BAND_PRECISION_RUN = '20261126-phase1-lora-w24-band-precision-s2026112991-r01'
 BAND_PRECISION_ARMS = ('precision_shared', 'precision_resolved')
-OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS, *WHITE_ARMS, *BAND_PRECISION_ARMS)
+SEVERITY_RUN = '20261126-phase1-lora-w24-severity-weight-s2026112991-r01'
+SEVERITY_ARMS = ('severity_uniform', 'severity_weighted')
+OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS,
+                   *WHITE_ARMS, *BAND_PRECISION_ARMS, *SEVERITY_ARMS)
 OUTER_BASELINE = 'outer_parent_half'
 OUTER_PARENT = '20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01'
 VARIANTS = {
@@ -59,6 +62,7 @@ VARIANTS = {
     'band-refine': (BAND_REFINE_RUN, BAND_REFINE_ARMS),
     'white-corruption': (WHITE_RUN, WHITE_ARMS),
     'band-precision': (BAND_PRECISION_RUN, BAND_PRECISION_ARMS),
+    'severity-weight': (SEVERITY_RUN, SEVERITY_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -239,6 +243,8 @@ def source_recipe(training, arm, *, initialize=None):
                         backbone_frozen=True)
         if arm in WHITE_ARMS:
             info['source_perturbation'] = 'equal_center_energy_white' if arm == WHITE_ARMS[1] else 'archived'
+        if arm in SEVERITY_ARMS:
+            info['severity_weighted'] = arm == SEVERITY_ARMS[1]
         return None, info
 
     spec = trial(ARM_TRIAL[arm])
@@ -307,6 +313,8 @@ def fit(config, arm, *, smoke):
             calculate = objective_for(dura_w24_model, refine_band=True)
         elif arm in WHITE_ARMS:
             calculate = objective_for(dura_w24_model, white_corruption=arm == WHITE_ARMS[1])
+        elif arm in SEVERITY_ARMS:
+            calculate = objective_for(dura_w24_model, severity_weighted=arm == SEVERITY_ARMS[1])
         else:
             calculate = objective_for(dura_w24_model, band_direction_weight=weight)
     numerical_policy()
@@ -432,7 +440,8 @@ def publish(args):
     pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7], 'final-radius': [0, 5, 6, 7],
              'peer': [3, 7, 6, 5], 'coherent-error': [0, 3, 5, 7], 'band-tune': [7, 6, 3, 0, 2],
              'band-adapter': [0, 3, 5, 7], 'band-refine': [6, 7, 2, 0, 3],
-             'white-corruption': [0, 3, 6, 7, 2], 'band-precision': [0, 3, 6, 7]}
+             'white-corruption': [0, 3, 6, 7, 2], 'band-precision': [0, 3, 6, 7],
+             'severity-weight': [6, 5, 3, 0, 7, 2]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
