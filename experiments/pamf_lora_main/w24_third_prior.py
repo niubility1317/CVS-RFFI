@@ -570,7 +570,7 @@ def publish(args):
              'severity-weight': [6, 5, 3, 0, 7, 2], 'carrier-anchor': [0, 3, 6, 7, 5, 2],
              'signed-probe': [0, 3, 7, 6, 2, 5], 'packet-unet': [0, 3, 7, 6, 2, 5],
              'packet-unet-fidelity': [2, 7, 6, 5], 'spectral-experts': [0, 3, 5, 7, 2],
-             'chirp-components': [7, 3, 2, 0, 6, 5, 1, 4]}
+             'chirp-components': [3, 2]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
