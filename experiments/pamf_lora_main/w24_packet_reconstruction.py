@@ -4,6 +4,7 @@ import argparse
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 import importlib
+from multiprocessing import get_context
 from pathlib import Path, PurePosixPath
 import sys
 from time import monotonic
@@ -257,7 +258,7 @@ def predict(rt):
     predict_panel(rt, models, MODES)
 
 
-def predict_panel(rt, models, modes, *, render_batch=render):
+def predict_panel(rt, models, modes, *, render_batch=render, cpu_spawn=False):
     root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
     tracker, _ = source_tools(rt, device)
     contract = source_contract(source)
@@ -268,14 +269,21 @@ def predict_panel(rt, models, modes, *, render_batch=render):
     raw = np.stack([source_receive(view, (0, SOURCE[0], packet)) for view in ('clean', VIEWS[-1])])
     if render_batch(f, tracker, models, raw, device).shape != (len(modes), 2):
         raise ValueError('Frozen W24 source smoke failed')
-    write(root/'smoke.json', dict(status='PASS', source_u_packets=1, source_truth_reads=0, target_reads=0))
-    print('W24_PACKET_RECONSTRUCTION_SMOKE PASS', flush=True)
-
-    ix, rx, ids = panel(source, contract)
-    raw = native(source, 'V', contract['counts']['V'])[ix]
-    jobs = [(int(i), SOURCE[int(j)], packet) for i, j, packet in zip(ix, rx, raw, strict=True)]
     matrix = {}
-    with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
+    context = get_context('spawn') if cpu_spawn else None
+    with ProcessPoolExecutor(max_workers=rt['cpu_workers'], mp_context=context) as pool:
+        smoke = dict(status='PASS', source_u_packets=1, source_truth_reads=0, target_reads=0)
+        if cpu_spawn:
+            replay = pool.submit(source_receive, VIEWS[-1], (0, SOURCE[0], packet)).result(timeout=120)
+            if not np.array_equal(replay, raw[1]):
+                raise ValueError('Fresh CPU source replay differs from matched Full IQ')
+            smoke['fresh_source_cpu_replay'] = True
+        write(root/'smoke.json', smoke)
+        print('W24_PACKET_RECONSTRUCTION_SMOKE PASS', flush=True)
+
+        ix, rx, ids = panel(source, contract)
+        source_v = native(source, 'V', contract['counts']['V'])[ix]
+        jobs = [(int(i), SOURCE[int(j)], packet) for i, j, packet in zip(ix, rx, source_v, strict=True)]
         for view in VIEWS:
             stream = pool.map(partial(source_receive, view), jobs, chunksize=6)
             results = []

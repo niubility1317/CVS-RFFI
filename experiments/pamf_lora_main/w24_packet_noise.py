@@ -9,7 +9,7 @@ import torch
 from torch import nn
 from torch.nn.functional import smooth_l1_loss
 
-if __package__ is None:
+if not __package__:
     from experiments import pamf_lora_main
 
     pamf_lora_main.__path__.append(str(Path(__file__).resolve().parent))
@@ -23,6 +23,8 @@ from experiments.pamf_lora_main.w24_native_innovation import (
 
 
 RUN = '20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01'
+RECOVERY = '20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r02'
+FIT_COMMIT = '6b9ab67d34b039a179cb0a1ea435668543d343d9'
 ARMS = ('aperture_power','native_power')
 MODES = ('direct','aperture_half','aperture_full','native_half','native_full','outer_half')
 CONTRASTS = (('native_half','aperture_half'), ('native_full','aperture_full'),
@@ -74,18 +76,35 @@ def calibrated_metrics(output, target, edges, inputs):
     return torch.cat((waveform,k[None]))
 
 
-def predict(rt):
-    root,device=Path(rt['run_root']),'cuda:0'
-    proof=read(root/'fit-complete.json')
+def frozen_fit(rt):
+    root = Path(rt['run_root'])
+    if root.name == RECOVERY:
+        archive = Path(rt['project'])/'releases'/f'{RUN}-release'
+        previous = read(archive/'runtime.json')
+        fit_root = root.parent/RUN
+        if (previous['code_commit'],previous['run_root'],previous['source_root'],
+                previous['classifier_root'],previous['training_release_root']) != (
+                FIT_COMMIT,str(fit_root),rt['source_root'],rt['classifier_root'],rt['training_release_root']):
+            raise ValueError('Unavailable exact frozen source training')
+        if read(fit_root/'fit-smoke.json')['status'] != 'PASS':
+            raise ValueError('Original real source fit smoke did not pass')
+        root = fit_root
+    proof = read(root/'fit-complete.json')
     if (proof['status'],proof['steps'],proof['arms'],proof['initialization']) != (
             'SOURCE_FROZEN',STEPS,list(ARMS),'scratch') or any(
             proof[k] for k in ('F_reads','target_reads','source_truth_reads','source_V_reads')):
         raise ValueError('Missing frozen source-only noise estimators and waveform models')
+    return root
+
+
+def predict(rt):
+    root,device=frozen_fit(rt),'cuda:0'
     models=[CalibratedRestorer().to(device).eval() for _ in ARMS]
     states=torch.load(root/'native-innovation.pt',map_location=device,weights_only=True)
     for model,state in zip(models,states,strict=True):
         model.load_state_dict(state)
-    predict_panel(rt,models,MODES[:-1],render_batch=partial(render,observe=packet_observation))
+    predict_panel(rt,models,MODES[:-1],render_batch=partial(render,observe=packet_observation),
+                  cpu_spawn=Path(rt['run_root']).name == RECOVERY)
 
 
 def main():
@@ -99,9 +118,13 @@ def main():
     pub=sub.add_parser('publish')
     for field in ('repo','output','context','ssh-config'):
         pub.add_argument('--'+field,type=Path,required=True)
+    pub.add_argument('--reuse-frozen-source',action='store_true')
     args=parser.parse_args()
     if args.action=='dispatch':
-        dispatch(args.runtime,entry=__file__,phases=phases,gpu_phases=phases[:2])
+        if Path(read(args.runtime)['run_root']).name == RECOVERY:
+            dispatch(args.runtime,entry=__file__)
+        else:
+            dispatch(args.runtime,entry=__file__,phases=phases,gpu_phases=phases[:2])
     elif args.action=='fit-source':
         fit(read(args.runtime),make_model=CalibratedRestorer,
             pair=partial(training_pair,observe=packet_observation),
@@ -115,8 +138,9 @@ def main():
         rt={k:ctx[k] for k in ('project','python','frozen_sources')}
         project=PurePosixPath(rt['project'])
         runs,releases=project/'runs',project/'releases'
-        rt.update(run_id=RUN,runner=__spec__.name,code_commit=release_commit(args.repo),
-                  release_root=str(releases/f'{RUN}-release'),run_root=str(runs/RUN),
+        run = RECOVERY if args.reuse_frozen_source else RUN
+        rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
+                  release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),classifier_root=str(runs/AUG_RUN),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),
                   training_release_root=str(releases/f'{TRAIN_RUN}-release'),
@@ -124,6 +148,8 @@ def main():
         rt['external_releases']=[rt[k] for k in ('source_root','classifier_root','w24_release_root',
                                                 'training_release_root')]
         rt['external_releases'].append(str(runs/PARENT))
+        if args.reuse_frozen_source:
+            rt['external_releases'] += [str(runs/RUN),str(releases/f'{RUN}-release')]
         release(args.repo,args.output,rt,args.ssh_config)
 
 
