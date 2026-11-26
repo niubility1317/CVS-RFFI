@@ -3,6 +3,7 @@ from collections import defaultdict
 import csv
 from pathlib import Path
 import statistics
+import time
 
 import numpy as np
 
@@ -31,7 +32,6 @@ def pooled(confusion):
 def summarize(root, *, main_only=False, main_raw_only=False):
     root = Path(root)
     output = root / ("main_existing_raw" if main_raw_only else "main_snapshot" if main_only else "tables")
-    output.mkdir(parents=True, exist_ok=False)
     settings_by_id = settings()
     rows = []
     missing = []
@@ -63,7 +63,7 @@ def summarize(root, *, main_only=False, main_raw_only=False):
                 source = published_scores(setting, info, method, seed)
                 if main_raw_only and method == "shen":
                     source = PROJECT / "runs" / SHEN / f"s{seed}"
-                path = source / "scores" / "scores.json"
+                path = Path(source) / "scores" / "scores.json"
                 if not path.is_file():
                     missing.append(dict(setting=setting, method=METHODS[method], seed=seed))
                     continue
@@ -124,11 +124,12 @@ def summarize(root, *, main_only=False, main_raw_only=False):
                 for view in ("clean", "six_practical_mean"):
                     selected = [r for r in rows if r["setting"] in groups and
                                 (r["method"], r["population"], r["view"]) == (method, task, view)]
-                    if len(selected) == len(groups):
+                    if groups and len(selected) == len(groups):
                         group_means.append(dict(source_rx_count=n, receiver_combinations=len(groups),
                             population=task, view=view, method=METHODS[method],
                             accuracy=statistics.mean(r["accuracy"] for r in selected),
                             macro_f1=statistics.mean(r["macro_f1"] for r in selected)))
+    output.mkdir(parents=True, exist_ok=True)
     table(output / "per_seed.csv", [dict(r, method=METHODS[r["method"]]) for r in rows])
     table(output / "summary.csv", stats)
     table(output / "seven_method_columns.csv", list(wide.values()))
@@ -140,10 +141,34 @@ def summarize(root, *, main_only=False, main_raw_only=False):
     return result
 
 
+def follow(root):
+    """Finish reporting for the already-started immutable release."""
+    jobs = read(root / "jobs.json")
+    scores = {job["name"]: root / "readouts" / job["name"] / "scores" / "complete.json"
+              for job in jobs if job["stage"] == "score"}
+    print("MAIN_EXISTING_RAW", summarize(root, main_raw_only=True), flush=True)
+    while True:
+        state = read(root / "pipeline_state.json")
+        main = root / "main_snapshot" / "complete.json"
+        if (not main.exists() and all(p.is_file() for k, p in scores.items() if k.startswith("F0-"))):
+            print("MAIN_SNAPSHOT", summarize(root, main_only=True), flush=True)
+        if state["status"] in {"FAILED", "PARTIAL", "ANALYZED"}:
+            # Let the dispatcher finish its own last reporting attempt before filling the reserved output.
+            final = root / "tables" / "complete.json"
+            print("FINAL_TABLES", read(final) if final.exists() else summarize(root), flush=True)
+            return
+        time.sleep(30)
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", required=True)
-    parser.add_argument("--main-existing-raw", action="store_true", required=True)
+    parser.add_argument("--root", required=True, type=Path)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--main-existing-raw", action="store_true")
+    mode.add_argument("--follow", action="store_true")
     args = parser.parse_args()
-    print(summarize(args.root, main_raw_only=True))
+    if args.follow:
+        follow(args.root)
+    else:
+        print(summarize(args.root, main_raw_only=True))

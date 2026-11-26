@@ -97,17 +97,33 @@ def publish(config, output):
                           python=PYTHON, command=COMMAND, paths=paths)
 
 
+def publish_reporting(config, output):
+    from experiments.star_pamf_practical.publish import publish_bundle
+
+    reporting = RUN + "-reporting"
+    release = PROJECT / "releases" / (reporting + "-release")
+    command = [PYTHON, "-u", "-m", "experiments.pamf_comparison_matrix.results",
+               "--root", str(ROOT), "--follow"]
+    paths = ["experiments/pamf_comparison_matrix", "experiments/pamf_advisor_supplements/plan.py",
+             "experiments/practical_full_2x2", "experiments/cric_dura_comparison", "code/leo_practical"]
+    return publish_bundle(config, output, run=reporting, project=PROJECT, release=release,
+                          run_root=ROOT.parent / reporting, python=PYTHON, command=command, paths=paths)
+
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     sub = p.add_subparsers(dest="action", required=True)
     a = sub.add_parser("register")
     a.add_argument("--template", required=True, type=Path)
     a.add_argument("--output", required=True, type=Path)
-    a = sub.add_parser("publish")
-    a.add_argument("--ssh-config", required=True, type=Path)
-    a.add_argument("--output", required=True, type=Path)
+    for action in ("publish", "publish-reporting"):
+        a = sub.add_parser(action)
+        a.add_argument("--ssh-config", required=True, type=Path)
+        a.add_argument("--output", required=True, type=Path)
     a = p.parse_args()
     if a.action=="register":
         write(a.output, specification(read(a.template)))
-    else:
+    elif a.action=="publish":
         publish(a.ssh_config, a.output)
+    else:
+        publish_reporting(a.ssh_config, a.output)
