@@ -1,2 +1,3 @@
 {"at": "2026-11-26T07:10:19+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-26T07:12:01+00:00", "status": "RUNNING", "note": "VERIFIED controller and GPU workers with source-only parent and real no-query smoke. Fit logs growing, Full only.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-26T07:23:56+00:00", "status": "ANALYZED", "note": "VERIFIED Full source truth-last, fixed parent exact and both adapter outputs audited. Frequency 1441/1800, 176/300 low, 297/300 clean. No promotion or target access.", "evidence": ["report.md", "N607:runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/full_native/source-scores.json"], "row_id": null}
