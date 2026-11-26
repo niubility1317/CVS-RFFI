@@ -47,7 +47,7 @@ def recipe_for(training, *, joint_edges=False):
     return replace(training.RECIPE, name=NAME, finalize_calibration=no_gate)
 
 
-def objective_for(archived, *, joint_edges=False, band_direction_weight=None, refine_band=False):
+def objective_for(archived, *, joint_edges=False, band_direction_weight=None, refine_band=False, white_corruption=None):
     # This reuses the original module's coordinates, source perturbation and loss primitives.
     import torch
 
@@ -55,6 +55,8 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
         from experiments.pamf_lora_main.w24_band_tune import spectral_direction_risk
     if refine_band:
         from experiments.pamf_lora_main.w24_band_refine import EDIT_WEIGHT, band_edit_risk
+    if white_corruption is not None:
+        from experiments.pamf_lora_main.w24_white_corruption import training_observations
 
     risk = archived.waveform_risk
     window = archived.WIDE
@@ -67,8 +69,12 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
         clean_frame = phase * rms
         delta = archived.weak_difference(framed)
         change = delta * clean_frame
-        a, b = (tracker.aperture(archived.condition_waveforms(raw.unflatten(-1, (8, 1024)), rng).flatten(-2))
-                for _ in range(2))
+        if white_corruption is not None and with_identity:
+            a, b = training_observations(raw, clean, tracker.aperture, archived.condition_waveforms, rng,
+                                         white=white_corruption)
+        else:
+            a, b = (tracker.aperture(archived.condition_waveforms(raw.unflatten(-1, (8, 1024)), rng).flatten(-2))
+                    for _ in range(2))
         if with_identity:
             a[-2:] = b[-2:] = clean[-2:]
         data = torch.stack((a, b, torch.cat((a[..., :window] + change, a[..., window:]), dim=-1)), dim=1)

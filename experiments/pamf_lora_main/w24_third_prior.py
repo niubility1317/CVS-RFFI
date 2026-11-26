@@ -40,7 +40,9 @@ BAND_ADAPTER_RUN = '20261126-phase1-lora-w24-band-adapter-s2026112991-r01'
 BAND_ADAPTER_ARMS = ('band_adapter_time', 'band_adapter_frequency')
 BAND_REFINE_RUN = '20261126-phase1-lora-w24-band-polar-refine-s2026112991-r02'
 BAND_REFINE_ARMS = ('band_cartesian', 'band_polar')
-OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS)
+WHITE_RUN = '20261126-phase1-lora-w24-white-corruption-s2026112991-r01'
+WHITE_ARMS = ('archive_noise', 'stationary_noise')
+OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS, *WHITE_ARMS)
 OUTER_BASELINE = 'outer_parent_half'
 OUTER_PARENT = '20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01'
 VARIANTS = {
@@ -53,6 +55,7 @@ VARIANTS = {
     'band-tune': (BAND_TUNE_RUN, BAND_TUNE_ARMS),
     'band-adapter': (BAND_ADAPTER_RUN, BAND_ADAPTER_ARMS),
     'band-refine': (BAND_REFINE_RUN, BAND_REFINE_ARMS),
+    'white-corruption': (WHITE_RUN, WHITE_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -76,7 +79,7 @@ def trial(kind):
     run, arms = VARIANTS[kind]
     modes = ('direct', 'all_half', *(f'{arm}_{alpha}' for alpha in ('half', 'full') for arm in arms))
     contrasts = ((modes[3], modes[2]), (modes[5], modes[4]), (modes[3], modes[0]))
-    if kind in ('band-tune', 'band-adapter', 'band-refine'):
+    if kind in ('band-tune', 'band-adapter', 'band-refine', 'white-corruption'):
         steps = 1200 if kind == 'band-refine' else 1800
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
     return Trial(run, arms, 3600, modes, contrasts, ROUTES[:1])
@@ -219,6 +222,8 @@ def source_recipe(training, arm, *, initialize=None):
             info['trainable_parameters'] = sum(p.numel() for p in model.band_adapter.parameters())
         if arm in BAND_REFINE_ARMS:
             info.update(trainable_parameters=sum(p.numel() for p in model.head.parameters()), backbone_frozen=True)
+        if arm in WHITE_ARMS:
+            info['source_perturbation'] = 'equal_center_energy_white' if arm == WHITE_ARMS[1] else 'archived'
         return None, info
 
     spec = trial(ARM_TRIAL[arm])
@@ -279,8 +284,12 @@ def fit(config, arm, *, smoke):
                 model.load_state_dict(weights, strict=True)
 
         weight = WEIGHT if arm == BAND_TUNE_ARMS[1] else 0.
-        calculate = (objective_for(dura_w24_model, refine_band=True) if arm in BAND_REFINE_ARMS
-                     else objective_for(dura_w24_model, band_direction_weight=weight))
+        if arm in BAND_REFINE_ARMS:
+            calculate = objective_for(dura_w24_model, refine_band=True)
+        elif arm in WHITE_ARMS:
+            calculate = objective_for(dura_w24_model, white_corruption=arm == WHITE_ARMS[1])
+        else:
+            calculate = objective_for(dura_w24_model, band_direction_weight=weight)
     numerical_policy()
     channel_blind_source.fit(rt, smoke=smoke, recipe=source_recipe(dura_w24_train, arm, initialize=initialize),
                              calculate=calculate, receiver_batches=True, prepare=prepare,
@@ -403,7 +412,8 @@ def publish(args):
     releases, runs = project / 'releases', project / 'runs'
     pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7], 'final-radius': [0, 5, 6, 7],
              'peer': [3, 7, 6, 5], 'coherent-error': [0, 3, 5, 7], 'band-tune': [7, 6, 3, 0, 2],
-             'band-adapter': [0, 3, 5, 7], 'band-refine': [6, 7, 2, 0, 3]}
+             'band-adapter': [0, 3, 5, 7], 'band-refine': [6, 7, 2, 0, 3],
+             'white-corruption': [0, 3, 6, 7, 2]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
