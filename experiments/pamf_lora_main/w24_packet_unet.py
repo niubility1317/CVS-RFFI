@@ -184,7 +184,7 @@ def weak_private_gain_risk(response, desired):
 
 def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None, colored_noise=None,
                   common_bands=None, posterior_primary=False, clean_projection=None, weak_gain=None,
-                  raw_polyphase=False):
+                  raw_polyphase=False, additive_reference=None):
     if transport_probe is not None:
         from .w24_probe_transport import probe_views
     if colored_noise is not None:
@@ -193,6 +193,8 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
         from .w24_common_refiner import common_band_risk
     if raw_polyphase:
         from .w24_polyphase import native_probe_views
+    if additive_reference is not None:
+        from .w24_additive_reference import paired_action_noise
 
     def calculate(model, tracker, raw, rng, *, with_identity, recipe, step):
         raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
@@ -202,7 +204,14 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
         framed, phase, _, clean_rms = coordinates(tracker, archive.real_iq(center))
         clean_frame = phase * clean_rms
         weak = archive.weak_difference(framed)
-        if raw_polyphase:
+        paired_center = center
+        if additive_reference is not None:
+            views, references, probes = paired_action_noise(raw, tracker, rng, weak, with_identity=with_identity)
+            index = int(additive_reference)
+            paired_center = references[:, index, ..., :CENTER]
+            probe_center = probes[:, index, ..., :CENTER]
+            weak = (probe_center - paired_center) / clean_frame
+        elif raw_polyphase:
             views, clean_probe, native = native_probe_views(raw, tracker, archive.condition_waveforms, rng, weak,
                                                            with_identity=with_identity)
             probe_center = clean_probe[..., :CENTER]
@@ -230,7 +239,7 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
         observed = views.flatten(0, 1)
         y, phase, quality, rms = coordinates(tracker, archive.real_iq(observed[..., :CENTER]))
         frame = phase * rms
-        target = torch.stack((center, center, probe_center), dim=1).flatten(0, 1) / frame
+        target = torch.stack((paired_center, paired_center, probe_center), dim=1).flatten(0, 1) / frame
         if raw_polyphase:
             (time, full), = model.propose_native(tracker, y, phase, quality, rms, observed[..., CENTER:],
                                                  native.flatten(0, 1))
@@ -257,6 +266,11 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
         endpoint_weight = 0. if posterior_primary else .18
         weights = parts.new_tensor((.5, .5, .25, endpoint_weight, .15, .30, .03, 1.))
         loss = parts @ weights
+        if additive_reference is not None:
+            paired = finished[:, :2, None, ...]
+            reference_iq = references[:, None, :, ..., :CENTER]
+            cross = ((paired - reference_iq) / clean_frame[:, None, None, ...]).abs().square().mean((0, 1, 3, 4))
+            parts = torch.cat((parts, cross))
         if weak_gain is not None:
             # The last two fitting packets are clean identity examples, not disturbed probes.
             count = len(raw) - 2 if with_identity else len(raw)

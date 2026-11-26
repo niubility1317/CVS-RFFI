@@ -74,9 +74,12 @@ WEAK_TRANSFER_ARMS = ('weak_gain_control', 'weak_gain_private')
 WEAK_TRANSFER_INTERMEDIATE = 24000
 POLYPHASE_RUN = '20261127-phase1-lora-w24-polyphase-s2026112991-r01'
 POLYPHASE_ARMS = ('aperture_context', 'native_polyphase')
+ADDITIVE_REFERENCE_RUN = '20261127-phase1-lora-w24-additive-reference-s2026112991-r01'
+ADDITIVE_REFERENCE_ARMS = ('restore_original', 'remove_additive')
+LONG_UNET_ARMS = (*WEAK_TRANSFER_ARMS, *POLYPHASE_ARMS, *ADDITIVE_REFERENCE_ARMS)
 UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
 UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS,
-             *WEAK_TRANSFER_ARMS, *POLYPHASE_ARMS)
+             *LONG_UNET_ARMS)
 EXPERT_RUN = '20261126-phase1-lora-w24-spectral-experts-s2026112991-r01'
 EXPERT_ARMS = ('experts_packet', 'experts_band')
 UNET_BASELINE = 'frozen_unet_half'
@@ -111,6 +114,7 @@ VARIANTS = {
     'clean-projection': (PROJECTION_RUN, PROJECTION_ARMS),
     'weak-transfer': (WEAK_TRANSFER_RUN, WEAK_TRANSFER_ARMS),
     'polyphase': (POLYPHASE_RUN, POLYPHASE_ARMS),
+    'additive-reference': (ADDITIVE_REFERENCE_RUN, ADDITIVE_REFERENCE_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -143,7 +147,7 @@ def trial(kind):
         return Trial(run, arms, 48000, (*modes, *baselines, *intermediate),
                      (*contrasts, *((modes[3], base) for base in baselines), *comparisons),
                      ROUTES[:1], WEAK_TRANSFER_INTERMEDIATE)
-    if arms == POLYPHASE_ARMS:
+    if arms in (POLYPHASE_ARMS, ADDITIVE_REFERENCE_ARMS):
         baselines = (UNET_BASELINE, OUTER_BASELINE)
         return Trial(run, arms, 48000, (*modes, *baselines),
                      (*contrasts, *((modes[3], base) for base in baselines)), ROUTES[:1])
@@ -380,6 +384,8 @@ def source_recipe(training, arm, *, initialize=None):
                         source_intermediate=WEAK_TRANSFER_INTERMEDIATE)
         if arm in POLYPHASE_ARMS:
             info.update(native_polyphase=arm == POLYPHASE_ARMS[1], pre_channel_probe=True)
+        if arm in ADDITIVE_REFERENCE_ARMS:
+            info.update(additive_only=arm == ADDITIVE_REFERENCE_ARMS[1], shared_generic_action=True)
         if arm in UNET_COMPONENT_ARMS:
             info.update(separate_chirps=True, separate_loss=arm == UNET_COMPONENT_ARMS[1])
         if arm in UNET_WARM_ARMS:
@@ -405,9 +411,9 @@ def source_recipe(training, arm, *, initialize=None):
     spec = trial(ARM_TRIAL[arm])
     name = f'w24_{arm}_prior' if arm in ARMS else f'w24_{arm}'
     milestones = (spec.steps // 3, 2 * spec.steps // 3)
-    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *SCRATCH_PRIOR_ARMS, *WEAK_TRANSFER_ARMS, *POLYPHASE_ARMS):
+    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *SCRATCH_PRIOR_ARMS, *LONG_UNET_ARMS):
         milestones = (2000, 6000, 12000, 18000)
-    if arm in (*PROJECTION_ARMS, *WEAK_TRANSFER_ARMS, *POLYPHASE_ARMS):
+    if arm in (*PROJECTION_ARMS, *LONG_UNET_ARMS):
         milestones = (*milestones, 24000, 36000, 42000)
     if arm in UNET_WARM_ARMS:
         milestones = (2000, 6000, 9000)
@@ -476,10 +482,11 @@ def fit(config, arm, *, smoke):
         common_bands = (arm == UNET_COMMON_ARMS[1]) if arm in UNET_COMMON_ARMS else None
         weak_gain = (arm == WEAK_TRANSFER_ARMS[1]) if arm in WEAK_TRANSFER_ARMS else None
         polyphase = arm in POLYPHASE_ARMS
+        additive_reference = (arm == ADDITIVE_REFERENCE_ARMS[1]) if arm in ADDITIVE_REFERENCE_ARMS else None
         calculate = objective_for(dura_w24_model, complex_fidelity=fidelity, separate_loss=separation,
                                   transport_probe=transport, colored_noise=colored_noise, common_bands=common_bands,
-                                  posterior_primary=weak_gain is not None or polyphase, weak_gain=weak_gain,
-                                  raw_polyphase=polyphase)
+                                  posterior_primary=arm in LONG_UNET_ARMS, weak_gain=weak_gain,
+                                  raw_polyphase=polyphase, additive_reference=additive_reference)
     if arm in SCRATCH_PRIOR_ARMS:
         from experiments.pamf_lora_main.w24_packet_unet import objective_for
 
@@ -598,6 +605,9 @@ def read_candidate_weights(root, contract, device, arm, training, archived, *, s
     if arm in POLYPHASE_ARMS and (summary.get('native_polyphase') is not (arm == POLYPHASE_ARMS[1])
                                   or summary.get('pre_channel_probe') is not True):
         raise ValueError(f'Unverified polyphase input path for {arm}')
+    if arm in ADDITIVE_REFERENCE_ARMS and (summary.get('additive_only') is not (arm == ADDITIVE_REFERENCE_ARMS[1])
+                                           or summary.get('shared_generic_action') is not True):
+        raise ValueError(f'Unverified additive reference for {arm}')
     if arm in UNET_COMPONENT_ARMS and (summary.get('separate_chirps') is not True
                                        or summary.get('separate_loss') is not (arm == UNET_COMPONENT_ARMS[1])):
         raise ValueError(f'Unverified packet U-Net chirp decomposition for {arm}')
@@ -742,7 +752,7 @@ def publish(args):
              'chirp-components': [3, 2], 'probe-transport': [0, 3, 7], 'noise-color': [2, 3, 0],
              'common-refine': [0, 3, 2, 7], 'spectral-posterior': [0, 3, 2, 7],
              'clean-projection': [0, 2, 3, 5], 'weak-transfer': [0, 3, 2, 5],
-             'polyphase': [0, 2, 3, 5]}
+             'polyphase': [0, 2, 3, 5], 'additive-reference': [0, 7, 2, 3]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
