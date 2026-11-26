@@ -243,3 +243,37 @@ def test_strong_source_only_candidate_can_enter_formal_full():
     for case in experiment.FULL_CASES:
         proof = experiment.formal_receipt(case,experiment.RUN_STRONG)
         assert proof['modes'][-2:] == [parent,candidate] and control not in proof['modes']
+
+
+def test_capture_rate_coloring_changes_shape_at_matched_w24_center_power():
+    producer = torch.Generator().manual_seed(35)
+    white = torch.randn(4,8,1024,generator=producer,dtype=torch.complex64)
+    transform = experiment.PassbandMatchedNoise(Tracker(),torch.Generator().manual_seed(17))
+    colored = transform(white)
+    p0 = transform.center_power(white.flatten(1))
+    p1 = transform.center_power(colored.flatten(1))
+    torch.testing.assert_close(p1,p0)
+    assert not torch.equal(colored,white)
+    freq = torch.fft.fftfreq(white.shape[1]*white.shape[2],d=1e-6).abs()
+
+    def relative_outband(data):
+        psd = torch.fft.fft(data.flatten(1)).abs().square()
+        return psd[:,freq>300_000].sum(1)/psd.sum(1)
+
+    assert (relative_outband(colored)<relative_outband(white)).all()
+
+
+def test_color_candidate_uses_the_immediate_strong_source_parent():
+    control,candidate = experiment.COLOR_ARMS
+    parent = experiment.STRONG
+    scores = {m:dict(six_correct=1455,low_urban_correct=187,by_scene={'clean':297})
+              for m in (*experiment.parent_modes(experiment.RUN_STRONG),control,candidate)}
+    scores[parent].update(six_correct=1487,low_urban_correct=188)
+    scores[candidate].update(six_correct=1487,low_urban_correct=188)
+    assert not experiment.qualifies(scores,candidate)
+    scores[candidate]['six_correct'] += 1
+    assert experiment.qualifies(scores,candidate)
+    for case in experiment.FULL_CASES:
+        proof = experiment.formal_receipt(case,experiment.RUN_COLOR)
+        assert proof['reference_run']==experiment.RUN_STRONG
+        assert proof['modes'][-3:]==[experiment.FIXED_PL,parent,candidate] and control not in proof['modes']

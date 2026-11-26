@@ -39,7 +39,9 @@ from experiments.pamf_lora_main.w24_native_full import (
 )
 from experiments.pamf_lora_main.w24_observed_dose import FULL_CASES, prior_target, source_receive
 from experiments.pamf_lora_main.w24_second_stage import SecondStage
-from experiments.pamf_lora_main.w24_strong_source import STRONG_FRACTION, STRONG_SNR_DB, StrongSourceMix
+from experiments.pamf_lora_main.w24_strong_source import (
+    COLOR_CUTOFF_HZ, STRONG_FRACTION, STRONG_SNR_DB, PassbandMatchedNoise, StrongSourceMix,
+)
 from experiments.pamf_lora_main.w24_third_prior import UNET_FIDELITY_ARMS, UNET_FIDELITY_RUN, load_candidate
 from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN, load_restorer, received_aperture, training_runtime
 from experiments.pamf_lora_main.w24_outer_objective_source import RUN as DURA_RUN
@@ -51,6 +53,7 @@ RUN_FIXED_PL = '20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01'
 RUN_FEATURE = '20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01'
 RUN_REFINE = '20261126-phase1-lora-w24-second-stage-s2026112995-r01'
 RUN_STRONG = '20261127-phase1-lora-w24-strong-source-s2026112997-r01'
+RUN_COLOR = '20261127-phase1-lora-w24-colored-source-s2026112999-r01'
 ARMS = ('pamf_only', 'frozen_pamf_ce', 'joint')
 PL = 'joint_clean_pl'
 FIXED_PL = 'fixed_e104_clean_pl'
@@ -60,7 +63,11 @@ RAW_REFINE, REFINE = 'raw_second_stage', 'conditioned_second_stage'
 REFINE_ARMS = (RAW_REFINE, REFINE)
 STRONG_CONTROL, STRONG = 'generic_source', 'strong_source'
 STRONG_ARMS = (STRONG_CONTROL, STRONG)
-PARENT_TRIALS = {RUN_FEATURE: CONTINUATION_ARMS, RUN_REFINE: REFINE_ARMS, RUN_STRONG: STRONG_ARMS}
+WHITE, COLOR = 'white_source', 'colored_source'
+COLOR_ARMS = (WHITE, COLOR)
+AUGMENTED_ARMS = (*STRONG_ARMS, *COLOR_ARMS)
+PARENT_TRIALS = {RUN_FEATURE: CONTINUATION_ARMS, RUN_REFINE: REFINE_ARMS, RUN_STRONG: STRONG_ARMS,
+                 RUN_COLOR: COLOR_ARMS}
 PARENT_ARMS = tuple(arm for arms in PARENT_TRIALS.values() for arm in arms)
 PARENT_CONTROLS = {candidate: control for control, candidate in PARENT_TRIALS.values()}
 PSEUDO_ARMS = {RUN_PL: PL, RUN_FIXED_PL: FIXED_PL}
@@ -71,7 +78,9 @@ SEED, STEPS, BATCH, PRED_BATCH = 2026112991, 6000, 16, 32
 FEATURE_SEED, FEATURE_WEIGHT = 2026112993, 16.
 REFINE_SEED, REFINE_STEPS = 2026112995, 9000
 STRONG_SEED, STRONG_STEPS = 2026112997, 10000
+COLOR_SEED = 2026112999
 FIXED_PL_COMMIT = '37215dd615d0f651ffebe87d6aaba6af0ab7a847'
+STRONG_COMMIT = '76385bf9174440cc4e437a47bfc2fd7aff1b1fcb'
 CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
 FORMAL_ARMS = {RUN: CANDIDATE, RUN_FIXED_PL: FIXED_PL,
                **{run: candidate for run, (_, candidate) in PARENT_TRIALS.items()}}
@@ -174,9 +183,21 @@ def norm_gradient(values):
     return sum(float(x.detach().float().square().sum()) for x in values if x is not None)**.5
 
 
-def continuation_parent(rt, contract, f0, g0, device):
-    parent = Path(rt['project'])/'runs'/RUN_FIXED_PL
-    return load_row(parent,FIXED_PL,contract,f0,g0,device)[0]
+def source_parent(run):
+    return RUN_STRONG if run == RUN_COLOR else RUN_FIXED_PL
+
+
+def parent_modes(parent):
+    modes = (*MODES,FIXED_PL)
+    return (*modes,*STRONG_ARMS) if parent == RUN_STRONG else modes
+
+
+def continuation_parent(rt, contract, f0, g0, device, parent=RUN_FIXED_PL):
+    runs = Path(rt['project'])/'runs'
+    g = load_row(runs/RUN_FIXED_PL,FIXED_PL,contract,f0,g0,device)[0]
+    if parent == RUN_STRONG:
+        g = load_row(runs/RUN_STRONG,STRONG,contract,f0,g,device)[0]
+    return g
 
 
 def training_recipe(arm):
@@ -186,6 +207,8 @@ def training_recipe(arm):
         return FEATURE_SEED, STEPS, 4e-5, RUN_FIXED_PL
     if arm in STRONG_ARMS:
         return STRONG_SEED, STRONG_STEPS, 4e-5, RUN_FIXED_PL
+    if arm in COLOR_ARMS:
+        return COLOR_SEED, STRONG_STEPS, 4e-5, RUN_STRONG
     return SEED, STEPS, 8e-5, UNET_FIDELITY_RUN
 
 
@@ -204,10 +227,10 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     contract, f, g, tracker = boot(rt, device)
     continuation = arm in CONTINUATION_ARMS
     refinement = arm in REFINE_ARMS
-    if arm in PARENT_ARMS:
-        g = continuation_parent(rt,contract,f,g,device)
-    g = initialize_recovery(arm,g,device)
     seed, budget, lr, checkpoint_parent = training_recipe(arm)
+    if arm in PARENT_ARMS:
+        g = continuation_parent(rt,contract,f,g,device,checkpoint_parent)
+    g = initialize_recovery(arm,g,device)
     generic = importlib.import_module('lora_wide_dura_archive.dura_w24_model').condition_waveforms
     labeled, _, _, _ = source_role(source, contract, 'L_s')
     unlabeled, _, _, _ = source_role(source, contract, 'U_s')
@@ -230,9 +253,10 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,steps,eta_min=2e-6)
     order = np.random.default_rng(seed)
     rng = torch.Generator(device=device).manual_seed(seed)
-    if arm in STRONG_ARMS:
+    if arm in AUGMENTED_ARMS:
         separate_rng = torch.Generator(device=device).manual_seed(seed+1)
-        generic = StrongSourceMix(generic,separate_rng,device,enabled=arm==STRONG)
+        noise_shape = PassbandMatchedNoise(tracker,torch.Generator(device=device).manual_seed(seed+2)) if arm==COLOR else None
+        generic = StrongSourceMix(generic,separate_rng,device,enabled=arm!=STRONG_CONTROL,noise_shape=noise_shape)
     pseudo = arm in USE_PSEUDO
     preserve_feature = arm == FEATURE
     weights = torch.tensor((1.,.65,.3,.30,.25,1.5) + ((1.,0.) if pseudo else ())
@@ -299,9 +323,11 @@ def fit(config, arm, *, smoke, device='cuda:0'):
         proof['feature_weight'] = FEATURE_WEIGHT if preserve_feature else 0.
     if refinement:
         proof['conditioned_on_first'] = arm == REFINE
-    if arm in STRONG_ARMS:
-        proof.update(strong_fraction=STRONG_FRACTION if arm==STRONG else 0.,
+    if arm in AUGMENTED_ARMS:
+        proof.update(strong_fraction=STRONG_FRACTION if generic.enabled else 0.,
                      strong_snr_db=list(STRONG_SNR_DB),strong_exposures=int(generic.selected))
+    if arm in COLOR_ARMS:
+        proof['color_cutoff_hz'] = list(COLOR_CUTOFF_HZ) if arm==COLOR else None
     summary = dict(**proof, status='PASS' if smoke else 'SOURCE_FROZEN', CE_to_G_norm=ce_norm,
                    gradients=gradients, worker_seconds=monotonic()-start,
                    peak_cuda_bytes=torch.cuda.max_memory_allocated() if device.startswith('cuda') else 0,
@@ -344,12 +370,16 @@ def load_row(root, arm, contract, f0, g0, device):
         raise ValueError('Unexpected paired feature weight')
     if refinement and proof.get('conditioned_on_first') is not (arm == REFINE):
         raise ValueError('Unexpected second-stage input')
-    if arm in STRONG_ARMS:
+    if arm in AUGMENTED_ARMS:
         strong_count = proof['strong_exposures']
-        exposure_ok = 0 < strong_count <= proof['labeled_exposures'] + proof['unlabeled_exposures'] if arm == STRONG else strong_count == 0
-        if (not exposure_ok or proof['strong_fraction'] != (STRONG_FRACTION if arm==STRONG else 0.)
+        enabled = arm != STRONG_CONTROL
+        total = proof['labeled_exposures'] + proof['unlabeled_exposures']
+        exposure_ok = 0 < strong_count <= total if enabled else strong_count == 0
+        if (not exposure_ok or proof['strong_fraction'] != (STRONG_FRACTION if enabled else 0.)
                 or proof['strong_snr_db'] != list(STRONG_SNR_DB)):
             raise ValueError('Unexpected strong source mixture')
+    if arm in COLOR_ARMS and proof['color_cutoff_hz'] != (list(COLOR_CUTOFF_HZ) if arm==COLOR else None):
+        raise ValueError('Unexpected receive-band noise shape')
     g0 = initialize_recovery(arm,deepcopy(g0),device) if refinement else g0
     g, f = deepcopy(g0), deepcopy(f0)
     for model, key in ((g,'G'),(f,'F')):
@@ -432,8 +462,9 @@ def predict_pseudo(rt):
     contract, f0, g0, tracker = boot(rt,device)
     run = rt['run_id']
     if run in PARENT_TRIALS:
-        arms, parent_run, baseline_modes = PARENT_TRIALS[run], RUN_FIXED_PL, (*MODES,FIXED_PL)
-        g0 = continuation_parent(rt,contract,f0,g0,device)
+        arms, parent_run = PARENT_TRIALS[run], source_parent(run)
+        baseline_modes = parent_modes(parent_run)
+        g0 = continuation_parent(rt,contract,f0,g0,device,parent_run)
     else:
         arms, parent_run, baseline_modes = (PSEUDO_ARMS[run],), RUN, MODES
     rows = [load_row(root,arm,contract,f0,g0,device) for arm in arms]
@@ -472,7 +503,7 @@ def qualifies(scores, candidate=CANDIDATE):
         controls.append(control)
     if candidate in PARENT_CONTROLS:
         control = scores[PARENT_CONTROLS[candidate]]
-        parent = scores[FIXED_PL]
+        parent = scores[STRONG if candidate==COLOR else FIXED_PL]
         if (test['low_urban_correct'] <= control['low_urban_correct']
                 or test['by_scene']['clean'] < parent['by_scene']['clean']):
             return False
@@ -486,7 +517,8 @@ def formal_receipt(case, run=RUN):
     if case not in FULL_CASES:
         raise ValueError('Expected Full-only shard')
     if run in PARENT_TRIALS:
-        old, parent = formal_receipt(case,RUN_FIXED_PL), RUN_FIXED_PL
+        parent = source_parent(run)
+        old = formal_receipt(case,parent)
     else:
         old, parent = receipt(case,True,True), RUN_OUTER
     return dict(old,modes=[*old['modes'],FORMAL_ARMS[run]],candidate_run=run,reference_run=parent)
@@ -496,15 +528,17 @@ def formal_reference(rt, case):
     if rt['run_id'] not in PARENT_TRIALS:
         return prior_target(rt,case)
     project = Path(rt['project'])
-    parent = project/'runs'/RUN_FIXED_PL
-    release = read(project/'releases'/f'{RUN_FIXED_PL}-release'/'runtime.json')
+    run = source_parent(rt['run_id'])
+    parent = project/'runs'/run
+    release = read(project/'releases'/f'{run}-release'/'runtime.json')
     state = read(parent/'state.json')
-    if (release['code_commit'] != FIXED_PL_COMMIT or Path(release['run_root']) != parent
+    expected_commit = STRONG_COMMIT if run == RUN_STRONG else FIXED_PL_COMMIT
+    if (release['code_commit'] != expected_commit or Path(release['run_root']) != parent
             or any(release[k] != rt[k] for k in ('source_root','native_target_root','w24_release_root'))
             or state != dict(status='PREDICTIONS_FROZEN',cases=list(FULL_CASES),target_truth_read=False)):
         raise ValueError('Expected the frozen E104 clean-PL formal comparison')
     shard = parent/'predictions'/case
-    if read(shard/'complete.json') != formal_receipt(case,RUN_FIXED_PL):
+    if read(shard/'complete.json') != formal_receipt(case,run):
         raise ValueError('Mismatched frozen E104 clean-PL formal comparison')
     return shard
 
@@ -522,7 +556,7 @@ def predict_formal(rt,case):
     activity = read(baseline/'activity.json')
     contract,f0,g0,tracker = boot(rt,device)
     if candidate in PARENT_ARMS:
-        g0 = continuation_parent(rt,contract,f0,g0,device)
+        g0 = continuation_parent(rt,contract,f0,g0,device,source_parent(rt['run_id']))
     model,_ = load_row(root,candidate,contract,f0,g0,device)
     target = Path(rt['native_target_root'])
     target_contract(target)
@@ -576,9 +610,10 @@ def dispatch(runtime):
             raise ValueError('Expected archived W24 implementation')
         if run in PARENT_TRIALS:
             # Check the already frozen parent's source selection outside fit.
-            score = read(root.parent/RUN_FIXED_PL/FULL/'source-scores.json')
+            ancestor = source_parent(run)
+            score = read(root.parent/ancestor/FULL/'source-scores.json')
             if ((score['status'],score['source_truth_last'],score['target_reads'],score['n_packets'])
-                    != ('ANALYZED',True,0,300) or not qualifies(score['scores'],FIXED_PL)):
+                    != ('ANALYZED',True,0,300) or not qualifies(score['scores'],FORMAL_ARMS[ancestor])):
                 raise ValueError('Expected source-selected clean-PL parent')
         for arm in arms:
             out = root/arm
@@ -591,7 +626,7 @@ def dispatch(runtime):
         schedule(rt,[('fit-row',arm) for arm in arms],lambda _,action,arm,gpu:
                  launch(action,f'{arm}-fit',gpu,root/arm/'fit-inputs.json',arm))
         if pseudo_arm or run in PARENT_TRIALS:
-            comparison = root.parent/(RUN_FIXED_PL if run in PARENT_TRIALS else RUN)
+            comparison = root.parent/(source_parent(run) if run in PARENT_TRIALS else RUN)
             deadline = monotonic()+12*60*60
             status(status='WAITING_FOR_MATCHED_SOURCE_PREDICTIONS',comparison=comparison.name)
             while not (comparison/FULL/'source-predictions.json').is_file():
@@ -679,6 +714,7 @@ def main():
     pseudo_options.add_argument('--clean-feature',dest='run_id',action='store_const',const=RUN_FEATURE)
     pseudo_options.add_argument('--second-stage',dest='run_id',action='store_const',const=RUN_REFINE)
     pseudo_options.add_argument('--strong-source',dest='run_id',action='store_const',const=RUN_STRONG)
+    pseudo_options.add_argument('--colored-source',dest='run_id',action='store_const',const=RUN_COLOR)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -705,9 +741,11 @@ def main():
             modes, contrasts = (*MODES,arm), ((arm,control),(arm,'outer_half'),(arm,'direct'))
         if runtime['run_id'] in PARENT_TRIALS:
             control, candidate = PARENT_TRIALS[runtime['run_id']]
-            modes = (*MODES,FIXED_PL,control,candidate)
-            contrasts = ((candidate,control),(candidate,FIXED_PL),(candidate,'outer_half'),(candidate,'direct'),
-                         (control,FIXED_PL))
+            ancestor = source_parent(runtime['run_id'])
+            parent = FORMAL_ARMS[ancestor]
+            modes = (*parent_modes(ancestor),control,candidate)
+            contrasts = ((candidate,control),(candidate,parent),(candidate,'outer_half'),(candidate,'direct'),
+                         (control,parent))
         score_source(args.runtime,modes=modes,output=Path(runtime['run_root'])/FULL,contrasts=contrasts)
     elif args.action=='predict-formal':
         predict_formal(read(args.runtime),args.case)
@@ -721,7 +759,7 @@ def main():
         run = args.run_id or RUN
         gpu_preferences = {RUN: [3,0,7,2,6,5], RUN_PL: [2,6,5], RUN_FIXED_PL: [7,2,3,0,6,5],
                            RUN_FEATURE: [0,3,7,2,6,5], RUN_REFINE: [7,3,0,2,6,5],
-                           RUN_STRONG: [7,0,3,2,6,5]}
+                           RUN_STRONG: [7,0,3,2,6,5], RUN_COLOR: [0,3,7,2,6,5]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
@@ -736,6 +774,8 @@ def main():
             rt['external_releases'].append(str(runs/RUN))
         if run in PARENT_TRIALS:
             rt['external_releases'] += [str(runs/RUN_FIXED_PL),str(releases/f'{RUN_FIXED_PL}-release')]
+        if run == RUN_COLOR:
+            rt['external_releases'] += [str(runs/RUN_STRONG),str(releases/f'{RUN_STRONG}-release')]
         if run in FORMAL_ARMS:
             rt['native_target_root']=str(releases/f'{DATA_RUN}-release'/'data/target')
             rt['external_releases'] += [rt['native_target_root'],str(runs/RUN_OUTER)]
