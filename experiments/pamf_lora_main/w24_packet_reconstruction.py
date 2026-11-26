@@ -130,7 +130,12 @@ def source_tools(rt, device):
     package = ModuleType('lora_packet_front_end')
     package.__path__ = [str(archive/'experiments'/'pamf_lora_main')]
     sys.modules[package.__name__] = package
-    helper = importlib.import_module(f'{package.__name__}.dura_w24_model')
+    imports = importlib.import_module('experiments').__path__
+    imports.insert(0, str(archive/'experiments'))
+    try:
+        helper = importlib.import_module(f'{package.__name__}.dura_w24_model')
+    finally:
+        imports.pop(0)
     return helper.WideTracker().to(device).eval(), helper.condition_waveforms
 
 
