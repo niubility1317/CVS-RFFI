@@ -16,6 +16,11 @@ import numpy as np
 import torch
 from torch.nn import functional as F
 
+# Spawned CPU replay workers must import from the same archived W24 CWD
+# before the parent's activated historical paths.
+if __name__ == '__mp_main__':
+    sys.path.insert(0, str(Path.cwd()))
+
 if __package__ is None:
     from experiments import pamf_lora_main
     pamf_lora_main.__path__.append(str(Path(__file__).resolve().parent))
@@ -205,10 +210,10 @@ def load_row(root, arm, contract, f0, g0, device):
     g, f = deepcopy(g0), deepcopy(f0)
     for model, key in ((g,'G'),(f,'F')):
         model.load_state_dict(state[key],strict=True)
-        if not proof[f'{key}_trainable']:
-            prior = g0 if key=='G' else f0
-            if any(not torch.equal(v,prior.state_dict()[k]) for k,v in model.state_dict().items()):
-                raise ValueError(f'Frozen {key} changed in {arm}')
+        prior = (g0 if key=='G' else f0).state_dict()
+        changed = any(not torch.equal(v,prior[k]) for k,v in model.state_dict().items())
+        if changed != proof[f'{key}_trainable']:
+            raise ValueError(f'Unexpected checkpoint update of {key} in {arm}')
     return g.eval().requires_grad_(False), f.eval().requires_grad_(False)
 
 @torch.no_grad()
