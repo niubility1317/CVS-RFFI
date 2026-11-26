@@ -168,3 +168,40 @@ def test_feature_candidate_requires_paired_gain_and_keeps_formal_e104_parent():
         assert proof['reference_run'] == experiment.RUN_FIXED_PL
         assert proof['modes'][-2:] == [parent,candidate]
         assert control not in proof['modes'] and not proof['target_truth_read']
+
+
+def test_second_stage_starts_at_parent_and_leaves_its_weights_frozen():
+    class Parent(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.scale = nn.Parameter(torch.tensor(.8))
+
+        def propose(self, y, quality, rms, edges):
+            return (y, y * self.scale),
+
+    parent = Parent()
+    plain = experiment.initialize_recovery(experiment.RAW_REFINE,Parent(),'cpu')
+    stage = experiment.initialize_recovery(experiment.REFINE,parent,'cpu')
+    assert all(torch.equal(v,plain.state_dict()[k]) for k,v in stage.state_dict().items())
+    y = torch.randn(1,8,384,dtype=torch.complex64)
+    quality = torch.zeros(1,8,1)
+    rms = torch.ones(1,8,1)
+    edges = torch.zeros(1,8,48,dtype=torch.complex64)
+    (_, final), = stage.propose(y,quality,rms,edges)
+    torch.testing.assert_close(final, y * parent.scale, rtol=0, atol=0)
+    final.real.square().mean().backward()
+    assert parent.scale.grad is None and not parent.scale.requires_grad
+    assert stage.refiner.time_edit.bias.grad.abs().sum() > 0 or stage.refiner.time_edit.weight.grad.abs().sum() > 0
+
+
+def test_second_stage_only_conditioned_candidate_can_promote():
+    parent,control,candidate = experiment.FIXED_PL,*experiment.REFINE_ARMS
+    scores = {m:dict(six_correct=1455,low_urban_correct=187,by_scene={'clean':297})
+              for m in (*experiment.MODES,parent,control,candidate)}
+    scores[candidate]['six_correct'] = 1456
+    assert not experiment.qualifies(scores,candidate)
+    scores[candidate]['low_urban_correct'] = 188
+    assert experiment.qualifies(scores,candidate)
+    for case in experiment.FULL_CASES:
+        proof = experiment.formal_receipt(case,experiment.RUN_REFINE)
+        assert proof['modes'][-2:] == [parent,candidate] and control not in proof['modes']

@@ -31,10 +31,11 @@ class AttentionBlock(nn.Module):
 class PacketUNet(nn.Module):
     """Preserve each chirp's skip features while mixing coarse time and packet context."""
 
-    def __init__(self, *, across_chirps):
+    def __init__(self, *, across_chirps, with_state=False):
         super().__init__()
         self.across_chirps = across_chirps
-        self.stem = block(12, WIDTH, 7)
+        self.with_state = with_state
+        self.stem = block(14 if with_state else 12, WIDTH, 7)
         self.down = nn.ModuleList(block(WIDTH, WIDTH, stride=2) for _ in range(3))
         self.up = nn.ModuleList(block(2 * WIDTH, WIDTH) for _ in range(3))
         self.temporal_position = nn.Parameter(torch.empty(CENTER // 8, WIDTH))
@@ -71,7 +72,7 @@ class PacketUNet(nn.Module):
         real, imag = value.float().unflatten(0, shape).unbind(2)
         return torch.complex(real, imag)
 
-    def forward(self, y, quality, rms, edges):
+    def forward(self, y, quality, rms, edges, *, state=None):
         batch, chirps, _ = y.shape
         prefix = (batch, chirps)
         spectrum = torch.fft.fft(y, norm='ortho')
@@ -86,6 +87,8 @@ class PacketUNet(nn.Module):
         dy = torch.diff(y, dim=-1, prepend=y[..., :1])
         conditions = torch.cat((quality, sn, side_power, step), dim=-1).unsqueeze(-1).expand(-1, -1, -1, CENTER)
         inputs = torch.cat((torch.stack((y.real, y.imag, dy.real, dy.imag), dim=-2), conditions), dim=-2)
+        if self.with_state:
+            inputs = torch.cat((inputs,torch.stack((state.real,state.imag),dim=-2)),dim=-2)
         hidden = self.stem(inputs.flatten(0, 1))
         skips = []
         for down in self.down:
