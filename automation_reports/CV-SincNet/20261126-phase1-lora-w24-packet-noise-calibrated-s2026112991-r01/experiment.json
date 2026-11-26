@@ -1,0 +1,185 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 原生带外包级噪声条件与校准（Full）",
+  "description": "Keep identical local aperture IQ statistics, vary only the received packet-level pooled power, and supervise one scalar corruption estimate from lawful same-waveform source pairs.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 goal, lawful source U_s same-waveform paired IQ, frozen W24 only after added source coefficients freeze, Full route.",
+  "code": {
+    "commit": "6b9ab67d34b039a179cb0a1ea435668543d343d9",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "Archived N607 CVS-RFFI with exact registered W24 release",
+    "cwd": "Registered archive releases/20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "Same 300 unique opaque source V packet IDs as frozen outer-objective source run",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 16160,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Native source split 392005. Disjoint 16000 U_s fit pool and 160 waveform holdout. Same physical Full 300-source panel and exact archived direct parity.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean. Prediction uses generated receive IQ."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source calibration and source screen. No F/TX/V/target access at fit or freeze. DURA and W24 checkpoints read only for their allowed roles."
+  },
+  "checkpoint": {
+    "initialization": "Two matching scratch 407120-parameter packet models. Zero final layer on scalar log-disturbance calibrator; no DURA checkpoint used for fitting.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Frozen source predictions used as a matched comparison after both scratch candidates freeze"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "E104 frozen default reader only"
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Pinned analytic aperture, tracking and generic waveform generator code only, no learned checkpoint"
+      }
+    ],
+    "contract_check_ref": "Source frozen checkpoint binding and actual paired blind decisions must match the immutable prior source run.",
+    "provenance_verdict": "No historical restoration weight used in fit, freeze or candidate predictions. Historical outer predictions appended by unchanged physical order for post-freeze paired scoring only.",
+    "selection_rule": "Freeze both arms at step 12000. Native half must beat parent+18 six, parent+10 low and direct clean, and beat matched aperture-power half on both practical criteria."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "One N607 GPU, 3 then 6,0, >=12 GiB free and existing process cap. 8 CPU workers.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01",
+    "local_artifact_root": "local_artifacts/20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_packet_noise publish --repo <worktree> --context <context> --ssh-config <config> --output <local-release>",
+    "stop_rule": "Stop on legal source, real smoke, finite calibration/waveform, archive parity, seven-view completeness, or independent source scoring failure."
+  },
+  "expected_artifacts": [
+    "fit-smoke.json",
+    "fit-complete.json",
+    "holdout-{step}.json",
+    "native-innovation.pt",
+    "smoke.json",
+    "state.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldout log-disturbance calibration risk",
+      "center/half-spectrum waveform risk",
+      "paired Full accuracy and clean",
+      "per-receiver and paired correction",
+      "latency and GPU"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01/{route}/predictions.npz",
+    "scorer_ref": "experiments.pamf_lora_main.w24_packet_noise score-source via existing independent source truth-last"
+  },
+  "rows": [
+    {
+      "row_id": "calibrated-packet-noise",
+      "method": "Shared local aperture features and model, per-packet fourth input from either pooled aperture or pooled native high-pass power. Joint source log-disturbance calibration. Fixed half/full center and measured guard.",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_packet_noise.py",
+      "resolved_config_ref": "releases/20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300,
+        "U_s_fit": 16000,
+        "U_s_holdout": 160
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW cosine",
+      "lr": 0.0006,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "12000 updates per arm, batch 8 with one clean pair, 16000 U_s fit and 160 disjoint holdout, same AdamW cosine .0006 to .00008. Fixed 2000/6000/12000 waveform logs, final 300-source Full W24 seven-view scoring.",
+      "output_root": "runs/20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01",
+      "log_path": "runs/20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01/fit-source.log",
+      "command": "python -m experiments.pamf_lora_main.w24_packet_noise dispatch <runtime>",
+      "expected_artifacts": [
+        "fit-smoke.json",
+        "fit-complete.json",
+        "holdout-{step}.json",
+        "native-innovation.pt",
+        "smoke.json",
+        "state.json",
+        "full_native/source-predictions.json",
+        "full_native/predictions.npz",
+        "full_native/source-scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Identical local real/imag/log energy for both arms, only pooled source of per-packet power differs.",
+    "Both models independently fit robust log(mean(abs(clean-received)^2)+1e-5) from lawful same-item source paired IQ; estimate is used as a global field at inference.",
+    "No simulator noise, F, TX, V, target, target statistics or scene identifiers in model training, calibration, or deployment input. No new Residual.",
+    "No output shrinkage multiplier specific to an arm. Keep archived actual aperture writing and source truth-last.",
+    "One P0/P1 review, targeted tests for local parity, pooled log power, gradient and no-query actual source smoke."
+  ],
+  "registered_at": "2026-11-26T10:31:02+00:00"
+}
