@@ -1,0 +1,324 @@
+"""Matched two- and three-prior W24 recovery on unlabeled source IQ."""
+import argparse
+from copy import deepcopy
+from dataclasses import replace
+from functools import partial
+import importlib
+import os
+import re
+from pathlib import Path, PurePosixPath
+import subprocess
+from time import monotonic, sleep
+
+if __package__ is None:
+    from experiments import pamf_lora_main
+    pamf_lora_main.__path__.append(str(Path(__file__).resolve().parent))
+
+
+RUN = '20261126-phase1-lora-w24-third-prior-s2026112991-r01'
+ARMS = ('two', 'three')
+STEPS = 1800
+MODES = ('direct', 'all_half', 'two_half', 'three_half', 'two_full', 'three_full')
+CONTRASTS = (('three_half', 'two_half'), ('three_full', 'two_full'), ('three_half', 'direct'))
+ROUTES = ('full_native', 'native_residual_w24_v1')
+ISOLATION = ('F_reads', 'TX_reads', 'V_reads', 'target_reads', 'practical_reads', 'trace_reads')
+
+
+def restorer(training, arm):
+    if arm not in ARMS:
+        raise ValueError(f'Unknown prior arm: {arm}')
+    if arm == 'two':
+        return training.DuraW24()
+
+    class ThreePrior(training.DuraW24):
+        def __init__(self):
+            super().__init__()
+            # Leave the two matched initial prior states intact. The third has
+            # separately trainable parameters, initialized from prior two.
+            self.priors.append(deepcopy(self.priors[-1]))
+
+        def propose(self, *args, **kwargs):
+            stages, *physical = super().propose(*args, **kwargs)
+            return (stages[0], stages[1], stages[-1]), *physical
+
+    return ThreePrior()
+
+
+def fit_inputs(rt, arm):
+    if arm not in ARMS:
+        raise ValueError(f'Unknown prior arm: {arm}')
+    return dict(source_root=rt['source_root'], run_root=str(PurePosixPath(rt['run_root']) / arm))
+
+
+def restore_center(original, delta, fraction):
+    restored = original.clone()
+    restored[..., :384] += fraction * delta
+    return restored
+
+
+def promotion(routes):
+    return len(routes) == 2 and all(
+        row['three_half']['by_scene']['clean'] >= row['direct']['by_scene']['clean']
+        and row['three_half']['six_correct'] > max(row[k]['six_correct'] for k in ('two_half', 'direct', 'all_half'))
+        and row['three_half']['low_urban_correct'] >= max(row[k]['low_urban_correct'] for k in ('two_half', 'direct', 'all_half'))
+        for row in routes)
+
+
+def qualified_source(root):
+    from experiments.cric_dura_comparison.io import read
+    from experiments.pamf_lora_main.w24_native_full import VIEWS
+
+    if read(root / 'state.json')['status'] not in ('SOURCE_SCORED', 'FORMAL_PREDICTING'):
+        raise ValueError('Expected frozen and scored source rows')
+    results, physical_ids = [], None
+    for route in ROUTES:
+        predictions = read(root / route / 'source-predictions.json')
+        scores = read(root / route / 'source-scores.json')
+        ids, waveform = predictions['physical_ids'], predictions['waveform']
+        if (predictions['status'] != 'PREDICTIONS_FROZEN' or predictions['target_reads'] != 0
+                or predictions['source_truth_reads'] != 0 or predictions['modes'] != list(MODES)
+                or predictions['views'] != list(VIEWS) or len(ids) != 300 or len(set(ids)) != 300
+                or (physical_ids is not None and ids != physical_ids)
+                or waveform['candidate_steps'] != STEPS or waveform['candidate_run'] != RUN
+                or waveform['route'] != route or waveform['ungated'] is not True
+                or waveform['amplitudes'] != [.5, 1.]
+                or waveform['activation'] != dict.fromkeys(VIEWS, [300]*(len(MODES)-1))
+                or scores['status'] != 'ANALYZED' or scores['source_truth_last'] is not True
+                or scores['target_reads'] != 0 or scores['n_packets'] != 300 or scores['n_practical'] != 1800
+                or scores['waveform'] != waveform):
+            raise ValueError(f'Invalid source evaluation for {route}')
+        physical_ids = ids
+        results.append(scores['scores'])
+    if not promotion(results):
+        raise ValueError('Source comparison did not qualify')
+
+
+def source_recipe(training, arm):
+    def finalize(model, _tracker, _calibration):
+        grads = [sum(float(p.grad.square().sum()) for p in prior.parameters() if p.grad is not None)**.5
+                 for prior in model.priors]
+        if not all(0 < value < float('inf') for value in grads):
+            raise FloatingPointError(f'Invalid gradient in a W24 prior: {grads}')
+        return None, dict(input_gate=False, prior_count=len(model.priors), prior_gradient_norms=grads,
+                          parameters=sum(p.numel() for p in model.parameters()))
+
+    return replace(training.RECIPE, name=f'w24_{arm}_prior', steps=STEPS, validation_steps=(600, 1200),
+                   model=partial(restorer, training, arm), finalize_calibration=finalize)
+
+
+def fit(config, arm, *, smoke):
+    import torch
+    from experiments.cric_dura_comparison.bootstrap import numerical_policy
+    from experiments.cric_dura_comparison.io import read, tensor
+    from experiments.pamf_lora_main import channel_blind_source, dura_w24_model, dura_w24_train
+
+    rt = read(config)
+    if set(rt) != {'source_root', 'run_root'}:
+        raise ValueError('Fit may receive only source IQ and its own output root')
+
+    def prepare(roles, device, *, smoke, fit_per_rx, bank_per_rx):
+        source = Path(roles['source_root'])
+        contract = dura_w24_train.source_contract(source)
+        iq, rx, _, _ = dura_w24_train.source_role(source, contract, 'U_s')
+        if smoke:
+            train, _, held = channel_blind_source.partition(rx, fit=5, cal=4, held=3)
+        else:
+            train, _, held = channel_blind_source.partition(rx, fit=fit_per_rx)
+        train, held = (tensor(iq[index].view('float32'), device).view(torch.complex64) for index in (train, held))
+        return (train, torch.empty(0, device=device), held), contract
+
+    numerical_policy()
+    channel_blind_source.fit(rt, smoke=smoke, recipe=source_recipe(dura_w24_train, arm),
+                             calculate=dura_w24_model.objective, receiver_batches=True, prepare=prepare,
+                             make_tracker=dura_w24_train.WideTracker)
+
+
+def load_candidate(root, contract, device, arm):
+    import torch
+    from experiments.cric_dura_comparison.io import read
+
+    training = importlib.import_module('lora_wide_dura_archive.dura_w24_train')
+    archived = importlib.import_module('lora_wide_dura_archive.channel_blind_source')
+    recipe = source_recipe(training, arm)
+    row = root / arm
+    summary = read(row / f'{recipe.name}-complete.json')
+    expected = archived.proof(contract, recipe)
+    if (any(summary.get(k) != value for k, value in expected.items() if k != 'contract')
+            or any(expected.get(key) != 0 for key in ISOLATION)
+            or summary.get('n_calibration') != 0 or summary.get('input_gate') is not False
+            or summary.get('threshold') is not None or summary.get('prior_count') != ARMS.index(arm)+2):
+        raise ValueError(f'Unverified source freeze for {arm}')
+    checkpoint = torch.load(row / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
+    if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
+        raise ValueError(f'Invalid {arm} checkpoint source binding')
+    model = recipe.model().to(device).eval().requires_grad_(False)
+    model.load_state_dict(checkpoint['weights'], strict=True)
+    return model, summary
+
+
+def dispatch(runtime):
+    from experiments.cric_dura_comparison.io import read, write
+    from experiments.pamf_lora_main.packet_runner import schedule
+    from experiments.pamf_lora_main.runner import available
+    from experiments.pamf_lora_main.w24_native_full import W24_COMMIT
+    from experiments.pamf_lora_main.w24_wide_transfer import training_runtime
+
+    rt = read(runtime)
+    archive, _ = training_runtime(rt)
+    reference = Path(rt['w24_release_root'])
+    root = Path(rt['run_root'])
+    root.mkdir()
+    state = root / 'state.json'
+    own = Path(__file__).resolve()
+    evaluator = own.with_name('w24_native_residual_source.py')
+
+    def status(**fields):
+        write(state, fields, exclusive=False)
+
+    def start(action, label, gpu, cwd, entry, config, *extra):
+        env = dict(os.environ, CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
+                   PYTHONPATH=str(cwd), OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+        with (root / f'{label}.log').open('x', encoding='utf-8') as log:
+            job = subprocess.Popen([rt['python'], '-u', str(entry), action, str(config), *extra],
+                                   cwd=cwd, env=env, stdout=log, stderr=subprocess.STDOUT)
+        print('W24_PRIOR_STARTED', label, job.pid, gpu, flush=True)
+        return job
+
+    def training_job(_plan, _phase, arm, gpu):
+        return start('fit-arm', f'{arm}-fit', gpu, archive, own, root / arm / 'fit-inputs.json', arm)
+
+    try:
+        if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
+            raise ValueError('Expected the registered W24 evaluator archive')
+        for arm in ARMS:
+            (root / arm).mkdir()
+            write(root / arm / 'fit-inputs.json', fit_inputs(rt, arm))
+        cards = available(rt['allowed_gpus'], rt['max_compute_processes'])
+        if len(cards) < len(ARMS):
+            raise RuntimeError('The matched pair requires two GPUs with sufficient free memory')
+        status(status='SOURCE_TRAINING', arms=list(ARMS), steps=STEPS, available_gpus=cards)
+        schedule(rt, [('fit', arm) for arm in ARMS], training_job)
+        status(status='SOURCE_FROZEN', arms=list(ARMS), steps=STEPS)
+        deadline = monotonic() + 600
+        while not (cards := available(rt['allowed_gpus'], rt['max_compute_processes'])):
+            if monotonic() >= deadline:
+                raise RuntimeError('No GPU available for frozen source evaluation')
+            sleep(15)
+        for phase, gpu in (('predict-source', cards[0]), ('score-source', None)):
+            proc = start(phase, phase, gpu, reference, evaluator, runtime)
+            status(status='RUNNING', phase=phase, pid=proc.pid, gpu=gpu)
+            if proc.wait():
+                raise RuntimeError(f'{phase} failed')
+        results = [read(root / route / 'source-scores.json')['scores']
+                   for route in ROUTES]
+        promote = promotion(results)
+        status(status='SOURCE_SCORED', promote=promote, arms=list(ARMS), steps=STEPS)
+        if promote:
+            qualified_source(root)
+            config = root / 'formal-runtime.json'
+            write(config, dict(rt, candidate_root=str(root), run_root=str(root/'formal'), ungated=True))
+            job = start('dispatch', 'formal-dispatch', None, reference, own.with_name('w24_formal.py'), config)
+            status(status='FORMAL_PREDICTING', pid=job.pid)
+            if job.wait() or read(root/'formal'/'state.json')['status'] != 'PREDICTIONS_FROZEN':
+                raise RuntimeError('Qualified candidate formal predictions did not freeze')
+            status(status='PREDICTIONS_FROZEN', target_truth_read=False)
+    except Exception as error:
+        status(status='FAILED', error=str(error))
+        raise
+
+
+def publish(args):
+    from experiments.cric_dura_comparison.io import read
+    from experiments.pamf_lora_main.publish import release, release_commit
+    from experiments.pamf_lora_main.w24_factor_audit import AUG_RUN
+    from experiments.pamf_lora_main.w24_formal import RUN_UNGATED
+    from experiments.pamf_lora_main.w24_native_full import DATA_RUN, W24_RUN
+    from experiments.pamf_lora_main.w24_native_residual_source import SWEEP_RUN
+    from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN
+
+    ctx = read(args.context)
+    rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
+    project = PurePosixPath(rt['project'])
+    releases, runs = project / 'releases', project / 'runs'
+    rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
+              release_root=str(releases / f'{RUN}-release'), run_root=str(runs / RUN),
+              source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
+              native_target_root=str(releases / f'{DATA_RUN}-release' / 'data/target'),
+              classifier_root=str(runs / AUG_RUN), w24_release_root=str(releases / f'{W24_RUN}-release'),
+              training_release_root=str(releases / f'{TRAIN_RUN}-release'), third_prior=True,
+              cpu_workers=8, allowed_gpus=[5, 6, 1, 0], max_workers=2, max_compute_processes=8)
+    rt['external_releases'] = [rt[k] for k in ('source_root', 'classifier_root', 'w24_release_root',
+                                               'training_release_root', 'native_target_root')] + [str(runs / name) for name in (SWEEP_RUN, RUN_UNGATED)]
+    release(args.repo, args.output, rt, args.ssh_config)
+
+
+def collect_score(args):
+    from experiments.cric_dura_comparison.io import read
+    from experiments.pamf_lora_main.w24_formal_score import score
+    import json
+
+    root = PurePosixPath(read(args.submit)['run_root'])
+    if not re.fullmatch(r'/[A-Za-z0-9_./-]+', str(root)) or root.name != RUN:
+        raise ValueError('Unexpected immutable N607 run root')
+    connection = ['-F', str(args.ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
+    deadline = monotonic() + 12*60*60
+    last = None
+    while True:
+        state = None
+        try:
+            remote = subprocess.run(['ssh', *connection, '-T', 'N607', 'cat ' + str(root/'state.json')],
+                                    timeout=25, capture_output=True)
+            if remote.returncode == 0:
+                state = json.loads(remote.stdout)
+        except (subprocess.TimeoutExpired, json.JSONDecodeError):
+            # A short SSH failure or concurrent state write can interrupt a read.
+            # Reobserve the same run without resubmitting it.
+            pass
+        if state is not None:
+            if last != state['status']:
+                print(state, flush=True)
+                last = state['status']
+            if state['status'] == 'FAILED':
+                raise RuntimeError(state['error'])
+            if state['status'] == 'SOURCE_SCORED' and not state['promote']:
+                return
+            if state['status'] == 'PREDICTIONS_FROZEN':
+                break
+        if monotonic() >= deadline:
+            raise TimeoutError('No terminal N607 state in scoring window')
+        sleep(40)
+    args.output.mkdir(parents=True)
+    subprocess.run(['scp', *connection, '-r', 'N607:' + str(root/'formal'/'predictions'), str(args.output)],
+                   check=True, timeout=180)
+    score(args.output/'predictions', args.dataset, args.output/'scores', third_prior=True)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    actions = parser.add_subparsers(dest='action', required=True)
+    actions.add_parser('dispatch').add_argument('runtime', type=Path)
+    for phase in ('fit-smoke', 'fit', 'fit-arm'):
+        cmd = actions.add_parser(phase)
+        cmd.add_argument('runtime', type=Path)
+        cmd.add_argument('arm', choices=ARMS)
+    pub = actions.add_parser('publish')
+    for key in ('repo', 'output', 'context', 'ssh-config'):
+        pub.add_argument('--' + key, type=Path, required=True)
+    collector = actions.add_parser('collect-score')
+    for key in ('submit', 'dataset', 'output', 'ssh-config'):
+        collector.add_argument('--' + key, type=Path, required=True)
+    args = parser.parse_args()
+    if args.action == 'publish':
+        publish(args)
+    elif args.action == 'dispatch':
+        dispatch(args.runtime)
+    elif args.action == 'collect-score':
+        collect_score(args)
+    elif args.action == 'fit-arm':
+        import sys
+
+        # Run the startup check in an independent process with a fresh optimizer.
+        for action in ('fit-smoke', 'fit'):
+            subprocess.run([sys.executable, '-u', __file__, action, str(args.runtime), args.arm], check=True)
+    else:
+        fit(args.runtime, args.arm, smoke=args.action == 'fit-smoke')

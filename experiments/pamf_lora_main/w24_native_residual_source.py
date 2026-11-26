@@ -105,6 +105,10 @@ def chirp_labels(f, g, tracker, packets, device, *, verify=False):
 
 
 def mode_list(rt):
+    if rt.get('third_prior'):
+        from experiments.pamf_lora_main.w24_third_prior import MODES as PRIOR_MODES
+
+        return PRIOR_MODES
     if rt.get('joint_edges'):
         from experiments.pamf_lora_main.w24_outer_objective_source import EDGE_MODES
 
@@ -130,12 +134,25 @@ def predict_source(runtime):
     # reference stack caches a namesake package with different submodules.
     archive, parent = training_runtime(rt)
     g, track, threshold, frozen = load_restorer(archive, parent, contract, device)
+    third_prior = rt.get('third_prior', False)
     learning_outer = rt.get('outer_objective', False)
     joint_edges = rt.get('joint_edges', False)
     allocating = rt.get('chirp_allocation', False)
     sweeping = rt.get('readout_sweep', False)
     modes = mode_list(rt)
-    if learning_outer:
+    if third_prior:
+        from experiments.pamf_lora_main.w24_third_prior import ARMS, load_candidate, restore_center
+
+        arms = [load_candidate(root, contract, device, arm) for arm in ARMS]
+
+        def evaluate(packets):
+            original = received_aperture(packets, device)
+            edits = [wide_delta(model, track, original) for model, _ in arms]
+            old = restore_center(original, wide_delta(g, track, original), .5)
+            outputs = [restore_center(original, delta, alpha) for alpha in (.5, 1.) for delta in edits]
+            rows = (original, old, *outputs)
+            return np.stack([classify_aperture(f, x) for x in rows]), [len(packets)] * (len(modes)-1)
+    elif learning_outer:
         from experiments.pamf_lora_main.w24_outer_objective_source import load_candidate
 
         candidate, new_frozen = load_candidate(root, contract, device, joint_edges=joint_edges)
@@ -177,7 +194,13 @@ def predict_source(runtime):
                 raise ValueError('Actual source-only front-end smoke failed')
     smoke = dict(status='PASS', source_packets=len(u), target_reads=0, source_truth_reads=0,
                  parent_steps=frozen['steps'], parameters=frozen['parameters'])
-    if learning_outer:
+    if third_prior:
+        observed = received_aperture(packets[:1], device)
+        smoke.update(ungated=True, candidate_steps=arms[0][1]['steps'],
+                     candidate_parameters=dict(zip(ARMS, (info['parameters'] for _, info in arms), strict=True)),
+                     b1_ungated_g_only={arm: ungated_latency(model, track, observed)
+                                        for arm, (model, _) in zip(ARMS, arms, strict=True)})
+    elif learning_outer:
         observed = received_aperture(packets[:1], device)
         b1 = {modes[1]: ungated_latency(g, track, observed),
               modes[-1]: ungated_latency(candidate, track, observed, render=restore_joint if joint_edges else wide_delta)}
@@ -215,12 +238,12 @@ def predict_source(runtime):
                 raise ValueError('Same clean packets must produce identical decisions on both routes')
             print('W24_NATIVE_RESIDUAL_PREDICTED', scene, len(rows), flush=True)
     for route in ROUTES:
-        if learning_outer or allocating or sweeping:
-            previous = root.parent / (SWEEP_RUN if allocating or learning_outer else RUN) / route
+        if third_prior or learning_outer or allocating or sweeping:
+            previous = root.parent / (SWEEP_RUN if third_prior or allocating or learning_outer else RUN) / route
             mark = read(previous/'source-predictions.json')
             if (mark['status'], mark['physical_ids'], mark['target_reads']) != ('PREDICTIONS_FROZEN', ids, 0):
                 raise ValueError('Expected the prior frozen two-route source panel')
-            names = ('direct', 'wide_ungated_050') if allocating or learning_outer else ('direct',)
+            names = ('direct', 'wide_ungated_050') if third_prior or allocating or learning_outer else ('direct',)
             indices = [mark['modes'].index(name) for name in names]
             with np.load(previous/'predictions.npz', allow_pickle=False) as archive:
                 if any(not np.array_equal(archive[v][indices], output[route][v][:len(indices)]) for v in VIEWS):
@@ -228,7 +251,10 @@ def predict_source(runtime):
         out = root / route
         out.mkdir()
         np.savez(out / 'predictions.npz', **output[route])
-        if learning_outer:
+        if third_prior:
+            policy = dict(ungated=True, amplitudes=[.5, 1.], candidate_run=rt['run_id'],
+                          candidate_steps=arms[0][1]['steps'])
+        elif learning_outer:
             policy = dict(ungated=True, amplitude=.5, candidate_run=rt['run_id'], candidate_steps=new_frozen['steps'])
             if joint_edges:
                 policy['native_edge_half']=True
@@ -280,7 +306,11 @@ def compare_source(runtime):
     rt = read(runtime)
     root = Path(rt['run_root'])
     modes = mode_list(rt)
-    if rt.get('joint_edges'):
+    if rt.get('third_prior'):
+        from experiments.pamf_lora_main.w24_third_prior import CONTRASTS
+
+        contrasts = CONTRASTS
+    elif rt.get('joint_edges'):
         from experiments.pamf_lora_main.w24_outer_objective_source import EDGE_CONTRASTS
 
         contrasts = EDGE_CONTRASTS

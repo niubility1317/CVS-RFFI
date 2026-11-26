@@ -44,6 +44,7 @@ ROUTES = (FULL, ROUTE)
 WIDE = 'wide_dura_half'
 WIDE_UNGATED = 'wide_dura_ungated_half'
 OUTER_HALF = 'outer_objective_half'
+PRIOR_HALVES = ('two_half', 'three_half')
 MODES = {
     FULL: ('direct', 'dura_half', 'complex_response_half', WIDE),
     ROUTE: ('direct', 'r69_gated_half', WIDE),
@@ -63,8 +64,10 @@ def evaluation_seeds(ungated):
     return (SEED,) if ungated else SEEDS
 
 
-def evaluation_modes(route, ungated, outer_objective=False):
+def evaluation_modes(route, ungated, outer_objective=False, third_prior=False):
     names = MODES[route]
+    if third_prior:
+        return (*names[:-1], WIDE_UNGATED, *PRIOR_HALVES)
     if outer_objective:
         if not ungated:
             raise ValueError('The outer-objective model requires all-packet restoration')
@@ -72,16 +75,16 @@ def evaluation_modes(route, ungated, outer_objective=False):
     return (*names[:-1], WIDE_UNGATED) if ungated else names
 
 
-def receipt(case, ungated=False, outer_objective=False):
+def receipt(case, ungated=False, outer_objective=False, third_prior=False):
     route = cases()[case]
     i = int(case.rsplit('-', 1)[1])
     proof = dict(status='PREDICTIONS_FROZEN', processing_route=route,
                  seeds=list(evaluation_seeds(ungated)), views=list(VIEWS),
-                 modes=list(evaluation_modes(route, ungated, outer_objective)), per_receiver=LIMIT,
+                 modes=list(evaluation_modes(route, ungated, outer_objective, third_prior)), per_receiver=LIMIT,
                  receivers=list(TARGET[i*RX_PER_JOB:(i+1)*RX_PER_JOB]), target_truth_read=False)
     if ungated:
         proof['restoration_input_policy'] = 'all_packets'
-    if outer_objective:
+    if outer_objective or third_prior:
         proof['reference_run'] = RUN_UNGATED
     return proof
 
@@ -173,6 +176,14 @@ def bindings(rt, routes, device):
     heads, epochs = load_heads(rt, contract, device)
     archive, parent = training_runtime(rt)
     wide, tracker, threshold, frozen = load_restorer(archive, parent, contract, device)
+    if rt.get('third_prior'):
+        from experiments.pamf_lora_main.w24_third_prior import ARMS, load_candidate
+
+        source = Path(rt['candidate_root'])
+        arms = [load_candidate(source, contract, device, arm) for arm in ARMS]
+        info = dict(epochs=epochs, source_frozen_G=source.name, steps=arms[0][1]['steps'],
+                    parameters={arm: summary['parameters'] for arm, (_, summary) in zip(ARMS, arms, strict=True)})
+        return heads, [model for model, _ in arms], tracker, None, {}, info
     if rt.get('outer_objective'):
         from experiments.pamf_lora_main.w24_outer_objective_source import RUN as SOURCE_RUN, load_candidate
 
@@ -211,16 +222,27 @@ def candidate_labels(heads, g, tracker, packets, device):
     return np.stack((direct, ungated_decisions(heads, g, tracker, original)), axis=1), len(original)
 
 
+@torch.no_grad()
+def prior_labels(heads, arms, tracker, packets, device):
+    original = received_aperture(packets, device)
+    direct = np.stack([classify_aperture(f, original) for f in heads])
+    return np.stack((direct, *(ungated_decisions(heads, arm, tracker, original) for arm in arms)),
+                    axis=1), len(original)
+
+
 def append_blind_prediction(reference, predicted, old_activity, count):
     if (reference.ndim != 3 or reference.shape[0] != 1 or reference.shape[1] < 2 or reference.shape[-1] != LIMIT
-            or predicted.shape != (1, 2, LIMIT) or reference.dtype != np.int16 or predicted.dtype != np.int16
+            or predicted.ndim != 3 or predicted.shape[0] != 1 or predicted.shape[1] < 2
+            or predicted.shape[-1] != LIMIT or reference.dtype != np.int16 or predicted.dtype != np.int16
             or not np.array_equal(reference[:, 0], predicted[:, 0])):
         raise ValueError('Direct decisions must match the same-packet blind reference exactly')
-    activity = np.asarray(old_activity)
-    if (activity.shape != (reference.shape[1] - 1,) or activity.dtype.kind not in 'iu'
-            or not ((activity >= 0) & (activity <= LIMIT)).all() or activity[-1] != LIMIT or count != LIMIT):
-        raise ValueError('Incomplete matched restoration activity')
-    return np.concatenate((reference, predicted[:, 1:]), axis=1), [*old_activity, count]
+    old_count = np.asarray(old_activity)
+    if (count != LIMIT or old_count.shape != (reference.shape[1]-1,)
+            or old_count.dtype.kind not in 'iu' or not ((0 <= old_count) & (old_count <= LIMIT)).all()
+            or old_count[-1] != LIMIT
+            or ((reference[:, 1:] != reference[:, :1]).sum(-1) > old_count).any()):
+        raise ValueError('Invalid archived or candidate restoration activity')
+    return np.concatenate((reference, predicted[:, 1:]), axis=1), [*old_activity, *([count]*(predicted.shape[1]-1))]
 
 
 @torch.no_grad()
@@ -254,29 +276,31 @@ def smoke(rt):
     device = 'cuda:0'
     ungated = rt.get('ungated', False)
     outer = rt.get('outer_objective', False)
+    third = rt.get('third_prior', False)
+    append = outer or third
     seeds = evaluation_seeds(ungated)
     heads, g, track, gate, baseline, proof = bindings(rt, ROUTES, device)
     source = Path(rt['source_root'])
     u = native(source, 'U_s', source_contract(source)['counts']['U_s'])[:4]
     clean = []
     for route, receiver in ((FULL, channel_job), (ROUTE, receive)):
-        if outer:
-            batch = partial(candidate_labels, heads, g, track, device=device)
+        if append:
+            batch = partial(prior_labels if third else candidate_labels, heads, g, track, device=device)
         else:
             batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device, ungated=ungated)
         c, clean_activity = batch(u)
         y = np.stack([receiver(VIEWS[-1], SOURCE[0], pair) for pair in enumerate(u)])
         disturbed, active = batch(y)
-        if outer:
+        if append:
             coverage = clean_activity == active == len(u)
-            modes = 2
+            modes = 3 if third else 2
         else:
             coverage = (clean_activity[-1] == active[-1] == len(u) if ungated
                         else clean_activity[-1] < len(u) and active[-1] > 0)
             modes = len(evaluation_modes(route, ungated))
         if disturbed.shape != (len(seeds), modes, len(u)) or not coverage:
             raise ValueError(f'Real frozen checkpoint source smoke failed for {route}')
-        clean.append(c if outer else c[:, 0])
+        clean.append(c if append else c[:, 0])
     if not np.array_equal(*clean):
         raise ValueError('Shared clean received IQ must give identical direct outputs')
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', target_reads=0,
@@ -288,14 +312,16 @@ def predict(rt, case):
     device = 'cuda:0'
     ungated = rt.get('ungated', False)
     outer = rt.get('outer_objective', False)
+    third = rt.get('third_prior', False)
+    append = outer or third
     root = Path(rt['run_root'])
     if read(root / 'smoke.json')['status'] != 'PASS':
         raise ValueError('Source-only W24 smoke required before target')
-    expected = receipt(case, ungated, outer)
+    expected = receipt(case, ungated, outer, third)
     route = expected['processing_route']
     heads, g, track, gate, baseline, _ = bindings(rt, (route,), device)
-    if outer:
-        batch = partial(candidate_labels, heads, g, track, device=device)
+    if append:
+        batch = partial(prior_labels if third else candidate_labels, heads, g, track, device=device)
         prior = blind_reference(rt) / case
         prior_receipt = receipt(case, True)
         if read(prior / 'complete.json') != prior_receipt:
@@ -313,7 +339,7 @@ def predict(rt, case):
         for rx in expected['receivers']:
             raw = native(data, rx, LIMIT)
             predictions = {}
-            if outer:
+            if append:
                 with np.load(prior / f'{rx}.npz', allow_pickle=False) as archive:
                     if set(archive.files) != set(VIEWS):
                         raise ValueError(f'Incomplete archived blind predictions for {rx}')
@@ -325,14 +351,14 @@ def predict(rt, case):
                     received = pool.map(partial(receiver, scene, rx), enumerate(raw), chunksize=16)
                     frames = np.stack(list(received))
                 labels = []
-                active = 0 if outer else np.zeros(len(expected['modes']) - 1, dtype=int)
+                active = 0 if append else np.zeros(len(expected['modes']) - 1, dtype=int)
                 for i in range(0, LIMIT, BATCH):
                     prediction, changed = batch(frames[i:i+BATCH])
                     labels.append(prediction)
                     active += changed
                 predicted = np.concatenate(labels, axis=2)
                 key = f'{rx}/{scene}'
-                if outer:
+                if append:
                     reference = earlier[scene]
                     if reference.shape != (1, len(prior_receipt['modes']), LIMIT):
                         raise ValueError(f'Invalid archived readout dimensions for {key}')
@@ -361,6 +387,14 @@ def dispatch(runtime):
             raise ValueError('Original frozen W24 model implementation required')
         outer = rt.get('outer_objective', False)
         ungated = rt.get('ungated', False)
+        third = rt.get('third_prior', False)
+        if third:
+            from experiments.pamf_lora_main.w24_third_prior import qualified_source
+
+            if not ungated or outer:
+                raise ValueError('Third-prior formal prediction requires its own ungated matrix')
+            qualified_source(Path(rt['candidate_root']))
+            blind_reference(rt)
         if outer:
             if not ungated:
                 raise ValueError('The outer-objective model requires all-packet restoration')
@@ -403,7 +437,7 @@ def dispatch(runtime):
         status(status='TARGET_PREDICTING')
         schedule(rt, [('predict', case) for case in cases()], start)
         for case in cases():
-            if read(root / 'predictions' / case / 'complete.json') != receipt(case, ungated, outer):
+            if read(root / 'predictions' / case / 'complete.json') != receipt(case, ungated, outer, third):
                 raise ValueError(f'Incomplete frozen prediction shard {case}')
         status(status='PREDICTIONS_FROZEN', cases=list(cases()), target_truth_read=False)
     except Exception as exc:
