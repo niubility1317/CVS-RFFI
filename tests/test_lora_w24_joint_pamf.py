@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import pytest
+from types import SimpleNamespace
 
 from experiments.pamf_lora_main import w24_joint_pamf as experiment
 
@@ -61,3 +62,39 @@ def test_only_the_frozen_pamf_candidate_can_open_the_formal_gate():
         proof = experiment.formal_receipt(case)
         assert proof['modes'][-1] == experiment.CANDIDATE and 'joint' not in proof['modes']
         assert proof['processing_route'] == 'full_native' and not proof['target_truth_read']
+
+
+def test_clean_pl_rejects_uncertain_teacher_and_trains_only_accepted_restored_iq():
+    class Teacher(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.weight = nn.Parameter(torch.tensor(1.))
+
+        def forward(self, clean):
+            return clean * self.weight,
+
+    teacher = Teacher()
+    reader = nn.Linear(3, 3)
+    student_input = torch.randn(3,3,requires_grad=True)
+    clean = torch.tensor([[10.,0.,0.],[0.,0.,0.],[0.,0.,10.]])
+    loss, accepted = experiment.clean_pseudo_loss(lambda x:(reader(x),),teacher,clean,student_input)
+    assert accepted.item()==2
+    wanted = torch.nn.functional.cross_entropy(reader(student_input)[[0,2]],torch.tensor([0,2]),reduction='sum')/3.
+    torch.testing.assert_close(loss,wanted)
+    loss.backward()
+    assert teacher.weight.grad is None
+    assert student_input.grad[[0,2]].abs().sum()>0
+    assert not student_input.grad[1].any()
+
+    loss, accepted = experiment.clean_pseudo_loss(
+        lambda _x: pytest.fail('No student U forward for an all-rejected batch'),
+        teacher,torch.zeros_like(clean),student_input)
+    assert loss.item()==accepted.item()==0
+
+
+def test_collector_returns_when_source_does_not_qualify(monkeypatch):
+    args=SimpleNamespace(submit='submit.json',ssh_config='ssh')
+    monkeypatch.setattr(experiment,'read',lambda _path:{'run_root':f'/runs/{experiment.RUN}'})
+    monkeypatch.setattr(experiment.subprocess,'run',lambda *a,**kw:SimpleNamespace(
+        returncode=0,stdout=b'{"status":"SOURCE_SCORED","promote":false}'))
+    experiment.collect(args)

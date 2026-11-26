@@ -4,6 +4,7 @@ from concurrent.futures import ProcessPoolExecutor
 from copy import deepcopy
 from functools import partial
 import importlib
+import json
 import multiprocessing
 import os
 from pathlib import Path, PurePosixPath
@@ -43,10 +44,14 @@ from experiments.pamf_lora_main.w24_outer_objective_source import RUN as DURA_RU
 
 
 RUN = '20261126-phase1-lora-w24-joint-pamf-s2026112991-r01'
+RUN_PL = '20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01'
 ARMS = ('pamf_only', 'frozen_pamf_ce', 'joint')
+PL = 'joint_clean_pl'
+PL_THRESHOLD = .95
 SEED, STEPS, BATCH, PRED_BATCH = 2026112991, 6000, 16, 32
 CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
 MODES = ('direct', 'outer_half', 'unet_parent', *ARMS, 'joint_g_fixed_e104', 'joint_f_parent_g')
+PL_MODES = (*MODES, PL)
 CONTRASTS = (('joint','pamf_only'), ('joint','frozen_pamf_ce'), ('joint','unet_parent'),
              ('joint','joint_g_fixed_e104'), ('joint','joint_f_parent_g'),
              ('frozen_pamf_ce','unet_parent'), ('frozen_pamf_ce','outer_half'))
@@ -91,7 +96,18 @@ def boot(rt, device):
     return contract, classifier, g, tracker
 
 
-def loss_parts(g, f, anchor, tracker, generic, raw, label, rng):
+def clean_pseudo_loss(f, anchor, clean_u, restored_u):
+    with torch.no_grad():
+        confidence, pseudo = anchor(clean_u)[0].softmax(-1).max(-1)
+        active = confidence >= PL_THRESHOLD
+    accepted = active.sum()
+    if not active.any():
+        return confidence.new_zeros(()), accepted
+    loss = F.cross_entropy(f(restored_u[active])[0],pseudo[active],reduction='sum') / len(clean_u)
+    return loss, accepted
+
+
+def loss_parts(g, f, anchor, tracker, generic, raw, label, rng, *, pseudo=False):
     labeled = len(label)
     if labeled == 0 or len(raw) != 2 * labeled:
         raise ValueError('Expected equal labeled and unlabeled IQ groups, with labels only for the first group')
@@ -117,7 +133,11 @@ def loss_parts(g, f, anchor, tracker, generic, raw, label, rng):
     spectral = (error/(.001+power+.03*power.mean(-1,keepdim=True))).log1p().mean()
     amplitude = change.square().mean()
     identity = (clean_out-clean_input).square().mean()
-    return torch.stack((restore_ce,clean_ce,anchor_kl,spectral,amplitude,identity))
+    parts = (restore_ce,clean_ce,anchor_kl,spectral,amplitude,identity)
+    if pseudo:
+        clean_u, _ = normalize_aperture(clean[labeled:])
+        parts += clean_pseudo_loss(f,anchor,clean_u,restore[labeled:])
+    return torch.stack(parts)
 
 
 def norm_gradient(values):
@@ -150,9 +170,11 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,steps,eta_min=2e-6)
     order = np.random.default_rng(SEED)
     rng = torch.Generator(device=device).manual_seed(SEED)
-    weights = torch.tensor((1.,.65,.3,.30,.25,1.5),device=device)
+    pseudo = arm == PL
+    weights = torch.tensor((1.,.65,.3,.30,.25,1.5) + ((1.,0.) if pseudo else ()),device=device)
     start = monotonic()
     ce_norm = None
+    accepted = torch.zeros((),device=device)
     for step in range(1,steps+1):
         l = order.choice(len(labeled), BATCH if not smoke else 2, replace=False)
         u = order.choice(len(unlabeled),len(l),replace=False)
@@ -160,7 +182,9 @@ def fit(config, arm, *, smoke, device='cuda:0'):
         raw = tensor(raw.view('float32'),device).view(torch.complex64)
         target = tensor(labels[l],device).long()
         optimizer.zero_grad(set_to_none=True)
-        parts = loss_parts(g,f,anchor,tracker,generic,raw,target,rng)
+        parts = loss_parts(g,f,anchor,tracker,generic,raw,target,rng,pseudo=pseudo)
+        if pseudo:
+            accepted += parts[-1].detach()
         if not torch.isfinite(parts).all():
             raise FloatingPointError('Nonfinite source objective')
         if step == 1 and learn_g:
@@ -185,6 +209,8 @@ def fit(config, arm, *, smoke, device='cuda:0'):
                  L_s=len(labeled), U_s=len(unlabeled), labeled_exposures=steps*(2 if smoke else BATCH),
                  unlabeled_exposures=steps*(2 if smoke else BATCH), U_TX_reads=0, V_reads=0, target_reads=0,
                  practical_reads=0, trace_reads=0, G_trainable=learn_g, F_trainable=learn_f)
+    if pseudo:
+        proof.update(U_PL_teacher=AUG_RUN,U_PL_threshold=PL_THRESHOLD,U_PL_accepted=int(accepted))
     summary = dict(**proof, status='PASS' if smoke else 'SOURCE_FROZEN', CE_to_G_norm=ce_norm,
                    gradients=gradients, worker_seconds=monotonic()-start,
                    peak_cuda_bytes=torch.cuda.max_memory_allocated() if device.startswith('cuda') else 0,
@@ -207,6 +233,9 @@ def load_row(root, arm, contract, f0, g0, device):
             or (proof['G_trainable'],proof['F_trainable']) != (arm!='pamf_only',arm!='frozen_pamf_ce')
             or any(summary[k] != v for k,v in proof.items()) or read(folder/'smoke.json')['status'] != 'PASS'):
         raise ValueError(f'Invalid source freeze for {arm}')
+    if arm == PL and (proof.get('U_PL_teacher') != AUG_RUN or proof.get('U_PL_threshold') != PL_THRESHOLD
+                      or not 0 <= proof['U_PL_accepted'] <= proof['unlabeled_exposures']):
+        raise ValueError('Unexpected clean U_s pseudo-label policy')
     g, f = deepcopy(g0), deepcopy(f0)
     for model, key in ((g,'G'),(f,'F')):
         model.load_state_dict(state[key],strict=True)
@@ -215,6 +244,32 @@ def load_row(root, arm, contract, f0, g0, device):
         if changed != proof[f'{key}_trainable']:
             raise ValueError(f'Unexpected checkpoint update of {key} in {arm}')
     return g.eval().requires_grad_(False), f.eval().requires_grad_(False)
+
+
+def source_predictions(rt, source, contract, render):
+    indices, rx, ids = panel(source,contract)
+    raw = native(source,'V',contract['counts']['V'])[indices]
+    jobs = [(int(i),SOURCE[int(r)],x) for i,r,x in zip(indices,rx,raw,strict=True)]
+    matrix = {}
+    with ProcessPoolExecutor(max_workers=rt['cpu_workers'],mp_context=multiprocessing.get_context('spawn')) as pool:
+        for view in VIEWS:
+            stream = pool.map(partial(source_receive,view),jobs,chunksize=8)
+            groups = []
+            for offset in range(0,len(jobs),PRED_BATCH):
+                raw = np.stack([next(stream) for _ in range(min(PRED_BATCH,len(jobs)-offset))])
+                groups.append(render(raw))
+            matrix[view] = np.concatenate(groups,axis=1)
+            print('W24_JOINT_SOURCE',view,len(jobs),flush=True)
+    return ids, matrix
+
+
+def write_source_predictions(root, ids, matrix, modes, **waveform):
+    out = root/FULL
+    out.mkdir()
+    np.savez(out/'predictions.npz',**matrix)
+    write(out/'source-predictions.json',dict(status='PREDICTIONS_FROZEN',modes=list(modes),views=list(VIEWS),
+          physical_ids=ids,target_reads=0,source_truth_reads=0,waveform=dict(route=FULL,warm_steps=STEPS,**waveform)))
+
 
 @torch.no_grad()
 def predict_source(rt):
@@ -240,17 +295,7 @@ def predict_source(rt):
     if render(sample).shape != (len(MODES)-1,2):
         raise ValueError('Expected a complete real-checkpoint source smoke')
 
-    indices, rx, ids = panel(source,contract)
-    raw = native(source,'V',contract['counts']['V'])[indices]
-    jobs = [(int(i),SOURCE[int(r)],x) for i,r,x in zip(indices,rx,raw,strict=True)]
-    matrix = {}
-    with ProcessPoolExecutor(max_workers=rt['cpu_workers'],mp_context=multiprocessing.get_context('spawn')) as pool:
-        for view in VIEWS:
-            stream = pool.map(partial(source_receive,view),jobs,chunksize=8)
-            matrix[view] = np.concatenate([render(np.stack([next(stream)
-                 for _ in range(min(PRED_BATCH,len(jobs)-offset))]))
-                 for offset in range(0,len(jobs),PRED_BATCH)],axis=1)
-            print('W24_JOINT_SOURCE',view,len(jobs),flush=True)
+    ids, matrix = source_predictions(rt,source,contract,render)
     check_controls(Path(rt['unet_parent'])/FULL,('direct','unet_standard_long_half'),[0,1],ids,matrix)
     outer = Path(rt['project'])/'runs'/DURA_RUN/FULL
     mark = read(outer/'source-predictions.json')
@@ -260,12 +305,33 @@ def predict_source(rt):
     col = mark['modes'].index('outer_objective_half')
     with np.load(outer/'predictions.npz',allow_pickle=False) as old:
         matrix = {v: np.concatenate((data[:1],old[v][[col]],data[1:])) for v,data in matrix.items()}
-    out = root/FULL
-    out.mkdir()
-    np.savez(out/'predictions.npz',**matrix)
-    write(out/'source-predictions.json',dict(status='PREDICTIONS_FROZEN',modes=list(MODES),views=list(VIEWS),
-          physical_ids=ids,target_reads=0,source_truth_reads=0,waveform=dict(route=FULL,warm_steps=STEPS,
-          frozen_E104_formal_candidate=CANDIDATE,joint_source_only=True)))
+    write_source_predictions(root,ids,matrix,MODES,frozen_E104_formal_candidate=CANDIDATE,joint_source_only=True)
+
+
+@torch.no_grad()
+def predict_pseudo(rt):
+    root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
+    contract, f0, g0, tracker = boot(rt,device)
+    g, f = load_row(root,PL,contract,f0,g0,device)
+
+    def render(raw):
+        observed = received_aperture(raw,device)
+        return np.stack((classify_aperture(f0,observed),classify_aperture(f,recovered(g,tracker,observed))))
+
+    u = native(source,'U_s',contract['counts']['U_s'])[0]
+    smoke = np.stack([source_receive(v,(0,SOURCE[0],u)) for v in ('clean',VIEWS[-1])])
+    if render(smoke).shape != (2,2):
+        raise ValueError('Expected real frozen clean-PL predictions')
+    ids, matrix = source_predictions(rt,source,contract,render)
+    comparison = root.parent/RUN/FULL
+    reference = read(comparison/'source-predictions.json')
+    if reference['modes'] != list(MODES):
+        raise ValueError('Expected the preregistered true-label comparison')
+    check_controls(comparison,('direct',),[0],ids,matrix)
+    with np.load(comparison/'predictions.npz',allow_pickle=False) as archived:
+        predictions = {view: np.concatenate((archived[view],matrix[view][1:])) for view in VIEWS}
+    write_source_predictions(root,ids,predictions,PL_MODES,
+                             joint_source_only=True,matched_run=RUN,U_PL_teacher=AUG_RUN,U_PL_threshold=PL_THRESHOLD)
 
 
 def qualifies(scores):
@@ -326,6 +392,8 @@ def dispatch(runtime):
     root, reference = Path(rt['run_root']), Path(rt['w24_release_root'])
     root.mkdir()
     state = root/'state.json'
+    with_pl = rt['run_id'] == RUN_PL
+    arms = (PL,) if with_pl else ARMS
 
     def status(**values):
         write(state,values,exclusive=False)
@@ -342,16 +410,24 @@ def dispatch(runtime):
     try:
         if read(reference/'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Expected archived W24 implementation')
-        for arm in ARMS:
+        for arm in arms:
             out = root/arm
             out.mkdir()
             write(out/'fit-inputs.json',allowed_fit_runtime(rt,out))
         cards = available(rt['allowed_gpus'],rt['max_compute_processes'])
         if not cards:
             raise RuntimeError('No sufficient N607 training memory')
-        status(status='SOURCE_TRAINING',steps=STEPS,arms=list(ARMS))
-        schedule(rt,[('fit-row',arm) for arm in ARMS],lambda _,action,arm,gpu:
+        status(status='SOURCE_TRAINING',steps=STEPS,arms=list(arms))
+        schedule(rt,[('fit-row',arm) for arm in arms],lambda _,action,arm,gpu:
                  launch(action,f'{arm}-fit',gpu,root/arm/'fit-inputs.json',arm))
+        if with_pl:
+            comparison = root.parent/RUN
+            deadline = monotonic()+12*60*60
+            status(status='WAITING_FOR_MATCHED_SOURCE_PREDICTIONS',comparison=RUN)
+            while not (comparison/FULL/'source-predictions.json').is_file():
+                if read(comparison/'state.json')['status']=='FAILED' or monotonic()>=deadline:
+                    raise RuntimeError('Matched true-label source predictions are unavailable')
+                sleep(30)
         deadline=monotonic()+600
         while not (cards := available(rt['allowed_gpus'],rt['max_compute_processes'])):
             if monotonic()>=deadline:
@@ -362,7 +438,7 @@ def dispatch(runtime):
             status(status='RUNNING',phase=action,pid=job.pid,gpu=gpu)
             if job.wait():
                 raise RuntimeError(f'{action} failed')
-        promote = qualifies(read(root/FULL/'source-scores.json')['scores'])
+        promote = not with_pl and qualifies(read(root/FULL/'source-scores.json')['scores'])
         status(status='SOURCE_SCORED',promote=promote)
         if promote:
             status(status='FORMAL_PREDICTING',route=FULL)
@@ -423,10 +499,11 @@ def main():
         cmd=actions.add_parser(name)
         cmd.add_argument('runtime',type=Path)
         if name.startswith('fit'):
-            cmd.add_argument('arm',choices=ARMS)
+            cmd.add_argument('arm',choices=(*ARMS,PL))
         if name=='predict-formal':
             cmd.add_argument('case',choices=FULL_CASES)
     pub=actions.add_parser('publish')
+    pub.add_argument('--clean-pl',action='store_true')
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -442,9 +519,13 @@ def main():
     elif args.action in ('fit-smoke','fit'):
         fit(args.runtime,args.arm,smoke=args.action=='fit-smoke')
     elif args.action=='predict-source':
-        predict_source(read(args.runtime))
+        runtime=read(args.runtime)
+        (predict_pseudo if runtime['run_id']==RUN_PL else predict_source)(runtime)
     elif args.action=='score-source':
-        score_source(args.runtime,modes=MODES,output=Path(read(args.runtime)['run_root'])/FULL,contrasts=CONTRASTS)
+        runtime=read(args.runtime)
+        modes, contrasts = ((PL_MODES,((PL,'joint'),(PL,'outer_half'),(PL,'direct')))
+                            if runtime['run_id']==RUN_PL else (MODES,CONTRASTS))
+        score_source(args.runtime,modes=modes,output=Path(runtime['run_root'])/FULL,contrasts=contrasts)
     elif args.action=='predict-formal':
         predict_formal(read(args.runtime),args.case)
     elif args.action=='collect':
@@ -454,16 +535,22 @@ def main():
         rt={k:ctx[k] for k in ('project','python','frozen_sources')}
         project=PurePosixPath(rt['project'])
         releases,runs=project/'releases',project/'runs'
-        rt.update(run_id=RUN,runner=__spec__.name,code_commit=release_commit(args.repo),
-                  release_root=str(releases/f'{RUN}-release'),run_root=str(runs/RUN),
+        run = RUN_PL if args.clean_pl else RUN
+        rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
+                  release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
-                  native_target_root=str(releases/f'{DATA_RUN}-release'/'data/target'),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),training_release_root=str(releases/f'{TRAIN_RUN}-release'),
                   classifier_root=str(runs/AUG_RUN),unet_parent=str(runs/UNET_FIDELITY_RUN),
-                  allowed_gpus=[3,0,7,2,6,5],max_workers=3,max_compute_processes=8,cpu_workers=6)
-        rt['external_releases']=[rt[k] for k in ('source_root','native_target_root','w24_release_root',
+                  allowed_gpus=[2,6,5] if args.clean_pl else [3,0,7,2,6,5],
+                  max_workers=1 if args.clean_pl else 3,max_compute_processes=8,cpu_workers=6)
+        rt['external_releases']=[rt[k] for k in ('source_root','w24_release_root',
                                                 'training_release_root','classifier_root','unet_parent')]
-        rt['external_releases'] += [str(runs/r) for r in (DURA_RUN,TRAIN_RUN,RUN_OUTER)]
+        rt['external_releases'] += [str(runs/r) for r in (DURA_RUN,TRAIN_RUN)]
+        if args.clean_pl:
+            rt['external_releases'].append(str(runs/RUN))
+        else:
+            rt['native_target_root']=str(releases/f'{DATA_RUN}-release'/'data/target')
+            rt['external_releases'] += [rt['native_target_root'],str(runs/RUN_OUTER)]
         release(args.repo,args.output,rt,args.ssh_config)
 
 
