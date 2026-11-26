@@ -1,0 +1,270 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-second-stage-s2026112995-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 冻结 E104 的二级复数恢复（Full）",
+  "description": "Test whether an independent learned correction can use the first recovery state beyond the same correction from received IQ alone.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "full-only",
+    "truth-last",
+    "fixed-e104",
+    "clean-pl",
+    "two-stage"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "c95ed4856b0e6edbfeeb60febecc947e3db3cb04",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Original E104 and parent G1 remain frozen. L_s true CE and clean U_s high-confidence pseudo CE already authorized. G2 receives only current observable IQ and an optional deterministic G1 estimate. No U_s true labels, target data or source V in fit."
+  },
+  "checkpoint": {
+    "initialization": "Load the pre-target source-selected fixed-E104 clean-PL as frozen G1. Create an independent matched PacketUNet G2 with zero final projections and fixed random initialization. Initial output equals G1 exactly.",
+    "sources": [
+      {
+        "ref": "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+        "role": "Frozen first recovery and formal Full historical comparator."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Original E104 PAMF and fixed clean anchor; remains fixed in G-only CE row."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Fixed-step original loss U-Net common initialization."
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Matched archived source baseline only."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "G1 was selected before target access under the same LoRa source roles. New G2 seeded from scratch; original E104 fixed. Parent target results do not inform the result or freeze rule.",
+    "selection_rule": "Both arms freeze at 9000. Source V 300 same Full packets, seven views; only conditioned second stage may promote. Require six correct above all frozen baselines and G2 matched arm, low urban higher than matched G2 and at least frozen parent and other baselines, clean at least direct and G1."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 preferred 7,3,0,2,6,5 if >=12 GiB and fewer than eight existing contexts. Up to two separate GPU fit workers and three formal workers; at most one per physical GPU.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-phase1-lora-w24-second-stage-s2026112995-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --second-stage --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261126-phase1-lora-w24-second-stage-s2026112995-r01/release",
+    "stop_rule": "Stop dependent phases on failed exact G1 initialization smoke, inactive permitted CE gradient, any G1/F gradient or update, contract mismatch, nonfinite fit, or incomplete formal prediction. Preserve outputs and other processes. Stop at source when candidate misses preregistered promotion."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional predictions/{full-shard}/complete.json",
+    "conditional independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "G1 total parameters",
+      "new G2 trainable parameters",
+      "sampled waveform and clean training losses"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/full_native/predictions.npz; conditional runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/predictions",
+    "scorer_ref": "Independent source score then conditional local w24_joint_pamf collect after all Full shards are frozen."
+  },
+  "rows": [
+    {
+      "row_id": "raw_second_stage",
+      "method": "Two-stage W24 frozen G1 plus trainable G2 with input context raw provided again",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_second_stage.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/raw_second_stage/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 16,
+        "U_batch": 16,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "conditioned_on_first": false
+      },
+      "seeds": {
+        "model": 2026112995,
+        "split": 392005,
+        "data": 2026112995,
+        "augmentation": 2026112995,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026112995 shared new architecture initialization, sampler and legal generic augmentations. Source V panel 2026112559 remains after freeze.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight decay 1e-4, LR 8e-5 cosine to 2e-6, clip 1; G2 only.",
+      "lr": 8e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "9000 new G2 steps (144000 L and 144000 U exposures). Frozen G1 originated from earlier 24000+6000 source steps; do not misstate G2 as previously trained.",
+      "output_root": "runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/raw_second_stage",
+      "log_path": "runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/raw_second_stage-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/raw_second_stage/fit-inputs.json raw_second_stage",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "conditioned_second_stage",
+      "method": "Two-stage W24 frozen G1 plus trainable G2 with input context first G1 output",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_second_stage.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/conditioned_second_stage/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 16,
+        "U_batch": 16,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "conditioned_on_first": true
+      },
+      "seeds": {
+        "model": 2026112995,
+        "split": 392005,
+        "data": 2026112995,
+        "augmentation": 2026112995,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026112995 shared new architecture initialization, sampler and legal generic augmentations. Source V panel 2026112559 remains after freeze.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight decay 1e-4, LR 8e-5 cosine to 2e-6, clip 1; G2 only.",
+      "lr": 8e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "9000 new G2 steps (144000 L and 144000 U exposures). Frozen G1 originated from earlier 24000+6000 source steps; do not misstate G2 as previously trained.",
+      "output_root": "runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/conditioned_second_stage",
+      "log_path": "runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/conditioned_second_stage-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261126-phase1-lora-w24-second-stage-s2026112995-r01/conditioned_second_stage/fit-inputs.json conditioned_second_stage",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "The common raw-observation dechirp frame is used for both stages. Both produce one real deployment IQ: original plus the prior half correction plus .75 times a bounded new G2 correction. G2 outputs zero at initialization. Both use the same raw chirps and native boundary statistics; the extra complex channel (two real channels) is either G1 adjusted or a matched raw copy. Preserve native 48 edges in both routes.",
+    "Both arms keep the prior class-independent waveform and clean losses and the matched L_s and clean U_s classification losses (0.95 confidence for pseudo CE). Do not add the previous paired feature-distance objective. No hidden U labels.",
+    "Training and predictions run from archive W24 CWD, independent 300-source V scoring after freeze, and conditional 15 RX times 2000 native Full packets times seven views. The same source-selected parent Full exact archive is the target comparator, already frozen before all new predictions; no target truth in target generation."
+  ],
+  "registered_at": "2026-11-26T15:46:11+00:00"
+}
