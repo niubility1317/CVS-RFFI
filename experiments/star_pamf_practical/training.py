@@ -102,8 +102,9 @@ def objective(model, discriminator, labeled, unlabeled, teacher, temperature, ep
     ce = F.cross_entropy(clean_l, label) + cfg.satellite_ce_weight * F.cross_entropy(practical_l, label)
     relevant, invariant = feature[:, :128], feature[:, 128:]
     domain_ce = F.cross_entropy(discriminator(relevant), domain)
-    uniform = torch.full((len(ux), len(SOURCE)), 1.0 / len(SOURCE), device=ux.device)
-    domain_kl = F.kl_div(discriminator(invariant).log_softmax(1), uniform, reduction="batchmean")
+    invariant_domain = discriminator(invariant)
+    uniform = torch.full_like(invariant_domain, 1.0 / invariant_domain.shape[1])
+    domain_kl = F.kl_div(invariant_domain.log_softmax(1), uniform, reduction="batchmean")
     gram = F.normalize(invariant, dim=1).T @ F.normalize(relevant, dim=1)
     orth = gram.square().sum() / invariant.numel()
     pseudo = ce.new_zeros(())
@@ -148,8 +149,8 @@ def calibrate(model, validation, device):
     return fit_temperature(torch.cat(logits), tensor(meta["y"]))
 
 
-def new_model(device):
-    return Ni_model_2part(len(CLASSES)).to(device)
+def new_model(device, classes=len(CLASSES)):
+    return Ni_model_2part(classes).to(device)
 
 
 def train(c, device="cuda:0"):
@@ -158,14 +159,16 @@ def train(c, device="cuda:0"):
 
     cfg = RECIPE
     torch.manual_seed(c["model_seed"])
-    source = load_source(c["source_cache"])
+    expected = c.get("source_dimensions")
+    source = load_source(c["source_cache"], expected=expected)
+    classes, rxs = (CLASSES, SOURCE) if expected is None else (expected["classes"], expected["source_rxs"])
     pairs = load_pairs(c["pairs"], source)
     root = Path(c["source_output"])
     root.mkdir(parents=True, exist_ok=False)
     write(root / "resolved_config.json", dict(c, recipe=asdict(cfg), checkpoint_init="scratch",
-                                             domain_classes=list(SOURCE)))
-    model = new_model(device)
-    discriminator = Domain_Classifier(len(SOURCE)).to(device)
+                                             domain_classes=list(rxs)))
+    model = new_model(device, len(classes))
+    discriminator = Domain_Classifier(len(rxs)).to(device)
     model_optimizer = torch.optim.Adam(model.parameters(), lr=cfg.lr_model)
     domain_optimizer = torch.optim.Adam(discriminator.parameters(), lr=cfg.lr_domain)
     meta_l, meta_u = source["L_s"][1], source["U_s"][1]

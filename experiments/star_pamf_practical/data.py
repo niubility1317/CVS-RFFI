@@ -16,13 +16,15 @@ PROTOCOL = "F0"
 CLASSES = ["14-10", "14-7", "20-15", "20-19", "6-15", "8-20"]
 
 
-def load_source(folder, roles=ROLES):
+def load_source(folder, roles=ROLES, *, expected=None):
     folder = Path(folder)
     contract = read(folder / "source_contract.json")
-    if (contract["source_rxs"], contract["source_days"], contract["counts"],
-            contract["classes"], contract["split_seed"], contract["checkpoint_init"]) != (
-            list(SOURCE), list(DAYS), COUNTS, CLASSES, 392005, "scratch_only"):
-        raise ValueError("The retained PAMF Main split contract is required")
+    if expected is None:
+        expected = dict(source_rxs=list(SOURCE), source_days=list(DAYS), counts=COUNTS, classes=CLASSES)
+    if any(contract[k] != expected[k] for k in ("source_rxs", "source_days", "counts", "classes")) or (
+            contract["split_seed"], contract["checkpoint_init"]) != (392005, "scratch_only"):
+        raise ValueError("The registered PAMF source split is required")
+    rxs, days, counts, classes = (contract[k] for k in ("source_rxs", "source_days", "counts", "classes"))
     seen = set()
     data = {}
     for role in roles:
@@ -32,17 +34,17 @@ def load_source(folder, roles=ROLES):
             names = ("ids", "rx_i", "day_i") + (() if role == "U_s" else ("y",))
             meta = {name: arrays[name] for name in names}
         ids = meta["ids"].tolist()
-        if (ids != contract["role_ids"][role] or len(ids) != COUNTS[role]
-                or seen.intersection(ids) or set(meta["rx_i"]) != set(SOURCE)
-                or set(meta["day_i"]) != set(DAYS)):
+        if (ids != contract["role_ids"][role] or len(ids) != counts[role]
+                or seen.intersection(ids) or set(meta["rx_i"]) != set(rxs)
+                or set(meta["day_i"]) != set(days)):
             raise ValueError(f"Source role differs from the fixed contract: {role}")
         seen.update(ids)
         x, _ = aligned_source_iq(folder, role, ids)
         if x.dtype != np.float32:
             raise ValueError("Expected FP32 source IQ")
-        if role != "U_s" and set(meta["y"]) != set(range(len(CLASSES))):
+        if role != "U_s" and set(meta["y"]) != set(range(len(classes))):
             raise ValueError(f"Invalid source class map for {role}")
-        meta["domain"] = np.searchsorted(SOURCE, meta["rx_i"]).astype(np.int64)
+        meta["domain"] = np.searchsorted(rxs, meta["rx_i"]).astype(np.int64)
         data[role] = x, meta
     return data
 
@@ -50,9 +52,9 @@ def load_source(folder, roles=ROLES):
 _AUGMENT_SOURCE = None
 
 
-def _initialize(folder, role):
+def _initialize(folder, role, expected):
     global _AUGMENT_SOURCE
-    _AUGMENT_SOURCE = load_source(folder, (role,))[role]
+    _AUGMENT_SOURCE = load_source(folder, (role,), expected=expected)[role]
 
 
 def _chunk(bounds):
@@ -67,8 +69,8 @@ def _chunk(bounds):
     return start, np.asarray(values, np.float32), np.asarray(scenes, np.int8)
 
 
-def prepare_pairs(folder, output, workers):
-    source = load_source(folder, ("L_s", "U_s"))
+def prepare_pairs(folder, output, workers, *, expected=None):
+    source = load_source(folder, ("L_s", "U_s"), expected=expected)
     output = Path(output)
     output.mkdir(exist_ok=False)
     counts = {}
@@ -80,7 +82,7 @@ def prepare_pairs(folder, output, workers):
         scenes = np.empty(len(x), np.int8)
         spans = [(i, min(i + 128, len(x))) for i in range(0, len(x), 128)]
         with ProcessPoolExecutor(max_workers=workers, initializer=_initialize,
-                                 initargs=(folder, role)) as pool:
+                                 initargs=(folder, role, expected)) as pool:
             for start, batch, indices in pool.map(_chunk, spans):
                 result[start:start + len(batch)] = batch
                 scenes[start:start + len(indices)] = indices
