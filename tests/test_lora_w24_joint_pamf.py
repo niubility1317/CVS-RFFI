@@ -321,3 +321,38 @@ def test_adaptive_gain_promotes_only_after_matching_parent_and_control():
     for case in experiment.FULL_CASES:
         proof=experiment.formal_receipt(case,experiment.RUN_GAIN)
         assert proof['reference_run']==experiment.RUN_STRONG and proof['modes'][-2:]==[parent,candidate]
+
+
+
+def test_local_covariance_only_adds_context_from_other_chirps_in_registered_bins():
+    r = torch.Generator().manual_seed(8)
+    y = torch.randn(2,8,384,generator=r,dtype=torch.complex64)
+    diagonal, cross = (experiment.initialize_recovery(arm,nn.Identity(),'cpu')
+                       for arm in experiment.COV_ARMS)
+    independent = diagonal.observation_state(y,None)
+    joint = cross.observation_state(y,None)
+    revised = y.clone()
+    revised[0,1] += y[0,0] * 2
+    torch.testing.assert_close(diagonal.observation_state(revised,None)[0,0],independent[0,0])
+    changed = cross.observation_state(revised,None)
+    assert (changed[0,0]-joint[0,0]).abs().max() > 1e-4
+    torch.testing.assert_close(changed[1],joint[1],rtol=0,atol=0)
+    edit = torch.fft.fft(joint-independent,norm='ortho')
+    untouched = torch.ones(384,dtype=torch.bool)
+    untouched[cross.detail_bins] = False
+    assert edit[...,untouched].abs().max() < 1e-6
+    assert torch.count_nonzero(cross.observation_state(torch.zeros_like(y),None)) == 0
+
+
+def test_cross_covariance_source_gate_and_formal_reference_use_strong_parent():
+    control, candidate = experiment.COV_ARMS
+    parent = experiment.STRONG
+    scores = {m:dict(six_correct=1487,low_urban_correct=187,by_scene={'clean':297})
+              for m in (*experiment.parent_modes(experiment.RUN_STRONG),control,candidate)}
+    scores[candidate].update(six_correct=1489,low_urban_correct=188)
+    assert experiment.qualifies(scores,candidate)
+    scores[candidate]['low_urban_correct'] = 187
+    assert not experiment.qualifies(scores,candidate)
+    for case in experiment.FULL_CASES:
+        proof = experiment.formal_receipt(case,experiment.RUN_COV)
+        assert proof['reference_run']==experiment.RUN_STRONG and proof['modes'][-2:]==[parent,candidate]

@@ -18,10 +18,13 @@ class SecondStage(nn.Module):
             nn.init.zeros_(head.weight)
             nn.init.zeros_(head.bias)
 
+    def observation_state(self, y, first_full):
+        return y + .5 * (first_full - y) if self.conditioned else y
+
     def propose(self, y, quality, rms, edges):
         with torch.no_grad():
             (_, first_full), = self.parent.propose(y, quality, rms, edges)
-        state = y + .5 * (first_full - y) if self.conditioned else y
+            state = self.observation_state(y, first_full)
         _, second_full = self.refiner(y, quality, rms, edges, state=state)
         # The common renderer applies 0.5, giving 0.5 of G1 and 0.75 of the new correction.
         return (first_full, first_full + 1.5 * (second_full - y)),
