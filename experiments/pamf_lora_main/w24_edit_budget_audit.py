@@ -1,6 +1,7 @@
 """Isolate the magnitude and direction of the frozen W24 half readout on source IQ."""
 import argparse
 from concurrent.futures import ProcessPoolExecutor
+from contextlib import nullcontext
 from functools import partial
 from pathlib import Path, PurePosixPath
 
@@ -144,9 +145,11 @@ def predict(rt, *, modes=MODES, render_fn=render, summary_fn=summarize,
     raw = native(source, 'V', contract['counts']['V'])[rows]
     jobs = [(int(row), SOURCE[int(receiver)], packet) for row, receiver, packet in zip(rows, rx, raw, strict=True)]
     output, metrics = {}, {}
-    with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
+    workers = rt['cpu_workers']
+    with (ProcessPoolExecutor(max_workers=workers) if workers > 1 else nullcontext()) as pool:
         for scene in VIEWS:
-            stream = pool.map(partial(full_components, scene), jobs, chunksize=6)
+            receive = partial(full_components, scene)
+            stream = pool.map(receive, jobs, chunksize=6) if pool is not None else map(receive, jobs)
             batches = []
             for offset in range(0, len(jobs), BATCH):
                 chunk = [next(stream) for _ in range(min(BATCH, len(jobs)-offset))]
@@ -194,6 +197,7 @@ def main():
     variants = pub.add_mutually_exclusive_group()
     variants.add_argument('--band-direction', action='store_true')
     variants.add_argument('--band-polar', action='store_true')
+    variants.add_argument('--noise-components', action='store_true')
     for name in ('repo', 'context', 'ssh-config', 'output'):
         pub.add_argument('--'+name, type=Path, required=True)
     args = parser.parse_args()
@@ -209,6 +213,10 @@ def main():
             from experiments.pamf_lora_main.w24_band_polar import predict_bands
 
             predict_bands(rt)
+        elif rt.get('noise_components'):
+            from experiments.pamf_lora_main.w24_noise_components import predict_components
+
+            predict_components(rt)
         else:
             predict(rt)
     elif args.action == 'score-source':
@@ -222,6 +230,10 @@ def main():
 
             verify_reference(rt)
             score(args.runtime, modes=MODES, contrasts=CONTRASTS)
+        elif rt.get('noise_components'):
+            from experiments.pamf_lora_main.w24_noise_components import score_components
+
+            score_components(args.runtime)
         else:
             score(args.runtime)
     else:
@@ -240,16 +252,25 @@ def main():
 
             run = polar_run
             rt['band_polar'] = True
+        elif args.noise_components:
+            from experiments.pamf_lora_main.w24_noise_components import RUN as components_run
+
+            run = components_run
+            rt['noise_components'] = True
         rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'), run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'), classifier_root=str(runs/AUG_RUN),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),
                   training_release_root=str(releases/f'{TRAIN_RUN}-release'),
                   allowed_gpus=[0, 3, 5, 6] if args.band_direction or args.band_polar else [5, 6, 3, 0], cpu_workers=8)
+        if args.noise_components:
+            rt.update(allowed_gpus=[0, 3, 2], cpu_workers=1)
         rt['external_releases'] = [rt[k] for k in ('source_root','classifier_root','w24_release_root','training_release_root')]
         rt['external_releases'].append(str(runs/PARENT))
         if args.band_polar:
             rt['external_releases'].append(str(runs / DIRECTION_RUN))
+        if args.noise_components:
+            rt['external_releases'].append(str(runs / RUN))
         release(args.repo, args.output, rt, args.ssh_config)
 
 
