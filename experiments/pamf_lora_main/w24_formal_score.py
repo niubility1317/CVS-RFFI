@@ -208,4 +208,5 @@ if __name__ == '__main__':
     matched.add_argument('--direction', dest='third_prior', action='store_const', const='direction')
     matched.add_argument('--readout', dest='third_prior', action='store_const', const='readout')
     matched.add_argument('--robust', dest='third_prior', action='store_const', const='robust')
+    matched.add_argument('--peer', dest='third_prior', action='store_const', const='peer')
     score(**vars(parser.parse_args()))
