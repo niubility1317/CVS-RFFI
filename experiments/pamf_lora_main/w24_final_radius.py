@@ -10,7 +10,7 @@ def final_radius(noise, rms, base):
     return (base.square() + 4 * packet_noise(noise, rms)).sqrt().clamp_max(.95)
 
 
-def projected_stages(model, old, y, quality, rms, *, condition=()):
+def projected_stages(model, old, y, quality, rms, *, condition=(), expand_radius=True, adapter=None):
     # Keep the 7615e8e W24 stage order. The archive exposes the learned-prior
     # projection but has no override for the MAP output projection.
     spec = old.fft(y)
@@ -46,9 +46,15 @@ def projected_stages(model, old, y, quality, rms, *, condition=()):
         fields = (*old.iq_field(y, coarse, current, normalized, opposite, action.main - 1.),
                   variance.log().clamp(-11., 2.) / 5., *condition)
         real, imag = old.read_core(network, fields)
-        prior = coarse + model.update(real, imag, y, rms)
+        if i == 1 and adapter is not None:
+            learned = torch.complex(real.tanh(), imag.tanh())
+            extra = adapter(y, current, normalized, learned, noise)
+            extra = old.limit(extra, y, rms, y.real.new_tensor(.15))
+            prior = coarse + old.limit(old.zero_carrier(learned + extra), y, rms, base)
+        else:
+            prior = coarse + model.update(real, imag, y, rms)
         current = old.map_two(action, y, current, prior, variance, action.adjoint(remaining / variance))
-        radius = base if i == 0 else final_radius(noise, rms, base)
+        radius = final_radius(noise, rms, base) if i == 1 and expand_radius else base
         current = y + old.limit(old.zero_carrier(current - y), y, rms, radius)
         stages.append(current)
     return (coarse, *stages), action, variance, noise, mismatch

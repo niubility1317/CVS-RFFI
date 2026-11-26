@@ -144,12 +144,12 @@ def predict_source(runtime):
     sweeping = rt.get('readout_sweep', False)
     modes = mode_list(rt)
     if third_prior:
-        from experiments.pamf_lora_main.w24_third_prior import load_candidate, restore_center, trial
+        from experiments.pamf_lora_main.w24_third_prior import OUTER_BASELINE, load_candidate, restore_center, trial
 
         names = trial(third_prior).arms
         arms = [load_candidate(root, contract, device, arm) for arm in names]
         outer_parent = None
-        if third_prior == 'band-tune':
+        if OUTER_BASELINE in modes:
             from experiments.pamf_lora_main.w24_outer_objective_source import load_candidate as load_outer
 
             outer_parent, _ = load_outer(Path(rt['source_parent']), contract, device)
@@ -259,7 +259,7 @@ def predict_source(runtime):
             with np.load(previous/'predictions.npz', allow_pickle=False) as archive:
                 if any(not np.array_equal(archive[v][indices], output[route][v][:len(indices)]) for v in VIEWS):
                     raise ValueError('The registered source readout comparators failed to reproduce')
-            if third_prior == 'band-tune':
+            if third_prior and OUTER_BASELINE in modes:
                 parent = Path(rt['source_parent']) / route
                 mark = read(parent / 'source-predictions.json')
                 if (mark['status'], mark['physical_ids'], mark['views'], mark['target_reads'], mark['source_truth_reads']) != (

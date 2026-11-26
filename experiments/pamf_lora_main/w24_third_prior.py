@@ -36,6 +36,9 @@ BIAS_RUN = '20261126-phase1-lora-w24-coherent-error-s2026112991-r01'
 BIAS_ARMS = ('coherent_control', 'coherent_error')
 BAND_TUNE_RUN = '20261126-phase1-lora-w24-band-direction-tune-s2026112991-r01'
 BAND_TUNE_ARMS = ('band_tune_control', 'band_tune_direction')
+BAND_ADAPTER_RUN = '20261126-phase1-lora-w24-band-adapter-s2026112991-r01'
+BAND_ADAPTER_ARMS = ('band_adapter_time', 'band_adapter_frequency')
+OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS)
 OUTER_BASELINE = 'outer_parent_half'
 OUTER_PARENT = '20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01'
 VARIANTS = {
@@ -46,6 +49,7 @@ VARIANTS = {
     'peer': (PEER_RUN, PEER_ARMS),
     'coherent-error': (BIAS_RUN, BIAS_ARMS),
     'band-tune': (BAND_TUNE_RUN, BAND_TUNE_ARMS),
+    'band-adapter': (BAND_ADAPTER_RUN, BAND_ADAPTER_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -69,7 +73,7 @@ def trial(kind):
     run, arms = VARIANTS[kind]
     modes = ('direct', 'all_half', *(f'{arm}_{alpha}' for alpha in ('half', 'full') for arm in arms))
     contrasts = ((modes[3], modes[2]), (modes[5], modes[4]), (modes[3], modes[0]))
-    if kind == 'band-tune':
+    if kind in ('band-tune', 'band-adapter'):
         return Trial(run, arms, 1800, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
     return Trial(run, arms, 3600, modes, contrasts, ROUTES[:1])
 
@@ -108,6 +112,10 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_peer_innovation import restorer as innovation_restorer
 
         return innovation_restorer(training, use_peers=arm == 'innovation_peer')
+    if arm in BAND_ADAPTER_ARMS:
+        from experiments.pamf_lora_main.w24_band_adapter import restorer as adapter_restorer
+
+        return adapter_restorer(training, frequency=arm == BAND_ADAPTER_ARMS[1])
     if arm != 'three':
         return training.DuraW24()
 
@@ -129,7 +137,7 @@ def fit_inputs(rt, arm):
     if arm not in ARM_TRIAL:
         raise ValueError(f'Unknown prior arm: {arm}')
     inputs = dict(source_root=rt['source_root'], run_root=str(PurePosixPath(rt['run_root']) / arm))
-    if arm in BAND_TUNE_ARMS:
+    if arm in OUTER_TUNE_ARMS:
         inputs['source_parent'] = rt['source_parent']
     return inputs
 
@@ -143,7 +151,7 @@ def restore_center(original, delta, fraction):
 def promotion(routes, kind=True):
     spec = trial(kind)
     direct, mature, control, candidate = spec.source_modes[:4]
-    controls = (control, direct, mature, OUTER_BASELINE) if kind == 'band-tune' else (control, direct, mature)
+    controls = (control, direct, mature, OUTER_BASELINE) if OUTER_BASELINE in spec.source_modes else (control, direct, mature)
     return len(routes) == len(spec.routes) and all(
         row[candidate]['by_scene']['clean'] >= row[direct]['by_scene']['clean']
         and row[candidate]['six_correct'] > max(row[k]['six_correct'] for k in controls)
@@ -183,14 +191,18 @@ def qualified_source(root, kind=True):
 
 def source_recipe(training, arm, *, initialize=None):
     def finalize(model, _tracker, _calibration):
-        grads = [sum(float(p.grad.square().sum()) for p in prior.parameters() if p.grad is not None)**.5
-                 for prior in model.priors]
+        trained = (model.band_adapter,) if arm in BAND_ADAPTER_ARMS else model.priors
+        grads = [sum(float(p.grad.square().sum()) for p in module.parameters() if p.grad is not None)**.5
+                 for module in trained]
         if not all(0 < value < float('inf') for value in grads):
-            raise FloatingPointError(f'Invalid gradient in a W24 prior: {grads}')
-        info = dict(input_gate=False, prior_count=len(model.priors), prior_gradient_norms=grads,
+            raise FloatingPointError(f'Invalid gradient in a trainable W24 prior or adapter: {grads}')
+        key = 'adapter_gradient_norms' if arm in BAND_ADAPTER_ARMS else 'prior_gradient_norms'
+        info = dict(input_gate=False, prior_count=len(model.priors), **{key: grads},
                     parameters=sum(p.numel() for p in model.parameters()))
-        if arm in BAND_TUNE_ARMS:
+        if arm in OUTER_TUNE_ARMS:
             info['source_parent'] = OUTER_PARENT
+        if arm in BAND_ADAPTER_ARMS:
+            info['trainable_parameters'] = sum(p.numel() for p in model.band_adapter.parameters())
         return None, info
 
     spec = trial(ARM_TRIAL[arm])
@@ -198,7 +210,7 @@ def source_recipe(training, arm, *, initialize=None):
     return replace(training.RECIPE, name=name, steps=spec.steps,
                    validation_steps=(spec.steps // 3, 2 * spec.steps // 3),
                    model=partial(restorer, training, arm), finalize_calibration=finalize,
-                   initialize=initialize, coarse_first=training.RECIPE.coarse_first and arm not in BAND_TUNE_ARMS)
+                   initialize=initialize, coarse_first=training.RECIPE.coarse_first and arm not in OUTER_TUNE_ARMS)
 
 
 def fit(config, arm, *, smoke):
@@ -209,7 +221,7 @@ def fit(config, arm, *, smoke):
 
     rt = read(config)
     paths = {'source_root', 'run_root'}
-    if arm in BAND_TUNE_ARMS:
+    if arm in OUTER_TUNE_ARMS:
         paths.add('source_parent')
     if set(rt) != paths:
         raise ValueError('Fit may receive only registered source paths and its own output root')
@@ -230,7 +242,7 @@ def fit(config, arm, *, smoke):
         from experiments.pamf_lora_main.w24_first_direction import objective_for
 
         calculate = objective_for(dura_w24_model, output_bias=arm == 'coherent_error')
-    if arm in BAND_TUNE_ARMS:
+    if arm in OUTER_TUNE_ARMS:
         from experiments.pamf_lora_main.w24_band_tune import WEIGHT
         from experiments.pamf_lora_main.w24_outer_objective_source import objective_for, read_outer_checkpoint
 
@@ -241,7 +253,12 @@ def fit(config, arm, *, smoke):
         _, weights, _ = read_outer_checkpoint(parent, contract, 'cpu', dura_w24_train, channel_blind_source)
 
         def initialize(model, _tracker, _training, _calibration):
-            model.load_state_dict(weights, strict=True)
+            if arm in BAND_ADAPTER_ARMS:
+                from experiments.pamf_lora_main.w24_band_adapter import load_parent
+
+                load_parent(model, weights)
+            else:
+                model.load_state_dict(weights, strict=True)
 
         weight = WEIGHT if arm == BAND_TUNE_ARMS[1] else 0.
         calculate = objective_for(dura_w24_model, band_direction_weight=weight)
@@ -266,7 +283,7 @@ def load_candidate(root, contract, device, arm):
             or summary.get('n_calibration') != 0 or summary.get('input_gate') is not False
             or summary.get('threshold') is not None or summary.get('prior_count') != (3 if arm == 'three' else 2)):
         raise ValueError(f'Unverified source freeze for {arm}')
-    if arm in BAND_TUNE_ARMS and summary.get('source_parent') != OUTER_PARENT:
+    if arm in OUTER_TUNE_ARMS and summary.get('source_parent') != OUTER_PARENT:
         raise ValueError(f'Unverified warm start for {arm}')
     checkpoint = torch.load(row / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
@@ -364,7 +381,8 @@ def publish(args):
     project = PurePosixPath(rt['project'])
     releases, runs = project / 'releases', project / 'runs'
     pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7], 'final-radius': [0, 5, 6, 7],
-             'peer': [3, 7, 6, 5], 'coherent-error': [0, 3, 5, 7], 'band-tune': [7, 6, 3, 0, 2]}
+             'peer': [3, 7, 6, 5], 'coherent-error': [0, 3, 5, 7], 'band-tune': [7, 6, 3, 0, 2],
+             'band-adapter': [0, 3, 5, 7]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
@@ -375,7 +393,7 @@ def publish(args):
               max_workers=2, max_compute_processes=8)
     rt['external_releases'] = [rt[k] for k in ('source_root', 'classifier_root', 'w24_release_root',
                                                'training_release_root', 'native_target_root')] + [str(runs / name) for name in (SWEEP_RUN, RUN_UNGATED)]
-    if kind == 'band-tune':
+    if OUTER_BASELINE in trial(kind).source_modes:
         rt['source_parent'] = str(runs / OUTER_PARENT)
         rt['external_releases'].append(rt['source_parent'])
     release(args.repo, args.output, rt, args.ssh_config)

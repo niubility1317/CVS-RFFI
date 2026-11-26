@@ -210,4 +210,5 @@ if __name__ == '__main__':
     matched.add_argument('--robust', dest='third_prior', action='store_const', const='robust')
     matched.add_argument('--peer', dest='third_prior', action='store_const', const='peer')
     matched.add_argument('--band-tune', dest='third_prior', action='store_const', const='band-tune')
+    matched.add_argument('--band-adapter', dest='third_prior', action='store_const', const='band-adapter')
     score(**vars(parser.parse_args()))
