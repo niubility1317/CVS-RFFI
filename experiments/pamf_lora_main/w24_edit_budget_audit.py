@@ -1,0 +1,204 @@
+"""Isolate the magnitude and direction of the frozen W24 half readout on source IQ."""
+import argparse
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
+from pathlib import Path, PurePosixPath
+
+import numpy as np
+import torch
+
+if __package__ is None:
+    from experiments import pamf_lora_main
+
+    pamf_lora_main.__path__.append(str(Path(__file__).resolve().parent))
+
+from experiments.cric_dura_comparison.io import read, tensor, write
+from experiments.pamf_lora_main.dura_repair import complex_iq, real_iq
+from experiments.pamf_lora_main.full_packet_views import native, source_contract
+from experiments.pamf_lora_main.joint_unroll_source import coordinates
+from experiments.pamf_lora_main.runner import activate
+from experiments.pamf_lora_main.w24_aperture_noise_audit import (
+    CENTER, ROUTES, center_rms, model_iq, native_aperture, packet_components,
+)
+from experiments.pamf_lora_main.w24_factor_audit import frozen_source_panel, load_classifier, panel, score_source
+from experiments.pamf_lora_main.w24_formal import wide_delta
+from experiments.pamf_lora_main.w24_native_full import SOURCE, VIEWS, classify_aperture
+from experiments.pamf_lora_main.w24_native_residual_source import BATCH
+from experiments.pamf_lora_main.w24_outer_objective_source import RUN as PARENT, load_candidate
+from experiments.pamf_lora_main.w24_wide_transfer import load_restorer, received_aperture, training_runtime
+
+
+RUN = '20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r01'
+CAP = .5 * .55
+MODES = ('direct', 'outer_half', 'oracle_same_dose', 'oracle_cap', 'oracle_projected_exact', 'oracle_exact')
+CONTRASTS = (('oracle_same_dose', 'outer_half'), ('oracle_cap', 'oracle_same_dose'),
+             ('oracle_projected_exact', 'oracle_cap'), ('oracle_exact', 'oracle_projected_exact'))
+METRICS = ('learned_dose', 'full_noise_dose', 'projected_noise_dose', 'direction_cosine',
+           'learned_remaining', 'same_dose_remaining', 'cap_remaining')
+
+
+def rms(x):
+    return x.abs().square().mean(dim=(-2, -1), keepdim=True).sqrt()
+
+
+def project_noise(noise, phase):
+    # The learned DURA edit removes the per-chirp DC term in its own tracked frame.
+    frame = noise * phase.conj()
+    return (frame - frame.mean(-1, keepdim=True)) * phase
+
+
+def oracle_edits(received, noise, learned, phase):
+    projected = project_noise(noise, phase)
+    required = rms(projected).clamp_min(1e-12)
+    same = -projected * (rms(learned)/required)
+    capped = -projected * (CAP*rms(received)/required).clamp(max=1.)
+    return same, capped, -projected, -noise
+
+
+def diagnostics(received, noise, learned, phase, same, capped):
+    projected = project_noise(noise, phase)
+    observed = rms(received).clamp_min(1e-12)
+    total_noise = rms(noise)
+    dot = (learned.conj() * -projected).real.mean(dim=(-2, -1), keepdim=True)
+    cosine = dot / (rms(learned)*rms(projected)).clamp_min(1e-12)
+    remaining = tuple(rms(noise+edit) / total_noise.clamp_min(1e-12) for edit in (learned, same, capped))
+    rest = (rms(learned)/observed, total_noise/observed, rms(projected)/observed, cosine, *remaining)
+    return np.asarray(torch.cat(rest, dim=-1).squeeze(-2).tolist())
+
+
+@torch.no_grad()
+def render(f, g, tracker, received, signal, device):
+    original = received_aperture(received, device)
+    learned = .5 * wide_delta(g, tracker, original)
+    base = complex_iq(original[..., :CENTER])
+    observed, noiseless = native_aperture(received), native_aperture(signal)
+    noise = complex_iq(tensor(model_iq(observed-noiseless, center_rms(observed)), device)[..., :CENTER])
+    real_edit = complex_iq(learned)
+    _, phase, _, _ = coordinates(tracker, original[..., :CENTER])
+    same, capped, projected_exact, exact = oracle_edits(base, noise, real_edit, phase)
+    info = diagnostics(base, noise, real_edit, phase, same, capped)
+    if not np.isfinite(info).all() or (info[:, 0] > CAP + 1e-5).any():
+        raise ValueError('The actual W24 half edit violates its registered RMS limit')
+    results = [classify_aperture(f, original)]
+    for edit in (learned, real_iq(same), real_iq(capped), real_iq(projected_exact), real_iq(exact)):
+        candidate = original.clone()
+        candidate[..., :CENTER] += edit
+        results.append(classify_aperture(f, candidate))
+    return np.stack(results), info
+
+
+def summarize(values, is_clean):
+    n = len(values)
+    quantiles = (0.1, 0.5, 0.9)
+    data = values[:, :3] if is_clean else values
+    return dict(count=n, q10_q50_q90={k: q.tolist() for k,q in
+                zip(METRICS[:data.shape[-1]], np.quantile(data, quantiles, axis=0).T, strict=True)},
+                learned_near_cap=int((values[:, 0] >= .95*CAP).sum()),
+                projected_over_cap=int((values[:, 2] > CAP).sum()),
+                same_dose_defined=int((values[:, 2] > 1e-12).sum()),
+                learning_dose_over_projected=int(((values[:, 0] > values[:, 2]) & (values[:, 2] > 1e-12)).sum()),
+                cap_insufficient_for_90percent=int((.9*values[:, 1] > CAP).sum()))
+
+
+def predict(rt):
+    activate(rt)
+    root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
+    contract = source_contract(source)
+    f = load_classifier(rt, contract, device)
+    # Import the architecture and tracker under the pinned training archive namespace.
+    _, tracker, _, _ = load_restorer(*training_runtime(rt), contract, device)
+    parent = root.parent / PARENT
+    g, frozen = load_candidate(parent, contract, device)
+    u = native(source, 'U_s', contract['counts']['U_s'])[0]
+    for scene in ('clean', VIEWS[-1]):
+        for received, signal in packet_components(scene, (0, SOURCE[0], u), verify=True):
+            rows, measurements = render(f, g, tracker, received[None], signal[None], device)
+            if rows.shape != (len(MODES), 1) or measurements.shape != (1, len(METRICS)):
+                raise ValueError('Real source-only W24 smoke produced malformed results')
+            if scene == 'clean' and not np.array_equal(rows[2:], np.repeat(rows[:1], len(MODES)-2, axis=0)):
+                raise ValueError('Clean oracle rows differ from direct')
+    write(root/'smoke.json', dict(status='PASS', source_u_count=1, candidate_parent=PARENT,
+          parameters=frozen['parameters'], target_reads=0, source_truth_reads=0))
+
+    rows, rx, ids = panel(source, contract)
+    raw = native(source, 'V', contract['counts']['V'])[rows]
+    jobs = [(int(row), SOURCE[int(receiver)], packet) for row, receiver, packet in zip(rows, rx, raw, strict=True)]
+    output, metrics = ({route:{} for route in ROUTES} for _ in range(2))
+    with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
+        for scene in VIEWS:
+            stream = pool.map(partial(packet_components, scene), jobs, chunksize=6)
+            collected = {route:[] for route in ROUTES}
+            for offset in range(0, len(jobs), BATCH):
+                chunk = [next(stream) for _ in range(min(BATCH, len(jobs)-offset))]
+                for route, packets in zip(ROUTES, zip(*chunk, strict=True), strict=True):
+                    received, signal = (np.stack(a) for a in zip(*packets, strict=True))
+                    collected[route].append(render(f, g, tracker, received, signal, device))
+            for route, batches in collected.items():
+                decisions, info = zip(*batches, strict=True)
+                output[route][scene] = np.concatenate(decisions, axis=1)
+                metrics[route][scene] = summarize(np.concatenate(info), scene == 'clean')
+            print('W24_EDIT_BUDGET_PREDICTED', scene, len(jobs), flush=True)
+
+    for route in ROUTES:
+        previous = parent/route
+        proof = read(previous/'source-predictions.json')
+        if (proof['status'], proof['physical_ids'], proof['views'], proof['target_reads'], proof['source_truth_reads']) != (
+                'PREDICTIONS_FROZEN', ids, list(VIEWS), 0, 0):
+            raise ValueError(f'Mismatched prior blind source panel for {route}')
+        idx = [proof['modes'].index(m) for m in ('direct', 'outer_objective_half')]
+        with np.load(previous/'predictions.npz', allow_pickle=False) as base:
+            if any(not np.array_equal(base[v][idx], output[route][v][:2]) for v in VIEWS):
+                raise ValueError(f'Actual direct or frozen candidate decisions differ for {route}')
+        out = root/route
+        out.mkdir()
+        np.savez(out/'predictions.npz', **output[route])
+        write(out/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(MODES),
+              views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0,
+              waveform=dict(route=route, oracle_only=True, learned_parent=PARENT, projected_half_cap=CAP,
+                            direct_and_learned_parity=True, dose_by_scene=metrics[route])))
+
+
+def score(runtime):
+    rt = read(runtime)
+    root, source = Path(rt['run_root']), Path(rt['source_root'])
+    for route in ROUTES:
+        frozen_source_panel(source, root/route, MODES)
+    for route in ROUTES:
+        score_source(runtime, modes=MODES, output=root/route, contrasts=CONTRASTS)
+
+
+def main():
+    from experiments.pamf_lora_main.publish import release, release_commit
+    from experiments.pamf_lora_main.w24_native_residual_source import AUG_RUN, DATA_RUN, TRAIN_RUN, W24_RUN, dispatch
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    actions = parser.add_subparsers(dest='action', required=True)
+    for phase in ('dispatch', 'predict-source', 'score-source'):
+        actions.add_parser(phase).add_argument('runtime', type=Path)
+    pub = actions.add_parser('publish')
+    for name in ('repo', 'context', 'ssh-config', 'output'):
+        pub.add_argument('--'+name, type=Path, required=True)
+    args = parser.parse_args()
+    if args.action == 'dispatch':
+        dispatch(args.runtime, entry=__file__)
+    elif args.action == 'predict-source':
+        predict(read(args.runtime))
+    elif args.action == 'score-source':
+        score(args.runtime)
+    else:
+        ctx = read(args.context)
+        rt = {key:ctx[key] for key in ('project', 'python', 'frozen_sources')}
+        project = PurePosixPath(rt['project'])
+        runs, releases = project/'runs', project/'releases'
+        rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
+                  release_root=str(releases/f'{RUN}-release'), run_root=str(runs/RUN),
+                  source_root=str(releases/f'{DATA_RUN}-release'/'data/source'), classifier_root=str(runs/AUG_RUN),
+                  w24_release_root=str(releases/f'{W24_RUN}-release'),
+                  training_release_root=str(releases/f'{TRAIN_RUN}-release'), allowed_gpus=[5,6,3,0], cpu_workers=8)
+        rt['external_releases'] = [rt[k] for k in ('source_root','classifier_root','w24_release_root','training_release_root')]
+        rt['external_releases'].append(str(runs/PARENT))
+        release(args.repo, args.output, rt, args.ssh_config)
+
+
+if __name__=='__main__':
+    main()
