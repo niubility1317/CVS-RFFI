@@ -1,2 +1,3 @@
 {"at": "2026-11-26T07:34:19+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-26T07:37:12+00:00", "status": "RUNNING", "note": "VERIFIED controller, fit CWD and argv, GPU and growing logs, strict source-parent smoke and Full scope.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-26T07:49:33+00:00", "status": "ANALYZED", "note": "VERIFIED fixed parent exact and Full paired source score. Resolved precision 1439/1800, 175/300 low and 296/300 clean. No promotion or target access.", "evidence": ["report.md", "N607:runs/20261126-phase1-lora-w24-band-precision-s2026112991-r01/full_native/source-scores.json"], "row_id": null}
