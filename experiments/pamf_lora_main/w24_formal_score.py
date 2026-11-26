@@ -213,4 +213,5 @@ if __name__ == '__main__':
     matched.add_argument('--band-adapter', dest='third_prior', action='store_const', const='band-adapter')
     matched.add_argument('--band-refine', dest='third_prior', action='store_const', const='band-refine')
     matched.add_argument('--white-corruption', dest='third_prior', action='store_const', const='white-corruption')
+    matched.add_argument('--band-precision', dest='third_prior', action='store_const', const='band-precision')
     score(**vars(parser.parse_args()))

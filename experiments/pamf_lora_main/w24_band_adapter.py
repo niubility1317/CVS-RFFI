@@ -68,9 +68,9 @@ def restorer(training, *, frequency):
     return SecondPriorAdapter()
 
 
-def load_parent(model, weights):
+def load_parent(model, weights, *, new_module='band_adapter'):
     state = model.state_dict()
-    base = set(state) - {f'band_adapter.{key}' for key in model.band_adapter.state_dict()}
+    base = set(state) - {f'{new_module}.{key}' for key in getattr(model, new_module).state_dict()}
     if set(weights) != base:
         raise ValueError('The fixed base and source parent weights differ')
     state.update(weights)

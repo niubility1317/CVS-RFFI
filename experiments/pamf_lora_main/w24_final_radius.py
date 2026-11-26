@@ -10,7 +10,7 @@ def final_radius(noise, rms, base):
     return (base.square() + 4 * packet_noise(noise, rms)).sqrt().clamp_max(.95)
 
 
-def projected_stages(model, old, y, quality, rms, *, condition=(), expand_radius=True, adapter=None):
+def projected_stages(model, old, y, quality, rms, *, condition=(), expand_radius=True, adapter=None, final_solver=None):
     # Keep the 7615e8e W24 stage order. The archive exposes the learned-prior
     # projection but has no override for the MAP output projection.
     spec = old.fft(y)
@@ -53,7 +53,10 @@ def projected_stages(model, old, y, quality, rms, *, condition=(), expand_radius
             prior = coarse + old.limit(old.zero_carrier(learned + extra), y, rms, base)
         else:
             prior = coarse + model.update(real, imag, y, rms)
-        current = old.map_two(action, y, current, prior, variance, action.adjoint(remaining / variance))
+        if i == 1 and final_solver is not None:
+            current = final_solver(action, y, current, prior, variance, remaining, noise)
+        else:
+            current = old.map_two(action, y, current, prior, variance, action.adjoint(remaining / variance))
         radius = final_radius(noise, rms, base) if i == 1 and expand_radius else base
         current = y + old.limit(old.zero_carrier(current - y), y, rms, radius)
         stages.append(current)

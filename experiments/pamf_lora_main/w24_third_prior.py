@@ -42,7 +42,9 @@ BAND_REFINE_RUN = '20261126-phase1-lora-w24-band-polar-refine-s2026112991-r02'
 BAND_REFINE_ARMS = ('band_cartesian', 'band_polar')
 WHITE_RUN = '20261126-phase1-lora-w24-white-corruption-s2026112991-r01'
 WHITE_ARMS = ('archive_noise', 'stationary_noise')
-OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS, *WHITE_ARMS)
+BAND_PRECISION_RUN = '20261126-phase1-lora-w24-band-precision-s2026112991-r01'
+BAND_PRECISION_ARMS = ('precision_shared', 'precision_resolved')
+OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS, *WHITE_ARMS, *BAND_PRECISION_ARMS)
 OUTER_BASELINE = 'outer_parent_half'
 OUTER_PARENT = '20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01'
 VARIANTS = {
@@ -56,6 +58,7 @@ VARIANTS = {
     'band-adapter': (BAND_ADAPTER_RUN, BAND_ADAPTER_ARMS),
     'band-refine': (BAND_REFINE_RUN, BAND_REFINE_ARMS),
     'white-corruption': (WHITE_RUN, WHITE_ARMS),
+    'band-precision': (BAND_PRECISION_RUN, BAND_PRECISION_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -79,7 +82,7 @@ def trial(kind):
     run, arms = VARIANTS[kind]
     modes = ('direct', 'all_half', *(f'{arm}_{alpha}' for alpha in ('half', 'full') for arm in arms))
     contrasts = ((modes[3], modes[2]), (modes[5], modes[4]), (modes[3], modes[0]))
-    if kind in ('band-tune', 'band-adapter', 'band-refine', 'white-corruption'):
+    if arms[0] in OUTER_TUNE_ARMS:
         steps = 1200 if kind == 'band-refine' else 1800
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
     return Trial(run, arms, 3600, modes, contrasts, ROUTES[:1])
@@ -127,6 +130,10 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_band_refine import BandRefiner
 
         return BandRefiner(training, polar=arm == BAND_REFINE_ARMS[1])
+    if arm in BAND_PRECISION_ARMS:
+        from experiments.pamf_lora_main.w24_band_precision import restorer as precision_restorer
+
+        return precision_restorer(training, resolved=arm == BAND_PRECISION_ARMS[1])
     if arm != 'three':
         return training.DuraW24()
 
@@ -204,6 +211,11 @@ def source_recipe(training, arm, *, initialize=None):
     def finalize(model, _tracker, _calibration):
         if arm in BAND_ADAPTER_ARMS:
             trained, key = (model.band_adapter,), 'adapter_gradient_norms'
+        elif arm in BAND_PRECISION_ARMS:
+            trained, key = (model.band_precision,), 'precision_gradient_norms'
+            if any(p.requires_grad or p.grad is not None for name, p in model.named_parameters()
+                   if not name.startswith('band_precision.')):
+                raise ValueError('Expected a frozen source backbone for band precision')
         elif arm in BAND_REFINE_ARMS:
             trained, key = (model.head,), 'head_gradient_norms'
             if any(p.requires_grad or p.grad is not None for p in model.backbone.parameters()):
@@ -222,6 +234,9 @@ def source_recipe(training, arm, *, initialize=None):
             info['trainable_parameters'] = sum(p.numel() for p in model.band_adapter.parameters())
         if arm in BAND_REFINE_ARMS:
             info.update(trainable_parameters=sum(p.numel() for p in model.head.parameters()), backbone_frozen=True)
+        if arm in BAND_PRECISION_ARMS:
+            info.update(trainable_parameters=sum(p.numel() for p in model.band_precision.parameters()),
+                        backbone_frozen=True)
         if arm in WHITE_ARMS:
             info['source_perturbation'] = 'equal_center_energy_white' if arm == WHITE_ARMS[1] else 'archived'
         return None, info
@@ -278,6 +293,10 @@ def fit(config, arm, *, smoke):
                 from experiments.pamf_lora_main.w24_band_adapter import load_parent
 
                 load_parent(model, weights)
+            elif arm in BAND_PRECISION_ARMS:
+                from experiments.pamf_lora_main.w24_band_adapter import load_parent
+
+                load_parent(model, weights, new_module='band_precision')
             elif arm in BAND_REFINE_ARMS:
                 model.backbone.load_state_dict(weights, strict=True)
             else:
@@ -313,7 +332,7 @@ def load_candidate(root, contract, device, arm):
         raise ValueError(f'Unverified source freeze for {arm}')
     if arm in OUTER_TUNE_ARMS and summary.get('source_parent') != OUTER_PARENT:
         raise ValueError(f'Unverified warm start for {arm}')
-    if arm in BAND_REFINE_ARMS and summary.get('backbone_frozen') is not True:
+    if arm in (*BAND_REFINE_ARMS, *BAND_PRECISION_ARMS) and summary.get('backbone_frozen') is not True:
         raise ValueError(f'Unverified frozen source backbone for {arm}')
     checkpoint = torch.load(row / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
@@ -413,7 +432,7 @@ def publish(args):
     pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7], 'final-radius': [0, 5, 6, 7],
              'peer': [3, 7, 6, 5], 'coherent-error': [0, 3, 5, 7], 'band-tune': [7, 6, 3, 0, 2],
              'band-adapter': [0, 3, 5, 7], 'band-refine': [6, 7, 2, 0, 3],
-             'white-corruption': [0, 3, 6, 7, 2]}
+             'white-corruption': [0, 3, 6, 7, 2], 'band-precision': [0, 3, 6, 7]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
