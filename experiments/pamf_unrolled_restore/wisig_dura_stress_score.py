@@ -1,4 +1,4 @@
-"""Open WiSig truth only after both profiles and both routes are frozen."""
+"""Open WiSig truth only after every registered prediction shard is frozen."""
 
 import os
 from itertools import combinations
@@ -64,14 +64,20 @@ def cells(predictions, labels, receivers, rng):
     return dict(absolute=absolute, paired=paired)
 
 
-def score(rt, *, methods=METHODS, force_practical=False, clean_passthrough=True, reference=None):
+def score(rt, *, methods=METHODS, force_practical=False, clean_passthrough=True, reference=None,
+          routes=ROUTES, references=()):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Use the separate CPU scoring process')
     root = Path(rt['run_root'])
     readers = Path(rt['recognizer_run'])
     original = historical(readers, 'predict', SEEDS[0])
+    if not routes or len(set(routes)) != len(routes) or not set(routes).issubset(ROUTES):
+        raise ValueError('Expected a declared Practical route matrix')
+    references = ((reference,) if reference is not None else ()) + tuple(references)
     physical, predictions, activations = {}, {}, {}
     for case, (profile, route, split) in CASES.items():
+        if route not in routes:
+            continue
         manifest, ids, _ = handle(view_root(rt, original, route, split), original['classes'])
         if len(ids) != COUNTS[split] or manifest['channel'] != f'{route}/post_sync/noeq':
             raise ValueError('Wrong Main split IQ set')
@@ -81,19 +87,17 @@ def score(rt, *, methods=METHODS, force_practical=False, clean_passthrough=True,
         predictions[profile, route, split], activations[case] = closed_predictions(
             root / 'predictions' / case, ids, profile, route, split, methods, force_practical=force_practical,
             clean_passthrough=clean_passthrough)
-        if reference is not None:
-            alias, folder, method = reference
+        for alias, folder, method in references:
             archived, _ = closed_predictions(Path(folder) / case, ids, profile, route, split,
                 ('raw', 'R69', method), force_practical=force_practical, clean_passthrough=clean_passthrough)
             current = predictions[profile, route, split]
             if alias in current or any(not np.array_equal(current[k], archived[k]) for k in ('raw','R69')):
                 raise ValueError('Comparison must share identical frozen packets and control decisions')
             current[alias] = archived[method]
-    if reference is not None:
-        methods = (*methods, reference[0])
+    methods = (*methods, *(alias for alias, _, _ in references))
     if np.intersect1d(*(physical[split] for split in TASKS)).size:
         raise ValueError('Main split populations must be disjoint')
-    for route in ROUTES:
+    for route in routes:
         for split in TASKS:
             for method in methods:
                 if not np.array_equal(predictions['default', route, split][method][:, 0],
@@ -113,7 +117,7 @@ def score(rt, *, methods=METHODS, force_practical=False, clean_passthrough=True,
     result = {}
     for profile in PROFILES:
         result[profile] = {}
-        for route in ROUTES:
+        for route in routes:
             result[profile][route] = {}
             for partition in (*TASKS, 'combined'):
                 parts = TASKS if partition == 'combined' else (partition,)
@@ -125,4 +129,5 @@ def score(rt, *, methods=METHODS, force_practical=False, clean_passthrough=True,
     write(root / 'scores.json', dict(status='TARGET_SCORED', truth_last=True,
           bootstrap_replicates=REPLICATES, seeds=list(SEEDS), results=result, activation=activations,
           force_practical=force_practical, clean_passthrough=clean_passthrough,
-          **({'reference_method': reference[0]} if reference is not None else {})))
+          **({'reference_method': reference[0]} if reference is not None else {}),
+          **({'reference_methods': [alias for alias, _, _ in references]} if len(references) > 1 else {})))
