@@ -23,7 +23,7 @@ from experiments.pamf_lora_main.w24_native_innovation import (
 
 
 RUN = '20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r01'
-RECOVERY = '20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r02'
+RECOVERY = '20261126-phase1-lora-w24-packet-noise-calibrated-s2026112991-r03'
 FIT_COMMIT = '6b9ab67d34b039a179cb0a1ea435668543d343d9'
 ARMS = ('aperture_power','native_power')
 MODES = ('direct','aperture_half','aperture_full','native_half','native_full','outer_half')
@@ -103,8 +103,7 @@ def predict(rt):
     states=torch.load(root/'native-innovation.pt',map_location=device,weights_only=True)
     for model,state in zip(models,states,strict=True):
         model.load_state_dict(state)
-    predict_panel(rt,models,MODES[:-1],render_batch=partial(render,observe=packet_observation),
-                  cpu_spawn=Path(rt['run_root']).name == RECOVERY)
+    predict_panel(rt,models,MODES[:-1],render_batch=partial(render,observe=packet_observation))
 
 
 def main():
@@ -150,6 +149,7 @@ def main():
         rt['external_releases'].append(str(runs/PARENT))
         if args.reuse_frozen_source:
             rt['external_releases'] += [str(runs/RUN),str(releases/f'{RUN}-release')]
+            rt['cpu_workers'] = 0
         release(args.repo,args.output,rt,args.ssh_config)
 
 
