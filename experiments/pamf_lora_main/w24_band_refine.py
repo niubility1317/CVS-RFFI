@@ -27,7 +27,7 @@ def match_energy(proposed, original):
 def band_edit_risk(edit, desired):
     current, exact = (sidebands(torch.fft.fft(x, norm='ortho')) for x in (edit, desired))
     current_power, exact_power = power(current.detach()), power(exact)
-    usable = ((current_power > 1e-12) & (exact_power > 1e-12)).flatten()
+    usable = ((current_power > 1e-12) & (exact_power > 1e-12)).reshape(current.shape[:-3])
     exact = exact * (current_power / exact_power.clamp_min(1e-12)).sqrt()
     scale = exact.abs().square() + .1 * current_power + 1e-5
     risk = ((current - exact).abs().square() / scale).log1p().mean((-3, -2, -1))

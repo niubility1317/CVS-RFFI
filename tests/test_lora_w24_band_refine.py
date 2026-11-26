@@ -54,6 +54,17 @@ def test_band_loss_is_zero_without_a_usable_source_pair():
     assert torch.count_nonzero(wave.grad) == 0
 
 
+def test_band_loss_keeps_the_two_perturbed_views_per_packet():
+    edits = torch.randn(14, 2, 8, 384, dtype=torch.complex64).requires_grad_()
+    targets = torch.randn_like(edits)
+    targets[0, 1] = 0
+    loss = band_edit_risk(edits, targets)
+    torch.testing.assert_close(loss, band_edit_risk(edits.flatten(0, 1), targets.flatten(0, 1)))
+    loss.backward()
+    assert torch.isfinite(edits.grad).all()
+    assert torch.count_nonzero(edits.grad[0, 1]) == 0
+
+
 def test_refiner_only_receives_source_paths_and_uses_full_phase1():
     spec = trial('band-refine')
     assert spec.steps == 1200 and spec.source_modes[-1] == 'outer_parent_half'
