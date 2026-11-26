@@ -206,4 +206,6 @@ if __name__ == '__main__':
     matched = parser.add_mutually_exclusive_group()
     matched.add_argument('--third-prior', action='store_true')
     matched.add_argument('--direction', dest='third_prior', action='store_const', const='direction')
+    matched.add_argument('--readout', dest='third_prior', action='store_const', const='readout')
+    matched.add_argument('--robust', dest='third_prior', action='store_const', const='robust')
     score(**vars(parser.parse_args()))

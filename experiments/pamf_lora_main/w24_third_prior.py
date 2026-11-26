@@ -26,6 +26,15 @@ DIRECTION_RUN = '20261126-phase1-lora-w24-first-direction-s2026112991-r01'
 DIRECTION_ARMS = ('direction_control', 'direction_first')
 READOUT_RUN = '20261126-phase1-lora-w24-trained-readout-s2026112991-r01'
 READOUT_ARMS = ('readout_control', 'readout_adaptive')
+ROBUST_RUN = '20261126-phase1-lora-w24-robust-map-s2026112991-r01'
+ROBUST_ARMS = ('robust_control', 'robust_map')
+VARIANTS = {
+    'direction': (DIRECTION_RUN, DIRECTION_ARMS),
+    'readout': (READOUT_RUN, READOUT_ARMS),
+    'robust': (ROBUST_RUN, ROBUST_ARMS),
+}
+ARM_TRIAL = dict.fromkeys(ARMS, True)
+ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
 
 
 @dataclass(frozen=True)
@@ -41,17 +50,16 @@ class Trial:
 def trial(kind):
     if kind is True:
         return Trial(RUN, ARMS, STEPS, MODES, CONTRASTS)
-    variants = {'direction': (DIRECTION_RUN, DIRECTION_ARMS), 'readout': (READOUT_RUN, READOUT_ARMS)}
-    if kind not in variants:
+    if kind not in VARIANTS:
         raise ValueError(f'Unknown matched W24 trial: {kind}')
-    run, arms = variants[kind]
+    run, arms = VARIANTS[kind]
     modes = ('direct', 'all_half', *(f'{arm}_{alpha}' for alpha in ('half', 'full') for arm in arms))
     return Trial(run, arms, 3600, modes,
                  ((modes[3], modes[2]), (modes[5], modes[4]), (modes[3], modes[0])), ROUTES[:1])
 
 
 def restorer(training, arm):
-    if arm not in (*ARMS, *DIRECTION_ARMS, *READOUT_ARMS):
+    if arm not in ARM_TRIAL:
         raise ValueError(f'Unknown prior arm: {arm}')
     if arm == 'readout_adaptive':
         from experiments.pamf_lora_main.w24_readout_strength import adaptive_final
@@ -63,6 +71,12 @@ def restorer(training, arm):
                 return (coarse, first, final), action, variance, noise, support
 
         return AdaptiveReadout()
+    if arm == 'robust_map':
+        class RobustMap(training.DuraW24):
+            def stages(self, y, quality, rms, **options):
+                return super().stages(y, quality, rms, **dict(options, robust=True))
+
+        return RobustMap()
     if arm != 'three':
         return training.DuraW24()
 
@@ -81,7 +95,7 @@ def restorer(training, arm):
 
 
 def fit_inputs(rt, arm):
-    if arm not in (*ARMS, *DIRECTION_ARMS, *READOUT_ARMS):
+    if arm not in ARM_TRIAL:
         raise ValueError(f'Unknown prior arm: {arm}')
     return dict(source_root=rt['source_root'], run_root=str(PurePosixPath(rt['run_root']) / arm))
 
@@ -141,8 +155,7 @@ def source_recipe(training, arm):
         return None, dict(input_gate=False, prior_count=len(model.priors), prior_gradient_norms=grads,
                           parameters=sum(p.numel() for p in model.parameters()))
 
-    kind = 'readout' if arm in READOUT_ARMS else 'direction' if arm in DIRECTION_ARMS else True
-    spec = trial(kind)
+    spec = trial(ARM_TRIAL[arm])
     name = f'w24_{arm}_prior' if arm in ARMS else f'w24_{arm}'
     return replace(training.RECIPE, name=name, steps=spec.steps,
                    validation_steps=(spec.steps // 3, 2 * spec.steps // 3),
@@ -291,13 +304,14 @@ def publish(args):
     rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
     releases, runs = project / 'releases', project / 'runs'
+    pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
               native_target_root=str(releases / f'{DATA_RUN}-release' / 'data/target'),
               classifier_root=str(runs / AUG_RUN), w24_release_root=str(releases / f'{W24_RUN}-release'),
               training_release_root=str(releases / f'{TRAIN_RUN}-release'), third_prior=kind,
-              cpu_workers=8, allowed_gpus=[0, 3, 7] if kind == 'readout' else [5, 6, 1, 0],
+              cpu_workers=8, allowed_gpus=pools.get(kind, [5, 6, 1, 0]),
               max_workers=2, max_compute_processes=8)
     rt['external_releases'] = [rt[k] for k in ('source_root', 'classifier_root', 'w24_release_root',
                                                'training_release_root', 'native_target_root')] + [str(runs / name) for name in (SWEEP_RUN, RUN_UNGATED)]
@@ -353,15 +367,16 @@ if __name__ == '__main__':
     for phase in ('fit-smoke', 'fit', 'fit-arm'):
         cmd = actions.add_parser(phase)
         cmd.add_argument('runtime', type=Path)
-        cmd.add_argument('arm', choices=(*ARMS, *DIRECTION_ARMS, *READOUT_ARMS))
+        cmd.add_argument('arm', choices=ARM_TRIAL)
     pub = actions.add_parser('publish')
     for key in ('repo', 'output', 'context', 'ssh-config'):
         pub.add_argument('--' + key, type=Path, required=True)
     collector = actions.add_parser('collect-score')
     for command in (pub, collector):
         variants = command.add_mutually_exclusive_group()
-        variants.add_argument('--direction', dest='kind', action='store_const', const='direction', default=True)
-        variants.add_argument('--readout', dest='kind', action='store_const', const='readout')
+        variants.set_defaults(kind=True)
+        for kind in VARIANTS:
+            variants.add_argument('--' + kind, dest='kind', action='store_const', const=kind)
     for key in ('submit', 'dataset', 'output', 'ssh-config'):
         collector.add_argument('--' + key, type=Path, required=True)
     args = parser.parse_args()
