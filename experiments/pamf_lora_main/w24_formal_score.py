@@ -214,5 +214,6 @@ if __name__ == '__main__':
     matched.add_argument('--band-refine', dest='third_prior', action='store_const', const='band-refine')
     matched.add_argument('--white-corruption', dest='third_prior', action='store_const', const='white-corruption')
     matched.add_argument('--band-precision', dest='third_prior', action='store_const', const='band-precision')
+    matched.add_argument('--half-primary', dest='third_prior', action='store_const', const='half-primary')
     matched.add_argument('--severity-weight', dest='third_prior', action='store_const', const='severity-weight')
     score(**vars(parser.parse_args()))

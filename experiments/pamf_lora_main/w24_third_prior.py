@@ -46,8 +46,10 @@ BAND_PRECISION_RUN = '20261126-phase1-lora-w24-band-precision-s2026112991-r01'
 BAND_PRECISION_ARMS = ('precision_shared', 'precision_resolved')
 SEVERITY_RUN = '20261126-phase1-lora-w24-severity-weight-s2026112991-r01'
 SEVERITY_ARMS = ('severity_uniform', 'severity_weighted')
+HALF_PRIMARY_RUN = '20261126-phase1-lora-w24-half-primary-s2026112991-r01'
+HALF_PRIMARY_ARMS = ('half_aux_control', 'half_primary')
 OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS,
-                   *WHITE_ARMS, *BAND_PRECISION_ARMS, *SEVERITY_ARMS)
+                   *WHITE_ARMS, *BAND_PRECISION_ARMS, *SEVERITY_ARMS, *HALF_PRIMARY_ARMS)
 OUTER_BASELINE = 'outer_parent_half'
 OUTER_PARENT = '20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01'
 VARIANTS = {
@@ -62,6 +64,7 @@ VARIANTS = {
     'band-refine': (BAND_REFINE_RUN, BAND_REFINE_ARMS),
     'white-corruption': (WHITE_RUN, WHITE_ARMS),
     'band-precision': (BAND_PRECISION_RUN, BAND_PRECISION_ARMS),
+    'half-primary': (HALF_PRIMARY_RUN, HALF_PRIMARY_ARMS),
     'severity-weight': (SEVERITY_RUN, SEVERITY_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -315,6 +318,8 @@ def fit(config, arm, *, smoke):
             calculate = objective_for(dura_w24_model, white_corruption=arm == WHITE_ARMS[1])
         elif arm in SEVERITY_ARMS:
             calculate = objective_for(dura_w24_model, severity_weighted=arm == SEVERITY_ARMS[1])
+        elif arm in HALF_PRIMARY_ARMS:
+            calculate = objective_for(dura_w24_model, half_primary=arm == HALF_PRIMARY_ARMS[1])
         else:
             calculate = objective_for(dura_w24_model, band_direction_weight=weight)
     numerical_policy()
@@ -441,6 +446,7 @@ def publish(args):
              'peer': [3, 7, 6, 5], 'coherent-error': [0, 3, 5, 7], 'band-tune': [7, 6, 3, 0, 2],
              'band-adapter': [0, 3, 5, 7], 'band-refine': [6, 7, 2, 0, 3],
              'white-corruption': [0, 3, 6, 7, 2], 'band-precision': [0, 3, 6, 7],
+             'half-primary': [0, 3, 5, 7],
              'severity-weight': [6, 5, 3, 0, 7, 2]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),

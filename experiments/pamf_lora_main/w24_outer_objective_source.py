@@ -48,7 +48,7 @@ def recipe_for(training, *, joint_edges=False):
 
 
 def objective_for(archived, *, joint_edges=False, band_direction_weight=None, refine_band=False,
-                  white_corruption=None, severity_weighted=None):
+                  white_corruption=None, severity_weighted=None, half_primary=False):
     # This reuses the original module's coordinates, source perturbation and loss primitives.
     import torch
 
@@ -63,6 +63,7 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
 
     risk = archived.waveform_risk
     window = archived.WIDE
+    full_share, half_share = (0., 1.) if half_primary else (.35, .65)
 
     def calculate(model, tracker, raw, rng, *, with_identity, recipe, step):
         raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
@@ -127,7 +128,7 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
         values = torch.stack((risk(coarse, ground), risk(first, ground), risk(final, ground), balanced_risk,
                               preserve, consistency, (corruption / (.01 + variance.detach())).log1p().mean(),
                               (corruption.detach() / variance + variance.log()).mean(), identity, outer_identity))
-        weights = values.new_tensor((.6 * a_weight, .4 * a_weight, .35 * b_weight, .65 * b_weight,
+        weights = values.new_tensor((.6 * a_weight, .4 * a_weight, full_share * b_weight, half_share * b_weight,
                                      .30, c_weight, .07, .015, .35, .35))
         loss = values @ weights
         report = torch.cat((values, outer_disturbed[None], inner_disturbed[None]))
