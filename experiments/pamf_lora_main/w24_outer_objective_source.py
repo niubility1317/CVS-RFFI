@@ -47,9 +47,12 @@ def recipe_for(training, *, joint_edges=False):
     return replace(training.RECIPE, name=NAME, finalize_calibration=no_gate)
 
 
-def objective_for(archived, *, joint_edges=False):
+def objective_for(archived, *, joint_edges=False, band_direction_weight=None):
     # This reuses the original module's coordinates, source perturbation and loss primitives.
     import torch
+
+    if band_direction_weight is not None:
+        from experiments.pamf_lora_main.w24_band_tune import spectral_direction_risk
 
     risk = archived.waveform_risk
     window = archived.WIDE
@@ -103,6 +106,14 @@ def objective_for(archived, *, joint_edges=False):
                                      .30, c_weight, .07, .015, .35, .35))
         loss = values @ weights
         report = torch.cat((values, outer_disturbed[None], inner_disturbed[None]))
+        if band_direction_weight is not None:
+            # Undo the chirp RMS normalization, retaining the dechirped frame.
+            # Keep the two matched noisy views and leave the probe/clean losses intact.
+            edit = ((half - y) * rms)[:n_disturbed].unflatten(0, (-1, 3))[:, :2]
+            desired = ((ground - y) * rms)[:n_disturbed].unflatten(0, (-1, 3))[:, :2]
+            alignment = spectral_direction_risk(edit, desired)
+            loss = loss + band_direction_weight * alignment
+            report = torch.cat((report, alignment[None]))
         if joint_edges:
             from experiments.pamf_lora_main.w24_joint_edges import edge_objective
 
@@ -142,11 +153,9 @@ def fit_source(runtime, action, *, joint_edges=False):
                              make_tracker=dura_w24_train.WideTracker)
 
 
-def load_candidate(root, contract, device, *, joint_edges=False):
+def read_outer_checkpoint(root, contract, device, training, source, *, joint_edges=False):
     import torch
 
-    training = importlib.import_module('lora_wide_dura_archive.dura_w24_train')
-    source = importlib.import_module('lora_wide_dura_archive.channel_blind_source')
     recipe = recipe_for(training, joint_edges=joint_edges)
     summary = read(root / f'{recipe.name}-complete.json')
     expected = source.proof(contract, recipe)
@@ -160,8 +169,15 @@ def load_candidate(root, contract, device, *, joint_edges=False):
     checkpoint = torch.load(root / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
         raise ValueError('Candidate weights do not satisfy the registered source contract')
+    return recipe, checkpoint['weights'], summary
+
+
+def load_candidate(root, contract, device, *, joint_edges=False):
+    training = importlib.import_module('lora_wide_dura_archive.dura_w24_train')
+    source = importlib.import_module('lora_wide_dura_archive.channel_blind_source')
+    recipe, weights, summary = read_outer_checkpoint(root, contract, device, training, source, joint_edges=joint_edges)
     model = recipe.model().to(device).eval().requires_grad_(False)
-    model.load_state_dict(checkpoint['weights'], strict=True)
+    model.load_state_dict(weights, strict=True)
     return model, summary
 
 

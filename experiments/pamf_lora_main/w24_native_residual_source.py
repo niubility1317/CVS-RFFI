@@ -148,12 +148,19 @@ def predict_source(runtime):
 
         names = trial(third_prior).arms
         arms = [load_candidate(root, contract, device, arm) for arm in names]
+        outer_parent = None
+        if third_prior == 'band-tune':
+            from experiments.pamf_lora_main.w24_outer_objective_source import load_candidate as load_outer
+
+            outer_parent, _ = load_outer(Path(rt['source_parent']), contract, device)
 
         def evaluate(packets):
             original = received_aperture(packets, device)
             edits = [wide_delta(model, track, original) for model, _ in arms]
             old = restore_center(original, wide_delta(g, track, original), .5)
             outputs = [restore_center(original, delta, alpha) for alpha in (.5, 1.) for delta in edits]
+            if outer_parent is not None:
+                outputs.append(restore_center(original, wide_delta(outer_parent, track, original), .5))
             rows = (original, old, *outputs)
             return np.stack([classify_aperture(f, x) for x in rows]), [len(packets)] * (len(modes)-1)
     elif learning_outer:
@@ -252,6 +259,16 @@ def predict_source(runtime):
             with np.load(previous/'predictions.npz', allow_pickle=False) as archive:
                 if any(not np.array_equal(archive[v][indices], output[route][v][:len(indices)]) for v in VIEWS):
                     raise ValueError('The registered source readout comparators failed to reproduce')
+            if third_prior == 'band-tune':
+                parent = Path(rt['source_parent']) / route
+                mark = read(parent / 'source-predictions.json')
+                if (mark['status'], mark['physical_ids'], mark['views'], mark['target_reads'], mark['source_truth_reads']) != (
+                        'PREDICTIONS_FROZEN', ids, list(VIEWS), 0, 0):
+                    raise ValueError('Expected frozen outer-loss source predictions')
+                index = mark['modes'].index('outer_objective_half')
+                with np.load(parent / 'predictions.npz', allow_pickle=False) as archive:
+                    if any(not np.array_equal(archive[v][index], output[route][v][-1]) for v in VIEWS):
+                        raise ValueError('Outer parent prediction did not reproduce')
         out = root / route
         out.mkdir()
         np.savez(out / 'predictions.npz', **output[route])
