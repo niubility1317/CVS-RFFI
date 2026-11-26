@@ -1,0 +1,2 @@
+{"at": "2026-11-26T13:41:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-26T13:43:59+00:00", "status": "RUNNING", "note": "VERIFIED on N607. Archive SHA and compile passed. Dispatcher 1194627, actual workers 1194966 GPU 0 and 1194967 GPU 3, expected source-fit CWD and commands, and both real parent-checkpoint U_s smoke PASS. No target query.", "evidence": ["release/submit.json", "state.json", "probe_after_channel-fit.log", "probe_through_channel-fit.log"], "row_id": null}
