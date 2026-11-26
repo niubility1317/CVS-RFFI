@@ -82,12 +82,12 @@ def observation(tracker, raw, taps):
     return inputs, frame, rms, fields, packet_rms
 
 
-def training_pair(tracker, raw, generic, rng, taps):
+def training_pair(tracker, raw, generic, rng, taps, *, observe=observation):
     scale = raw.abs().square().mean(-1,keepdim=True).clamp_min(1e-12).sqrt()
     clean = raw/scale
     disturbed = generic(clean.unflatten(-1,(CHIRPS,1024)),rng).flatten(-2)
     received = torch.cat((disturbed[:-1],clean[-1:]))
-    inputs, frame,rms,fields,_ = observation(tracker,received,taps)
+    inputs, frame,rms,fields,_ = observe(tracker,received,taps)
     target = tracker.aperture(clean)
     return inputs,fields,target[...,:CENTER]/frame,target[...,CENTER:]/rms
 
@@ -104,18 +104,24 @@ def metrics(output, target, edges, inputs):
 
 
 @torch.no_grad()
-def heldout(models, tracker, generic, taps, native_iq, rows, device):
+def heldout(models, tracker, generic, taps, native_iq, rows, device, pair, measure):
     rng = torch.Generator(device=device).manual_seed(SEED+1)
     values = []
     for first in range(0,len(rows),BATCH):
         raw = packet_tensor(native_iq[rows[first:first+BATCH]],device)
-        inputs,field,clean,edges = training_pair(tracker,raw,generic,rng,taps)
-        values.append(torch.stack([metrics(m(*inputs,x),clean,edges,inputs)
+        inputs,field,clean,edges = pair(tracker,raw,generic,rng,taps)
+        values.append(torch.stack([measure(m(*inputs,x),clean,edges,inputs)
                                    for m,x in zip(models,field,strict=True)]))
     return torch.stack(values).mean(0).tolist()
 
 
-def fit(rt):
+def make_restorer():
+    return PacketReconstructor(True,receive_fields=3)
+
+
+def fit(rt, *, make_model=make_restorer, pair=training_pair, measure=metrics,
+        loss_weights=(1., .35, .15, .15, .15, .12, .30, .55), field_count=3,
+        arms=('aperture','native')):
     root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
     tracker,generic = source_tools(rt,device)
     contract = source_contract(source)
@@ -125,16 +131,16 @@ def fit(rt):
     taps = high_pass_taps(device,torch.float32)
     rng = torch.Generator(device=device).manual_seed(SEED)
     torch.manual_seed(SEED)
-    models = [PacketReconstructor(True,receive_fields=3).to(device) for _ in range(2)]
+    models = [make_model().to(device) for _ in arms]
     models[1].load_state_dict(models[0].state_dict())
     optimizers = [torch.optim.AdamW(model.parameters(),lr=.0006) for model in models]
     schedulers = [torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,STEPS,eta_min=.00008)
                   for optimizer in optimizers]
     with torch.no_grad():
-        inputs,fields,target,guard = training_pair(tracker,packet_tensor(raw[rows[:2]],device),generic,rng,taps)
-        check = torch.stack([metrics(model(*inputs,x),target,guard,inputs)
+        inputs,fields,target,guard = pair(tracker,packet_tensor(raw[rows[:2]],device),generic,rng,taps)
+        check = torch.stack([measure(model(*inputs,x),target,guard,inputs)
                              for model,x in zip(models,fields,strict=True)])
-        if fields[1].shape != (2,CHIRPS,3,CENTER) or not torch.isfinite(check).all():
+        if fields[1].shape != (2,CHIRPS,field_count,CENTER) or not torch.isfinite(check).all():
             raise ValueError('Native receive IQ source smoke failed')
     write(root/'fit-smoke.json',dict(status='PASS',F_reads=0,target_reads=0,source_u_packets=2))
     print('W24_NATIVE_INNOVATION_FIT_SMOKE PASS',flush=True)
@@ -144,11 +150,11 @@ def fit(rt):
     for step in range(1,STEPS+1):
         batch = selection.choice(rows[:FIT_PACKETS],BATCH,replace=False)
         with torch.no_grad():
-            inputs,fields,target,guard = training_pair(tracker,packet_tensor(raw[batch],device),generic,rng,taps)
+            inputs,fields,target,guard = pair(tracker,packet_tensor(raw[batch],device),generic,rng,taps)
         risks_by_row = []
         for model,optimizer,scheduler,feature in zip(models,optimizers,schedulers,fields,strict=True):
-            value = metrics(model(*inputs,feature),target,guard,inputs)
-            loss = value @ value.new_tensor((1., .35, .15, .15, .15, .12, .30, .55))
+            value = measure(model(*inputs,feature),target,guard,inputs)
+            loss = value @ value.new_tensor(loss_weights)
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(),1.)
@@ -163,7 +169,7 @@ def fit(rt):
             print('W24_NATIVE_INNOVATION_STEP',step,average.tolist(),flush=True)
             block.clear()
         if step in MILESTONES:
-            result = heldout(models,tracker,generic,taps,raw,rows[FIT_PACKETS:],device)
+            result = heldout(models,tracker,generic,taps,raw,rows[FIT_PACKETS:],device,pair,measure)
             if not np.isfinite(result).all():
                 raise ValueError('Nonfinite source waveform holdout')
             evaluations[str(step)] = dict(seconds=monotonic()-start,metrics=result)
@@ -171,17 +177,17 @@ def fit(rt):
             print('W24_NATIVE_INNOVATION_HOLDOUT',step,result,flush=True)
     torch.save([model.cpu().state_dict() for model in models],root/'native-innovation.pt')
     write(root/'fit-complete.json',dict(status='SOURCE_FROZEN',initialization='scratch',steps=STEPS,
-          arms=['aperture','native'],seed=SEED,F_reads=0,target_reads=0,source_truth_reads=0,source_V_reads=0,
+          arms=list(arms),seed=SEED,F_reads=0,target_reads=0,source_truth_reads=0,source_V_reads=0,
           fit_pool=FIT_PACKETS,holdout_packets=HOLD_PACKETS,evaluations=evaluations,
           parameters=sum(p.numel() for p in models[0].parameters()),
           peak_cuda_allocated_MiB=torch.cuda.max_memory_allocated()/1024**2))
 
 
 @torch.no_grad()
-def render(f, tracker, models, raw, device):
+def render(f, tracker, models, raw, device, *, observe=observation):
     original = received_aperture(raw,device)
     measured = packet_tensor(raw,device)
-    inputs,frame,_,fields,rms = observation(tracker,measured,high_pass_taps(device,measured.real.dtype))
+    inputs,frame,_,fields,rms = observe(tracker,measured,high_pass_taps(device,measured.real.dtype))
     decisions = [classify_aperture(f,original)]
     for model, field in zip(models,fields,strict=True):
         estimate = model(*inputs,field)[0]
