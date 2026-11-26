@@ -1,0 +1,183 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-spectral-cov-source-s2026112991-r01",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 跨 chirp 复数谱校正（Full 源域）",
+  "description": "Compare matched ridge correction of nine-to-32 signed spectral bins from a frozen native W24 DURA parent. Screen whether off-diagonal chirp covariance improves Full practical identification.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 goal, lawful source U_s same-waveform paired IQ, frozen W24 only after added source coefficients freeze, Full route.",
+  "code": {
+    "commit": "71581ec7a5c9a19c284bccedd8140a174b9ba4aa",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "Archived N607 CVS-RFFI with exact registered W24 release",
+    "cwd": "Registered archive releases/20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "Same 300 unique opaque source V packet IDs as frozen outer-objective source run",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 1152,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Native source contract 392005; disjoint 1024 U_s fit and 128 waveform holdout, frozen 300 source V IDs and archived direct/outer parity.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean. Prediction uses generated receive IQ."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source calibration and source screen. No F/TX/V/target access at fit or freeze. DURA and W24 checkpoints read only for their allowed roles."
+  },
+  "checkpoint": {
+    "initialization": "Frozen 40k outer G. New complex coefficients solved from zero regularized sufficient statistics.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "40000-update frozen source-only LoRa center restorer"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "E104 frozen default reader only"
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Pinned architecture and tracker archive"
+      }
+    ],
+    "contract_check_ref": "Source frozen checkpoint binding and actual paired blind decisions must match the immutable prior source run.",
+    "provenance_verdict": "Contract-bound LoRa U_s frozen parent; U_s IQ only for new coefficients. W24 for frozen source inference.",
+    "selection_rule": "One fixed ridge solve with no candidate or hyperparameter selection. Separate preregistered Full target promotion requires cross_chirp >= parent+18 six and parent+10 low, clean >= direct and positive six/low over independent."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "One GPU, 7 then 3, 6, 0, at least 12 GiB free and existing process cap; 8 CPU workers.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-spectral-cov-source-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-spectral-cov-source-s2026112991-r01",
+    "local_artifact_root": "local_artifacts/20261126-phase1-lora-w24-spectral-cov-source-s2026112991-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_spectral_cov publish --repo <worktree> --context <source-context> --ssh-config <config> --output <local-release>",
+    "stop_rule": "Stop on source/parent binding, invalid finite fit, smoke, physical ID or archived decisions, missing predictions or truth-last failure."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "{route}/predictions.npz",
+    "{route}/source-predictions.json",
+    "{route}/source-scores.json",
+    "fit-smoke.json",
+    "fit-complete.json",
+    "spectral-cov.pt"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldout received-normalized waveform error",
+      "per-scene paired counts",
+      "net versus direct and parent",
+      "RX groups",
+      "added edit fraction"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-spectral-cov-source-s2026112991-r01/{route}/predictions.npz",
+    "scorer_ref": "experiments.pamf_lora_main.w24_spectral_cov score-source through the existing frozen Full source scorer"
+  },
+  "rows": [
+    {
+      "row_id": "spectral-cov",
+      "method": "Direct, frozen outer half, same-band real-observation+parent-edit ridge with per-chirp blocks, and dense cross-chirp ridge. No F during fit. Fixed lambda .05 of mean band design power, each extra norm capped at half the parent edit.",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_spectral_cov.py",
+      "resolved_config_ref": "releases/20261126-phase1-lora-w24-spectral-cov-source-s2026112991-r01-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300,
+        "U_s_fit": 1024,
+        "U_s_holdout": 128
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "complex ridge",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "1024 U_s fits each with one generic paired observation and one identity. 128 disjoint U_s waveform holdout. Frozen 300 source V packets x seven views.",
+      "output_root": "runs/20261126-phase1-lora-w24-spectral-cov-source-s2026112991-r01",
+      "log_path": "runs/20261126-phase1-lora-w24-spectral-cov-source-s2026112991-r01/fit-source.log",
+      "command": "python -m experiments.pamf_lora_main.w24_spectral_cov dispatch <runtime>",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "{route}/predictions.npz",
+        "{route}/source-predictions.json",
+        "{route}/source-scores.json",
+        "fit-smoke.json",
+        "fit-complete.json",
+        "spectral-cov.pt"
+      ]
+    }
+  ],
+  "notes": [
+    "Live capacity must permit one run-owned fit/prediction worker. GPU and code are independently verified.",
+    "Both arms consume the same spectra, split, ridge, actual half correction, output cap and clean pairs. Only full versus chirp-block covariance and fit differ.",
+    "Band support in tracked center: signed |k| 9–32. Packet normalization and apply-time gate use measured center and parent edit norms only.",
+    "Source-free CPU checks covered conjugate orientation, spectral support, zero edit, model scale equivariance and matched masks; one independent P0/P1 review passed.",
+    "No new Residual. Candidate uncertainty recorded with receiver-stratified physical-packet bootstrap."
+  ],
+  "registered_at": "2026-11-26T09:01:42+00:00"
+}
