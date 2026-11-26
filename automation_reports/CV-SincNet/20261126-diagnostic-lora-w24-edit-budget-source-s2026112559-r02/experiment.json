@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 同等剂量与修正上限源域诊断（仅 Full）",
+  "description": "Compare frozen learned half readout with source-only exact-noise controls at learned magnitude, at model cap, and with complete center-only subtraction.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01"
+  ],
+  "replaces_run_id": "20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r01",
+  "authorization": "Active LoRa DURA W24 goal authorizes strictly isolated source diagnostics with simulated noise components. Latest user instruction limits this experiment to Full practical.",
+  "code": {
+    "commit": "7edca3dfb4fa99fcd820424b09867a7eb4c86ce5",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "Archived N607 CVS-RFFI with exact registered W24 release",
+    "cwd": "Registered archive releases/20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "Same 300 unique opaque source V packet IDs as frozen outer-objective source run",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 1,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Prior frozen exact source-packet replay and original same-packet clean/direct/half coordinates.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean; source-only isolated trace."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Zero training, model selection or target paths. Exact noise consumed solely by diagnostic counterfactuals after frozen-source model binding. Full route only."
+  },
+  "checkpoint": {
+    "initialization": "No fitting; read-only inference.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "40000-update frozen source-only LoRa center restorer"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "E104 frozen default reader only"
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Pinned architecture and tracker archive"
+      }
+    ],
+    "contract_check_ref": "Source frozen checkpoint binding and actual paired blind decisions must match the immutable prior source run.",
+    "provenance_verdict": "Original compliant frozen source models, no dynamic weights, no training or calibration.",
+    "selection_rule": "No candidate selection; confirm one registered source comparison. None of the exact-noise variants are target candidates."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "One GPU, 5 then 6,3,0; actual free memory at least 12 GiB; 8 CPU workers.",
+    "remote_run_root": "runs/20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02",
+    "remote_log_root": "runs/20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02",
+    "local_artifact_root": "local_artifacts/20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_edit_budget_audit publish --repo <worktree> --context <context> --ssh-config <config> --output <local-release>",
+    "stop_rule": "Stop on role, checkpoint, physical order, exact trace parity, actual edit cap, output shape, paired control parity or matrix coverage failure."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "{route}/predictions.npz",
+    "{route}/source-predictions.json",
+    "{route}/source-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "same-packet correctness",
+      "paired net",
+      "bootstrap interval",
+      "center edit RMS",
+      "remaining noise RMS",
+      "direction cosine"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02/{route}/predictions.npz",
+    "scorer_ref": "experiments.pamf_lora_main.w24_edit_budget_audit score-source and the existing frozen source scorer"
+  },
+  "rows": [
+    {
+      "row_id": "edit-budget",
+      "method": "Direct, frozen outer_half, exact same-dose noise direction, capped noise direction, exact projected noise subtraction, complete center-noise removal. Each preserves measured edges.",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_edit_budget_audit.py",
+      "resolved_config_ref": "releases/20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One source-only frozen 300-packet panel per route; zero parameter updates.",
+      "output_root": "runs/20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02",
+      "log_path": "runs/20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02/predict-source.log",
+      "command": "python -m experiments.pamf_lora_main.w24_edit_budget_audit dispatch <runtime>",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "{route}/predictions.npz",
+        "{route}/source-predictions.json",
+        "{route}/source-scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Exact noise controls are isolated from any candidate training or deployment.",
+    "Same-dose matches the learned RMS on nonzero projected-noise cells. Report undefined and overshoot counts. Capped and projected-exact rows share the same carrier projection; comparison with complete center subtraction isolates restoring its removed component.",
+    "None of the diagnostic counterparts are eligible for formal test. Maintaining the active overarching target.",
+    "Full-only user scope excludes Residual processing, prediction and scoring."
+  ],
+  "registered_at": "2026-11-26T04:21:48+00:00"
+}
