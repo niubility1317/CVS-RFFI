@@ -1,0 +1,270 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 冻结 E104 的同包表征保真续训（Full）",
+  "description": "Test whether paired clean packet representation direction improves restoration beyond the same continuation without it.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "full-only",
+    "truth-last",
+    "fixed-e104",
+    "clean-pl",
+    "paired-feature"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "ff64426eb7e414bebd20644ddfee11f0d4e7eb0b",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "E104 stays unchanged. True CE only on L_s. Confidence-gated E104 clean pseudo CE stays unchanged on U_s. The angular representation loss uses paired source U_s only and no TX, regardless of confidence. No V or target in fit. Conditional Full-only target independent score."
+  },
+  "checkpoint": {
+    "initialization": "Both arms strictly load the same pre-target source-selected fixed-E104 clean-PL G at step 6000, itself initialized from source U-Net step 24000. Reset AdamW. Original E104 frozen.",
+    "sources": [
+      {
+        "ref": "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+        "role": "Common G initial weights and independent same-packet fixed-E104 prediction comparator."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Original E104 PAMF and fixed clean anchor; remains fixed in G-only CE row."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Fixed-step original loss U-Net common initialization."
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Matched archived source baseline only."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "Matching original LoRa physical roles. Original run is selected by its fixed, passed source criterion before target. Neither candidate fit can load source/target labels outside L_s, target observations, or target metrics.",
+    "selection_rule": "Freeze both arms at +6000. Only clean_feature can promote: 300 same source V Full, six correct strictly above continued control, source-selected parent, raw, outer DURA and original U-Net. Low urban strictly above continued control and matches or exceeds the other controls. Clean at least raw and parent."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 preferred 0,3,7,2,6,5. At least 12 GiB free and fewer than eight visible existing contexts. At most one new worker per physical GPU; two fitting workers and up to three formal prediction workers.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --clean-feature --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/release",
+    "stop_rule": "Stop dependent stages on failed real checkpoint smoke, inconsistent roles, missing source artifacts, inactive feature gradient, nonfinite fit or invalid Full shard. Preserve outputs. Do not enter target if source gate fails."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional predictions/{full-shard}/complete.json",
+    "conditional independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "paired packet representation angular training loss"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/full_native/predictions.npz; conditional runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/predictions",
+    "scorer_ref": "Independent source score then conditional local w24_joint_pamf collect after all Full shards are frozen."
+  },
+  "rows": [
+    {
+      "row_id": "continued_clean_pl",
+      "method": "Fixed E104. Source clean-PL continuation; paired U_s E104 feature direction weight 0.0.",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_joint_pamf.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/continued_clean_pl/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 16,
+        "U_batch": 16,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "feature_weight": 0.0
+      },
+      "seeds": {
+        "model": 2026112993,
+        "split": 392005,
+        "data": 2026112993,
+        "augmentation": 2026112993,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Same 2026112993 source trainer draw and perturbation sequence in both rows. Both load the same parent before resetting optimizer. Preserve the independent 300 source V panel under seed 2026112559.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight decay 1e-4; G learning rate 4e-5, cosine to 2e-6; clip 1.",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Fixed 6000 additional updates after source U-Net 24000 and fixed clean PL 6000; 36000 cumulative. Exactly 96000 additional exposures in each source role.",
+      "output_root": "runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/continued_clean_pl",
+      "log_path": "runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/continued_clean_pl-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/continued_clean_pl/fit-inputs.json continued_clean_pl",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "clean_feature",
+      "method": "Fixed E104. Source clean-PL continuation; paired U_s E104 feature direction weight 16.0.",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_joint_pamf.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/clean_feature/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 16,
+        "U_batch": 16,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "feature_weight": 16.0
+      },
+      "seeds": {
+        "model": 2026112993,
+        "split": 392005,
+        "data": 2026112993,
+        "augmentation": 2026112993,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Same 2026112993 source trainer draw and perturbation sequence in both rows. Both load the same parent before resetting optimizer. Preserve the independent 300 source V panel under seed 2026112559.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight decay 1e-4; G learning rate 4e-5, cosine to 2e-6; clip 1.",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Fixed 6000 additional updates after source U-Net 24000 and fixed clean PL 6000; 36000 cumulative. Exactly 96000 additional exposures in each source role.",
+      "output_root": "runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/clean_feature",
+      "log_path": "runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/clean_feature-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01/clean_feature/fit-inputs.json clean_feature",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both arms compute original E104 packet features from the same clean U_s and restored packet, share identical forwards and same hard pseudo CE, L_s CE, waveform and clean identity. The only active weight difference is 16 vs 0 for mean (1 − cosine similarity) of corresponding U_s packet features. The clean feature is detached. No features at runtime beyond normal E104.",
+    "The weight 16 was fixed using only nonzero isolated source-IQ gradient scale in the real-checkpoint smoke, before validation or target access.",
+    "Low confidence U_s means no hard pseudo class CE. It may contribute a same-packet, class-free cosine loss in the feature arm.",
+    "A single preserved parent G from the same source IQ contract was nominated before any target read. Source registration and actual freeze verified prior to training. Parent target results and simulations are never a fit input.",
+    "Native Full only. The source matrix includes both arms and archived same-physical direct/reference rows. Official conditional comparison binds original E104 and already-frozen target prediction rows, including the clean-PL parent; independent scorer joins truth only after all three new prediction shards freeze."
+  ],
+  "registered_at": "2026-11-26T15:05:51+00:00"
+}
