@@ -255,7 +255,7 @@ def predict(rt):
     predict_panel(rt, models, MODES)
 
 
-def predict_panel(rt, models, modes):
+def predict_panel(rt, models, modes, *, render_batch=render):
     root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
     tracker, _ = source_tools(rt, device)
     contract = source_contract(source)
@@ -264,7 +264,7 @@ def predict_panel(rt, models, modes):
     f = load_classifier(rt, contract, device)
     packet = native(source, 'U_s', contract['counts']['U_s'])[0]
     raw = np.stack([source_receive(view, (0, SOURCE[0], packet)) for view in ('clean', VIEWS[-1])])
-    if render(f, tracker, models, raw, device).shape != (len(modes), 2):
+    if render_batch(f, tracker, models, raw, device).shape != (len(modes), 2):
         raise ValueError('Frozen W24 source smoke failed')
     write(root/'smoke.json', dict(status='PASS', source_u_packets=1, source_truth_reads=0, target_reads=0))
     print('W24_PACKET_RECONSTRUCTION_SMOKE PASS', flush=True)
@@ -279,7 +279,7 @@ def predict_panel(rt, models, modes):
             results = []
             for off in range(0, len(jobs), BATCH):
                 raw = np.stack([next(stream) for _ in range(min(BATCH, len(jobs)-off))])
-                results.append(render(f, tracker, models, raw, device))
+                results.append(render_batch(f, tracker, models, raw, device))
             matrix[view] = np.concatenate(results, axis=1)
             print('W24_PACKET_RECONSTRUCTION_PREDICTED', view, len(jobs), flush=True)
     archive = root.parent/PARENT/FULL
