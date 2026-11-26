@@ -1,0 +1,243 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 两步与三步独立先验匹配对照",
+  "description": "从同一源码与随机状态从零训练。第三步复用同包估计作用和方差，增加一个独立先验及 2 次 CG。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "b3f9825c5ca73a752a911bb4e718a13a7ff952da",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "Original 7615e8e4 archived training release for fitting; archived W24 inference release for prediction."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 20500,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Reuse the original published W24-sweep source panel and immutable W24 ungated target baseline.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full and native_residual_w24_v1 practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "TX-blind raw U_s fit and held waveforms, no classifier weights/outputs until both restorers are frozen. Thirty thousand unseen packages only after frozen-source qualification."
+  },
+  "checkpoint": {
+    "initialization": "Scratch; original two prior initial states identical between rows. Third is a separate parameter copy at initialization.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Archived code and frozen external comparator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 evaluator only"
+      }
+    ],
+    "contract_check_ref": "Native W24 matched source fit proof, exact reader F/complete.json binding, fixed blind control archive",
+    "provenance_verdict": "No weights inherited during fitting. Runtime source metadata and frozen state require original contract. No target or TX ancestry in fit.",
+    "selection_rule": "Freeze step 1800. In each source route the third-prior half output must exceed direct, matched two-prior half, and long frozen all-half on six-scene count, match or improve low-urban count versus all three, and match direct clean. Only then dispatch paired formal 30000-packet seven-view predictions."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex LoRa DURA performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "Prioritize physical GPU 5,6, then 1,0. At most one run worker per GPU, two total, minimum 12 GiB free, existing workloads preserved.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "local_artifact_root": "local_artifacts/20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_third_prior publish --repo <worktree> --context <source-context.json> --ssh-config <N607-config> --output <release-directory>",
+    "stop_rule": "Stop dependent phases on wrong role, invalid gradients/numerics, source baseline mismatch, missing artifacts or formal prediction mismatch. Preserve artifacts and other jobs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "two-fit.log",
+    "three-fit.log",
+    "two/w24_two_prior-model.pt",
+    "three/w24_three_prior-model.pt",
+    "*/smoke-w24_*_prior.json",
+    "*/w24_*_prior-complete.json",
+    "smoke.json",
+    "{route}/source-predictions.json",
+    "{route}/predictions.npz",
+    "{route}/source-scores.json",
+    "formal/predictions/{shard}/{rx}.npz",
+    "readout/scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "route",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/{route}/predictions.npz and runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/formal/predictions if qualified",
+    "scorer_ref": "Frozen independent source scorer and local w24_formal_score with third_prior=True"
+  },
+  "rows": [
+    {
+      "row_id": "two",
+      "method": "Original two priors and 4 CG",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_third_prior.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/two/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "1800 optimizer updates at batch 16; matched schedule.",
+      "output_root": "runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/two",
+      "log_path": "runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/two-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/two/fit-inputs.json two",
+      "expected_artifacts": [
+        "w24_two_prior-model.pt",
+        "w24_two_prior-complete.json",
+        "smoke-w24_two_prior.json"
+      ]
+    },
+    {
+      "row_id": "three",
+      "method": "Three independently trainable priors and 6 CG",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_third_prior.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/three/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "1800 optimizer updates at batch 16; matched schedule.",
+      "output_root": "runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/three",
+      "log_path": "runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/three-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit runs/20261126-phase1-lora-w24-third-prior-s2026112991-r01/three/fit-inputs.json three",
+      "expected_artifacts": [
+        "w24_three_prior-model.pt",
+        "w24_three_prior-complete.json",
+        "smoke-w24_three_prior.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both branches use the same archived Objective (coarse, first, final and half waveform, weak details, consistency, operator residual, variance and clean identity). No external prior pretraining or gate; W24 half-strength center edit with native edges unchanged; also measure full-strength source readouts.",
+    "Third step adds both separately trainable capacity and two CG updates, so claims apply to the joint stage change.",
+    "Formal Full goals: 162000/180000, 25500/30000 low urban, 28566/30000 clean. Residual reported separately."
+  ],
+  "registered_at": "2026-11-26T03:43:42+00:00"
+}
