@@ -1,0 +1,258 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-w24-additive-reference-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 新增噪声与通用信道参考分离（Full）",
+  "description": "Matched scratch packet U-Nets with identical generic channel and additive noise observations. Compare original waveform recovery against removing the additive noise only.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "39e065e1206489a78850f96477e3945a7e6902e9",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "Original 7615e8e4 archived training release for fitting; archived W24 inference release for prediction."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 20500,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "TX-blind source U IQ and paired generic perturbations only until freeze. Source V and, if qualified, Full-only target; no Residual execution."
+  },
+  "checkpoint": {
+    "initialization": "Same random seed 2026112991, 308676 parameters per arm, no imported model weights or optimizer during fit.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Archived code and frozen external comparator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 evaluator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Previously frozen source comparator only in independent evaluation. No fitting or freezing access."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Unchanged original-loss 24,000-step U-Net for frozen evaluation comparison only, no fitting access"
+      }
+    ],
+    "contract_check_ref": "Registered source U and physical IDs for scratch fitting. All comparison checkpoints and frozen E104 opened only for post-freeze comparison.",
+    "provenance_verdict": "No checkpoint used in fit. Historical DURA, U-Net and W24 checkpoint rows are independent frozen source comparisons.",
+    "selection_rule": "Freeze step 48000. Source qualification checks final .5 readout with fixed historical and matched control comparisons; formal is registered Full three shards, only after source qualification."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "Prefer GPU 0 and 7, fallbacks 2 and 3 subject to live 12 GiB reserve and at most one incumbent Python CUDA job per assigned card; one current worker per card.",
+    "remote_run_root": "runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-w24-additive-reference-s2026112991-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior publish --additive-reference --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/release",
+    "stop_rule": "Stop on a systemic technical/protocol failure, incompatible source or frozen comparator, collision, or prediction/scoring failure. Preserve all artifacts. Source scores gate only target eligibility via preregistered paired rules."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "restore_original-fit.log",
+    "remove_additive-fit.log",
+    "smoke.json",
+    "*/smoke-w24_*.json",
+    "*/w24_*-complete.json",
+    "*/w24_*-model.pt",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional formal/predictions/{shard}/{rx}.npz",
+    "conditional independent scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/full_native/predictions.npz; conditional runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/formal/predictions",
+    "scorer_ref": "Independent source scorer; E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior collect-score --additive-reference after the three formal Full shards freeze."
+  },
+  "rows": [
+    {
+      "row_id": "restore_original",
+      "method": "Recover original source IQ",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_additive_reference.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/restore_original/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "48000 scratch updates of all parameters, batch 16, AdamW, held steps 2000, 6000, 12000, 18000, 24000, 36000, 42000, final 48000.",
+      "output_root": "runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/restore_original",
+      "log_path": "runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/restore_original-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/restore_original/fit-inputs.json restore_original",
+      "expected_artifacts": [
+        "w24_projection_all_bins-model.pt",
+        "w24_projection_all_bins-complete.json",
+        "smoke-w24_projection_all_bins.json"
+      ]
+    },
+    {
+      "row_id": "remove_additive",
+      "method": "Remove additive noise while preserving noiseless generic action",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_additive_reference.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/remove_additive/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "48000 scratch updates of all parameters, batch 16, AdamW, held steps 2000, 6000, 12000, 18000, 24000, 36000, 42000, final 48000.",
+      "output_root": "runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/remove_additive",
+      "log_path": "runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/remove_additive-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/remove_additive/fit-inputs.json remove_additive",
+      "expected_artifacts": [
+        "w24_projection_exclude_bin-model.pt",
+        "w24_projection_exclude_bin-complete.json",
+        "smoke-w24_projection_exclude_bin.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both arms see bit-identical generic training observations, from a shared native short echo and slow phase drift followed by independent additive draws. The probe shares its additive draw and action with view one.",
+    "Only training reference differs: original source IQ vs the known generic post-action IQ before addition. Probe references follow the same selected coordinate. Both RMS error targets are logged in both arms.",
+    "Same 48000 scratch updates, fixed half readout primary and clean identity. Collected doubled stress readouts only after freeze. Training is independent of practical simulator and all classifier artifacts."
+  ],
+  "registered_at": "2026-11-26T23:22:58+00:00"
+}
