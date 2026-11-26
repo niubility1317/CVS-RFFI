@@ -42,6 +42,7 @@ from experiments.pamf_lora_main.w24_second_stage import SecondStage
 from experiments.pamf_lora_main.w24_strong_source import (
     COLOR_CUTOFF_HZ, STRONG_FRACTION, STRONG_SNR_DB, PassbandMatchedNoise, StrongSourceMix,
 )
+from experiments.pamf_lora_main.w24_task_gain import TaskGain
 from experiments.pamf_lora_main.w24_third_prior import UNET_FIDELITY_ARMS, UNET_FIDELITY_RUN, load_candidate
 from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN, load_restorer, received_aperture, training_runtime
 from experiments.pamf_lora_main.w24_outer_objective_source import RUN as DURA_RUN
@@ -54,6 +55,7 @@ RUN_FEATURE = '20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01'
 RUN_REFINE = '20261126-phase1-lora-w24-second-stage-s2026112995-r01'
 RUN_STRONG = '20261127-phase1-lora-w24-strong-source-s2026112997-r01'
 RUN_COLOR = '20261127-phase1-lora-w24-colored-source-s2026112999-r01'
+RUN_GAIN = '20261127-phase1-lora-w24-task-gain-s2026113003-r01'
 ARMS = ('pamf_only', 'frozen_pamf_ce', 'joint')
 PL = 'joint_clean_pl'
 FIXED_PL = 'fixed_e104_clean_pl'
@@ -65,9 +67,11 @@ STRONG_CONTROL, STRONG = 'generic_source', 'strong_source'
 STRONG_ARMS = (STRONG_CONTROL, STRONG)
 WHITE, COLOR = 'white_source', 'colored_source'
 COLOR_ARMS = (WHITE, COLOR)
-AUGMENTED_ARMS = (*STRONG_ARMS, *COLOR_ARMS)
+CONSTANT_GAIN, ADAPT_GAIN = 'constant_gain', 'adaptive_gain'
+GAIN_ARMS = (CONSTANT_GAIN, ADAPT_GAIN)
+AUGMENTED_ARMS = (*STRONG_ARMS, *COLOR_ARMS, *GAIN_ARMS)
 PARENT_TRIALS = {RUN_FEATURE: CONTINUATION_ARMS, RUN_REFINE: REFINE_ARMS, RUN_STRONG: STRONG_ARMS,
-                 RUN_COLOR: COLOR_ARMS}
+                 RUN_COLOR: COLOR_ARMS, RUN_GAIN: GAIN_ARMS}
 PARENT_ARMS = tuple(arm for arms in PARENT_TRIALS.values() for arm in arms)
 PARENT_CONTROLS = {candidate: control for control, candidate in PARENT_TRIALS.values()}
 PSEUDO_ARMS = {RUN_PL: PL, RUN_FIXED_PL: FIXED_PL}
@@ -79,6 +83,7 @@ FEATURE_SEED, FEATURE_WEIGHT = 2026112993, 16.
 REFINE_SEED, REFINE_STEPS = 2026112995, 9000
 STRONG_SEED, STRONG_STEPS = 2026112997, 10000
 COLOR_SEED = 2026112999
+GAIN_SEED = 2026113003
 FIXED_PL_COMMIT = '37215dd615d0f651ffebe87d6aaba6af0ab7a847'
 STRONG_COMMIT = '76385bf9174440cc4e437a47bfc2fd7aff1b1fcb'
 CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
@@ -184,7 +189,7 @@ def norm_gradient(values):
 
 
 def source_parent(run):
-    return RUN_STRONG if run == RUN_COLOR else RUN_FIXED_PL
+    return RUN_STRONG if run in (RUN_COLOR,RUN_GAIN) else RUN_FIXED_PL
 
 
 def parent_modes(parent):
@@ -209,12 +214,16 @@ def training_recipe(arm):
         return STRONG_SEED, STRONG_STEPS, 4e-5, RUN_FIXED_PL
     if arm in COLOR_ARMS:
         return COLOR_SEED, STRONG_STEPS, 4e-5, RUN_STRONG
+    if arm in GAIN_ARMS:
+        return GAIN_SEED, STEPS, 4e-4, RUN_STRONG
     return SEED, STEPS, 8e-5, UNET_FIDELITY_RUN
 
 
 def initialize_recovery(arm, g, device):
     if arm in REFINE_ARMS:
         return SecondStage(g,conditioned=arm==REFINE,seed=REFINE_SEED).to(device)
+    if arm in GAIN_ARMS:
+        return TaskGain(g,adaptive=arm==ADAPT_GAIN,seed=GAIN_SEED).to(device)
     return g
 
 
@@ -227,6 +236,8 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     contract, f, g, tracker = boot(rt, device)
     continuation = arm in CONTINUATION_ARMS
     refinement = arm in REFINE_ARMS
+    gain_fit = arm in GAIN_ARMS
+    fixed_core = refinement or gain_fit
     seed, budget, lr, checkpoint_parent = training_recipe(arm)
     if arm in PARENT_ARMS:
         g = continuation_parent(rt,contract,f,g,device,checkpoint_parent)
@@ -238,7 +249,7 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     anchor = deepcopy(f)
     learn_g, learn_f = arm != 'pamf_only', arm not in FIXED_READER_ARMS
     g.requires_grad_(learn_g).train(learn_g)
-    if refinement:
+    if fixed_core:
         g.parent.eval().requires_grad_(False)
     g_parameters = tuple(p for p in g.parameters() if p.requires_grad)
     # Train the selected W24 weights against its deployed normalization and dropout behavior.
@@ -272,7 +283,7 @@ def fit(config, arm, *, smoke, device='cuda:0'):
         raw = np.concatenate((labeled[l],unlabeled[u]))
         raw = tensor(raw.view('float32'),device).view(torch.complex64)
         target = tensor(labels[l],device).long()
-        if smoke and refinement:
+        if smoke and fixed_core:
             with torch.no_grad():
                 aperture, _ = normalize_aperture(tracker.aperture(raw))
                 torch.testing.assert_close(recovered(g,tracker,aperture),recovered(g.parent,tracker,aperture),
@@ -323,6 +334,8 @@ def fit(config, arm, *, smoke, device='cuda:0'):
         proof['feature_weight'] = FEATURE_WEIGHT if preserve_feature else 0.
     if refinement:
         proof['conditioned_on_first'] = arm == REFINE
+    if gain_fit:
+        proof['adaptive_gain'] = arm == ADAPT_GAIN
     if arm in AUGMENTED_ARMS:
         proof.update(strong_fraction=STRONG_FRACTION if generic.enabled else 0.,
                      strong_snr_db=list(STRONG_SNR_DB),strong_exposures=int(generic.selected))
@@ -336,7 +349,7 @@ def fit(config, arm, *, smoke, device='cuda:0'):
         summary['pseudo_CE_to_G_norm'] = pseudo_ce_norm
     if smoke and preserve_feature:
         summary['feature_to_G_norm'] = feature_norm
-    if refinement:
+    if fixed_core:
         summary['G_trainable_parameters'] = sum(p.numel() for p in g_parameters)
         summary['G1_gradient_norm'] = norm_gradient(p.grad for p in g.parent.parameters())
         if summary['G1_gradient_norm'] != 0:
@@ -354,6 +367,8 @@ def load_row(root, arm, contract, f0, g0, device):
     proof = state['proof']
     continuation = arm in CONTINUATION_ARMS
     refinement = arm in REFINE_ARMS
+    gain_fit = arm in GAIN_ARMS
+    fixed_core = refinement or gain_fit
     seed, budget, _, parent = training_recipe(arm)
     if (summary['status'] != 'SOURCE_FROZEN' or state['contract'] != contract
             or (proof['arm'],proof['steps'],proof['seed'],proof['g_parent'],proof['f_parent']) != (
@@ -370,6 +385,8 @@ def load_row(root, arm, contract, f0, g0, device):
         raise ValueError('Unexpected paired feature weight')
     if refinement and proof.get('conditioned_on_first') is not (arm == REFINE):
         raise ValueError('Unexpected second-stage input')
+    if gain_fit and proof.get('adaptive_gain') is not (arm == ADAPT_GAIN):
+        raise ValueError('Unexpected amplitude calibration')
     if arm in AUGMENTED_ARMS:
         strong_count = proof['strong_exposures']
         enabled = arm != STRONG_CONTROL
@@ -380,12 +397,12 @@ def load_row(root, arm, contract, f0, g0, device):
             raise ValueError('Unexpected strong source mixture')
     if arm in COLOR_ARMS and proof['color_cutoff_hz'] != (list(COLOR_CUTOFF_HZ) if arm==COLOR else None):
         raise ValueError('Unexpected receive-band noise shape')
-    g0 = initialize_recovery(arm,deepcopy(g0),device) if refinement else g0
+    g0 = initialize_recovery(arm,deepcopy(g0),device) if fixed_core else g0
     g, f = deepcopy(g0), deepcopy(f0)
     for model, key in ((g,'G'),(f,'F')):
         model.load_state_dict(state[key],strict=True)
         prior = (g0 if key=='G' else f0).state_dict()
-        if refinement and key == 'G' and any(
+        if fixed_core and key == 'G' and any(
                 not torch.equal(v,prior[k]) for k,v in model.state_dict().items() if k.startswith('parent.')):
             raise ValueError('First-stage weights differ from the frozen source parent')
         changed = any(not torch.equal(v,prior[k]) for k,v in model.state_dict().items())
@@ -503,7 +520,7 @@ def qualifies(scores, candidate=CANDIDATE):
         controls.append(control)
     if candidate in PARENT_CONTROLS:
         control = scores[PARENT_CONTROLS[candidate]]
-        parent = scores[STRONG if candidate==COLOR else FIXED_PL]
+        parent = scores[STRONG if candidate in (COLOR,ADAPT_GAIN) else FIXED_PL]
         if (test['low_urban_correct'] <= control['low_urban_correct']
                 or test['by_scene']['clean'] < parent['by_scene']['clean']):
             return False
@@ -715,6 +732,7 @@ def main():
     pseudo_options.add_argument('--second-stage',dest='run_id',action='store_const',const=RUN_REFINE)
     pseudo_options.add_argument('--strong-source',dest='run_id',action='store_const',const=RUN_STRONG)
     pseudo_options.add_argument('--colored-source',dest='run_id',action='store_const',const=RUN_COLOR)
+    pseudo_options.add_argument('--task-gain',dest='run_id',action='store_const',const=RUN_GAIN)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -759,7 +777,7 @@ def main():
         run = args.run_id or RUN
         gpu_preferences = {RUN: [3,0,7,2,6,5], RUN_PL: [2,6,5], RUN_FIXED_PL: [7,2,3,0,6,5],
                            RUN_FEATURE: [0,3,7,2,6,5], RUN_REFINE: [7,3,0,2,6,5],
-                           RUN_STRONG: [7,0,3,2,6,5], RUN_COLOR: [0,3,7,2,6,5]}
+                           RUN_STRONG: [7,0,3,2,6,5], RUN_COLOR: [0,3,7,2,6,5], RUN_GAIN: [7,2,0,3,6,5]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
@@ -774,7 +792,7 @@ def main():
             rt['external_releases'].append(str(runs/RUN))
         if run in PARENT_TRIALS:
             rt['external_releases'] += [str(runs/RUN_FIXED_PL),str(releases/f'{RUN_FIXED_PL}-release')]
-        if run == RUN_COLOR:
+        if run in PARENT_TRIALS and source_parent(run) == RUN_STRONG:
             rt['external_releases'] += [str(runs/RUN_STRONG),str(releases/f'{RUN_STRONG}-release')]
         if run in FORMAL_ARMS:
             rt['native_target_root']=str(releases/f'{DATA_RUN}-release'/'data/target')

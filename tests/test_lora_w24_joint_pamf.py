@@ -277,3 +277,47 @@ def test_color_candidate_uses_the_immediate_strong_source_parent():
         proof = experiment.formal_receipt(case,experiment.RUN_COLOR)
         assert proof['reference_run']==experiment.RUN_STRONG
         assert proof['modes'][-3:]==[experiment.FIXED_PL,parent,candidate] and control not in proof['modes']
+
+
+def test_task_gain_starts_at_half_and_backpropagates_only_to_calibration():
+    class Parent(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.scale = nn.Parameter(torch.tensor(.8))
+            self.register_buffer('noise_band',torch.arange(384)>256,persistent=False)
+
+        def propose(self,y,quality,rms,edges):
+            return (y,y*self.scale),
+
+    r = torch.Generator().manual_seed(8)
+    y = torch.randn(2,8,384,generator=r,dtype=torch.complex64)
+    q = torch.linspace(.2,.9,8)[None,:,None].expand(2,-1,-1)
+    rms = torch.ones_like(q)
+    edges = y[...,:48]
+    for arm in experiment.GAIN_ARMS:
+        model = experiment.initialize_recovery(arm,Parent(),'cpu')
+        (_, output), = model.propose(y,q,rms,edges)
+        torch.testing.assert_close(output,y*.8,rtol=0,atol=0)
+        output.real.square().mean().backward()
+        assert model.offset.grad.abs()>0 and model.parent.scale.grad is None
+        if model.local is not None:
+            assert model.local[-1].weight.grad.abs().sum()>0
+            with torch.no_grad():
+                model.local[-1].weight.fill_(.3)
+            gains = model.gain(y,q,rms,edges)
+            assert gains.shape==(2,8,1) and gains.std()>0
+            assert ((gains>=.05)&(gains<=.95)).all()
+
+
+def test_adaptive_gain_promotes_only_after_matching_parent_and_control():
+    control,candidate=experiment.GAIN_ARMS
+    parent=experiment.STRONG
+    scores={m:dict(six_correct=1490,low_urban_correct=187,by_scene={'clean':297})
+            for m in (*experiment.parent_modes(experiment.RUN_STRONG),control,candidate)}
+    scores[candidate].update(six_correct=1492,low_urban_correct=188)
+    assert experiment.qualifies(scores,candidate)
+    scores[candidate]['by_scene']['clean']=296
+    assert not experiment.qualifies(scores,candidate)
+    for case in experiment.FULL_CASES:
+        proof=experiment.formal_receipt(case,experiment.RUN_GAIN)
+        assert proof['reference_run']==experiment.RUN_STRONG and proof['modes'][-2:]==[parent,candidate]
