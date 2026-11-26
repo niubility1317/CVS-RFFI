@@ -1,0 +1,259 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-spectral-experts-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 冻结双恢复器复谱融合（Full）",
+  "description": "Fit source-only risk mixture of two legal frozen recovery directions and doses. Isolate packet-global versus local chirp-by-band weights.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "3e2ccd4b2247a89830ecb6b5458ea61eaa2a89f4",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "Original 7615e8e4 archived training release for fitting; archived W24 inference release for prediction."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 20500,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "TX-blind source U IQ and paired generic perturbations only until freeze. Source V and, if qualified, Full-only target; no Residual execution."
+  },
+  "checkpoint": {
+    "initialization": "Both arms reuse exactly the 40000-step source outer DURA and the 24000-step original-loss source U-Net. Both experts remain frozen. Only equally initialized 5-logit routing head trained.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Archived code and frozen external comparator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 evaluator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Verified source-only 40000-step frozen DURA expert, no optimizer."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Verified source-only 24000-step from-scratch U-Net original-loss arm as fixed expert. No target prediction or optimizer."
+      }
+    ],
+    "contract_check_ref": "Both inherited source checkpoint proofs verified against the actual identical source U contract and fixed candidate row. W24 only after both mixtures freeze.",
+    "provenance_verdict": "All ancestors frozen at preregistered source-only steps. No F, TX, source V, practical/trace, target IQ or truth inputs in router training/freeze.",
+    "selection_rule": "Freeze at 6000 steps. Half-rendered actual mixture must strictly beat direct, archived W24 DURA, outer DURA, original-loss U-Net and matched global weight arm on six scenes, match all five on low urban, and match direct clean. Only pass invokes Full target three shards and independent scoring."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 GPU order 0, 3, 5, 7, 2; two distinct cards with at least 12 GiB free and fewer than eight visible contexts, one fit per card.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior publish --spectral-experts --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/release",
+    "stop_rule": "Stop dependent phases on wrong role, failed branch gradients/numerics, source baseline mismatch, missing artifacts or prediction mismatch. Preserve artifacts and other jobs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "experts_packet-fit.log",
+    "experts_band-fit.log",
+    "smoke.json",
+    "*/smoke-w24_experts_*.json",
+    "*/w24_experts_*-complete.json",
+    "*/w24_experts_*-model.pt",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional formal/predictions/{shard}/{rx}.npz",
+    "conditional independent scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/full_native/predictions.npz; conditional runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/formal/predictions",
+    "scorer_ref": "Independent source scorer; E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior collect-score --spectral-experts after the three formal Full shards freeze."
+  },
+  "rows": [
+    {
+      "row_id": "experts_packet",
+      "method": "Same router with one jointly pooled vector per packet",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_spectral_experts.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/experts_packet/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "6000 updates of the routing head; same fixed 40000-step DURA and 24000-step U-Net expert ancestry, batch 16, AdamW.",
+      "output_root": "runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/experts_packet",
+      "log_path": "runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/experts_packet-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/experts_packet/fit-inputs.json experts_packet",
+      "expected_artifacts": [
+        "w24_experts_packet-model.pt",
+        "w24_experts_packet-complete.json",
+        "smoke-w24_experts_packet.json"
+      ]
+    },
+    {
+      "row_id": "experts_band",
+      "method": "Same router with weights per chirp and four complex spectral bands",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_spectral_experts.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/experts_band/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "6000 updates of the routing head; same fixed 40000-step DURA and 24000-step U-Net expert ancestry, batch 16, AdamW.",
+      "output_root": "runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/experts_band",
+      "log_path": "runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/experts_band-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261126-phase1-lora-w24-spectral-experts-s2026112991-r01/experts_band/fit-inputs.json experts_band",
+      "expected_artifacts": [
+        "w24_experts_band-model.pt",
+        "w24_experts_band-complete.json",
+        "smoke-w24_experts_band.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Hypothesis: the distinct physically realizable corrections of the two locked models can complement each other if the fusion weights vary across received chirps and frequency bands. Scores from the source-only coverage audit are context only; no W24 labels/logits or inferred oracle routes fit this model.",
+    "Both arms compute the same raw, DURA half/full, U-Net half/full complex edit candidates. Four non-DC bands by absolute FFT bin 1-8, 9-32, 33-80, 81-192. Router inputs are observed energy, inter-expert and observation-edit complex coherence, outlying noise, observed tracking quality and band position. Softmax creates a convex waveform mixture. The control averages logits across the packet while the candidate keeps local logits. Fixed no-edit DC and copied raw edges. In formal use exactly the mixture; generic half renderer matches mixture, generic full is twice the learned edit for source diagnosis only.",
+    "Fit requires source U IQ and the two strict same-contract frozen parents. Draw two independent generic observations per source packet from the established archive with 2 packet identities per batch. At each chirp/band calculate five legal paired waveform risks and train a softmax risk distribution at temperature .20. Combine cross entropy .25 with actual restored outer/inner waveform risks .5 each, clean identity 2 and time complex MSE .25. Expert gradients disabled. 20000 fit U, 500 held U, no calibration. 6000 updates from identical random router initialization.",
+    "Freeze both rows before W24. Source panel 300 identical Full packets ×7; direct, original 40000 DURA, 24000 U-Net and outer DURA replay exactly their frozen archive predictions. Candidate/controls fixed before scoring. Qualified candidates only progress to the three predefined Full shards, with no Residual path and independent truth last."
+  ],
+  "registered_at": "2026-11-26T11:17:55+00:00"
+}
