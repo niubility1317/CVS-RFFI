@@ -1,2 +1,3 @@
 {"at": "2026-11-26T07:59:00+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-26T08:01:12+00:00", "status": "RUNNING", "note": "VERIFIED N607 CWD, live worker argv/device/log and lawful parent smoke. Full-only source and conditional formal.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-26T08:22:47+00:00", "status": "ANALYZED", "note": "VERIFIED source truth-last, matched Full score and IQ edit strength. Candidate 1429/1800, 166/300 low and 297/300 clean; no promotion or target access.", "evidence": ["report.md", "N607:runs/20261126-phase1-lora-w24-half-primary-s2026112991-r01/full_native/source-scores.json"], "row_id": null}
