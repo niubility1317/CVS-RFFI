@@ -98,3 +98,39 @@ def test_collector_returns_when_source_does_not_qualify(monkeypatch):
     monkeypatch.setattr(experiment.subprocess,'run',lambda *a,**kw:SimpleNamespace(
         returncode=0,stdout=b'{"status":"SOURCE_SCORED","promote":false}'))
     experiment.collect(args)
+
+
+def test_fixed_e104_clean_pl_requires_matched_gain_before_formal_full():
+    control = experiment.CANDIDATE
+    candidate = experiment.FIXED_PL
+    scores = {m:dict(six_correct=1400,low_urban_correct=170,by_scene={'clean':297}) for m in experiment.MODES}
+    scores[control].update(six_correct=1451,low_urban_correct=179)
+    scores['unet_parent']['low_urban_correct'] = 181
+    scores[candidate] = dict(six_correct=1460,low_urban_correct=180,by_scene={'clean':297})
+    assert not experiment.qualifies(scores,candidate)
+    scores[candidate]['low_urban_correct'] = 181
+    assert experiment.qualifies(scores,candidate)
+    scores[candidate].update(six_correct=1451)
+    assert not experiment.qualifies(scores,candidate)
+    scores[candidate].update(six_correct=1460,by_scene={'clean':296})
+    assert not experiment.qualifies(scores,candidate)
+
+    with pytest.raises(ValueError,match='frozen-E104'):
+        experiment.qualifies(scores,experiment.PL)
+    for case in experiment.FULL_CASES:
+        receipt = experiment.formal_receipt(case,experiment.RUN_FIXED_PL)
+        assert receipt['modes'][-1] == candidate and experiment.PL not in receipt['modes']
+        assert receipt['candidate_run'] == experiment.RUN_FIXED_PL
+
+
+def test_clean_pseudo_ce_can_update_restorer_with_fixed_reader():
+    reader = Reader().eval().requires_grad_(False)
+    with torch.no_grad():
+        reader.head.bias[0] = 10
+    clean = torch.randn(3,8,2,432)
+    restored = torch.randn_like(clean,requires_grad=True)
+    loss, accepted = experiment.clean_pseudo_loss(reader,reader,clean,restored)
+    assert accepted.item() == 3
+    loss.backward()
+    assert restored.grad.abs().sum() > 0
+    assert all(p.grad is None for p in reader.parameters())

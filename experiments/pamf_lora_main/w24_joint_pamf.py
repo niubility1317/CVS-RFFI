@@ -45,13 +45,17 @@ from experiments.pamf_lora_main.w24_outer_objective_source import RUN as DURA_RU
 
 RUN = '20261126-phase1-lora-w24-joint-pamf-s2026112991-r01'
 RUN_PL = '20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01'
+RUN_FIXED_PL = '20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01'
 ARMS = ('pamf_only', 'frozen_pamf_ce', 'joint')
 PL = 'joint_clean_pl'
+FIXED_PL = 'fixed_e104_clean_pl'
+PSEUDO_ARMS = {RUN_PL: PL, RUN_FIXED_PL: FIXED_PL}
+FIXED_READER_ARMS = ('frozen_pamf_ce', FIXED_PL)
 PL_THRESHOLD = .95
 SEED, STEPS, BATCH, PRED_BATCH = 2026112991, 6000, 16, 32
 CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
+FORMAL_ARMS = {RUN: CANDIDATE, RUN_FIXED_PL: FIXED_PL}
 MODES = ('direct', 'outer_half', 'unet_parent', *ARMS, 'joint_g_fixed_e104', 'joint_f_parent_g')
-PL_MODES = (*MODES, PL)
 CONTRASTS = (('joint','pamf_only'), ('joint','frozen_pamf_ce'), ('joint','unet_parent'),
              ('joint','joint_g_fixed_e104'), ('joint','joint_f_parent_g'),
              ('frozen_pamf_ce','unet_parent'), ('frozen_pamf_ce','outer_half'))
@@ -156,7 +160,7 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     unlabeled, _, _, _ = source_role(source, contract, 'U_s')
     labels = training_labels(source,contract)
     anchor = deepcopy(f)
-    learn_g, learn_f = arm != 'pamf_only', arm != 'frozen_pamf_ce'
+    learn_g, learn_f = arm != 'pamf_only', arm not in FIXED_READER_ARMS
     g.requires_grad_(learn_g).train(learn_g)
     # Train the selected W24 weights against its deployed normalization and dropout behavior.
     f.requires_grad_(learn_f).eval()
@@ -170,10 +174,11 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,steps,eta_min=2e-6)
     order = np.random.default_rng(SEED)
     rng = torch.Generator(device=device).manual_seed(SEED)
-    pseudo = arm == PL
+    pseudo = arm in PSEUDO_ARMS.values()
     weights = torch.tensor((1.,.65,.3,.30,.25,1.5) + ((1.,0.) if pseudo else ()),device=device)
     start = monotonic()
     ce_norm = None
+    pseudo_ce_norm = None
     accepted = torch.zeros((),device=device)
     for step in range(1,steps+1):
         l = order.choice(len(labeled), BATCH if not smoke else 2, replace=False)
@@ -191,6 +196,13 @@ def fit(config, arm, *, smoke, device='cuda:0'):
             ce_norm = norm_gradient(torch.autograd.grad(parts[0],tuple(g.parameters()),allow_unused=True,retain_graph=True))
             if not (0 < ce_norm < float('inf')):
                 raise ValueError('No supervised CE gradient reaches the restorer')
+        if smoke and arm == FIXED_PL:
+            if parts[-1] == 0:
+                raise ValueError('Real-checkpoint smoke needs accepted clean U_s pseudo labels')
+            pseudo_ce_norm = norm_gradient(torch.autograd.grad(
+                parts[6],tuple(g.parameters()),allow_unused=True,retain_graph=True))
+            if not (0 < pseudo_ce_norm < float('inf')):
+                raise ValueError('No pseudo-label CE gradient reaches the restorer')
         (parts @ weights).backward()
         gradients = {name: norm_gradient(p.grad for p in model.parameters())
                      for name,model in (('G',g),('F',f))} if step in (1,steps) else None
@@ -215,6 +227,8 @@ def fit(config, arm, *, smoke, device='cuda:0'):
                    gradients=gradients, worker_seconds=monotonic()-start,
                    peak_cuda_bytes=torch.cuda.max_memory_allocated() if device.startswith('cuda') else 0,
                    G_parameters=sum(x.numel() for x in g.parameters()),F_parameters=sum(x.numel() for x in f.parameters()))
+    if smoke and arm == FIXED_PL:
+        summary['pseudo_CE_to_G_norm'] = pseudo_ce_norm
     if not smoke:
         with (out/'model.pt').open('xb') as stream:
             torch.save(dict(contract=contract, proof=proof,G=g.state_dict(),F=f.state_dict()),stream)
@@ -230,11 +244,12 @@ def load_row(root, arm, contract, f0, g0, device):
             or (proof['arm'],proof['steps'],proof['seed'],proof['g_parent'],proof['f_parent']) != (
                 arm,STEPS,SEED,UNET_FIDELITY_RUN,AUG_RUN)
             or any(proof[k] for k in ('U_TX_reads','V_reads','target_reads','practical_reads','trace_reads'))
-            or (proof['G_trainable'],proof['F_trainable']) != (arm!='pamf_only',arm!='frozen_pamf_ce')
+            or (proof['G_trainable'],proof['F_trainable']) != (arm!='pamf_only',arm not in FIXED_READER_ARMS)
             or any(summary[k] != v for k,v in proof.items()) or read(folder/'smoke.json')['status'] != 'PASS'):
         raise ValueError(f'Invalid source freeze for {arm}')
-    if arm == PL and (proof.get('U_PL_teacher') != AUG_RUN or proof.get('U_PL_threshold') != PL_THRESHOLD
-                      or not 0 <= proof['U_PL_accepted'] <= proof['unlabeled_exposures']):
+    if arm in PSEUDO_ARMS.values() and (proof.get('U_PL_teacher') != AUG_RUN
+            or proof.get('U_PL_threshold') != PL_THRESHOLD
+            or not 0 <= proof['U_PL_accepted'] <= proof['unlabeled_exposures']):
         raise ValueError('Unexpected clean U_s pseudo-label policy')
     g, f = deepcopy(g0), deepcopy(f0)
     for model, key in ((g,'G'),(f,'F')):
@@ -312,7 +327,8 @@ def predict_source(rt):
 def predict_pseudo(rt):
     root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
     contract, f0, g0, tracker = boot(rt,device)
-    g, f = load_row(root,PL,contract,f0,g0,device)
+    arm = PSEUDO_ARMS[rt['run_id']]
+    g, f = load_row(root,arm,contract,f0,g0,device)
 
     def render(raw):
         observed = received_aperture(raw,device)
@@ -325,42 +341,51 @@ def predict_pseudo(rt):
     ids, matrix = source_predictions(rt,source,contract,render)
     comparison = root.parent/RUN/FULL
     reference = read(comparison/'source-predictions.json')
-    if reference['modes'] != list(MODES):
+    if (reference['modes'] != list(MODES) or reference['views'] != list(VIEWS)
+            or reference['source_truth_reads'] or reference['target_reads']):
         raise ValueError('Expected the preregistered true-label comparison')
     check_controls(comparison,('direct',),[0],ids,matrix)
     with np.load(comparison/'predictions.npz',allow_pickle=False) as archived:
         predictions = {view: np.concatenate((archived[view],matrix[view][1:])) for view in VIEWS}
-    write_source_predictions(root,ids,predictions,PL_MODES,
-                             joint_source_only=True,matched_run=RUN,U_PL_teacher=AUG_RUN,U_PL_threshold=PL_THRESHOLD)
+    write_source_predictions(root,ids,predictions,(*MODES,arm),joint_source_only=arm == PL,
+                             matched_run=RUN,U_PL_teacher=AUG_RUN,U_PL_threshold=PL_THRESHOLD)
 
 
-def qualifies(scores):
-    test = scores[CANDIDATE]
+def qualifies(scores, candidate=CANDIDATE):
+    if candidate not in FORMAL_ARMS.values():
+        raise ValueError('Expected a frozen-E104 candidate')
+    test = scores[candidate]
     controls = [scores[key] for key in ('direct','outer_half','unet_parent')]
+    if candidate == FIXED_PL:
+        control = scores[CANDIDATE]
+        if test['low_urban_correct'] <= control['low_urban_correct']:
+            return False
+        controls.append(control)
     return (test['six_correct'] > max(x['six_correct'] for x in controls)
             and test['low_urban_correct'] >= max(x['low_urban_correct'] for x in controls)
             and test['by_scene']['clean'] >= scores['direct']['by_scene']['clean'])
 
 
-def formal_receipt(case):
+def formal_receipt(case, run=RUN):
     if case not in FULL_CASES:
         raise ValueError('Expected Full-only shard')
     old = receipt(case,True,True)
-    return dict(old,modes=[*old['modes'],CANDIDATE],candidate_run=RUN,reference_run=RUN_OUTER)
+    return dict(old,modes=[*old['modes'],FORMAL_ARMS[run]],candidate_run=run,reference_run=RUN_OUTER)
 
 
 @torch.no_grad()
 def predict_formal(rt,case):
     root, device = Path(rt['run_root']), 'cuda:0'
+    candidate = FORMAL_ARMS[rt['run_id']]
     proof = read(root/FULL/'source-scores.json')
     if (proof['status'] != 'ANALYZED' or not proof['source_truth_last'] or proof['target_reads']
-            or proof['n_packets'] != 300 or proof['n_practical'] != 1800 or not qualifies(proof['scores'])):
+            or proof['n_packets'] != 300 or proof['n_practical'] != 1800 or not qualifies(proof['scores'],candidate)):
         raise ValueError('Frozen E104 source qualification required')
-    expected = formal_receipt(case)
+    expected = formal_receipt(case,rt['run_id'])
     baseline = prior_target(rt,case)
     activity = read(baseline/'activity.json')
     contract,f0,g0,tracker = boot(rt,device)
-    model,_ = load_row(root,CANDIDATE,contract,f0,g0,device)
+    model,_ = load_row(root,candidate,contract,f0,g0,device)
     target = Path(rt['native_target_root'])
     target_contract(target)
     out = root/'predictions'/case
@@ -392,8 +417,9 @@ def dispatch(runtime):
     root, reference = Path(rt['run_root']), Path(rt['w24_release_root'])
     root.mkdir()
     state = root/'state.json'
-    with_pl = rt['run_id'] == RUN_PL
-    arms = (PL,) if with_pl else ARMS
+    run = rt['run_id']
+    pseudo_arm = PSEUDO_ARMS.get(run)
+    arms = (pseudo_arm,) if pseudo_arm else ARMS
 
     def status(**values):
         write(state,values,exclusive=False)
@@ -420,7 +446,7 @@ def dispatch(runtime):
         status(status='SOURCE_TRAINING',steps=STEPS,arms=list(arms))
         schedule(rt,[('fit-row',arm) for arm in arms],lambda _,action,arm,gpu:
                  launch(action,f'{arm}-fit',gpu,root/arm/'fit-inputs.json',arm))
-        if with_pl:
+        if pseudo_arm:
             comparison = root.parent/RUN
             deadline = monotonic()+12*60*60
             status(status='WAITING_FOR_MATCHED_SOURCE_PREDICTIONS',comparison=RUN)
@@ -438,13 +464,13 @@ def dispatch(runtime):
             status(status='RUNNING',phase=action,pid=job.pid,gpu=gpu)
             if job.wait():
                 raise RuntimeError(f'{action} failed')
-        promote = not with_pl and qualifies(read(root/FULL/'source-scores.json')['scores'])
+        promote = run in FORMAL_ARMS and qualifies(read(root/FULL/'source-scores.json')['scores'],FORMAL_ARMS[run])
         status(status='SOURCE_SCORED',promote=promote)
         if promote:
             status(status='FORMAL_PREDICTING',route=FULL)
             schedule(rt,[('predict-formal',case) for case in FULL_CASES],lambda _,action,case,gpu:
                      launch(action,case,gpu,runtime,case))
-            if any(read(root/'predictions'/c/'complete.json') != formal_receipt(c) for c in FULL_CASES):
+            if any(read(root/'predictions'/c/'complete.json') != formal_receipt(c,run) for c in FULL_CASES):
                 raise RuntimeError('Incomplete formal Full predictions')
             status(status='PREDICTIONS_FROZEN',cases=list(FULL_CASES),target_truth_read=False)
     except Exception as error:
@@ -456,8 +482,8 @@ def collect(args):
     from experiments.pamf_lora_main.w24_formal_score import full_target_acceptance, load_frozen, score_matrix
 
     root = PurePosixPath(read(args.submit)['run_root'])
-    if root.name != RUN or not re.fullmatch(r'/[A-Za-z0-9_./-]+',str(root)):
-        raise ValueError('Expected the immutable joint run root')
+    if root.name not in FORMAL_ARMS or not re.fullmatch(r'/[A-Za-z0-9_./-]+',str(root)):
+        raise ValueError('Expected an immutable fixed-E104 run root')
     conn=['-F',str(args.ssh_config),'-o','BatchMode=yes','-o','ConnectTimeout=10']
     deadline,last=monotonic()+12*60*60,None
     while monotonic()<deadline:
@@ -483,11 +509,11 @@ def collect(args):
         raise TimeoutError('Formal E104 collector exceeded its observation window')
     args.output.mkdir(parents=True)
     subprocess.run(['scp',*conn,'-r','N607:'+str(root/'predictions'),str(args.output)],check=True,timeout=300)
-    plans={case:formal_receipt(case) for case in FULL_CASES}
+    plans={case:formal_receipt(case,root.name) for case in FULL_CASES}
     matrices,activity=load_frozen(args.output/'predictions',ungated=True,observed_plans=plans)
     spec=plans[FULL_CASES[0]]
     score_matrix(matrices,activity,{FULL:spec['modes']},args.dataset,args.output/'scores',tuple(spec['seeds']),
-                 lambda result:full_target_acceptance(result[FULL][CANDIDATE]['pooled']))
+                 lambda result:full_target_acceptance(result[FULL][FORMAL_ARMS[root.name]]['pooled']))
 
 
 def main():
@@ -499,11 +525,13 @@ def main():
         cmd=actions.add_parser(name)
         cmd.add_argument('runtime',type=Path)
         if name.startswith('fit'):
-            cmd.add_argument('arm',choices=(*ARMS,PL))
+            cmd.add_argument('arm',choices=(*ARMS,*PSEUDO_ARMS.values()))
         if name=='predict-formal':
             cmd.add_argument('case',choices=FULL_CASES)
     pub=actions.add_parser('publish')
-    pub.add_argument('--clean-pl',action='store_true')
+    pseudo_options = pub.add_mutually_exclusive_group()
+    pseudo_options.add_argument('--clean-pl',action='store_true')
+    pseudo_options.add_argument('--fixed-clean-pl',action='store_true')
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -520,11 +548,14 @@ def main():
         fit(args.runtime,args.arm,smoke=args.action=='fit-smoke')
     elif args.action=='predict-source':
         runtime=read(args.runtime)
-        (predict_pseudo if runtime['run_id']==RUN_PL else predict_source)(runtime)
+        (predict_pseudo if runtime['run_id'] in PSEUDO_ARMS else predict_source)(runtime)
     elif args.action=='score-source':
         runtime=read(args.runtime)
-        modes, contrasts = ((PL_MODES,((PL,'joint'),(PL,'outer_half'),(PL,'direct')))
-                            if runtime['run_id']==RUN_PL else (MODES,CONTRASTS))
+        arm = PSEUDO_ARMS.get(runtime['run_id'])
+        modes, contrasts = MODES, CONTRASTS
+        if arm:
+            control = CANDIDATE if arm == FIXED_PL else 'joint'
+            modes, contrasts = (*MODES,arm), ((arm,control),(arm,'outer_half'),(arm,'direct'))
         score_source(args.runtime,modes=modes,output=Path(runtime['run_root'])/FULL,contrasts=contrasts)
     elif args.action=='predict-formal':
         predict_formal(read(args.runtime),args.case)
@@ -535,20 +566,21 @@ def main():
         rt={k:ctx[k] for k in ('project','python','frozen_sources')}
         project=PurePosixPath(rt['project'])
         releases,runs=project/'releases',project/'runs'
-        run = RUN_PL if args.clean_pl else RUN
+        run = RUN_FIXED_PL if args.fixed_clean_pl else RUN_PL if args.clean_pl else RUN
+        gpu_preferences = {RUN: [3,0,7,2,6,5], RUN_PL: [2,6,5], RUN_FIXED_PL: [7,2,3,0,6,5]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),training_release_root=str(releases/f'{TRAIN_RUN}-release'),
                   classifier_root=str(runs/AUG_RUN),unet_parent=str(runs/UNET_FIDELITY_RUN),
-                  allowed_gpus=[2,6,5] if args.clean_pl else [3,0,7,2,6,5],
+                  allowed_gpus=gpu_preferences[run],
                   max_workers=1 if args.clean_pl else 3,max_compute_processes=8,cpu_workers=6)
         rt['external_releases']=[rt[k] for k in ('source_root','w24_release_root',
                                                 'training_release_root','classifier_root','unet_parent')]
         rt['external_releases'] += [str(runs/r) for r in (DURA_RUN,TRAIN_RUN)]
-        if args.clean_pl:
+        if run in PSEUDO_ARMS:
             rt['external_releases'].append(str(runs/RUN))
-        else:
+        if run in FORMAL_ARMS:
             rt['native_target_root']=str(releases/f'{DATA_RUN}-release'/'data/target')
             rt['external_releases'] += [rt['native_target_root'],str(runs/RUN_OUTER)]
         release(args.repo,args.output,rt,args.ssh_config)
