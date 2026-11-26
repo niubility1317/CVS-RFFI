@@ -218,4 +218,5 @@ if __name__ == '__main__':
     matched.add_argument('--severity-weight', dest='third_prior', action='store_const', const='severity-weight')
     matched.add_argument('--carrier-anchor', dest='third_prior', action='store_const', const='carrier-anchor')
     matched.add_argument('--signed-probe', dest='third_prior', action='store_const', const='signed-probe')
+    matched.add_argument('--packet-unet', dest='third_prior', action='store_const', const='packet-unet')
     score(**vars(parser.parse_args()))

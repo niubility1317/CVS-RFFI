@@ -52,6 +52,8 @@ CARRIER_ANCHOR_RUN = '20261126-phase1-lora-w24-carrier-anchor-s2026112991-r01'
 CARRIER_ANCHOR_ARMS = ('carrier_linear', 'carrier_affine')
 SIGNED_PROBE_RUN = '20261126-phase1-lora-w24-signed-probe-s2026112991-r01'
 SIGNED_PROBE_ARMS = ('probe_positive', 'probe_signed')
+PACKET_UNET_RUN = '20261126-phase1-lora-w24-packet-unet-s2026112991-r01'
+PACKET_UNET_ARMS = ('unet_independent', 'unet_packet')
 OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS,
                    *WHITE_ARMS, *BAND_PRECISION_ARMS, *SEVERITY_ARMS, *HALF_PRIMARY_ARMS, *CARRIER_ANCHOR_ARMS,
                    *SIGNED_PROBE_ARMS)
@@ -73,6 +75,7 @@ VARIANTS = {
     'severity-weight': (SEVERITY_RUN, SEVERITY_ARMS),
     'carrier-anchor': (CARRIER_ANCHOR_RUN, CARRIER_ANCHOR_ARMS),
     'signed-probe': (SIGNED_PROBE_RUN, SIGNED_PROBE_ARMS),
+    'packet-unet': (PACKET_UNET_RUN, PACKET_UNET_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -99,6 +102,8 @@ def trial(kind):
     if arms[0] in OUTER_TUNE_ARMS:
         steps = 1200 if kind == 'band-refine' else 1800
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
+    if arms == PACKET_UNET_ARMS:
+        return Trial(run, arms, 3600, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
     return Trial(run, arms, 3600, modes, contrasts, ROUTES[:1])
 
 
@@ -152,6 +157,10 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_carrier_anchor import restorer as carrier_restorer
 
         return carrier_restorer(training, anchored=arm == CARRIER_ANCHOR_ARMS[1])
+    if arm in PACKET_UNET_ARMS:
+        from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
+
+        return PacketUNet(across_chirps=arm == PACKET_UNET_ARMS[1])
     if arm != 'three':
         return training.DuraW24()
 
@@ -227,7 +236,10 @@ def qualified_source(root, kind=True):
 
 def source_recipe(training, arm, *, initialize=None):
     def finalize(model, _tracker, _calibration):
-        if arm in BAND_ADAPTER_ARMS:
+        if arm in PACKET_UNET_ARMS:
+            trained = (model.stem, model.temporal, model.axis, model.time_edit, model.spectral)
+            key = 'unet_gradient_norms'
+        elif arm in BAND_ADAPTER_ARMS:
             trained, key = (model.band_adapter,), 'adapter_gradient_norms'
         elif arm in BAND_PRECISION_ARMS:
             trained, key = (model.band_precision,), 'precision_gradient_norms'
@@ -244,7 +256,7 @@ def source_recipe(training, arm, *, initialize=None):
                  for module in trained]
         if not all(0 < value < float('inf') for value in grads):
             raise FloatingPointError(f'Invalid gradient in a trainable W24 prior or adapter: {grads}')
-        info = dict(input_gate=False, prior_count=len(model.priors), **{key: grads},
+        info = dict(input_gate=False, prior_count=len(getattr(model, 'priors', ())), **{key: grads},
                     parameters=sum(p.numel() for p in model.parameters()))
         if arm in OUTER_TUNE_ARMS:
             info['source_parent'] = OUTER_PARENT
@@ -263,6 +275,8 @@ def source_recipe(training, arm, *, initialize=None):
             info['final_carrier_anchor'] = arm == CARRIER_ANCHOR_ARMS[1]
         if arm in SIGNED_PROBE_ARMS:
             info['signed_probe_transfer'] = arm == SIGNED_PROBE_ARMS[1]
+        if arm in PACKET_UNET_ARMS:
+            info.update(initialization='random', across_chirps=arm == PACKET_UNET_ARMS[1])
         return None, info
 
     spec = trial(ARM_TRIAL[arm])
@@ -270,7 +284,8 @@ def source_recipe(training, arm, *, initialize=None):
     return replace(training.RECIPE, name=name, steps=spec.steps,
                    validation_steps=(spec.steps // 3, 2 * spec.steps // 3),
                    model=partial(restorer, training, arm), finalize_calibration=finalize,
-                   initialize=initialize, coarse_first=training.RECIPE.coarse_first and arm not in OUTER_TUNE_ARMS)
+                   initialize=initialize, coarse_first=training.RECIPE.coarse_first
+                   and arm not in (*OUTER_TUNE_ARMS, *PACKET_UNET_ARMS))
 
 
 def fit(config, arm, *, smoke):
@@ -302,6 +317,10 @@ def fit(config, arm, *, smoke):
         from experiments.pamf_lora_main.w24_first_direction import objective_for
 
         calculate = objective_for(dura_w24_model, output_bias=arm == 'coherent_error')
+    if arm in PACKET_UNET_ARMS:
+        from experiments.pamf_lora_main.w24_packet_unet import objective_for
+
+        calculate = objective_for(dura_w24_model)
     if arm in OUTER_TUNE_ARMS:
         from experiments.pamf_lora_main.w24_band_tune import WEIGHT
         from experiments.pamf_lora_main.w24_outer_objective_source import objective_for, read_outer_checkpoint
@@ -357,10 +376,11 @@ def load_candidate(root, contract, device, arm):
     row = root / arm
     summary = read(row / f'{recipe.name}-complete.json')
     expected = archived.proof(contract, recipe)
+    prior_count = 0 if arm in PACKET_UNET_ARMS else (3 if arm == 'three' else 2)
     if (any(summary.get(k) != value for k, value in expected.items() if k != 'contract')
             or any(expected.get(key) != 0 for key in ISOLATION)
             or summary.get('n_calibration') != 0 or summary.get('input_gate') is not False
-            or summary.get('threshold') is not None or summary.get('prior_count') != (3 if arm == 'three' else 2)):
+            or summary.get('threshold') is not None or summary.get('prior_count') != prior_count):
         raise ValueError(f'Unverified source freeze for {arm}')
     if arm in OUTER_TUNE_ARMS and summary.get('source_parent') != OUTER_PARENT:
         raise ValueError(f'Unverified warm start for {arm}')
@@ -370,6 +390,9 @@ def load_candidate(root, contract, device, arm):
         raise ValueError(f'Unverified final carrier anchor for {arm}')
     if arm in SIGNED_PROBE_ARMS and summary.get('signed_probe_transfer') is not (arm == SIGNED_PROBE_ARMS[1]):
         raise ValueError(f'Unverified signed probe transfer for {arm}')
+    if arm in PACKET_UNET_ARMS and (summary.get('initialization') != 'random'
+                                   or summary.get('across_chirps') is not (arm == PACKET_UNET_ARMS[1])):
+        raise ValueError(f'Unverified packet U-Net architecture for {arm}')
     checkpoint = torch.load(row / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
         raise ValueError(f'Invalid {arm} checkpoint source binding')
@@ -471,7 +494,7 @@ def publish(args):
              'white-corruption': [0, 3, 6, 7, 2], 'band-precision': [0, 3, 6, 7],
              'half-primary': [0, 3, 5, 7],
              'severity-weight': [6, 5, 3, 0, 7, 2], 'carrier-anchor': [0, 3, 6, 7, 5, 2],
-             'signed-probe': [0, 3, 7, 6, 2, 5]}
+             'signed-probe': [0, 3, 7, 6, 2, 5], 'packet-unet': [0, 3, 7, 6, 2, 5]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
