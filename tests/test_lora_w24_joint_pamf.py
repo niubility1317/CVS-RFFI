@@ -134,3 +134,37 @@ def test_clean_pseudo_ce_can_update_restorer_with_fixed_reader():
     loss.backward()
     assert restored.grad.abs().sum() > 0
     assert all(p.grad is None for p in reader.parameters())
+
+
+def test_paired_feature_loss_keeps_uncertain_u_without_pseudo_labels():
+    def readout(x):
+        return torch.zeros(len(x), 10), x
+
+    clean = torch.tensor([[1., 0.], [0., 1.]], requires_grad=True)
+    restored = torch.tensor([[1., 1.], [1., 0.]], requires_grad=True)
+    ce, accepted, feature = experiment.clean_pseudo_loss(
+        readout, readout, clean, restored, preserve_feature=True)
+    assert ce.item() == accepted.item() == 0
+    torch.testing.assert_close(feature, torch.tensor(1. - .5**1.5))
+    feature.backward()
+    assert clean.grad is None
+    assert (restored.grad.abs().sum(1) > 0).all()
+
+
+def test_feature_candidate_requires_paired_gain_and_keeps_formal_e104_parent():
+    candidate = experiment.FEATURE
+    control = experiment.CONTINUED_PL
+    parent = experiment.FIXED_PL
+    modes = (*experiment.MODES,parent,control,candidate)
+    scores = {m:dict(six_correct=1455,low_urban_correct=187,by_scene={'clean':297}) for m in modes}
+    scores[candidate]['six_correct'] = 1456
+    assert not experiment.qualifies(scores,candidate)
+    scores[candidate]['low_urban_correct'] = 188
+    assert experiment.qualifies(scores,candidate)
+    scores[candidate]['by_scene']['clean'] = 296
+    assert not experiment.qualifies(scores,candidate)
+    for case in experiment.FULL_CASES:
+        proof = experiment.formal_receipt(case,experiment.RUN_FEATURE)
+        assert proof['reference_run'] == experiment.RUN_FIXED_PL
+        assert proof['modes'][-2:] == [parent,candidate]
+        assert control not in proof['modes'] and not proof['target_truth_read']
