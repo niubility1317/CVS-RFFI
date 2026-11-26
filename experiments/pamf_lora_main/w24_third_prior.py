@@ -62,7 +62,9 @@ UNET_TRANSPORT_RUN = '20261126-phase1-lora-w24-probe-transport-s2026112991-r01'
 UNET_TRANSPORT_ARMS = ('probe_after_channel', 'probe_through_channel')
 UNET_NOISE_COLOR_RUN = '20261126-phase1-lora-w24-noise-color-s2026112991-r01'
 UNET_NOISE_COLOR_ARMS = ('wideband_noise_control', 'bandlimited_noise')
-UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS)
+UNET_COMMON_RUN = '20261126-phase1-lora-w24-common-refine-s2026112991-r01'
+UNET_COMMON_ARMS = ('common_refine_control', 'common_refine_bands')
+UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
 UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS)
 EXPERT_RUN = '20261126-phase1-lora-w24-spectral-experts-s2026112991-r01'
 EXPERT_ARMS = ('experts_packet', 'experts_band')
@@ -93,6 +95,7 @@ VARIANTS = {
     'chirp-components': (UNET_COMPONENT_RUN, UNET_COMPONENT_ARMS),
     'probe-transport': (UNET_TRANSPORT_RUN, UNET_TRANSPORT_ARMS),
     'noise-color': (UNET_NOISE_COLOR_RUN, UNET_NOISE_COLOR_ARMS),
+    'common-refine': (UNET_COMMON_RUN, UNET_COMMON_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -181,6 +184,10 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_carrier_anchor import restorer as carrier_restorer
 
         return carrier_restorer(training, anchored=arm == CARRIER_ANCHOR_ARMS[1])
+    if arm in UNET_COMMON_ARMS:
+        from experiments.pamf_lora_main.w24_common_refiner import CommonRefiner
+
+        return CommonRefiner()
     if arm in UNET_ARMS:
         from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 
@@ -275,6 +282,10 @@ def source_recipe(training, arm, *, initialize=None):
             expert_parameters = (*model.dura.parameters(), *model.unet.parameters())
             if any(p.requires_grad or p.grad is not None for p in expert_parameters):
                 raise ValueError('Expected frozen source experts')
+        elif arm in UNET_COMMON_ARMS:
+            trained, key = (model.head,), 'common_head_gradient_norms'
+            if any(p.requires_grad or p.grad is not None for p in model.base.parameters()):
+                raise ValueError('Expected a frozen source packet U-Net')
         elif arm in UNET_ARMS:
             trained = (model.stem, model.temporal, model.axis, model.time_edit, model.spectral)
             key = 'unet_gradient_norms'
@@ -326,6 +337,9 @@ def source_recipe(training, arm, *, initialize=None):
             info['probe_through_channel'] = arm == UNET_TRANSPORT_ARMS[1]
         if arm in UNET_NOISE_COLOR_ARMS:
             info['bandlimited_noise'] = arm == UNET_NOISE_COLOR_ARMS[1]
+        if arm in UNET_COMMON_ARMS:
+            info.update(common_band_loss=arm == UNET_COMMON_ARMS[1], backbone_frozen=True,
+                        trainable_parameters=sum(p.numel() for p in model.head.parameters()))
         if arm in EXPERT_ARMS:
             info.update(expert_parents=[OUTER_PARENT, UNET_FIDELITY_RUN], local_router=arm == EXPERT_ARMS[1],
                         trainable_parameters=sum(p.numel() for p in model.router.parameters()))
@@ -385,8 +399,9 @@ def fit(config, arm, *, smoke):
         separation = (arm == UNET_COMPONENT_ARMS[1]) if arm in UNET_COMPONENT_ARMS else None
         transport = (arm == UNET_TRANSPORT_ARMS[1]) if arm in UNET_TRANSPORT_ARMS else None
         colored_noise = (arm == UNET_NOISE_COLOR_ARMS[1]) if arm in UNET_NOISE_COLOR_ARMS else None
+        common_bands = (arm == UNET_COMMON_ARMS[1]) if arm in UNET_COMMON_ARMS else None
         calculate = objective_for(dura_w24_model, complex_fidelity=fidelity, separate_loss=separation,
-                                  transport_probe=transport, colored_noise=colored_noise)
+                                  transport_probe=transport, colored_noise=colored_noise, common_bands=common_bands)
     if arm in UNET_WARM_ARMS:
         parent = Path(rt['unet_parent'])
         if parent != Path(rt['run_root']).parent.parent / UNET_FIDELITY_RUN:
@@ -396,7 +411,8 @@ def fit(config, arm, *, smoke):
                                                 dura_w24_train, channel_blind_source)
 
         def initialize(model, _tracker, _training, _calibration):
-            model.load_state_dict(weights, strict=True)
+            backbone = model.base if arm in UNET_COMMON_ARMS else model
+            backbone.load_state_dict(weights, strict=True)
     if arm in EXPERT_ARMS:
         from experiments.pamf_lora_main.w24_outer_objective_source import read_outer_checkpoint
         from experiments.pamf_lora_main.w24_spectral_experts import objective_for
@@ -497,6 +513,9 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
         raise ValueError(f'Unverified packet U-Net probe transport for {arm}')
     if arm in UNET_NOISE_COLOR_ARMS and summary.get('bandlimited_noise') is not (arm == UNET_NOISE_COLOR_ARMS[1]):
         raise ValueError(f'Unverified packet U-Net source noise distribution for {arm}')
+    if arm in UNET_COMMON_ARMS and (summary.get('common_band_loss') is not (arm == UNET_COMMON_ARMS[1])
+                                    or summary.get('backbone_frozen') is not True):
+        raise ValueError(f'Unverified common refinement recipe for {arm}')
     if arm in EXPERT_ARMS and (summary.get('expert_parents') != [OUTER_PARENT, UNET_FIDELITY_RUN]
                                or summary.get('local_router') is not (arm == EXPERT_ARMS[1])):
         raise ValueError(f'Unverified spectral expert provenance for {arm}')
@@ -610,7 +629,8 @@ def publish(args):
              'severity-weight': [6, 5, 3, 0, 7, 2], 'carrier-anchor': [0, 3, 6, 7, 5, 2],
              'signed-probe': [0, 3, 7, 6, 2, 5], 'packet-unet': [0, 3, 7, 6, 2, 5],
              'packet-unet-fidelity': [2, 7, 6, 5], 'spectral-experts': [0, 3, 5, 7, 2],
-             'chirp-components': [3, 2], 'probe-transport': [0, 3, 7], 'noise-color': [2, 3, 0]}
+             'chirp-components': [3, 2], 'probe-transport': [0, 3, 7], 'noise-color': [2, 3, 0],
+             'common-refine': [0, 3, 2, 7]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),

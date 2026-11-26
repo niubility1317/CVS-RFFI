@@ -165,11 +165,14 @@ def chirp_component_risk(output, target):
     return torch.stack(risks).mean(0)
 
 
-def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None, colored_noise=None):
+def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None, colored_noise=None,
+                  common_bands=None):
     if transport_probe is not None:
         from .w24_probe_transport import probe_views
     if colored_noise is not None:
         from .w24_noise_color import noise_views
+    if common_bands is not None:
+        from .w24_common_refiner import common_band_risk
 
     def calculate(model, tracker, raw, rng, *, with_identity, recipe, step):
         raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
@@ -246,6 +249,13 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
             parts = torch.cat((parts, components))
             if separate_loss:
                 loss = loss + components @ components.new_tensor((.10, .30))
+        if common_bands is not None:
+            count = len(raw) - 2 if with_identity else len(raw)
+            selected = (value.unflatten(0, views.shape[:2])[:count, :2] for value in (half, target, y, rms))
+            risks = common_band_risk(*selected)
+            parts = torch.cat((parts, risks))
+            if common_bands:
+                loss = loss + .25 * risks.sum()
         return loss, parts
 
     return calculate
