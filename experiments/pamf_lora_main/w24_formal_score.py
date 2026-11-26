@@ -225,4 +225,5 @@ if __name__ == '__main__':
     matched.add_argument('--probe-transport', dest='third_prior', action='store_const', const='probe-transport')
     matched.add_argument('--noise-color', dest='third_prior', action='store_const', const='noise-color')
     matched.add_argument('--common-refine', dest='third_prior', action='store_const', const='common-refine')
+    matched.add_argument('--spectral-posterior', dest='third_prior', action='store_const', const='spectral-posterior')
     score(**vars(parser.parse_args()))

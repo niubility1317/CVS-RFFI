@@ -166,7 +166,7 @@ def chirp_component_risk(output, target):
 
 
 def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None, colored_noise=None,
-                  common_bands=None):
+                  common_bands=None, posterior_primary=False):
     if transport_probe is not None:
         from .w24_probe_transport import probe_views
     if colored_noise is not None:
@@ -225,7 +225,8 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
             identity_edit = (half - y).unflatten(0, views.shape[:2])[-2:, :2]
             identity = identity_edit.abs().square().mean()
         parts = torch.stack((outer, inner, absolute, full_risk, time_risk, transfer, consistency, identity))
-        weights = parts.new_tensor((.5, .5, .25, .18, .15, .30, .03, 1.))
+        endpoint_weight = 0. if posterior_primary else .18
+        weights = parts.new_tensor((.5, .5, .25, endpoint_weight, .15, .30, .03, 1.))
         loss = parts @ weights
         if complex_fidelity is not None:
             # Only the two same-packet disturbed views contribute. Clean rows have their own identity loss.

@@ -64,6 +64,8 @@ UNET_NOISE_COLOR_RUN = '20261126-phase1-lora-w24-noise-color-s2026112991-r01'
 UNET_NOISE_COLOR_ARMS = ('wideband_noise_control', 'bandlimited_noise')
 UNET_COMMON_RUN = '20261126-phase1-lora-w24-common-refine-s2026112991-r01'
 UNET_COMMON_ARMS = ('common_refine_control', 'common_refine_bands')
+POSTERIOR_RUN = '20261126-phase1-lora-w24-spectral-posterior-s2026112991-r01'
+POSTERIOR_ARMS = ('posterior_all_bins', 'posterior_exclude_bin')
 UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
 UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS)
 EXPERT_RUN = '20261126-phase1-lora-w24-spectral-experts-s2026112991-r01'
@@ -96,6 +98,7 @@ VARIANTS = {
     'probe-transport': (UNET_TRANSPORT_RUN, UNET_TRANSPORT_ARMS),
     'noise-color': (UNET_NOISE_COLOR_RUN, UNET_NOISE_COLOR_ARMS),
     'common-refine': (UNET_COMMON_RUN, UNET_COMMON_ARMS),
+    'spectral-posterior': (POSTERIOR_RUN, POSTERIOR_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -123,9 +126,9 @@ def trial(kind):
     if arms[0] in OUTER_TUNE_ARMS:
         steps = 1200 if kind == 'band-refine' else 1800
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
-    if arms[0] in (*EXPERT_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS):
+    if arms[0] in (*EXPERT_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS, *POSTERIOR_ARMS):
         baselines = (UNET_BASELINE, OUTER_BASELINE)
-        steps = {EXPERT_ARMS: 6000, UNET_COMPONENT_ARMS: 24000}.get(arms, 12000)
+        steps = {EXPERT_ARMS: 6000, UNET_COMPONENT_ARMS: 24000, POSTERIOR_ARMS: 24000}.get(arms, 12000)
         return Trial(run, arms, steps, (*modes, *baselines),
                      (*contrasts, *((modes[3], baseline) for baseline in baselines)), ROUTES[:1])
     if arms[0] in UNET_ARMS:
@@ -188,6 +191,10 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_common_refiner import CommonRefiner
 
         return CommonRefiner()
+    if arm in POSTERIOR_ARMS:
+        from experiments.pamf_lora_main.w24_spectral_posterior import SpectralPosterior
+
+        return SpectralPosterior(exclude_current=arm == POSTERIOR_ARMS[1])
     if arm in UNET_ARMS:
         from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 
@@ -286,6 +293,8 @@ def source_recipe(training, arm, *, initialize=None):
             trained, key = (model.head,), 'common_head_gradient_norms'
             if any(p.requires_grad or p.grad is not None for p in model.base.parameters()):
                 raise ValueError('Expected a frozen source packet U-Net')
+        elif arm in POSTERIOR_ARMS:
+            trained, key = (model.lower, model.upper, model.prior), 'spectral_prior_gradient_norms'
         elif arm in UNET_ARMS:
             trained = (model.stem, model.temporal, model.axis, model.time_edit, model.spectral)
             key = 'unet_gradient_norms'
@@ -340,6 +349,9 @@ def source_recipe(training, arm, *, initialize=None):
         if arm in UNET_COMMON_ARMS:
             info.update(common_band_loss=arm == UNET_COMMON_ARMS[1], backbone_frozen=True,
                         trainable_parameters=sum(p.numel() for p in model.head.parameters()))
+        if arm in POSTERIOR_ARMS:
+            info.update(initialization='random', excludes_center_bin=arm == POSTERIOR_ARMS[1],
+                        objective='actual_posterior_with_prior_auxiliary')
         if arm in EXPERT_ARMS:
             info.update(expert_parents=[OUTER_PARENT, UNET_FIDELITY_RUN], local_router=arm == EXPERT_ARMS[1],
                         trainable_parameters=sum(p.numel() for p in model.router.parameters()))
@@ -348,7 +360,7 @@ def source_recipe(training, arm, *, initialize=None):
     spec = trial(ARM_TRIAL[arm])
     name = f'w24_{arm}_prior' if arm in ARMS else f'w24_{arm}'
     milestones = (spec.steps // 3, 2 * spec.steps // 3)
-    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS):
+    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *POSTERIOR_ARMS):
         milestones = (2000, 6000, 12000, 18000)
     if arm in UNET_WARM_ARMS:
         milestones = (2000, 6000, 9000)
@@ -356,7 +368,7 @@ def source_recipe(training, arm, *, initialize=None):
                    validation_steps=milestones,
                    model=partial(restorer, training, arm), finalize_calibration=finalize,
                    initialize=initialize, coarse_first=training.RECIPE.coarse_first
-                   and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS, *EXPERT_ARMS))
+                   and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS, *EXPERT_ARMS, *POSTERIOR_ARMS))
 
 
 def fit(config, arm, *, smoke):
@@ -402,6 +414,10 @@ def fit(config, arm, *, smoke):
         common_bands = (arm == UNET_COMMON_ARMS[1]) if arm in UNET_COMMON_ARMS else None
         calculate = objective_for(dura_w24_model, complex_fidelity=fidelity, separate_loss=separation,
                                   transport_probe=transport, colored_noise=colored_noise, common_bands=common_bands)
+    if arm in POSTERIOR_ARMS:
+        from experiments.pamf_lora_main.w24_packet_unet import objective_for
+
+        calculate = objective_for(dura_w24_model, posterior_primary=True)
     if arm in UNET_WARM_ARMS:
         parent = Path(rt['unet_parent'])
         if parent != Path(rt['run_root']).parent.parent / UNET_FIDELITY_RUN:
@@ -484,7 +500,7 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
     row = root / arm
     summary = read(row / f'{recipe.name}-complete.json')
     expected = archived.proof(contract, recipe)
-    prior_count = 0 if arm in (*UNET_ARMS, *EXPERT_ARMS) else (3 if arm == 'three' else 2)
+    prior_count = 0 if arm in (*UNET_ARMS, *EXPERT_ARMS, *POSTERIOR_ARMS) else (3 if arm == 'three' else 2)
     if (any(summary.get(k) != value for k, value in expected.items() if k != 'contract')
             or any(expected.get(key) != 0 for key in ISOLATION)
             or summary.get('n_calibration') != 0 or summary.get('input_gate') is not False
@@ -516,6 +532,10 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
     if arm in UNET_COMMON_ARMS and (summary.get('common_band_loss') is not (arm == UNET_COMMON_ARMS[1])
                                     or summary.get('backbone_frozen') is not True):
         raise ValueError(f'Unverified common refinement recipe for {arm}')
+    if arm in POSTERIOR_ARMS and (summary.get('initialization') != 'random'
+                                   or summary.get('excludes_center_bin') is not (arm == POSTERIOR_ARMS[1])
+                                   or summary.get('objective') != 'actual_posterior_with_prior_auxiliary'):
+        raise ValueError(f'Unverified spectral posterior recipe for {arm}')
     if arm in EXPERT_ARMS and (summary.get('expert_parents') != [OUTER_PARENT, UNET_FIDELITY_RUN]
                                or summary.get('local_router') is not (arm == EXPERT_ARMS[1])):
         raise ValueError(f'Unverified spectral expert provenance for {arm}')
@@ -630,7 +650,7 @@ def publish(args):
              'signed-probe': [0, 3, 7, 6, 2, 5], 'packet-unet': [0, 3, 7, 6, 2, 5],
              'packet-unet-fidelity': [2, 7, 6, 5], 'spectral-experts': [0, 3, 5, 7, 2],
              'chirp-components': [3, 2], 'probe-transport': [0, 3, 7], 'noise-color': [2, 3, 0],
-             'common-refine': [0, 3, 2, 7]}
+             'common-refine': [0, 3, 2, 7], 'spectral-posterior': [0, 3, 2, 7]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
