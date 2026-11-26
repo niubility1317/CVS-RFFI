@@ -21,7 +21,7 @@ from torch.nn import functional as F
 if __name__ == '__mp_main__':
     sys.path.insert(0, str(Path.cwd()))
 
-if __package__ is None:
+if not __package__:
     from experiments import pamf_lora_main
     pamf_lora_main.__path__.append(str(Path(__file__).resolve().parent))
 
