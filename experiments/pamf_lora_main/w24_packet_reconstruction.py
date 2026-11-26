@@ -63,10 +63,10 @@ class Mixing(nn.Module):
 
 
 class PacketReconstructor(nn.Module):
-    def __init__(self, joint):
+    def __init__(self, joint, receive_fields=0):
         super().__init__()
         self.joint = joint
-        self.front = nn.Sequential(nn.Conv1d(4, 48, 9, padding=4), nn.SiLU(),
+        self.front = nn.Sequential(nn.Conv1d(4+receive_fields, 48, 9, padding=4), nn.SiLU(),
                                    nn.Conv1d(48, 48, 5, padding=2), nn.SiLU())
         self.edges = nn.Sequential(nn.Conv1d(2, 16, 5, padding=2), nn.SiLU())
         self.down = nn.Conv1d(48, WIDTH, 16, stride=16)
@@ -88,7 +88,7 @@ class PacketReconstructor(nn.Module):
             nn.init.normal_(head.weight, std=.001)
             nn.init.zeros_(head.bias)
 
-    def forward(self, center, edges, quality):
+    def forward(self, center, edges, quality, fields=None):
         b = len(center)
         z = center.flatten(0, 1)
         edge = edges.flatten(0, 1)
@@ -96,6 +96,8 @@ class PacketReconstructor(nn.Module):
         side = spectrum[:, CENTER//4:3*CENTER//4].abs().square().median(-1).values.clamp_min(1e-9)
         state = torch.stack((quality.reshape(-1), side.log().clamp(-14., 3.)/7), dim=1)
         features = torch.cat((complex_channels(z), state[..., None].expand(-1, -1, CENTER)), dim=1)
+        if fields is not None:
+            features = torch.cat((features, fields.flatten(0, 1)), dim=1)
         local = self.front(features)
         edge_parts = edge.reshape(b*CHIRPS*2, EDGES//2)
         edge_features = self.edges(complex_channels(edge_parts)).reshape(b*CHIRPS, 2, 16, EDGES//2)
