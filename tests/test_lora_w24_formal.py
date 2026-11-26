@@ -75,7 +75,7 @@ def test_ungated_scorer_rejects_incomplete_forward_coverage(tmp_path, monkeypatc
     record = receipt(name, ungated=True)
     assert record['seeds'] == [2026092702]
     assert record['restoration_input_policy'] == 'all_packets'
-    monkeypatch.setattr(scorer, 'cases', lambda: {name: scorer.FULL})
+    monkeypatch.setattr(scorer, 'cases', lambda _trial=False: {name: scorer.FULL})
     folder = tmp_path / name
     folder.mkdir()
     (folder / 'complete.json').write_text(json.dumps(record), encoding='utf-8')

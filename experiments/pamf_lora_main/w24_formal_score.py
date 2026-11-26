@@ -7,7 +7,10 @@ import numpy as np
 
 from experiments.cric_dura_comparison.io import read, write
 from .data import label_ids, packet_indices, recording
-from .w24_formal import FULL, LIMIT, ROUTE, ROUTES, SEEDS, TARGET, VIEWS, cases, evaluation_modes, evaluation_seeds, receipt
+from .w24_formal import (
+    FULL, LIMIT, ROUTE, ROUTES, SEEDS, TARGET, VIEWS, cases, evaluation_modes,
+    evaluation_routes, evaluation_seeds, receipt,
+)
 
 
 DRAWS = 1600
@@ -16,9 +19,10 @@ MEASURES = (*VIEWS, 'six_scene')
 
 
 def load_frozen(predictions, ungated=False, outer_objective=False, third_prior=False):
-    ungated = ungated or outer_objective or third_prior
-    records, activity = {route: {} for route in ROUTES}, {route: {} for route in ROUTES}
-    for case, route in cases().items():
+    ungated = ungated or outer_objective or bool(third_prior)
+    routes = evaluation_routes(third_prior)
+    records, activity = {route: {} for route in routes}, {route: {} for route in routes}
+    for case, route in cases(third_prior).items():
         part = predictions / case
         expected = receipt(case, ungated, outer_objective, third_prior)
         n_seeds, n_modes = len(expected['seeds']), len(expected['modes'])
@@ -49,7 +53,9 @@ def load_frozen(predictions, ungated=False, outer_objective=False, third_prior=F
                     raise ValueError(f'Incomplete archived all-packet comparator for {case}/{rx}/{view}')
             records[route][rx] = rows
         activity[route].update(by_view)
-    matrices = {route: np.stack([records[route][r] for r in TARGET]) for route in ROUTES}
+    matrices = {route: np.stack([records[route][r] for r in TARGET]) for route in routes}
+    if len(routes) == 1:
+        return matrices, activity
     if not np.array_equal(matrices[FULL][:, 0, :, 0], matrices[ROUTE][:, 0, :, 0]):
         raise ValueError('Paired direct clean predictions differ across the two routes')
     if third_prior and not np.array_equal(matrices[FULL][:, 0, :, -2:], matrices[ROUTE][:, 0, :, -2:]):
@@ -113,7 +119,7 @@ def paired(delta, seeds=SEEDS):
 
 
 def acceptance(results, ungated=False, outer_objective=False, third_prior=False):
-    ungated = ungated or outer_objective or third_prior
+    ungated = ungated or outer_objective or bool(third_prior)
     seeds = evaluation_seeds(ungated)
     wide = evaluation_modes(FULL, ungated, outer_objective, third_prior)[-1]
     full = results[FULL][wide]['pooled']
@@ -144,7 +150,7 @@ def acceptance(results, ungated=False, outer_objective=False, third_prior=False)
 
 
 def score(predictions, dataset, output, ungated=False, outer_objective=False, third_prior=False):
-    ungated = ungated or outer_objective or third_prior
+    ungated = ungated or outer_objective or bool(third_prior)
     matrices, activity = load_frozen(predictions, ungated, outer_objective, third_prior)
     seeds = evaluation_seeds(ungated)
     output.mkdir(parents=True, exist_ok=False)
@@ -155,7 +161,7 @@ def score(predictions, dataset, output, ungated=False, outer_objective=False, th
                 truth.append(label_ids(capture, LIMIT)[packet_indices(LIMIT, i)])
     labels = np.asarray(truth)[:, None, None, None, :]
     result, contrasts = {}, {}
-    for route in ROUTES:
+    for route in matrices:
         modes = evaluation_modes(route, ungated, outer_objective, third_prior)
         hit = matrices[route] == labels
         result[route] = {m:readout(hit[:, :, :, i], seeds) for i,m in enumerate(modes)}
@@ -163,7 +169,8 @@ def score(predictions, dataset, output, ungated=False, outer_objective=False, th
         contrasts[route] = {m:paired(candidate - hit[:, :, :, i], seeds) for i,m in enumerate(modes[:-1])}
     write(output / 'scores.json', dict(status='ANALYZED', truth_last=True, seeds=list(seeds),
         n_physical=len(TARGET)*LIMIT, n_six=len(TARGET)*LIMIT*len(seeds)*6, bootstrap_seed=BOOTSTRAP_SEED,
-        bootstrap_draws=DRAWS, direct_clean_parity='exact', readouts=result, paired=contrasts,
+        bootstrap_draws=DRAWS, direct_clean_parity='exact' if len(matrices) == 2 else 'archive-verified',
+        readouts=result, paired=contrasts,
         acceptance=acceptance(result, ungated, outer_objective, third_prior), activity=activity))
 
 
@@ -173,5 +180,7 @@ if __name__ == '__main__':
         parser.add_argument('--'+key, type=Path, required=True)
     parser.add_argument('--ungated', action='store_true')
     parser.add_argument('--outer-objective', action='store_true')
-    parser.add_argument('--third-prior', action='store_true')
+    matched = parser.add_mutually_exclusive_group()
+    matched.add_argument('--third-prior', action='store_true')
+    matched.add_argument('--direction', dest='third_prior', action='store_const', const='direction')
     score(**vars(parser.parse_args()))

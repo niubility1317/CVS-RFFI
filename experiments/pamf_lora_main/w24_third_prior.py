@@ -1,7 +1,7 @@
 """Matched two- and three-prior W24 recovery on unlabeled source IQ."""
 import argparse
 from copy import deepcopy
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from functools import partial
 import importlib
 import os
@@ -22,12 +22,35 @@ MODES = ('direct', 'all_half', 'two_half', 'three_half', 'two_full', 'three_full
 CONTRASTS = (('three_half', 'two_half'), ('three_full', 'two_full'), ('three_half', 'direct'))
 ROUTES = ('full_native', 'native_residual_w24_v1')
 ISOLATION = ('F_reads', 'TX_reads', 'V_reads', 'target_reads', 'practical_reads', 'trace_reads')
+DIRECTION_RUN = '20261126-phase1-lora-w24-first-direction-s2026112991-r01'
+DIRECTION_ARMS = ('direction_control', 'direction_first')
+
+
+@dataclass(frozen=True)
+class Trial:
+    run: str
+    arms: tuple
+    steps: int
+    source_modes: tuple
+    contrasts: tuple
+    routes: tuple = ROUTES
+
+
+def trial(kind):
+    if kind is True:
+        return Trial(RUN, ARMS, STEPS, MODES, CONTRASTS)
+    if kind == 'direction':
+        modes = ('direct', 'all_half', 'direction_control_half', 'direction_first_half',
+                 'direction_control_full', 'direction_first_full')
+        return Trial(DIRECTION_RUN, DIRECTION_ARMS, 3600, modes,
+                     ((modes[3], modes[2]), (modes[5], modes[4]), (modes[3], modes[0])), ROUTES[:1])
+    raise ValueError(f'Unknown matched W24 trial: {kind}')
 
 
 def restorer(training, arm):
-    if arm not in ARMS:
+    if arm not in (*ARMS, *DIRECTION_ARMS):
         raise ValueError(f'Unknown prior arm: {arm}')
-    if arm == 'two':
+    if arm != 'three':
         return training.DuraW24()
 
     class ThreePrior(training.DuraW24):
@@ -45,7 +68,7 @@ def restorer(training, arm):
 
 
 def fit_inputs(rt, arm):
-    if arm not in ARMS:
+    if arm not in (*ARMS, *DIRECTION_ARMS):
         raise ValueError(f'Unknown prior arm: {arm}')
     return dict(source_root=rt['source_root'], run_root=str(PurePosixPath(rt['run_root']) / arm))
 
@@ -56,40 +79,43 @@ def restore_center(original, delta, fraction):
     return restored
 
 
-def promotion(routes):
-    return len(routes) == 2 and all(
-        row['three_half']['by_scene']['clean'] >= row['direct']['by_scene']['clean']
-        and row['three_half']['six_correct'] > max(row[k]['six_correct'] for k in ('two_half', 'direct', 'all_half'))
-        and row['three_half']['low_urban_correct'] >= max(row[k]['low_urban_correct'] for k in ('two_half', 'direct', 'all_half'))
+def promotion(routes, kind=True):
+    spec = trial(kind)
+    direct, mature, control, candidate = spec.source_modes[:4]
+    return len(routes) == len(spec.routes) and all(
+        row[candidate]['by_scene']['clean'] >= row[direct]['by_scene']['clean']
+        and row[candidate]['six_correct'] > max(row[k]['six_correct'] for k in (control, direct, mature))
+        and row[candidate]['low_urban_correct'] >= max(row[k]['low_urban_correct'] for k in (control, direct, mature))
         for row in routes)
 
 
-def qualified_source(root):
+def qualified_source(root, kind=True):
     from experiments.cric_dura_comparison.io import read
     from experiments.pamf_lora_main.w24_native_full import VIEWS
 
+    spec = trial(kind)
     if read(root / 'state.json')['status'] not in ('SOURCE_SCORED', 'FORMAL_PREDICTING'):
         raise ValueError('Expected frozen and scored source rows')
     results, physical_ids = [], None
-    for route in ROUTES:
+    for route in spec.routes:
         predictions = read(root / route / 'source-predictions.json')
         scores = read(root / route / 'source-scores.json')
         ids, waveform = predictions['physical_ids'], predictions['waveform']
         if (predictions['status'] != 'PREDICTIONS_FROZEN' or predictions['target_reads'] != 0
-                or predictions['source_truth_reads'] != 0 or predictions['modes'] != list(MODES)
+                or predictions['source_truth_reads'] != 0 or predictions['modes'] != list(spec.source_modes)
                 or predictions['views'] != list(VIEWS) or len(ids) != 300 or len(set(ids)) != 300
                 or (physical_ids is not None and ids != physical_ids)
-                or waveform['candidate_steps'] != STEPS or waveform['candidate_run'] != RUN
+                or waveform['candidate_steps'] != spec.steps or waveform['candidate_run'] != spec.run
                 or waveform['route'] != route or waveform['ungated'] is not True
                 or waveform['amplitudes'] != [.5, 1.]
-                or waveform['activation'] != dict.fromkeys(VIEWS, [300]*(len(MODES)-1))
+                or waveform['activation'] != dict.fromkeys(VIEWS, [300]*(len(spec.source_modes)-1))
                 or scores['status'] != 'ANALYZED' or scores['source_truth_last'] is not True
                 or scores['target_reads'] != 0 or scores['n_packets'] != 300 or scores['n_practical'] != 1800
                 or scores['waveform'] != waveform):
             raise ValueError(f'Invalid source evaluation for {route}')
         physical_ids = ids
         results.append(scores['scores'])
-    if not promotion(results):
+    if not promotion(results, kind):
         raise ValueError('Source comparison did not qualify')
 
 
@@ -102,7 +128,10 @@ def source_recipe(training, arm):
         return None, dict(input_gate=False, prior_count=len(model.priors), prior_gradient_norms=grads,
                           parameters=sum(p.numel() for p in model.parameters()))
 
-    return replace(training.RECIPE, name=f'w24_{arm}_prior', steps=STEPS, validation_steps=(600, 1200),
+    spec = trial('direction' if arm in DIRECTION_ARMS else True)
+    name = f'w24_{arm}' if arm in DIRECTION_ARMS else f'w24_{arm}_prior'
+    return replace(training.RECIPE, name=name, steps=spec.steps,
+                   validation_steps=(spec.steps // 3, 2 * spec.steps // 3),
                    model=partial(restorer, training, arm), finalize_calibration=finalize)
 
 
@@ -127,9 +156,14 @@ def fit(config, arm, *, smoke):
         train, held = (tensor(iq[index].view('float32'), device).view(torch.complex64) for index in (train, held))
         return (train, torch.empty(0, device=device), held), contract
 
+    calculate = dura_w24_model.objective
+    if arm == 'direction_first':
+        from experiments.pamf_lora_main.w24_first_direction import objective_for
+
+        calculate = objective_for(dura_w24_model)
     numerical_policy()
     channel_blind_source.fit(rt, smoke=smoke, recipe=source_recipe(dura_w24_train, arm),
-                             calculate=dura_w24_model.objective, receiver_batches=True, prepare=prepare,
+                             calculate=calculate, receiver_batches=True, prepare=prepare,
                              make_tracker=dura_w24_train.WideTracker)
 
 
@@ -146,7 +180,7 @@ def load_candidate(root, contract, device, arm):
     if (any(summary.get(k) != value for k, value in expected.items() if k != 'contract')
             or any(expected.get(key) != 0 for key in ISOLATION)
             or summary.get('n_calibration') != 0 or summary.get('input_gate') is not False
-            or summary.get('threshold') is not None or summary.get('prior_count') != ARMS.index(arm)+2):
+            or summary.get('threshold') is not None or summary.get('prior_count') != (3 if arm == 'three' else 2)):
         raise ValueError(f'Unverified source freeze for {arm}')
     checkpoint = torch.load(row / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
@@ -164,6 +198,8 @@ def dispatch(runtime):
     from experiments.pamf_lora_main.w24_wide_transfer import training_runtime
 
     rt = read(runtime)
+    kind = rt['third_prior']
+    spec = trial(kind)
     archive, _ = training_runtime(rt)
     reference = Path(rt['w24_release_root'])
     root = Path(rt['run_root'])
@@ -190,15 +226,15 @@ def dispatch(runtime):
     try:
         if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Expected the registered W24 evaluator archive')
-        for arm in ARMS:
+        for arm in spec.arms:
             (root / arm).mkdir()
             write(root / arm / 'fit-inputs.json', fit_inputs(rt, arm))
         cards = available(rt['allowed_gpus'], rt['max_compute_processes'])
-        if len(cards) < len(ARMS):
+        if len(cards) < len(spec.arms):
             raise RuntimeError('The matched pair requires two GPUs with sufficient free memory')
-        status(status='SOURCE_TRAINING', arms=list(ARMS), steps=STEPS, available_gpus=cards)
-        schedule(rt, [('fit', arm) for arm in ARMS], training_job)
-        status(status='SOURCE_FROZEN', arms=list(ARMS), steps=STEPS)
+        status(status='SOURCE_TRAINING', arms=list(spec.arms), steps=spec.steps, available_gpus=cards)
+        schedule(rt, [('fit', arm) for arm in spec.arms], training_job)
+        status(status='SOURCE_FROZEN', arms=list(spec.arms), steps=spec.steps)
         deadline = monotonic() + 600
         while not (cards := available(rt['allowed_gpus'], rt['max_compute_processes'])):
             if monotonic() >= deadline:
@@ -209,12 +245,11 @@ def dispatch(runtime):
             status(status='RUNNING', phase=phase, pid=proc.pid, gpu=gpu)
             if proc.wait():
                 raise RuntimeError(f'{phase} failed')
-        results = [read(root / route / 'source-scores.json')['scores']
-                   for route in ROUTES]
-        promote = promotion(results)
-        status(status='SOURCE_SCORED', promote=promote, arms=list(ARMS), steps=STEPS)
+        results = [read(root / route / 'source-scores.json')['scores'] for route in spec.routes]
+        promote = promotion(results, kind)
+        status(status='SOURCE_SCORED', promote=promote, arms=list(spec.arms), steps=spec.steps)
         if promote:
-            qualified_source(root)
+            qualified_source(root, kind)
             config = root / 'formal-runtime.json'
             write(config, dict(rt, candidate_root=str(root), run_root=str(root/'formal'), ungated=True))
             job = start('dispatch', 'formal-dispatch', None, reference, own.with_name('w24_formal.py'), config)
@@ -237,15 +272,17 @@ def publish(args):
     from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN
 
     ctx = read(args.context)
+    kind = 'direction' if args.direction else True
+    run = trial(kind).run
     rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
     releases, runs = project / 'releases', project / 'runs'
-    rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
-              release_root=str(releases / f'{RUN}-release'), run_root=str(runs / RUN),
+    rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
+              release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
               native_target_root=str(releases / f'{DATA_RUN}-release' / 'data/target'),
               classifier_root=str(runs / AUG_RUN), w24_release_root=str(releases / f'{W24_RUN}-release'),
-              training_release_root=str(releases / f'{TRAIN_RUN}-release'), third_prior=True,
+              training_release_root=str(releases / f'{TRAIN_RUN}-release'), third_prior=kind,
               cpu_workers=8, allowed_gpus=[5, 6, 1, 0], max_workers=2, max_compute_processes=8)
     rt['external_releases'] = [rt[k] for k in ('source_root', 'classifier_root', 'w24_release_root',
                                                'training_release_root', 'native_target_root')] + [str(runs / name) for name in (SWEEP_RUN, RUN_UNGATED)]
@@ -258,7 +295,8 @@ def collect_score(args):
     import json
 
     root = PurePosixPath(read(args.submit)['run_root'])
-    if not re.fullmatch(r'/[A-Za-z0-9_./-]+', str(root)) or root.name != RUN:
+    kind = 'direction' if args.direction else True
+    if not re.fullmatch(r'/[A-Za-z0-9_./-]+', str(root)) or root.name != trial(kind).run:
         raise ValueError('Unexpected immutable N607 run root')
     connection = ['-F', str(args.ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
     deadline = monotonic() + 12*60*60
@@ -290,7 +328,7 @@ def collect_score(args):
     args.output.mkdir(parents=True)
     subprocess.run(['scp', *connection, '-r', 'N607:' + str(root/'formal'/'predictions'), str(args.output)],
                    check=True, timeout=180)
-    score(args.output/'predictions', args.dataset, args.output/'scores', third_prior=True)
+    score(args.output/'predictions', args.dataset, args.output/'scores', third_prior=kind)
 
 
 if __name__ == '__main__':
@@ -300,11 +338,13 @@ if __name__ == '__main__':
     for phase in ('fit-smoke', 'fit', 'fit-arm'):
         cmd = actions.add_parser(phase)
         cmd.add_argument('runtime', type=Path)
-        cmd.add_argument('arm', choices=ARMS)
+        cmd.add_argument('arm', choices=(*ARMS, *DIRECTION_ARMS))
     pub = actions.add_parser('publish')
+    pub.add_argument('--direction', action='store_true')
     for key in ('repo', 'output', 'context', 'ssh-config'):
         pub.add_argument('--' + key, type=Path, required=True)
     collector = actions.add_parser('collect-score')
+    collector.add_argument('--direction', action='store_true')
     for key in ('submit', 'dataset', 'output', 'ssh-config'):
         collector.add_argument('--' + key, type=Path, required=True)
     args = parser.parse_args()

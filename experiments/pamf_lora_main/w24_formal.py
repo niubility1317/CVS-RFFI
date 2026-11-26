@@ -44,7 +44,6 @@ ROUTES = (FULL, ROUTE)
 WIDE = 'wide_dura_half'
 WIDE_UNGATED = 'wide_dura_ungated_half'
 OUTER_HALF = 'outer_objective_half'
-PRIOR_HALVES = ('two_half', 'three_half')
 MODES = {
     FULL: ('direct', 'dura_half', 'complex_response_half', WIDE),
     ROUTE: ('direct', 'r69_gated_half', WIDE),
@@ -55,9 +54,17 @@ ORIGINAL_AUG_COMMIT = '502629361a6aafa564a94947f3116e82f58c3692'
 REPLICATION_COMMIT = 'abd0f4332aba04ac4cbca42cb5a3449193a9bbf2'
 
 
-def cases():
+def evaluation_routes(third_prior=False):
+    if third_prior:
+        from experiments.pamf_lora_main.w24_third_prior import trial
+
+        return trial(third_prior).routes
+    return ROUTES
+
+
+def cases(third_prior=False):
     # Interleave routes to make progress on both when only a few cards are free.
-    return {f'{route}-{i}': route for i in SHARDS for route in ROUTES}
+    return {f'{route}-{i}': route for i in SHARDS for route in evaluation_routes(third_prior)}
 
 
 def evaluation_seeds(ungated):
@@ -67,7 +74,9 @@ def evaluation_seeds(ungated):
 def evaluation_modes(route, ungated, outer_objective=False, third_prior=False):
     names = MODES[route]
     if third_prior:
-        return (*names[:-1], WIDE_UNGATED, *PRIOR_HALVES)
+        from experiments.pamf_lora_main.w24_third_prior import trial
+
+        return (*names[:-1], WIDE_UNGATED, *trial(third_prior).source_modes[2:4])
     if outer_objective:
         if not ungated:
             raise ValueError('The outer-objective model requires all-packet restoration')
@@ -76,7 +85,7 @@ def evaluation_modes(route, ungated, outer_objective=False, third_prior=False):
 
 
 def receipt(case, ungated=False, outer_objective=False, third_prior=False):
-    route = cases()[case]
+    route = cases(third_prior)[case]
     i = int(case.rsplit('-', 1)[1])
     proof = dict(status='PREDICTIONS_FROZEN', processing_route=route,
                  seeds=list(evaluation_seeds(ungated)), views=list(VIEWS),
@@ -177,12 +186,13 @@ def bindings(rt, routes, device):
     archive, parent = training_runtime(rt)
     wide, tracker, threshold, frozen = load_restorer(archive, parent, contract, device)
     if rt.get('third_prior'):
-        from experiments.pamf_lora_main.w24_third_prior import ARMS, load_candidate
+        from experiments.pamf_lora_main.w24_third_prior import load_candidate, trial
 
         source = Path(rt['candidate_root'])
-        arms = [load_candidate(source, contract, device, arm) for arm in ARMS]
+        names = trial(rt['third_prior']).arms
+        arms = [load_candidate(source, contract, device, arm) for arm in names]
         info = dict(epochs=epochs, source_frozen_G=source.name, steps=arms[0][1]['steps'],
-                    parameters={arm: summary['parameters'] for arm, (_, summary) in zip(ARMS, arms, strict=True)})
+                    parameters={arm: summary['parameters'] for arm, (_, summary) in zip(names, arms, strict=True)})
         return heads, [model for model, _ in arms], tracker, None, {}, info
     if rt.get('outer_objective'):
         from experiments.pamf_lora_main.w24_outer_objective_source import RUN as SOURCE_RUN, load_candidate
@@ -279,11 +289,13 @@ def smoke(rt):
     third = rt.get('third_prior', False)
     append = outer or third
     seeds = evaluation_seeds(ungated)
-    heads, g, track, gate, baseline, proof = bindings(rt, ROUTES, device)
+    routes = evaluation_routes(third)
+    heads, g, track, gate, baseline, proof = bindings(rt, routes, device)
     source = Path(rt['source_root'])
     u = native(source, 'U_s', source_contract(source)['counts']['U_s'])[:4]
     clean = []
-    for route, receiver in ((FULL, channel_job), (ROUTE, receive)):
+    for route in routes:
+        receiver = channel_job if route == FULL else receive
         if append:
             batch = partial(prior_labels if third else candidate_labels, heads, g, track, device=device)
         else:
@@ -301,7 +313,7 @@ def smoke(rt):
         if disturbed.shape != (len(seeds), modes, len(u)) or not coverage:
             raise ValueError(f'Real frozen checkpoint source smoke failed for {route}')
         clean.append(c if append else c[:, 0])
-    if not np.array_equal(*clean):
+    if len(clean) == 2 and not np.array_equal(*clean):
         raise ValueError('Shared clean received IQ must give identical direct outputs')
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', target_reads=0,
           seeds=list(seeds), ungated=ungated, **proof))
@@ -392,8 +404,8 @@ def dispatch(runtime):
             from experiments.pamf_lora_main.w24_third_prior import qualified_source
 
             if not ungated or outer:
-                raise ValueError('Third-prior formal prediction requires its own ungated matrix')
-            qualified_source(Path(rt['candidate_root']))
+                raise ValueError('Matched formal prediction requires its own ungated matrix')
+            qualified_source(Path(rt['candidate_root']), third)
             blind_reference(rt)
         if outer:
             if not ungated:
@@ -435,11 +447,12 @@ def dispatch(runtime):
         if start(rt, 'smoke', 'source-smoke', gpu).wait():
             raise ValueError('Formal real checkpoint source smoke failed')
         status(status='TARGET_PREDICTING')
-        schedule(rt, [('predict', case) for case in cases()], start)
-        for case in cases():
+        jobs = cases(third)
+        schedule(rt, [('predict', case) for case in jobs], start)
+        for case in jobs:
             if read(root / 'predictions' / case / 'complete.json') != receipt(case, ungated, outer, third):
                 raise ValueError(f'Incomplete frozen prediction shard {case}')
-        status(status='PREDICTIONS_FROZEN', cases=list(cases()), target_truth_read=False)
+        status(status='PREDICTIONS_FROZEN', cases=list(jobs), target_truth_read=False)
     except Exception as exc:
         status(status='FAILED', error=str(exc))
         raise

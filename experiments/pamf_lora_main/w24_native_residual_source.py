@@ -19,7 +19,7 @@ from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_lora_main.full_packet_views import native, source_contract
 from experiments.pamf_lora_main.runner import activate, available
 from experiments.pamf_lora_main.w24_factor_audit import AUG_RUN, frozen_source_panel, load_classifier, panel, score_source
-from experiments.pamf_lora_main.w24_formal import wide_delta
+from experiments.pamf_lora_main.w24_formal import evaluation_routes, wide_delta
 from experiments.pamf_lora_main.w24_native_full import (
     DATA_RUN, SOURCE, VIEWS, W24_COMMIT, W24_RUN, classify, classify_aperture,
     load_restorers, native_full_view, recover,
@@ -44,10 +44,11 @@ CHIRP_CONTRASTS = (('outer_half', 'inner_half'), ('prefer_outer', 'all_half'),
 BATCH = 24
 
 
-def paired_iq(scene, item):
+def paired_iq(scene, item, *, full_only=False):
     row, receiver, packet = item
     handle = (scene, receiver, row, WAVEFORM_NAMESPACE)
-    return native_full_view(packet, *handle), native_residual(packet, *handle)
+    full = native_full_view(packet, *handle)
+    return (full,) if full_only else (full, native_residual(packet, *handle))
 
 
 @torch.no_grad()
@@ -106,9 +107,9 @@ def chirp_labels(f, g, tracker, packets, device, *, verify=False):
 
 def mode_list(rt):
     if rt.get('third_prior'):
-        from experiments.pamf_lora_main.w24_third_prior import MODES as PRIOR_MODES
+        from experiments.pamf_lora_main.w24_third_prior import trial
 
-        return PRIOR_MODES
+        return trial(rt['third_prior']).source_modes
     if rt.get('joint_edges'):
         from experiments.pamf_lora_main.w24_outer_objective_source import EDGE_MODES
 
@@ -135,15 +136,18 @@ def predict_source(runtime):
     archive, parent = training_runtime(rt)
     g, track, threshold, frozen = load_restorer(archive, parent, contract, device)
     third_prior = rt.get('third_prior', False)
+    routes = evaluation_routes(third_prior)
+    replay = partial(paired_iq, full_only=len(routes) == 1)
     learning_outer = rt.get('outer_objective', False)
     joint_edges = rt.get('joint_edges', False)
     allocating = rt.get('chirp_allocation', False)
     sweeping = rt.get('readout_sweep', False)
     modes = mode_list(rt)
     if third_prior:
-        from experiments.pamf_lora_main.w24_third_prior import ARMS, load_candidate, restore_center
+        from experiments.pamf_lora_main.w24_third_prior import load_candidate, restore_center, trial
 
-        arms = [load_candidate(root, contract, device, arm) for arm in ARMS]
+        names = trial(third_prior).arms
+        arms = [load_candidate(root, contract, device, arm) for arm in names]
 
         def evaluate(packets):
             original = received_aperture(packets, device)
@@ -183,7 +187,7 @@ def predict_source(runtime):
 
     u = np.array(native(source, 'U_s', contract['counts']['U_s'])[:2])
     for scene in ('clean', VIEWS[-1]):
-        arrivals = [paired_iq(scene, (i, SOURCE[0], packet)) for i, packet in enumerate(u)]
+        arrivals = [replay(scene, (i, SOURCE[0], packet)) for i, packet in enumerate(u)]
         for route in zip(*arrivals, strict=True):
             packets = np.stack(route)
             if allocating:
@@ -197,9 +201,9 @@ def predict_source(runtime):
     if third_prior:
         observed = received_aperture(packets[:1], device)
         smoke.update(ungated=True, candidate_steps=arms[0][1]['steps'],
-                     candidate_parameters=dict(zip(ARMS, (info['parameters'] for _, info in arms), strict=True)),
+                     candidate_parameters=dict(zip(names, (info['parameters'] for _, info in arms), strict=True)),
                      b1_ungated_g_only={arm: ungated_latency(model, track, observed)
-                                        for arm, (model, _) in zip(ARMS, arms, strict=True)})
+                                        for arm, (model, _) in zip(names, arms, strict=True)})
     elif learning_outer:
         observed = received_aperture(packets[:1], device)
         b1 = {modes[1]: ungated_latency(g, track, observed),
@@ -218,26 +222,26 @@ def predict_source(runtime):
     held = native(source, 'V', contract['counts']['V'])[rows]
     jobs = [(int(row), SOURCE[int(receiver)], packet)
             for row, receiver, packet in zip(rows, rx, held, strict=True)]
-    output = {r: {} for r in ROUTES}
-    activity = {r: {} for r in ROUTES}
+    output = {r: {} for r in routes}
+    activity = {r: {} for r in routes}
     with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
         for scene in VIEWS:
-            stream = pool.map(partial(paired_iq, scene), jobs, chunksize=6)
-            batches = {r: [] for r in ROUTES}
-            counts = {r: np.zeros(len(modes)-1, dtype=int) for r in ROUTES}
+            stream = pool.map(partial(replay, scene), jobs, chunksize=6)
+            batches = {r: [] for r in routes}
+            counts = {r: np.zeros(len(modes)-1, dtype=int) for r in routes}
             for offset in range(0, len(rows), BATCH):
                 chunk = [next(stream) for _ in range(min(BATCH, len(rows)-offset))]
-                for route, packets in zip(ROUTES, zip(*chunk, strict=True), strict=True):
+                for route, packets in zip(routes, zip(*chunk, strict=True), strict=True):
                     pred, active = evaluate(np.stack(packets))
                     batches[route].append(pred)
                     counts[route] += active
-            for route in ROUTES:
+            for route in routes:
                 output[route][scene] = np.concatenate(batches[route], axis=1)
                 activity[route][scene] = counts[route].tolist()
-            if scene == 'clean' and not np.array_equal(*(output[r][scene] for r in ROUTES)):
+            if len(routes) == 2 and scene == 'clean' and not np.array_equal(*(output[r][scene] for r in routes)):
                 raise ValueError('Same clean packets must produce identical decisions on both routes')
             print('W24_NATIVE_RESIDUAL_PREDICTED', scene, len(rows), flush=True)
-    for route in ROUTES:
+    for route in routes:
         if third_prior or learning_outer or allocating or sweeping:
             previous = root.parent / (SWEEP_RUN if third_prior or allocating or learning_outer else RUN) / route
             mark = read(previous/'source-predictions.json')
@@ -307,9 +311,9 @@ def compare_source(runtime):
     root = Path(rt['run_root'])
     modes = mode_list(rt)
     if rt.get('third_prior'):
-        from experiments.pamf_lora_main.w24_third_prior import CONTRASTS
+        from experiments.pamf_lora_main.w24_third_prior import trial
 
-        contrasts = CONTRASTS
+        contrasts = trial(rt['third_prior']).contrasts
     elif rt.get('joint_edges'):
         from experiments.pamf_lora_main.w24_outer_objective_source import EDGE_CONTRASTS
 
@@ -320,9 +324,10 @@ def compare_source(runtime):
         contrasts = OUTER_CONTRASTS
     else:
         contrasts = CHIRP_CONTRASTS if rt.get('chirp_allocation') else ()
-    for route in ROUTES:
+    routes = evaluation_routes(rt.get('third_prior', False))
+    for route in routes:
         frozen_source_panel(Path(rt['source_root']), root / route, modes)
-    for route in ROUTES:
+    for route in routes:
         score_source(runtime, modes=modes, output=root / route, contrasts=contrasts)
 
 
