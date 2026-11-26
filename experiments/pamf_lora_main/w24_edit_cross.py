@@ -1,6 +1,7 @@
 """Full source-only crossover of frozen W24 DURA edit direction and strength."""
 import argparse
 from concurrent.futures import ProcessPoolExecutor
+import faulthandler
 from functools import partial
 from pathlib import Path, PurePosixPath
 
@@ -29,7 +30,7 @@ from experiments.pamf_lora_main.w24_third_prior import HALF_PRIMARY_RUN, load_ca
 from experiments.pamf_lora_main.w24_wide_transfer import load_restorer, received_aperture, training_runtime
 
 
-RUN = '20261126-diagnostic-lora-w24-edit-cross-source-s2026112559-r01'
+RUN = '20261126-diagnostic-lora-w24-edit-cross-source-s2026112559-r02'
 CENTER = 384
 BUCKETS = (('dc', 0, 0), ('1-8', 1, 8), ('9-32', 9, 32), ('33-64', 33, 64), ('65-192', 65, 192))
 MODES = ('direct', 'outer_half', 'half_primary', 'outer_direction_total', 'half_direction_total',
@@ -107,15 +108,19 @@ def check_controls(archive, names, columns, ids, matrix):
 
 
 def predict(rt):
+    faulthandler.enable()
     activate(rt)
     root, source = Path(rt['run_root']), Path(rt['source_root'])
     device = 'cuda:0'
     contract = source_contract(source)
+    print('W24_EDIT_CROSS_SOURCE_CONTRACT', flush=True)
     _, tracker, _, _ = load_restorer(*training_runtime(rt), contract, device)
     parent, half_training = root.parent/PARENT, root.parent/HALF_PRIMARY_RUN
     outer, outer_info = load_parent(parent, contract, device)
     half, half_info = load_candidate(half_training, contract, device, 'half_primary')
+    print('W24_EDIT_CROSS_RESTORERS_FROZEN', flush=True)
     f = load_classifier(rt, contract, device)
+    print('W24_EDIT_CROSS_READER_FROZEN', flush=True)
     u = native(source, 'U_s', contract['counts']['U_s'])[0]
     raw = np.stack([source_receive(view, (0, SOURCE[0], u)) for view in ('clean', VIEWS[-1])])
     decisions, metrics = render(f, (outer, half), tracker, raw, device)
@@ -186,7 +191,7 @@ def main():
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'), classifier_root=str(runs/AUG_RUN),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),
                   training_release_root=str(releases/f'{TRAIN_RUN}-release'),
-                  allowed_gpus=[0, 3, 6, 7], cpu_workers=8)
+                  allowed_gpus=[3, 7, 0, 6], cpu_workers=8)
         rt['external_releases'] = [rt[field] for field in ('source_root', 'classifier_root',
                                                            'w24_release_root', 'training_release_root')]
         rt['external_releases'] += [str(runs/run) for run in (PARENT, HALF_PRIMARY_RUN)]

@@ -379,8 +379,9 @@ def dispatch(runtime, *, entry=__file__, phases=('predict-source', 'score-source
                 job = subprocess.Popen([rt['python'], '-u', script, phase, str(runtime)], cwd=reference,
                                        env=env, stdout=log, stderr=subprocess.STDOUT)
                 status(status='RUNNING', phase=phase, pid=job.pid, gpu=active_gpu)
-                if job.wait():
-                    raise RuntimeError(f'{phase} failed')
+                returncode = job.wait()
+                if returncode:
+                    raise RuntimeError(f'{phase} failed (exit {returncode})')
         status(status='SOURCE_SCORED')
     except Exception as error:
         status(status='FAILED', error=str(error))
