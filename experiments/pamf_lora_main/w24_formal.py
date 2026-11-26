@@ -15,7 +15,7 @@ if __package__ is None:
 
     pamf_lora_main.__path__.append(str(Path(__file__).resolve().parent))
 
-from experiments.cric_dura_comparison.io import read, write
+from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main.dura_repair import complex_iq, real_iq
 from experiments.pamf_lora_main.full_packet_views import native, source_contract, target_contract
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
@@ -213,15 +213,23 @@ def bindings(rt, routes, device):
              source_frozen_G=TRAIN_RUN, steps=frozen['steps'], parameters=frozen['parameters'])
 
 
-def wide_delta(g, tracker, observed):
+def wide_delta(g, tracker, observed, *, packets=None):
     y, phase, quality, rms = coordinates(tracker, observed[..., :384])
-    stages, *_ = g.propose(y, quality, rms, complex_iq(observed[..., 384:]))
+    edges = complex_iq(observed[..., 384:])
+    native_proposal = getattr(g, 'propose_native', None)
+    if native_proposal is None:
+        stages, *_ = g.propose(y, quality, rms, edges)
+    else:
+        if packets is None or packets.shape != (len(observed), 8192) or packets.dtype != np.complex64:
+            raise ValueError('A native restoration proposal needs the same full-rate received IQ')
+        native = tensor(packets.view(np.float32), observed.device).view(torch.complex64)
+        stages, *_ = native_proposal(tracker, y, phase, quality, rms, edges, native)
     return real_iq((stages[-1] - y) * phase * rms)
 
 
-def ungated_decisions(heads, g, tracker, original):
+def ungated_decisions(heads, g, tracker, original, *, packets=None):
     wide = original.clone()
-    wide[..., :384] += .5 * wide_delta(g, tracker, original)
+    wide[..., :384] += .5 * wide_delta(g, tracker, original, packets=packets)
     return np.stack([classify_aperture(f, wide) for f in heads])
 
 
@@ -236,7 +244,7 @@ def candidate_labels(heads, g, tracker, packets, device):
 def prior_labels(heads, arms, tracker, packets, device):
     original = received_aperture(packets, device)
     direct = np.stack([classify_aperture(f, original) for f in heads])
-    return np.stack((direct, *(ungated_decisions(heads, arm, tracker, original) for arm in arms)),
+    return np.stack((direct, *(ungated_decisions(heads, arm, tracker, original, packets=packets) for arm in arms)),
                     axis=1), len(original)
 
 

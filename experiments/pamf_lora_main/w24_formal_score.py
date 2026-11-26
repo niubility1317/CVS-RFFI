@@ -228,4 +228,5 @@ if __name__ == '__main__':
     matched.add_argument('--spectral-posterior', dest='third_prior', action='store_const', const='spectral-posterior')
     matched.add_argument('--clean-projection', dest='third_prior', action='store_const', const='clean-projection')
     matched.add_argument('--weak-transfer', dest='third_prior', action='store_const', const='weak-transfer')
+    matched.add_argument('--polyphase', dest='third_prior', action='store_const', const='polyphase')
     score(**vars(parser.parse_args()))

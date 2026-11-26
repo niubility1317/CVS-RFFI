@@ -164,7 +164,7 @@ def predict_source(runtime):
 
         def evaluate(packets):
             original = received_aperture(packets, device)
-            edits = [wide_delta(model, track, original) for model, _ in arms]
+            edits = [wide_delta(model, track, original, packets=packets) for model, _ in arms]
             old = restore_center(original, wide_delta(g, track, original), .5)
             outputs = [restore_center(original, delta, alpha) for alpha in (.5, 1.) for delta in edits]
             if unet_parent is not None:
@@ -221,7 +221,8 @@ def predict_source(runtime):
         observed = received_aperture(packets[:1], device)
         smoke.update(ungated=True, candidate_steps=arms[0][1]['steps'],
                      candidate_parameters=dict(zip(names, (info['parameters'] for _, info in arms), strict=True)),
-                     b1_ungated_g_only={arm: ungated_latency(model, track, observed)
+                     b1_ungated_g_only={arm: ungated_latency(model, track, observed,
+                                                            render=partial(wide_delta, packets=packets[:1]))
                                         for arm, (model, _) in zip(names, arms, strict=True)})
     elif learning_outer:
         observed = received_aperture(packets[:1], device)

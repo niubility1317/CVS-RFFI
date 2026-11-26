@@ -32,11 +32,11 @@ class AttentionBlock(nn.Module):
 class PacketUNet(nn.Module):
     """Preserve each chirp's skip features while mixing coarse time and packet context."""
 
-    def __init__(self, *, across_chirps, separate_chirps=False):
+    def __init__(self, *, across_chirps, separate_chirps=False, receive_fields=0):
         super().__init__()
         self.across_chirps = across_chirps
         self.separate_chirps = separate_chirps
-        self.stem = block(12, WIDTH, 7)
+        self.stem = block(12 + receive_fields, WIDTH, 7)
         self.down = nn.ModuleList(block(WIDTH, WIDTH, stride=2) for _ in range(3))
         self.up = nn.ModuleList(block(2 * WIDTH, WIDTH) for _ in range(3))
         self.temporal_position = nn.Parameter(torch.empty(CENTER // 8, WIDTH))
@@ -73,7 +73,7 @@ class PacketUNet(nn.Module):
         real, imag = value.float().unflatten(0, shape).unbind(2)
         return torch.complex(real, imag)
 
-    def forward(self, y, quality, rms, edges):
+    def forward(self, y, quality, rms, edges, *, fields=None):
         batch, chirps, _ = y.shape
         prefix = (batch, chirps)
         spectrum = torch.fft.fft(y, norm='ortho')
@@ -88,6 +88,8 @@ class PacketUNet(nn.Module):
         dy = torch.diff(y, dim=-1, prepend=y[..., :1])
         conditions = torch.cat((quality, sn, side_power, step), dim=-1).unsqueeze(-1).expand(-1, -1, -1, CENTER)
         inputs = torch.cat((torch.stack((y.real, y.imag, dy.real, dy.imag), dim=-2), conditions), dim=-2)
+        if fields is not None:
+            inputs = torch.cat((inputs, fields), dim=-2)
         hidden = self.stem(inputs.flatten(0, 1))
         skips = []
         for down in self.down:
@@ -181,13 +183,16 @@ def weak_private_gain_risk(response, desired):
 
 
 def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None, colored_noise=None,
-                  common_bands=None, posterior_primary=False, clean_projection=None, weak_gain=None):
+                  common_bands=None, posterior_primary=False, clean_projection=None, weak_gain=None,
+                  raw_polyphase=False):
     if transport_probe is not None:
         from .w24_probe_transport import probe_views
     if colored_noise is not None:
         from .w24_noise_color import noise_views
     if common_bands is not None:
         from .w24_common_refiner import common_band_risk
+    if raw_polyphase:
+        from .w24_polyphase import native_probe_views
 
     def calculate(model, tracker, raw, rng, *, with_identity, recipe, step):
         raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
@@ -197,7 +202,12 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
         framed, phase, _, clean_rms = coordinates(tracker, archive.real_iq(center))
         clean_frame = phase * clean_rms
         weak = archive.weak_difference(framed)
-        if transport_probe is None:
+        if raw_polyphase:
+            views, clean_probe, native = native_probe_views(raw, tracker, archive.condition_waveforms, rng, weak,
+                                                           with_identity=with_identity)
+            probe_center = clean_probe[..., :CENTER]
+            weak = (probe_center - center) / clean_frame
+        elif transport_probe is None:
             delta = weak * clean_frame
             if colored_noise is None:
                 a, b = (tracker.aperture(
@@ -221,7 +231,11 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
         y, phase, quality, rms = coordinates(tracker, archive.real_iq(observed[..., :CENTER]))
         frame = phase * rms
         target = torch.stack((center, center, probe_center), dim=1).flatten(0, 1) / frame
-        time, full = model(y, quality, rms, observed[..., CENTER:])
+        if raw_polyphase:
+            (time, full), = model.propose_native(tracker, y, phase, quality, rms, observed[..., CENTER:],
+                                                 native.flatten(0, 1))
+        else:
+            time, full = model(y, quality, rms, observed[..., CENTER:])
         half = y + .5 * (full - y)
         waveform = archive.waveform_risk
         outer = waveform(half[:, (0, 7), :], target[:, (0, 7), :])
