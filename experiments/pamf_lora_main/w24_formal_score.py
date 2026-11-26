@@ -221,4 +221,5 @@ if __name__ == '__main__':
     matched.add_argument('--packet-unet', dest='third_prior', action='store_const', const='packet-unet')
     matched.add_argument('--packet-unet-fidelity', dest='third_prior', action='store_const', const='packet-unet-fidelity')
     matched.add_argument('--spectral-experts', dest='third_prior', action='store_const', const='spectral-experts')
+    matched.add_argument('--chirp-components', dest='third_prior', action='store_const', const='chirp-components')
     score(**vars(parser.parse_args()))

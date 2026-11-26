@@ -7,6 +7,7 @@ from torch.nn import functional as F
 
 WIDTH = 64
 CENTER = 384
+DETAIL_BANDS = ((1, 9), (9, 33), (33, 81), (81, 193))
 
 
 def block(cin, cout, kernel=5, stride=1):
@@ -31,9 +32,10 @@ class AttentionBlock(nn.Module):
 class PacketUNet(nn.Module):
     """Preserve each chirp's skip features while mixing coarse time and packet context."""
 
-    def __init__(self, *, across_chirps):
+    def __init__(self, *, across_chirps, separate_chirps=False):
         super().__init__()
         self.across_chirps = across_chirps
+        self.separate_chirps = separate_chirps
         self.stem = block(12, WIDTH, 7)
         self.down = nn.ModuleList(block(WIDTH, WIDTH, stride=2) for _ in range(3))
         self.up = nn.ModuleList(block(2 * WIDTH, WIDTH) for _ in range(3))
@@ -108,6 +110,16 @@ class PacketUNet(nn.Module):
             edit = edit - edit.mean(-1, keepdim=True)
             return y + scale * edit / (1. + edit.abs().square().mean(-1, keepdim=True)).sqrt()
 
+        if self.separate_chirps:
+            time = scale * (time - time.mean(-1, keepdim=True))
+            frequency = scale * (frequency - frequency.mean(-1, keepdim=True))
+            common = time.mean(-2, keepdim=True)
+            private = frequency - frequency.mean(-2, keepdim=True)
+            edit = common + private
+            # A shared bound preserves the packet-mean/zero-mean split.
+            norm = (1. + edit.abs().square().mean((-2, -1), keepdim=True)).sqrt()
+            return y + common / norm, y + edit / norm
+
         return bounded(time), bounded(time + frequency)
 
     def propose(self, y, quality, rms, edges):
@@ -121,7 +133,7 @@ def correction_risk(edit, desired):
     bins = (torch.fft.fftfreq(CENTER, device=edit.device) * CENTER).round().abs()
     floor = .001
     risks = []
-    for low, high in ((1, 9), (9, 33), (33, 81), (81, 193)):
+    for low, high in DETAIL_BANDS:
         correction, target = (x[..., (bins >= low) & (bins < high)] for x in spectra)
         actual_power = correction.abs().square().mean(-1)
         needed_power = target.abs().square().mean(-1)
@@ -134,7 +146,26 @@ def correction_risk(edit, desired):
     return torch.stack(risks).mean(0).unbind()
 
 
-def objective_for(archive, *, complex_fidelity=None):
+def chirp_component_risk(output, target):
+    """Track the complex packet mean and zero-mean chirp differences separately."""
+    actual = torch.fft.fft(output, norm='ortho')
+    expected = torch.fft.fft(target, norm='ortho')
+    actual_mean = actual.mean(-2, keepdim=True)
+    expected_mean = expected.mean(-2, keepdim=True)
+    actual = torch.cat((actual_mean, actual - actual_mean), dim=-2)
+    expected = torch.cat((expected_mean, expected - expected_mean), dim=-2)
+    power = expected.abs().square()
+    error = (actual - expected).abs().square()
+    bins = (torch.fft.fftfreq(CENTER, device=output.device) * CENTER).round().abs()
+    risks = []
+    for low, high in DETAIL_BANDS:
+        band = (bins >= low) & (bins < high)
+        relative = (error[..., band].mean(-1) / (.002 + power[..., band].mean(-1))).log1p()
+        risks.append(torch.stack((relative[..., 0].mean(), relative[..., 1:].mean())))
+    return torch.stack(risks).mean(0)
+
+
+def objective_for(archive, *, complex_fidelity=None, separate_loss=None):
     def calculate(model, tracker, raw, rng, *, with_identity, recipe, step):
         raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
         clean = tracker.aperture(raw)
@@ -186,6 +217,16 @@ def objective_for(archive, *, complex_fidelity=None):
             parts = torch.cat((parts, extra))
             if complex_fidelity:
                 loss = loss + extra @ extra.new_tensor((.25, .10, .20)) + identity
+        if separate_loss is not None:
+            # Disturbed views of the same clean source packet, excluding probe and identity rows.
+            count = len(raw) - 2 if with_identity else len(raw)
+            paired_half, paired_target = (
+                value.unflatten(0, views.shape[:2])[:count, :2] for value in (half, target)
+            )
+            components = chirp_component_risk(paired_half, paired_target)
+            parts = torch.cat((parts, components))
+            if separate_loss:
+                loss = loss + components @ components.new_tensor((.10, .30))
         return loss, parts
 
     return calculate
