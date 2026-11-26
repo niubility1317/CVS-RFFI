@@ -66,6 +66,9 @@ UNET_COMMON_RUN = '20261126-phase1-lora-w24-common-refine-s2026112991-r01'
 UNET_COMMON_ARMS = ('common_refine_control', 'common_refine_bands')
 POSTERIOR_RUN = '20261126-phase1-lora-w24-spectral-posterior-s2026112991-r01'
 POSTERIOR_ARMS = ('posterior_all_bins', 'posterior_exclude_bin')
+PROJECTION_RUN = '20261127-phase1-lora-w24-clean-projection-s2026112991-r01'
+PROJECTION_ARMS = ('projection_control', 'projection_clean_aux')
+SCRATCH_PRIOR_ARMS = (*POSTERIOR_ARMS, *PROJECTION_ARMS)
 UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
 UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS)
 EXPERT_RUN = '20261126-phase1-lora-w24-spectral-experts-s2026112991-r01'
@@ -99,6 +102,7 @@ VARIANTS = {
     'noise-color': (UNET_NOISE_COLOR_RUN, UNET_NOISE_COLOR_ARMS),
     'common-refine': (UNET_COMMON_RUN, UNET_COMMON_ARMS),
     'spectral-posterior': (POSTERIOR_RUN, POSTERIOR_ARMS),
+    'clean-projection': (PROJECTION_RUN, PROJECTION_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -126,9 +130,11 @@ def trial(kind):
     if arms[0] in OUTER_TUNE_ARMS:
         steps = 1200 if kind == 'band-refine' else 1800
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
-    if arms[0] in (*EXPERT_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS, *POSTERIOR_ARMS):
+    if arms[0] in (*EXPERT_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS, *SCRATCH_PRIOR_ARMS):
         baselines = (UNET_BASELINE, OUTER_BASELINE)
-        steps = {EXPERT_ARMS: 6000, UNET_COMPONENT_ARMS: 24000, POSTERIOR_ARMS: 24000}.get(arms, 12000)
+        steps = {EXPERT_ARMS: 6000, PROJECTION_ARMS: 48000}.get(arms, 12000)
+        if arms in (UNET_COMPONENT_ARMS, POSTERIOR_ARMS):
+            steps = 24000
         return Trial(run, arms, steps, (*modes, *baselines),
                      (*contrasts, *((modes[3], baseline) for baseline in baselines)), ROUTES[:1])
     if arms[0] in UNET_ARMS:
@@ -195,6 +201,10 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_spectral_posterior import SpectralPosterior
 
         return SpectralPosterior(exclude_current=arm == POSTERIOR_ARMS[1])
+    if arm in PROJECTION_ARMS:
+        from experiments.pamf_lora_main.w24_clean_projection import CleanProjection
+
+        return CleanProjection()
     if arm in UNET_ARMS:
         from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 
@@ -295,6 +305,8 @@ def source_recipe(training, arm, *, initialize=None):
                 raise ValueError('Expected a frozen source packet U-Net')
         elif arm in POSTERIOR_ARMS:
             trained, key = (model.lower, model.upper, model.prior), 'spectral_prior_gradient_norms'
+        elif arm in PROJECTION_ARMS:
+            trained, key = (model.encoder, model.context, model.decoder), 'clean_prior_gradient_norms'
         elif arm in UNET_ARMS:
             trained = (model.stem, model.temporal, model.axis, model.time_edit, model.spectral)
             key = 'unet_gradient_norms'
@@ -352,6 +364,9 @@ def source_recipe(training, arm, *, initialize=None):
         if arm in POSTERIOR_ARMS:
             info.update(initialization='random', excludes_center_bin=arm == POSTERIOR_ARMS[1],
                         objective='actual_posterior_with_prior_auxiliary')
+        if arm in PROJECTION_ARMS:
+            info.update(initialization='random', clean_projection_loss=arm == PROJECTION_ARMS[1],
+                        consistency_passes=2)
         if arm in EXPERT_ARMS:
             info.update(expert_parents=[OUTER_PARENT, UNET_FIDELITY_RUN], local_router=arm == EXPERT_ARMS[1],
                         trainable_parameters=sum(p.numel() for p in model.router.parameters()))
@@ -360,15 +375,17 @@ def source_recipe(training, arm, *, initialize=None):
     spec = trial(ARM_TRIAL[arm])
     name = f'w24_{arm}_prior' if arm in ARMS else f'w24_{arm}'
     milestones = (spec.steps // 3, 2 * spec.steps // 3)
-    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *POSTERIOR_ARMS):
+    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *SCRATCH_PRIOR_ARMS):
         milestones = (2000, 6000, 12000, 18000)
+    if arm in PROJECTION_ARMS:
+        milestones = (*milestones, 24000, 36000, 42000)
     if arm in UNET_WARM_ARMS:
         milestones = (2000, 6000, 9000)
     return replace(training.RECIPE, name=name, steps=spec.steps,
                    validation_steps=milestones,
                    model=partial(restorer, training, arm), finalize_calibration=finalize,
                    initialize=initialize, coarse_first=training.RECIPE.coarse_first
-                   and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS, *EXPERT_ARMS, *POSTERIOR_ARMS))
+                   and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS, *EXPERT_ARMS, *SCRATCH_PRIOR_ARMS))
 
 
 def fit(config, arm, *, smoke):
@@ -414,10 +431,11 @@ def fit(config, arm, *, smoke):
         common_bands = (arm == UNET_COMMON_ARMS[1]) if arm in UNET_COMMON_ARMS else None
         calculate = objective_for(dura_w24_model, complex_fidelity=fidelity, separate_loss=separation,
                                   transport_probe=transport, colored_noise=colored_noise, common_bands=common_bands)
-    if arm in POSTERIOR_ARMS:
+    if arm in SCRATCH_PRIOR_ARMS:
         from experiments.pamf_lora_main.w24_packet_unet import objective_for
 
-        calculate = objective_for(dura_w24_model, posterior_primary=True)
+        clean_aux = (arm == PROJECTION_ARMS[1]) if arm in PROJECTION_ARMS else None
+        calculate = objective_for(dura_w24_model, posterior_primary=True, clean_projection=clean_aux)
     if arm in UNET_WARM_ARMS:
         parent = Path(rt['unet_parent'])
         if parent != Path(rt['run_root']).parent.parent / UNET_FIDELITY_RUN:
@@ -500,7 +518,7 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
     row = root / arm
     summary = read(row / f'{recipe.name}-complete.json')
     expected = archived.proof(contract, recipe)
-    prior_count = 0 if arm in (*UNET_ARMS, *EXPERT_ARMS, *POSTERIOR_ARMS) else (3 if arm == 'three' else 2)
+    prior_count = 0 if arm in (*UNET_ARMS, *EXPERT_ARMS, *SCRATCH_PRIOR_ARMS) else (3 if arm == 'three' else 2)
     if (any(summary.get(k) != value for k, value in expected.items() if k != 'contract')
             or any(expected.get(key) != 0 for key in ISOLATION)
             or summary.get('n_calibration') != 0 or summary.get('input_gate') is not False
@@ -536,6 +554,10 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
                                    or summary.get('excludes_center_bin') is not (arm == POSTERIOR_ARMS[1])
                                    or summary.get('objective') != 'actual_posterior_with_prior_auxiliary'):
         raise ValueError(f'Unverified spectral posterior recipe for {arm}')
+    if arm in PROJECTION_ARMS and (summary.get('initialization') != 'random'
+                                    or summary.get('clean_projection_loss') is not (arm == PROJECTION_ARMS[1])
+                                    or summary.get('consistency_passes') != 2):
+        raise ValueError(f'Unverified clean projection recipe for {arm}')
     if arm in EXPERT_ARMS and (summary.get('expert_parents') != [OUTER_PARENT, UNET_FIDELITY_RUN]
                                or summary.get('local_router') is not (arm == EXPERT_ARMS[1])):
         raise ValueError(f'Unverified spectral expert provenance for {arm}')
@@ -650,7 +672,8 @@ def publish(args):
              'signed-probe': [0, 3, 7, 6, 2, 5], 'packet-unet': [0, 3, 7, 6, 2, 5],
              'packet-unet-fidelity': [2, 7, 6, 5], 'spectral-experts': [0, 3, 5, 7, 2],
              'chirp-components': [3, 2], 'probe-transport': [0, 3, 7], 'noise-color': [2, 3, 0],
-             'common-refine': [0, 3, 2, 7], 'spectral-posterior': [0, 3, 2, 7]}
+             'common-refine': [0, 3, 2, 7], 'spectral-posterior': [0, 3, 2, 7],
+             'clean-projection': [0, 2, 3, 5]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),

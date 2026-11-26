@@ -226,4 +226,5 @@ if __name__ == '__main__':
     matched.add_argument('--noise-color', dest='third_prior', action='store_const', const='noise-color')
     matched.add_argument('--common-refine', dest='third_prior', action='store_const', const='common-refine')
     matched.add_argument('--spectral-posterior', dest='third_prior', action='store_const', const='spectral-posterior')
+    matched.add_argument('--clean-projection', dest='third_prior', action='store_const', const='clean-projection')
     score(**vars(parser.parse_args()))

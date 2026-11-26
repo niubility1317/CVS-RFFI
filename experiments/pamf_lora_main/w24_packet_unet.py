@@ -166,7 +166,7 @@ def chirp_component_risk(output, target):
 
 
 def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None, colored_noise=None,
-                  common_bands=None, posterior_primary=False):
+                  common_bands=None, posterior_primary=False, clean_projection=None):
     if transport_probe is not None:
         from .w24_probe_transport import probe_views
     if colored_noise is not None:
@@ -179,8 +179,8 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
         clean = tracker.aperture(raw)
         center = clean[..., :CENTER]
         coordinates = archive.coordinates
-        framed, phase, _, rms = coordinates(tracker, archive.real_iq(center))
-        clean_frame = phase * rms
+        framed, phase, _, clean_rms = coordinates(tracker, archive.real_iq(center))
+        clean_frame = phase * clean_rms
         weak = archive.weak_difference(framed)
         if transport_probe is None:
             delta = weak * clean_frame
@@ -257,6 +257,11 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
             parts = torch.cat((parts, risks))
             if common_bands:
                 loss = loss + .25 * risks.sum()
+        if clean_projection is not None:
+            clean_risk = waveform(model.project_clean(framed, clean_rms), framed)
+            parts = torch.cat((parts, clean_risk[None]))
+            if clean_projection:
+                loss = loss + .40 * clean_risk
         return loss, parts
 
     return calculate
