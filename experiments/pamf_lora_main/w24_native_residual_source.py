@@ -144,10 +144,14 @@ def predict_source(runtime):
     sweeping = rt.get('readout_sweep', False)
     modes = mode_list(rt)
     if third_prior:
-        from experiments.pamf_lora_main.w24_third_prior import OUTER_BASELINE, load_candidate, restore_center, trial
+        from experiments.pamf_lora_main.w24_third_prior import (
+            OUTER_BASELINE, UNET_BASELINE, UNET_FIDELITY_ARMS, load_candidate, restore_center, trial,
+        )
 
         names = trial(third_prior).arms
         arms = [load_candidate(root, contract, device, arm) for arm in names]
+        unet_parent = (load_candidate(Path(rt['unet_parent']), contract, device, UNET_FIDELITY_ARMS[0])[0]
+                       if UNET_BASELINE in modes else None)
         outer_parent = None
         if OUTER_BASELINE in modes:
             from experiments.pamf_lora_main.w24_outer_objective_source import load_candidate as load_outer
@@ -159,6 +163,8 @@ def predict_source(runtime):
             edits = [wide_delta(model, track, original) for model, _ in arms]
             old = restore_center(original, wide_delta(g, track, original), .5)
             outputs = [restore_center(original, delta, alpha) for alpha in (.5, 1.) for delta in edits]
+            if unet_parent is not None:
+                outputs.append(restore_center(original, wide_delta(unet_parent, track, original), .5))
             if outer_parent is not None:
                 outputs.append(restore_center(original, wide_delta(outer_parent, track, original), .5))
             rows = (original, old, *outputs)
@@ -269,6 +275,11 @@ def predict_source(runtime):
                 with np.load(parent / 'predictions.npz', allow_pickle=False) as archive:
                     if any(not np.array_equal(archive[v][index], output[route][v][-1]) for v in VIEWS):
                         raise ValueError('Outer parent prediction did not reproduce')
+            if third_prior and UNET_BASELINE in modes:
+                from experiments.pamf_lora_main.w24_edit_cross import check_controls
+
+                check_controls(Path(rt['unet_parent']) / route, ('unet_standard_long_half',),
+                               [modes.index(UNET_BASELINE)], ids, output[route])
         out = root / route
         out.mkdir()
         np.savez(out / 'predictions.npz', **output[route])

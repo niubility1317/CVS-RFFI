@@ -57,6 +57,9 @@ PACKET_UNET_ARMS = ('unet_independent', 'unet_packet')
 UNET_FIDELITY_RUN = '20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01'
 UNET_FIDELITY_ARMS = ('unet_standard_long', 'unet_complex_long')
 UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS)
+EXPERT_RUN = '20261126-phase1-lora-w24-spectral-experts-s2026112991-r01'
+EXPERT_ARMS = ('experts_packet', 'experts_band')
+UNET_BASELINE = 'frozen_unet_half'
 OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS,
                    *WHITE_ARMS, *BAND_PRECISION_ARMS, *SEVERITY_ARMS, *HALF_PRIMARY_ARMS, *CARRIER_ANCHOR_ARMS,
                    *SIGNED_PROBE_ARMS)
@@ -80,6 +83,7 @@ VARIANTS = {
     'signed-probe': (SIGNED_PROBE_RUN, SIGNED_PROBE_ARMS),
     'packet-unet': (PACKET_UNET_RUN, PACKET_UNET_ARMS),
     'packet-unet-fidelity': (UNET_FIDELITY_RUN, UNET_FIDELITY_ARMS),
+    'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -109,6 +113,10 @@ def trial(kind):
     if arms[0] in UNET_ARMS:
         steps = 24000 if arms == UNET_FIDELITY_ARMS else 3600
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
+    if arms == EXPERT_ARMS:
+        baselines = (UNET_BASELINE, OUTER_BASELINE)
+        return Trial(run, arms, 6000, (*modes, *baselines),
+                     (*contrasts, *((modes[3], baseline) for baseline in baselines)), ROUTES[:1])
     return Trial(run, arms, 3600, modes, contrasts, ROUTES[:1])
 
 
@@ -166,6 +174,10 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 
         return PacketUNet(across_chirps=arm != PACKET_UNET_ARMS[0])
+    if arm in EXPERT_ARMS:
+        from experiments.pamf_lora_main.w24_spectral_experts import SpectralExperts
+
+        return SpectralExperts(training.DuraW24(), local=arm == EXPERT_ARMS[1])
     if arm != 'three':
         return training.DuraW24()
 
@@ -189,6 +201,8 @@ def fit_inputs(rt, arm):
     inputs = dict(source_root=rt['source_root'], run_root=str(PurePosixPath(rt['run_root']) / arm))
     if arm in OUTER_TUNE_ARMS:
         inputs['source_parent'] = rt['source_parent']
+    if arm in EXPERT_ARMS:
+        inputs.update(source_parent=rt['source_parent'], unet_parent=rt['unet_parent'])
     return inputs
 
 
@@ -202,6 +216,8 @@ def promotion(routes, kind=True):
     spec = trial(kind)
     direct, mature, control, candidate = spec.source_modes[:4]
     controls = (control, direct, mature, OUTER_BASELINE) if OUTER_BASELINE in spec.source_modes else (control, direct, mature)
+    if UNET_BASELINE in spec.source_modes:
+        controls = (*controls, UNET_BASELINE)
     return len(routes) == len(spec.routes) and all(
         row[candidate]['by_scene']['clean'] >= row[direct]['by_scene']['clean']
         and row[candidate]['six_correct'] > max(row[k]['six_correct'] for k in controls)
@@ -241,7 +257,12 @@ def qualified_source(root, kind=True):
 
 def source_recipe(training, arm, *, initialize=None):
     def finalize(model, _tracker, _calibration):
-        if arm in UNET_ARMS:
+        if arm in EXPERT_ARMS:
+            trained, key = (model.router,), 'router_gradient_norms'
+            expert_parameters = (*model.dura.parameters(), *model.unet.parameters())
+            if any(p.requires_grad or p.grad is not None for p in expert_parameters):
+                raise ValueError('Expected frozen source experts')
+        elif arm in UNET_ARMS:
             trained = (model.stem, model.temporal, model.axis, model.time_edit, model.spectral)
             key = 'unet_gradient_norms'
         elif arm in BAND_ADAPTER_ARMS:
@@ -284,6 +305,9 @@ def source_recipe(training, arm, *, initialize=None):
             info.update(initialization='random', across_chirps=arm != PACKET_UNET_ARMS[0])
         if arm in UNET_FIDELITY_ARMS:
             info['complex_fidelity'] = arm == UNET_FIDELITY_ARMS[1]
+        if arm in EXPERT_ARMS:
+            info.update(expert_parents=[OUTER_PARENT, UNET_FIDELITY_RUN], local_router=arm == EXPERT_ARMS[1],
+                        trainable_parameters=sum(p.numel() for p in model.router.parameters()))
         return None, info
 
     spec = trial(ARM_TRIAL[arm])
@@ -293,7 +317,7 @@ def source_recipe(training, arm, *, initialize=None):
                    validation_steps=milestones,
                    model=partial(restorer, training, arm), finalize_calibration=finalize,
                    initialize=initialize, coarse_first=training.RECIPE.coarse_first
-                   and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS))
+                   and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS, *EXPERT_ARMS))
 
 
 def fit(config, arm, *, smoke):
@@ -306,6 +330,8 @@ def fit(config, arm, *, smoke):
     paths = {'source_root', 'run_root'}
     if arm in OUTER_TUNE_ARMS:
         paths.add('source_parent')
+    if arm in EXPERT_ARMS:
+        paths.update(('source_parent', 'unet_parent'))
     if set(rt) != paths:
         raise ValueError('Fit may receive only registered source paths and its own output root')
 
@@ -330,6 +356,24 @@ def fit(config, arm, *, smoke):
 
         fidelity = (arm == UNET_FIDELITY_ARMS[1]) if arm in UNET_FIDELITY_ARMS else None
         calculate = objective_for(dura_w24_model, complex_fidelity=fidelity)
+    if arm in EXPERT_ARMS:
+        from experiments.pamf_lora_main.w24_outer_objective_source import read_outer_checkpoint
+        from experiments.pamf_lora_main.w24_spectral_experts import objective_for
+
+        runs = Path(rt['run_root']).parent.parent
+        dura_root, unet_root = (Path(rt[k]) for k in ('source_parent', 'unet_parent'))
+        if (dura_root, unet_root) != (runs / OUTER_PARENT, runs / UNET_FIDELITY_RUN):
+            raise ValueError('Expected the registered source-only expert runs')
+        contract = dura_w24_train.source_contract(Path(rt['source_root']))
+        _, dwa, _ = read_outer_checkpoint(dura_root, contract, 'cpu', dura_w24_train, channel_blind_source)
+        _, uw, _ = read_candidate_weights(unet_root, contract, 'cpu', UNET_FIDELITY_ARMS[0],
+                                          dura_w24_train, channel_blind_source)
+
+        def initialize(model, _tracker, _training, _calibration):
+            model.dura.load_state_dict(dwa, strict=True)
+            model.unet.load_state_dict(uw, strict=True)
+
+        calculate = objective_for(dura_w24_model)
     if arm in OUTER_TUNE_ARMS:
         from experiments.pamf_lora_main.w24_band_tune import WEIGHT
         from experiments.pamf_lora_main.w24_outer_objective_source import objective_for, read_outer_checkpoint
@@ -375,17 +419,15 @@ def fit(config, arm, *, smoke):
                              make_tracker=dura_w24_train.WideTracker)
 
 
-def load_candidate(root, contract, device, arm):
+def read_candidate_weights(root, contract, device, arm, training, archived):
     import torch
     from experiments.cric_dura_comparison.io import read
 
-    training = importlib.import_module('lora_wide_dura_archive.dura_w24_train')
-    archived = importlib.import_module('lora_wide_dura_archive.channel_blind_source')
     recipe = source_recipe(training, arm)
     row = root / arm
     summary = read(row / f'{recipe.name}-complete.json')
     expected = archived.proof(contract, recipe)
-    prior_count = 0 if arm in UNET_ARMS else (3 if arm == 'three' else 2)
+    prior_count = 0 if arm in (*UNET_ARMS, *EXPERT_ARMS) else (3 if arm == 'three' else 2)
     if (any(summary.get(k) != value for k, value in expected.items() if k != 'contract')
             or any(expected.get(key) != 0 for key in ISOLATION)
             or summary.get('n_calibration') != 0 or summary.get('input_gate') is not False
@@ -404,11 +446,21 @@ def load_candidate(root, contract, device, arm):
         raise ValueError(f'Unverified packet U-Net architecture for {arm}')
     if arm in UNET_FIDELITY_ARMS and summary.get('complex_fidelity') is not (arm == UNET_FIDELITY_ARMS[1]):
         raise ValueError(f'Unverified packet U-Net complex fidelity objective for {arm}')
+    if arm in EXPERT_ARMS and (summary.get('expert_parents') != [OUTER_PARENT, UNET_FIDELITY_RUN]
+                               or summary.get('local_router') is not (arm == EXPERT_ARMS[1])):
+        raise ValueError(f'Unverified spectral expert provenance for {arm}')
     checkpoint = torch.load(row / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
         raise ValueError(f'Invalid {arm} checkpoint source binding')
+    return recipe, checkpoint['weights'], summary
+
+
+def load_candidate(root, contract, device, arm):
+    training = importlib.import_module('lora_wide_dura_archive.dura_w24_train')
+    archived = importlib.import_module('lora_wide_dura_archive.channel_blind_source')
+    recipe, weights, summary = read_candidate_weights(root, contract, device, arm, training, archived)
     model = recipe.model().to(device).eval().requires_grad_(False)
-    model.load_state_dict(checkpoint['weights'], strict=True)
+    model.load_state_dict(weights, strict=True)
     return model, summary
 
 
@@ -506,7 +558,7 @@ def publish(args):
              'half-primary': [0, 3, 5, 7],
              'severity-weight': [6, 5, 3, 0, 7, 2], 'carrier-anchor': [0, 3, 6, 7, 5, 2],
              'signed-probe': [0, 3, 7, 6, 2, 5], 'packet-unet': [0, 3, 7, 6, 2, 5],
-             'packet-unet-fidelity': [2, 7, 6, 5]}
+             'packet-unet-fidelity': [2, 7, 6, 5], 'spectral-experts': [0, 3, 5, 7, 2]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
@@ -520,6 +572,9 @@ def publish(args):
     if OUTER_BASELINE in trial(kind).source_modes:
         rt['source_parent'] = str(runs / OUTER_PARENT)
         rt['external_releases'].append(rt['source_parent'])
+    if kind == 'spectral-experts':
+        rt['unet_parent'] = str(runs / UNET_FIDELITY_RUN)
+        rt['external_releases'].append(rt['unet_parent'])
     release(args.repo, args.output, rt, args.ssh_config)
 
 

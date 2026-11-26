@@ -220,4 +220,5 @@ if __name__ == '__main__':
     matched.add_argument('--signed-probe', dest='third_prior', action='store_const', const='signed-probe')
     matched.add_argument('--packet-unet', dest='third_prior', action='store_const', const='packet-unet')
     matched.add_argument('--packet-unet-fidelity', dest='third_prior', action='store_const', const='packet-unet-fidelity')
+    matched.add_argument('--spectral-experts', dest='third_prior', action='store_const', const='spectral-experts')
     score(**vars(parser.parse_args()))
