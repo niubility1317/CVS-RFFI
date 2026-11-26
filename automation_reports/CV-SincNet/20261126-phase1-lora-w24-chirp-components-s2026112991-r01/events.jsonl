@@ -1,0 +1,2 @@
+{"at": "2026-11-26T11:55:09+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-26T11:57:07+00:00", "status": "RUNNING", "note": "N607 VERIFIED. Dispatcher and actual worker PIDs, release CWD, fit command, CUDA devices, real U-only smoke and growing logs confirmed. Independent conditional scorer started.", "evidence": ["release/submit.json", "state.json", "unet_component_control-fit.log", "unet_component_supervised-fit.log", "collector.json"], "row_id": null}
