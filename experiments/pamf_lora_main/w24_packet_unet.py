@@ -134,7 +134,10 @@ def correction_risk(edit, desired):
     return torch.stack(risks).mean(0).unbind()
 
 
-def objective_for(archive, *, complex_fidelity=None):
+def objective_for(archive, *, complex_fidelity=None, coherence_priority=None):
+    if coherence_priority is not None:
+        from experiments.pamf_lora_main.w24_coherence_constraint import coherence_risks, constrained_loss
+
     def calculate(model, tracker, raw, rng, *, with_identity, recipe, step):
         raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
         clean = tracker.aperture(raw)
@@ -186,6 +189,16 @@ def objective_for(archive, *, complex_fidelity=None):
             parts = torch.cat((parts, extra))
             if complex_fidelity:
                 loss = loss + extra @ extra.new_tensor((.25, .10, .20)) + identity
+        if coherence_priority is not None:
+            count = len(raw) - 2 if with_identity else len(raw)
+            restored = finished[:count, :2] / clean_frame[:count, None]
+            clean_aligned = framed[:count, None].expand_as(restored)
+            frequency, chirp = coherence_risks(restored, clean_aligned)
+            conflict = y.real.new_zeros(())
+            if torch.is_grad_enabled():
+                loss, conflict = constrained_loss(loss, .5 * (frequency + chirp), full,
+                                                  observe_only=not coherence_priority)
+            parts = torch.cat((parts, torch.stack((frequency, chirp, conflict))))
         return loss, parts
 
     return calculate

@@ -56,7 +56,9 @@ PACKET_UNET_RUN = '20261126-phase1-lora-w24-packet-unet-s2026112991-r01'
 PACKET_UNET_ARMS = ('unet_independent', 'unet_packet')
 UNET_FIDELITY_RUN = '20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01'
 UNET_FIDELITY_ARMS = ('unet_standard_long', 'unet_complex_long')
-UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS)
+UNET_COHERENCE_RUN = '20261126-phase1-lora-w24-unet-coherence-s2026112991-r01'
+UNET_COHERENCE_ARMS = ('unet_coherence_control', 'unet_coherence_projected')
+UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COHERENCE_ARMS)
 EXPERT_RUN = '20261126-phase1-lora-w24-spectral-experts-s2026112991-r01'
 EXPERT_ARMS = ('experts_packet', 'experts_band')
 UNET_BASELINE = 'frozen_unet_half'
@@ -84,6 +86,7 @@ VARIANTS = {
     'packet-unet': (PACKET_UNET_RUN, PACKET_UNET_ARMS),
     'packet-unet-fidelity': (UNET_FIDELITY_RUN, UNET_FIDELITY_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
+    'unet-coherence': (UNET_COHERENCE_RUN, UNET_COHERENCE_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -110,13 +113,14 @@ def trial(kind):
     if arms[0] in OUTER_TUNE_ARMS:
         steps = 1200 if kind == 'band-refine' else 1800
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
+    if arms in (EXPERT_ARMS, UNET_COHERENCE_ARMS):
+        steps = 9000 if arms == UNET_COHERENCE_ARMS else 6000
+        baselines = (UNET_BASELINE, OUTER_BASELINE)
+        return Trial(run, arms, steps, (*modes, *baselines),
+                     (*contrasts, *((modes[3], baseline) for baseline in baselines)), ROUTES[:1])
     if arms[0] in UNET_ARMS:
         steps = 24000 if arms == UNET_FIDELITY_ARMS else 3600
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
-    if arms == EXPERT_ARMS:
-        baselines = (UNET_BASELINE, OUTER_BASELINE)
-        return Trial(run, arms, 6000, (*modes, *baselines),
-                     (*contrasts, *((modes[3], baseline) for baseline in baselines)), ROUTES[:1])
     return Trial(run, arms, 3600, modes, contrasts, ROUTES[:1])
 
 
@@ -203,6 +207,8 @@ def fit_inputs(rt, arm):
         inputs['source_parent'] = rt['source_parent']
     if arm in EXPERT_ARMS:
         inputs.update(source_parent=rt['source_parent'], unet_parent=rt['unet_parent'])
+    if arm in UNET_COHERENCE_ARMS:
+        inputs['unet_parent'] = rt['unet_parent']
     return inputs
 
 
@@ -302,9 +308,12 @@ def source_recipe(training, arm, *, initialize=None):
         if arm in SIGNED_PROBE_ARMS:
             info['signed_probe_transfer'] = arm == SIGNED_PROBE_ARMS[1]
         if arm in UNET_ARMS:
-            info.update(initialization='random', across_chirps=arm != PACKET_UNET_ARMS[0])
+            initialization = 'source_unet' if arm in UNET_COHERENCE_ARMS else 'random'
+            info.update(initialization=initialization, across_chirps=arm != PACKET_UNET_ARMS[0])
         if arm in UNET_FIDELITY_ARMS:
             info['complex_fidelity'] = arm == UNET_FIDELITY_ARMS[1]
+        if arm in UNET_COHERENCE_ARMS:
+            info.update(unet_parent=UNET_FIDELITY_RUN, coherence_projected=arm == UNET_COHERENCE_ARMS[1])
         if arm in EXPERT_ARMS:
             info.update(expert_parents=[OUTER_PARENT, UNET_FIDELITY_RUN], local_router=arm == EXPERT_ARMS[1],
                         trainable_parameters=sum(p.numel() for p in model.router.parameters()))
@@ -332,6 +341,8 @@ def fit(config, arm, *, smoke):
         paths.add('source_parent')
     if arm in EXPERT_ARMS:
         paths.update(('source_parent', 'unet_parent'))
+    if arm in UNET_COHERENCE_ARMS:
+        paths.add('unet_parent')
     if set(rt) != paths:
         raise ValueError('Fit may receive only registered source paths and its own output root')
 
@@ -355,7 +366,19 @@ def fit(config, arm, *, smoke):
         from experiments.pamf_lora_main.w24_packet_unet import objective_for
 
         fidelity = (arm == UNET_FIDELITY_ARMS[1]) if arm in UNET_FIDELITY_ARMS else None
-        calculate = objective_for(dura_w24_model, complex_fidelity=fidelity)
+        coherence = (arm == UNET_COHERENCE_ARMS[1]) if arm in UNET_COHERENCE_ARMS else None
+        calculate = objective_for(dura_w24_model, complex_fidelity=fidelity, coherence_priority=coherence)
+    if arm in UNET_COHERENCE_ARMS:
+        runs = Path(rt['run_root']).parent.parent
+        parent = Path(rt['unet_parent'])
+        if parent != runs / UNET_FIDELITY_RUN:
+            raise ValueError('Expected the registered source-only U-Net parent')
+        contract = dura_w24_train.source_contract(Path(rt['source_root']))
+        _, weights, _ = read_candidate_weights(parent, contract, 'cpu', UNET_FIDELITY_ARMS[0],
+                                               dura_w24_train, channel_blind_source)
+
+        def initialize(model, _tracker, _training, _calibration):
+            model.load_state_dict(weights, strict=True)
     if arm in EXPERT_ARMS:
         from experiments.pamf_lora_main.w24_outer_objective_source import read_outer_checkpoint
         from experiments.pamf_lora_main.w24_spectral_experts import objective_for
@@ -441,11 +464,15 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
         raise ValueError(f'Unverified final carrier anchor for {arm}')
     if arm in SIGNED_PROBE_ARMS and summary.get('signed_probe_transfer') is not (arm == SIGNED_PROBE_ARMS[1]):
         raise ValueError(f'Unverified signed probe transfer for {arm}')
-    if arm in UNET_ARMS and (summary.get('initialization') != 'random'
+    unet_initialization = 'source_unet' if arm in UNET_COHERENCE_ARMS else 'random'
+    if arm in UNET_ARMS and (summary.get('initialization') != unet_initialization
                             or summary.get('across_chirps') is not (arm != PACKET_UNET_ARMS[0])):
         raise ValueError(f'Unverified packet U-Net architecture for {arm}')
     if arm in UNET_FIDELITY_ARMS and summary.get('complex_fidelity') is not (arm == UNET_FIDELITY_ARMS[1]):
         raise ValueError(f'Unverified packet U-Net complex fidelity objective for {arm}')
+    if arm in UNET_COHERENCE_ARMS and (summary.get('unet_parent') != UNET_FIDELITY_RUN
+                                      or summary.get('coherence_projected') is not (arm == UNET_COHERENCE_ARMS[1])):
+        raise ValueError(f'Unverified packet U-Net coherence objective for {arm}')
     if arm in EXPERT_ARMS and (summary.get('expert_parents') != [OUTER_PARENT, UNET_FIDELITY_RUN]
                                or summary.get('local_router') is not (arm == EXPERT_ARMS[1])):
         raise ValueError(f'Unverified spectral expert provenance for {arm}')
@@ -558,7 +585,8 @@ def publish(args):
              'half-primary': [0, 3, 5, 7],
              'severity-weight': [6, 5, 3, 0, 7, 2], 'carrier-anchor': [0, 3, 6, 7, 5, 2],
              'signed-probe': [0, 3, 7, 6, 2, 5], 'packet-unet': [0, 3, 7, 6, 2, 5],
-             'packet-unet-fidelity': [2, 7, 6, 5], 'spectral-experts': [0, 3, 5, 7, 2]}
+             'packet-unet-fidelity': [2, 7, 6, 5], 'spectral-experts': [0, 3, 5, 7, 2],
+             'unet-coherence': [3, 6, 7, 2, 0]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
@@ -572,7 +600,7 @@ def publish(args):
     if OUTER_BASELINE in trial(kind).source_modes:
         rt['source_parent'] = str(runs / OUTER_PARENT)
         rt['external_releases'].append(rt['source_parent'])
-    if kind == 'spectral-experts':
+    if UNET_BASELINE in trial(kind).source_modes:
         rt['unet_parent'] = str(runs / UNET_FIDELITY_RUN)
         rt['external_releases'].append(rt['unet_parent'])
     release(args.repo, args.output, rt, args.ssh_config)

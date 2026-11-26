@@ -221,4 +221,5 @@ if __name__ == '__main__':
     matched.add_argument('--packet-unet', dest='third_prior', action='store_const', const='packet-unet')
     matched.add_argument('--packet-unet-fidelity', dest='third_prior', action='store_const', const='packet-unet-fidelity')
     matched.add_argument('--spectral-experts', dest='third_prior', action='store_const', const='spectral-experts')
+    matched.add_argument('--unet-coherence', dest='third_prior', action='store_const', const='unet-coherence')
     score(**vars(parser.parse_args()))
