@@ -64,7 +64,7 @@ def cells(predictions, labels, receivers, rng):
     return dict(absolute=absolute, paired=paired)
 
 
-def score(rt, *, methods=METHODS, force_practical=False, clean_passthrough=True):
+def score(rt, *, methods=METHODS, force_practical=False, clean_passthrough=True, reference=None):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Use the separate CPU scoring process')
     root = Path(rt['run_root'])
@@ -81,6 +81,16 @@ def score(rt, *, methods=METHODS, force_practical=False, clean_passthrough=True)
         predictions[profile, route, split], activations[case] = closed_predictions(
             root / 'predictions' / case, ids, profile, route, split, methods, force_practical=force_practical,
             clean_passthrough=clean_passthrough)
+        if reference is not None:
+            alias, folder, method = reference
+            archived, _ = closed_predictions(Path(folder) / case, ids, profile, route, split,
+                ('raw', 'R69', method), force_practical=force_practical, clean_passthrough=clean_passthrough)
+            current = predictions[profile, route, split]
+            if alias in current or any(not np.array_equal(current[k], archived[k]) for k in ('raw','R69')):
+                raise ValueError('Comparison must share identical frozen packets and control decisions')
+            current[alias] = archived[method]
+    if reference is not None:
+        methods = (*methods, reference[0])
     if np.intersect1d(*(physical[split] for split in TASKS)).size:
         raise ValueError('Main split populations must be disjoint')
     for route in ROUTES:
@@ -114,4 +124,5 @@ def score(rt, *, methods=METHODS, force_practical=False, clean_passthrough=True)
                 result[profile][route][partition] = cells(p, y, rx, rng)
     write(root / 'scores.json', dict(status='TARGET_SCORED', truth_last=True,
           bootstrap_replicates=REPLICATES, seeds=list(SEEDS), results=result, activation=activations,
-          force_practical=force_practical, clean_passthrough=clean_passthrough))
+          force_practical=force_practical, clean_passthrough=clean_passthrough,
+          **({'reference_method': reference[0]} if reference is not None else {})))
