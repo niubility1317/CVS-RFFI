@@ -1,0 +1,182 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-diagnostic-lora-w24-waveform-dose-source-s2026112559-r01",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 精确源波形修正量上界（Full）",
+  "description": "Six matched frozen decisions and three isolated waveform oracle rows on the same 300 source V packets. Test how far exact IQ can guide fixed/continuous edit strength without classifier outputs or TX truth.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa goal explicitly allows isolated source IQ and exact simulator component diagnostics, no target path, Full only.",
+  "code": {
+    "commit": "3e2ccd4b2247a89830ecb6b5458ea61eaa2a89f4",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "Archived N607 CVS-RFFI with exact registered W24 release",
+    "cwd": "Registered archive releases/20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "Same 300 unique opaque source V packet IDs as frozen outer-objective source run",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 1,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Exact immutable 300 V source physical IDs and seven Full views; all six frozen W24 controls checked by prediction parity.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean. Prediction uses generated receive IQ."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only noiseless receive component used only in diagnostic choice among frozen candidate IQ edits. Independent source truth-last. No training or deployment."
+  },
+  "checkpoint": {
+    "initialization": "No parameter updates. Frozen source outer DURA and two exact U-Net models plus immutable E104 readout.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Frozen source predictions used as a matched comparison after both scratch candidates freeze"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "E104 frozen default reader only"
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Pinned analytic aperture, tracking and generic waveform generator code only, no learned checkpoint"
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Source-frozen standard and complex U-Net checkpoints with archived same-packet decisions"
+      }
+    ],
+    "contract_check_ref": "Source frozen checkpoint binding and actual paired blind decisions must match the immutable prior source run.",
+    "provenance_verdict": "No historical restoration weight used in fit, freeze or candidate predictions. Historical outer predictions appended by unchanged physical order for post-freeze paired scoring only.",
+    "selection_rule": "No candidate promoted. Minimum true source-waveform MSE and balanced complex-band diagnostic, with a separate continuous least-squares dose constrained to [0,1]."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "One N607 card ordered 3,6,0, >=12 GiB available and existing process cap. Serial CPU waveform generation in initialized worker.",
+    "remote_run_root": "runs/20261126-diagnostic-lora-w24-waveform-dose-source-s2026112559-r01",
+    "remote_log_root": "runs/20261126-diagnostic-lora-w24-waveform-dose-source-s2026112559-r01",
+    "local_artifact_root": "local_artifacts/20261126-diagnostic-lora-w24-waveform-dose-source-s2026112559-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_waveform_dose_audit publish --repo <worktree> --context <context> --ssh-config <config> --output <local-release>",
+    "stop_rule": "Stop on unmatched frozen lineage, actual disturbed source smoke or known-noise parity, archived decision mismatch, incomplete source panel, or truth-last scorer failure."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source recognition by oracle rule and residue",
+      "same-packet corrected/harmed",
+      "per-RX net",
+      "choice counts by view and edit amplitude",
+      "waveform error and paired bootstrap"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261126-diagnostic-lora-w24-waveform-dose-source-s2026112559-r01/{route}/predictions.npz",
+    "scorer_ref": "experiments.pamf_lora_main.w24_waveform_dose_audit score-source, independent source truth-last"
+  },
+  "rows": [
+    {
+      "row_id": "waveform-dose",
+      "method": "Exact Full source noise-free center to choose among six actual IQ bank rows, under unweighted MSE or balanced five-band complex risk; third diagnostic renders best dose along three fixed observed candidate directions.",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_waveform_dose_audit.py",
+      "resolved_config_ref": "releases/20261126-diagnostic-lora-w24-waveform-dose-source-s2026112559-r01-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300,
+        "U_s_fit": 0,
+        "U_s_holdout": 0
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Zero training. Fixed U_s actual smoke and seven-view same-panel 300 U/V as registered, 6 frozen rows plus three exact source waveform diagnostics.",
+      "output_root": "runs/20261126-diagnostic-lora-w24-waveform-dose-source-s2026112559-r01",
+      "log_path": "runs/20261126-diagnostic-lora-w24-waveform-dose-source-s2026112559-r01/predict-source.log",
+      "command": "python -m experiments.pamf_lora_main.w24_waveform_dose_audit dispatch <runtime>",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "full_native/source-predictions.json",
+        "full_native/predictions.npz",
+        "full_native/source-scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Exact noiseless center uses the same alignment and receive scale as the observed waveform. Guard IQ remains measured.",
+    "Source-only diagnostic; no TX truth and no W24 parameters or outputs used for the waveform choices. E104 reads finished resulting IQ.",
+    "Exact source Full generator reproduced, six actual control decisions checked against historical frozen source rows.",
+    "No new Residual. Scope-test source-only isolation, known vector least squares, tie and shape, independent P0/P1 prelaunch.",
+    "Release resolved the later published shared HEAD. The registered diagnostic entry is identical to its pre-reviewed implementation."
+  ],
+  "registered_at": "2026-11-26T11:16:28+00:00"
+}

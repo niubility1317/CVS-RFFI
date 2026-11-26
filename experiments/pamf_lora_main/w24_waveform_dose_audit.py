@@ -32,11 +32,16 @@ from experiments.pamf_lora_main.w24_wide_transfer import load_restorer, received
 
 
 RUN = '20261126-diagnostic-lora-w24-waveform-dose-source-s2026112559-r01'
+SPECTRAL_RUN = '20261126-diagnostic-lora-w24-spectral-simplex-source-s2026112559-r01'
 BASE = ('direct', 'outer_half', 'standard_half', 'standard_full', 'complex_half', 'complex_full')
 MODES = (*BASE, 'minimum_mse', 'minimum_balanced', 'continuous_mse')
 CONTRASTS = tuple((x,'outer_half') for x in MODES[2:]) + tuple(
     (x,'standard_half') for x in MODES[len(BASE):])
 BANDS = ((0,0),(1,8),(9,32),(33,64),(65,192))
+EXPERT_BANDS = ((1,8),(9,32),(33,80),(81,192))
+SPECTRAL_MODES = (*BASE,'packet_band','chirp_band','chirp_band_discrete')
+SPECTRAL_CONTRASTS = tuple((x,'outer_half') for x in SPECTRAL_MODES[len(BASE):]) + (
+    ('chirp_band','packet_band'),('chirp_band','chirp_band_discrete'))
 
 
 def mse(edits, target):
@@ -70,8 +75,47 @@ def optimal_rays(directions, target):
     return directions*strength[...,None,None], strength
 
 
-@torch.no_grad()
-def evaluate(readout, tracker, models, received, signal, device):
+def simplex_fit(a, b, truth):
+    """Solve the two-variable real least squares problem on a closed simplex."""
+    def dot(x,y):
+        return (x.to(torch.complex128).conj()*y.to(torch.complex128)).real.sum(-1)
+
+    aa,bb,ab=dot(a,a),dot(b,b),dot(a,b)
+    ya,yb=dot(a,truth),dot(b,truth)
+    zero=torch.zeros_like(aa)
+    pa=(ya/aa.clamp_min(1e-20)).clamp(0.,1.)
+    pb=(yb/bb.clamp_min(1e-20)).clamp(0.,1.)
+    d=a-b
+    edge=(dot(d,truth-b)/dot(d,d).clamp_min(1e-20)).clamp(0.,1.)
+    det=aa*bb-ab.square()
+    x=(bb*ya-ab*yb)/det.clamp_min(1e-20)
+    y=(aa*yb-ab*ya)/det.clamp_min(1e-20)
+    valid=(det>16*torch.finfo(det.dtype).eps*aa*bb)&(x>=0.)&(y>=0.)&(x+y<=1.)
+    x=torch.where(valid,x,zero)
+    y=torch.where(valid,y,zero)
+    wa=torch.stack((pa,zero,edge,x),dim=-1).to(a.real.dtype)
+    wb=torch.stack((zero,pb,1.-edge,y),dim=-1).to(b.real.dtype)
+    edit=wa[...,None]*a[...,None,:]+wb[...,None]*b[...,None,:]
+    risk=(edit-truth[...,None,:]).abs().square().sum(-1)
+    return edit.gather(-2,risk.argmin(-1)[...,None,None].expand(*risk.shape[:-1],1,edit.shape[-1])).squeeze(-2)
+
+
+def spectral_edits(a,b,truth):
+    distance=torch.arange(CENTER,device=a.device)
+    distance=torch.minimum(distance,CENTER-distance)
+    packet,local,discrete=(torch.zeros_like(a) for _ in range(3))
+    for low,high in EXPERT_BANDS:
+        mask=(distance>=low)&(distance<=high)
+        x,y,target=a[...,mask],b[...,mask],truth[...,mask]
+        packet[...,mask]=simplex_fit(x.flatten(1),y.flatten(1),target.flatten(1)).reshape_as(x)
+        local[...,mask]=simplex_fit(x,y,target)
+        bank=torch.stack((torch.zeros_like(x),.5*x,x,.5*y,y),dim=-2)
+        idx=(bank-target[...,None,:]).abs().square().mean(-1).argmin(-1)
+        discrete[...,mask]=bank.gather(-2,idx[...,None,None].expand(*idx.shape,1,x.shape[-1])).squeeze(-2)
+    return packet,local,discrete
+
+
+def candidate_bank(tracker,models,received,signal,device):
     original = received_aperture(received,device)
     observed = complex_iq(original[...,:CENTER])
     ideal = complex_iq(tensor(model_iq(native_aperture(signal),
@@ -81,24 +125,47 @@ def evaluate(readout, tracker, models, received, signal, device):
     outer, standard, rich = directions
     bank = torch.stack((torch.zeros_like(outer), .5*outer, .5*standard, standard, .5*rich, rich),dim=1)
     _, phase, _, _ = coordinates(tracker,original[...,:CENTER])
+    return original,ideal,expected,directions,bank,phase
+
+
+def frozen_labels(readout,original,bank,extra):
+    labels=[classify_aperture(readout,original)]
+    for delta in (*bank.unbind(1)[1:],*extra):
+        edited=original.clone()
+        edited[...,:CENTER]+=real_iq(delta)
+        labels.append(classify_aperture(readout,edited))
+    return np.stack(labels)
+
+
+@torch.no_grad()
+def evaluate(readout, tracker, models, received, signal, device):
+    original,ideal,expected,directions,bank,phase=candidate_bank(tracker,models,received,signal,device)
     nearest, i_mse = select(bank,mse(bank,expected))
     colored, i_balanced = select(bank,balanced(bank,expected,ideal,phase))
     rays, weights = optimal_rays(torch.stack(directions,dim=1),expected)
     optimal, i_ray = select(rays,mse(rays,expected))
-    labels = [classify_aperture(readout,original)]
-    for delta in (*bank.unbind(1)[1:], nearest,colored,optimal):
-        edited = original.clone()
-        edited[...,:CENTER] += real_iq(delta)
-        labels.append(classify_aperture(readout,edited))
+    extra=(nearest,colored,optimal)
     v = torch.arange(len(weights),device=weights.device)
     info = dict(choices=torch.stack((i_mse,i_balanced,i_ray),dim=1).tolist(),
                 strength=weights[v,i_ray].tolist(),
                 scores=torch.cat((mse(bank,expected),
                                   mse(torch.stack((nearest,colored,optimal),dim=1),expected)),dim=1).tolist())
-    return np.stack(labels),info
+    return frozen_labels(readout,original,bank,extra),info
 
 
-def summarize(choices, strengths, values):
+@torch.no_grad()
+def evaluate_spectral(readout,tracker,models,received,signal,device):
+    original,_,expected,directions,bank,phase=candidate_bank(tracker,models,received,signal,device)
+    spectrum=[torch.fft.fft(value*phase.conj(),norm='ortho') for value in (*directions[:2],expected)]
+    extra=tuple(torch.fft.ifft(value,norm='ortho')*phase for value in spectral_edits(*spectrum))
+    risk=mse(torch.cat((bank,torch.stack(extra,dim=1)),dim=1),expected)
+    return frozen_labels(readout,original,bank,extra),dict(scores=risk.tolist())
+
+
+def summarize(records):
+    choices=np.concatenate([x['choices'] for x in records])
+    strengths=np.concatenate([x['strength'] for x in records])
+    values=np.concatenate([x['scores'] for x in records])
     common = {name: int(n) for name,n in zip(BASE,np.bincount(choices[:,0],minlength=len(BASE)),strict=True)}
     color = {name: int(n) for name,n in zip(BASE,np.bincount(choices[:,1],minlength=len(BASE)),strict=True)}
     rays = {name: int(n) for name,n in zip(('outer','standard','complex'),
@@ -107,6 +174,12 @@ def summarize(choices, strengths, values):
                 continuous_fraction_q10_q50_q90=np.quantile(strengths,[.1,.5,.9]).tolist(),
                 center_mse_q10_q50_q90={name:q.tolist() for name,q in
                     zip(MODES,np.quantile(values,[.1,.5,.9],axis=0).T,strict=True)})
+
+
+def summarize_spectral(records):
+    values=np.concatenate([x['scores'] for x in records])
+    return dict(center_mse_q10_q50_q90={name:q.tolist() for name,q in zip(
+                SPECTRAL_MODES,np.quantile(values,[.1,.5,.9],axis=0).T,strict=True)})
 
 
 def predict(rt):
@@ -120,11 +193,15 @@ def predict(rt):
         raise ValueError('U-Net source baseline is not complete')
     models=[parent,*(load_candidate(unet_root,contract,device,arm)[0] for arm in UNET_FIDELITY_ARMS)]
     readout=load_classifier(rt,contract,device)
+    spectral=rt.get('spectral_simplex',False)
+    modes=SPECTRAL_MODES if spectral else MODES
+    run_case=evaluate_spectral if spectral else evaluate
+    summarize_case=summarize_spectral if spectral else summarize
     u=native(source,'U_s',contract['counts']['U_s'])[0]
     for scene in ('clean',VIEWS[-1]):
         y,truth_wave=full_components(scene,(0,SOURCE[0],u),verify=True)
-        d,meta=evaluate(readout,tracker,models,y[None],truth_wave[None],device)
-        if d.shape!=(len(MODES),1) or not np.isfinite(meta['scores']).all():
+        d,meta=run_case(readout,tracker,models,y[None],truth_wave[None],device)
+        if d.shape!=(len(modes),1) or not np.isfinite(meta['scores']).all():
             raise ValueError('Invalid real source selection smoke')
         if scene=='clean' and not np.all(d[len(BASE):]==d[0]):
             raise ValueError('Clean oracle does not preserve the observation')
@@ -137,19 +214,17 @@ def predict(rt):
     matrix,detail={},{}
     for view in VIEWS:
         stream=map(partial(full_components,view),jobs)
-        guesses, selection, strengths, shifts=[],[],[],[]
+        guesses, records=[],[]
         for start in range(0,len(jobs),BATCH):
             chunk=[next(stream) for _ in range(min(BATCH,len(jobs)-start))]
             received,signal=(np.stack(t) for t in zip(*chunk,strict=True))
-            rows,meta=evaluate(readout,tracker,models,received,signal,device)
+            rows,meta=run_case(readout,tracker,models,received,signal,device)
+            if not np.isfinite(meta['scores']).all():
+                raise ValueError('Nonfinite source oracle risk')
             guesses.append(rows)
-            selection.extend(meta['choices'])
-            strengths.extend(meta['strength'])
-            shifts.extend(meta['scores'])
+            records.append(meta)
         matrix[view]=np.concatenate(guesses,axis=1)
-        if not np.isfinite(shifts).all():
-            raise ValueError('Nonfinite source oracle risk')
-        detail[view]=summarize(np.asarray(selection),strengths,shifts)
+        detail[view]=summarize_case(records)
         print('W24_WAVEFORM_DOSE_PREDICTED',view,len(jobs),flush=True)
     check_controls(unet_root/FULL,('direct','outer_parent_half','unet_standard_long_half',
                    'unet_standard_long_full','unet_complex_long_half','unet_complex_long_full'),
@@ -157,7 +232,7 @@ def predict(rt):
     out=root/FULL
     out.mkdir()
     np.savez(out/'predictions.npz',**matrix)
-    write(out/'source-predictions.json',dict(status='PREDICTIONS_FROZEN',modes=list(MODES),views=list(VIEWS),
+    write(out/'source-predictions.json',dict(status='PREDICTIONS_FROZEN',modes=list(modes),views=list(VIEWS),
           physical_ids=ids,target_reads=0,source_truth_reads=0,waveform=dict(route=FULL,
           genuine_known_noiseless_source_only=True,statistics=detail)))
 
@@ -172,20 +247,26 @@ def main():
     pub=sub.add_parser('publish')
     for field in ('repo','context','output','ssh-config'):
         pub.add_argument('--'+field,type=Path,required=True)
+    pub.add_argument('--spectral-simplex',action='store_true')
     args=parser.parse_args()
     if args.action=='dispatch':
         dispatch(args.runtime,entry=__file__)
     elif args.action=='predict-source':
         predict(read(args.runtime))
     elif args.action=='score-source':
-        score(args.runtime,modes=MODES,contrasts=CONTRASTS)
+        if read(args.runtime).get('spectral_simplex',False):
+            score(args.runtime,modes=SPECTRAL_MODES,contrasts=SPECTRAL_CONTRASTS)
+        else:
+            score(args.runtime,modes=MODES,contrasts=CONTRASTS)
     else:
         ctx=read(args.context)
         rt={k:ctx[k] for k in ('project','python','frozen_sources')}
         project=PurePosixPath(rt['project'])
         runs,releases=project/'runs',project/'releases'
-        rt.update(run_id=RUN,runner=__spec__.name,code_commit=release_commit(args.repo),
-                  release_root=str(releases/f'{RUN}-release'),run_root=str(runs/RUN),
+        run=SPECTRAL_RUN if args.spectral_simplex else RUN
+        rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
+                  spectral_simplex=args.spectral_simplex,
+                  release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),classifier_root=str(runs/AUG_RUN),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),
                   training_release_root=str(releases/f'{TRAIN_RUN}-release'),allowed_gpus=[3,6,0])
