@@ -30,7 +30,7 @@ from experiments.pamf_lora_main.w24_third_prior import HALF_PRIMARY_RUN, load_ca
 from experiments.pamf_lora_main.w24_wide_transfer import load_restorer, received_aperture, training_runtime
 
 
-RUN = '20261126-diagnostic-lora-w24-edit-cross-source-s2026112559-r02'
+RUN = '20261126-diagnostic-lora-w24-edit-cross-source-s2026112559-r03'
 CENTER = 384
 BUCKETS = (('dc', 0, 0), ('1-8', 1, 8), ('9-32', 9, 32), ('33-64', 33, 64), ('65-192', 65, 192))
 MODES = ('direct', 'outer_half', 'half_primary', 'outer_direction_total', 'half_direction_total',
@@ -93,7 +93,7 @@ def render(f, restorers, tracker, raw, device):
         recovered = observed.clone()
         recovered[..., :CENTER] += real_iq(edit)
         decisions.append(classify_aperture(f, recovered))
-    return np.stack(decisions), metrics.cpu().numpy()
+    return np.stack(decisions), np.asarray(metrics.tolist(), dtype=np.float32)
 
 
 def check_controls(archive, names, columns, ids, matrix):
