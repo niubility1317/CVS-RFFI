@@ -3,7 +3,7 @@
 - run_id：`20261126-phase1-wisig-dura-hardmix-full-eval-r01`
 - group_id：`phase1-wisig-dura-hardmix-full-eval`；类别：`comparison`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING / N607 发布与运行已核实
 
 ## 目的与对照
 
@@ -27,3 +27,9 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## Full 路线切换
+
+2026-11-26 16:57（香港时间），已核实本 run 的传输、远端编译和真实权重无目标数据冒烟均通过。两组续训已在原 run 各完成 30 轮并冻结。本 run 已启动均衡续训的两个 full 测试分组，困难续训排入同一队列。两组都有完整七景与两个分组预测后，独立 CPU 评分生成续训对比。
+
+原从零训练进程保持原 PID、GPU 和源缓存，已核实 R46 第 9 轮完成。原 residual 调度和它的待评测包装进程已退出，scratch 没有 residual 预测启动记录。原先完成的两组 residual 预测保留，原 run 无 residual 评分产物。从零组按原日程终轮冻结后，自动运行两个 full 分组并补齐三组报告。
