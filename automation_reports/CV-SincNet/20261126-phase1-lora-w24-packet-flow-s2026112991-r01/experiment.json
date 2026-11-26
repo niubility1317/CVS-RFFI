@@ -1,0 +1,184 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-packet-flow-s2026112991-r01",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 观测条件化整包复数速度场（Full）",
+  "description": "From-scratch observation-conditioned packet rectified flow. Compare one vs four fixed forward Euler steps, one set of weights, equal external readout fraction.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 goal, lawful source U_s same-waveform paired IQ, frozen W24 only after added source coefficients freeze, Full route.",
+  "code": {
+    "commit": "bb56f63bdb3c95f6e220c15504e9c2b9f904ca8c",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "Archived N607 CVS-RFFI with exact registered W24 release",
+    "cwd": "Registered archive releases/20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "Same 300 unique opaque source V packet IDs as frozen outer-objective source run",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 16160,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Native source split 392005; disjoint 16000 fit pool/160 waveform holdout; frozen 300 source V and native archived Full receipts.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean. Prediction uses generated receive IQ."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source calibration and source screen. No F/TX/V/target access at fit or freeze. DURA and W24 checkpoints read only for their allowed roles."
+  },
+  "checkpoint": {
+    "initialization": "386933 new trainable parameters from scratch, analytic tracker and generic native pairing code only.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Frozen source predictions used as a matched comparison after both scratch candidates freeze"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "E104 frozen default reader only"
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Pinned analytic aperture, tracking and generic waveform generator code only, no learned checkpoint"
+      }
+    ],
+    "contract_check_ref": "Source frozen checkpoint binding and actual paired blind decisions must match the immutable prior source run.",
+    "provenance_verdict": "No historical restoration weight used in fit, freeze or candidate predictions. Historical outer predictions appended by unchanged physical order for post-freeze paired scoring only.",
+    "selection_rule": "Freeze at 16000 steps. The preregistered four-step half readout must meet parent+18 six, parent+10 low, clean>=direct, and beat the one-step half on both practical metrics to promote. No source checkpoint selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "One N607 GPU, 3 then 6,0, >=12 GiB free and existing process cap. 8 CPU workers.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-packet-flow-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-packet-flow-s2026112991-r01",
+    "local_artifact_root": "local_artifacts/20261126-phase1-lora-w24-packet-flow-s2026112991-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_packet_flow publish --repo <worktree> --context <context> --ssh-config <config> --output <local-release>",
+    "stop_rule": "Stop on invalid read permission, real smoke failure, nonfinite loss/holdout, output shape/IDs or history parity, missing views or independent score failure."
+  },
+  "expected_artifacts": [
+    "fit-smoke.json",
+    "fit-complete.json",
+    "holdout-{step}.json",
+    "packet-flow.pt",
+    "smoke.json",
+    "state.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "disturbed and clean source waveform errors by one/four steps",
+      "paired Full source accuracy and intervals",
+      "paired corrections and receiver strata",
+      "guard identity and latency"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-packet-flow-s2026112991-r01/{route}/predictions.npz",
+    "scorer_ref": "experiments.pamf_lora_main.w24_packet_flow score-source, independent source label scoring"
+  },
+  "rows": [
+    {
+      "row_id": "packet-flow",
+      "method": "Matched one/four Euler steps with the same from-scratch observation and current state-conditioned complex velocity. Each fixed at 0.5 and 1.0 external writeback, original native edges.",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_packet_flow.py",
+      "resolved_config_ref": "releases/20261126-phase1-lora-w24-packet-flow-s2026112991-r01-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300,
+        "U_s_fit": 16000,
+        "U_s_holdout": 160
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW cosine",
+      "lr": 0.0006,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "16000 updates, batch 8 (one clean identity), AdamW cosine .0006 to .00008, fixed source waveform metrics at 2000/8000/16000. Seven frozen Full source views over 300 matched packets.",
+      "output_root": "runs/20261126-phase1-lora-w24-packet-flow-s2026112991-r01",
+      "log_path": "runs/20261126-phase1-lora-w24-packet-flow-s2026112991-r01/fit-source.log",
+      "command": "python -m experiments.pamf_lora_main.w24_packet_flow dispatch <runtime>",
+      "expected_artifacts": [
+        "fit-smoke.json",
+        "fit-complete.json",
+        "holdout-{step}.json",
+        "packet-flow.pt",
+        "smoke.json",
+        "state.json",
+        "full_native/source-predictions.json",
+        "full_native/predictions.npz",
+        "full_native/source-scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Single training arm, 128000 source presentations including generic same-item impairment pairs and one clean identity per minibatch.",
+    "25% of the source time draws are exactly t=0. Remaining times are uniform on the clean path. Velocity target is clean minus observed in the receiver coordinate frame.",
+    "Inference starts at observed IQ with measured high-frequency median, public analytic tracker and received phase/quality. Fixed one/four Euler steps, zero random draws and no edits to native edges.",
+    "Only final source weights proceed to frozen W24. Direct predictions compared exactly, frozen outer rows appended by physical order. No new Residual.",
+    "CPU trajectory, gradient, known-field integration and real N607 source smoke coverage. One independent P0/P1 review."
+  ],
+  "registered_at": "2026-11-26T09:51:38+00:00"
+}
