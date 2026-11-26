@@ -39,6 +39,7 @@ from experiments.pamf_lora_main.w24_native_full import (
 )
 from experiments.pamf_lora_main.w24_observed_dose import FULL_CASES, prior_target, source_receive
 from experiments.pamf_lora_main.w24_second_stage import SecondStage
+from experiments.pamf_lora_main.w24_strong_source import STRONG_FRACTION, STRONG_SNR_DB, StrongSourceMix
 from experiments.pamf_lora_main.w24_third_prior import UNET_FIDELITY_ARMS, UNET_FIDELITY_RUN, load_candidate
 from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN, load_restorer, received_aperture, training_runtime
 from experiments.pamf_lora_main.w24_outer_objective_source import RUN as DURA_RUN
@@ -49,6 +50,7 @@ RUN_PL = '20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01'
 RUN_FIXED_PL = '20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01'
 RUN_FEATURE = '20261126-phase1-lora-w24-clean-feature-recovery-s2026112993-r01'
 RUN_REFINE = '20261126-phase1-lora-w24-second-stage-s2026112995-r01'
+RUN_STRONG = '20261127-phase1-lora-w24-strong-source-s2026112997-r01'
 ARMS = ('pamf_only', 'frozen_pamf_ce', 'joint')
 PL = 'joint_clean_pl'
 FIXED_PL = 'fixed_e104_clean_pl'
@@ -56,8 +58,11 @@ CONTINUED_PL, FEATURE = 'continued_clean_pl', 'clean_feature'
 CONTINUATION_ARMS = (CONTINUED_PL, FEATURE)
 RAW_REFINE, REFINE = 'raw_second_stage', 'conditioned_second_stage'
 REFINE_ARMS = (RAW_REFINE, REFINE)
-PARENT_TRIALS = {RUN_FEATURE: CONTINUATION_ARMS, RUN_REFINE: REFINE_ARMS}
-PARENT_ARMS = (*CONTINUATION_ARMS, *REFINE_ARMS)
+STRONG_CONTROL, STRONG = 'generic_source', 'strong_source'
+STRONG_ARMS = (STRONG_CONTROL, STRONG)
+PARENT_TRIALS = {RUN_FEATURE: CONTINUATION_ARMS, RUN_REFINE: REFINE_ARMS, RUN_STRONG: STRONG_ARMS}
+PARENT_ARMS = tuple(arm for arms in PARENT_TRIALS.values() for arm in arms)
+PARENT_CONTROLS = {candidate: control for control, candidate in PARENT_TRIALS.values()}
 PSEUDO_ARMS = {RUN_PL: PL, RUN_FIXED_PL: FIXED_PL}
 FIXED_READER_ARMS = ('frozen_pamf_ce', FIXED_PL, *PARENT_ARMS)
 USE_PSEUDO = (*PSEUDO_ARMS.values(), *PARENT_ARMS)
@@ -65,9 +70,11 @@ PL_THRESHOLD = .95
 SEED, STEPS, BATCH, PRED_BATCH = 2026112991, 6000, 16, 32
 FEATURE_SEED, FEATURE_WEIGHT = 2026112993, 16.
 REFINE_SEED, REFINE_STEPS = 2026112995, 9000
+STRONG_SEED, STRONG_STEPS = 2026112997, 10000
 FIXED_PL_COMMIT = '37215dd615d0f651ffebe87d6aaba6af0ab7a847'
 CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
-FORMAL_ARMS = {RUN: CANDIDATE, RUN_FIXED_PL: FIXED_PL, RUN_FEATURE: FEATURE, RUN_REFINE: REFINE}
+FORMAL_ARMS = {RUN: CANDIDATE, RUN_FIXED_PL: FIXED_PL,
+               **{run: candidate for run, (_, candidate) in PARENT_TRIALS.items()}}
 MODES = ('direct', 'outer_half', 'unet_parent', *ARMS, 'joint_g_fixed_e104', 'joint_f_parent_g')
 CONTRASTS = (('joint','pamf_only'), ('joint','frozen_pamf_ce'), ('joint','unet_parent'),
              ('joint','joint_g_fixed_e104'), ('joint','joint_f_parent_g'),
@@ -177,6 +184,8 @@ def training_recipe(arm):
         return REFINE_SEED, REFINE_STEPS, 8e-5, RUN_FIXED_PL
     if arm in CONTINUATION_ARMS:
         return FEATURE_SEED, STEPS, 4e-5, RUN_FIXED_PL
+    if arm in STRONG_ARMS:
+        return STRONG_SEED, STRONG_STEPS, 4e-5, RUN_FIXED_PL
     return SEED, STEPS, 8e-5, UNET_FIDELITY_RUN
 
 
@@ -221,6 +230,9 @@ def fit(config, arm, *, smoke, device='cuda:0'):
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,steps,eta_min=2e-6)
     order = np.random.default_rng(seed)
     rng = torch.Generator(device=device).manual_seed(seed)
+    if arm in STRONG_ARMS:
+        separate_rng = torch.Generator(device=device).manual_seed(seed+1)
+        generic = StrongSourceMix(generic,separate_rng,device,enabled=arm==STRONG)
     pseudo = arm in USE_PSEUDO
     preserve_feature = arm == FEATURE
     weights = torch.tensor((1.,.65,.3,.30,.25,1.5) + ((1.,0.) if pseudo else ())
@@ -287,6 +299,9 @@ def fit(config, arm, *, smoke, device='cuda:0'):
         proof['feature_weight'] = FEATURE_WEIGHT if preserve_feature else 0.
     if refinement:
         proof['conditioned_on_first'] = arm == REFINE
+    if arm in STRONG_ARMS:
+        proof.update(strong_fraction=STRONG_FRACTION if arm==STRONG else 0.,
+                     strong_snr_db=list(STRONG_SNR_DB),strong_exposures=int(generic.selected))
     summary = dict(**proof, status='PASS' if smoke else 'SOURCE_FROZEN', CE_to_G_norm=ce_norm,
                    gradients=gradients, worker_seconds=monotonic()-start,
                    peak_cuda_bytes=torch.cuda.max_memory_allocated() if device.startswith('cuda') else 0,
@@ -329,6 +344,12 @@ def load_row(root, arm, contract, f0, g0, device):
         raise ValueError('Unexpected paired feature weight')
     if refinement and proof.get('conditioned_on_first') is not (arm == REFINE):
         raise ValueError('Unexpected second-stage input')
+    if arm in STRONG_ARMS:
+        strong_count = proof['strong_exposures']
+        exposure_ok = 0 < strong_count <= proof['labeled_exposures'] + proof['unlabeled_exposures'] if arm == STRONG else strong_count == 0
+        if (not exposure_ok or proof['strong_fraction'] != (STRONG_FRACTION if arm==STRONG else 0.)
+                or proof['strong_snr_db'] != list(STRONG_SNR_DB)):
+            raise ValueError('Unexpected strong source mixture')
     g0 = initialize_recovery(arm,deepcopy(g0),device) if refinement else g0
     g, f = deepcopy(g0), deepcopy(f0)
     for model, key in ((g,'G'),(f,'F')):
@@ -449,8 +470,8 @@ def qualifies(scores, candidate=CANDIDATE):
         if test['low_urban_correct'] <= control['low_urban_correct']:
             return False
         controls.append(control)
-    if candidate in (FEATURE,REFINE):
-        control = scores[CONTINUED_PL if candidate == FEATURE else RAW_REFINE]
+    if candidate in PARENT_CONTROLS:
+        control = scores[PARENT_CONTROLS[candidate]]
         parent = scores[FIXED_PL]
         if (test['low_urban_correct'] <= control['low_urban_correct']
                 or test['by_scene']['clean'] < parent['by_scene']['clean']):
@@ -657,6 +678,7 @@ def main():
     pseudo_options.add_argument('--fixed-clean-pl',dest='run_id',action='store_const',const=RUN_FIXED_PL)
     pseudo_options.add_argument('--clean-feature',dest='run_id',action='store_const',const=RUN_FEATURE)
     pseudo_options.add_argument('--second-stage',dest='run_id',action='store_const',const=RUN_REFINE)
+    pseudo_options.add_argument('--strong-source',dest='run_id',action='store_const',const=RUN_STRONG)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -698,7 +720,8 @@ def main():
         releases,runs=project/'releases',project/'runs'
         run = args.run_id or RUN
         gpu_preferences = {RUN: [3,0,7,2,6,5], RUN_PL: [2,6,5], RUN_FIXED_PL: [7,2,3,0,6,5],
-                           RUN_FEATURE: [0,3,7,2,6,5], RUN_REFINE: [7,3,0,2,6,5]}
+                           RUN_FEATURE: [0,3,7,2,6,5], RUN_REFINE: [7,3,0,2,6,5],
+                           RUN_STRONG: [7,0,3,2,6,5]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),

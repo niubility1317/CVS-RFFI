@@ -205,3 +205,41 @@ def test_second_stage_only_conditioned_candidate_can_promote():
     for case in experiment.FULL_CASES:
         proof = experiment.formal_receipt(case,experiment.RUN_REFINE)
         assert proof['modes'][-2:] == [parent,candidate] and control not in proof['modes']
+
+
+def test_strong_source_adds_exact_awgn_budget_and_preserves_other_pairs():
+    mix = experiment.StrongSourceMix
+    rng_seed = 74
+    raw = torch.ones(32,8,128,dtype=torch.complex64) * torch.arange(1,33)[:,None,None]
+
+    def generic(clean,rng):
+        return clean * (.6 + .3 * torch.rand((len(clean),1,1),generator=rng))
+
+    control_rng = torch.Generator().manual_seed(8)
+    candidate_rng = torch.Generator().manual_seed(8)
+    control = mix(generic,torch.Generator().manual_seed(rng_seed),'cpu',enabled=False)
+    candidate = mix(generic,torch.Generator().manual_seed(rng_seed),'cpu',enabled=True)
+    normal = control(raw,control_rng)
+    paired = candidate(raw,candidate_rng)
+    trial = torch.Generator().manual_seed(rng_seed)
+    strong = torch.rand((len(raw),1,1),generator=trial).flatten() < experiment.STRONG_FRACTION
+    low, high = experiment.STRONG_SNR_DB
+    nominal = low + (high-low)*torch.rand((len(raw),1,1),generator=trial).flatten()
+    assert 0 < strong.sum() == candidate.selected < len(raw) and not control.selected
+    torch.testing.assert_close(paired[~strong],normal[~strong],rtol=0,atol=0)
+    assert torch.equal(control_rng.get_state(),candidate_rng.get_state())
+    measured = 10 * (raw.abs().square().mean((1,2)) / (paired-raw).abs().square().mean((1,2))).log10()
+    torch.testing.assert_close(measured[strong],nominal[strong])
+
+
+def test_strong_source_only_candidate_can_enter_formal_full():
+    parent,control,candidate = experiment.FIXED_PL,*experiment.STRONG_ARMS
+    scores = {m:dict(six_correct=1455,low_urban_correct=187,by_scene={'clean':297})
+              for m in (*experiment.MODES,parent,control,candidate)}
+    scores[candidate].update(six_correct=1460,low_urban_correct=188)
+    assert experiment.qualifies(scores,candidate)
+    scores[candidate]['by_scene']['clean'] = 296
+    assert not experiment.qualifies(scores,candidate)
+    for case in experiment.FULL_CASES:
+        proof = experiment.formal_receipt(case,experiment.RUN_STRONG)
+        assert proof['modes'][-2:] == [parent,candidate] and control not in proof['modes']
