@@ -243,21 +243,28 @@ def render(f, tracker, models, raw, device):
 
 
 def predict(rt):
-    root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
+    root, device = Path(rt['run_root']), 'cuda:0'
     proof = read(root/'fit-complete.json')
     if (proof['status'], proof['initialization'], proof['steps']) != ('SOURCE_FROZEN', 'scratch', STEPS) or any(
             proof[k] for k in ('F_reads', 'target_reads', 'source_truth_reads', 'source_V_reads')):
         raise ValueError('Both scratch source models must be frozen before W24 loads')
-    tracker, _ = source_tools(rt, device)
-    contract = source_contract(source)
     models = tuple(PacketReconstructor(joint).to(device).eval() for joint in (False, True))
     states = torch.load(root/'packet-reconstruction.pt', map_location=device, weights_only=True)
     for model, state in zip(models, states, strict=True):
         model.load_state_dict(state)
+    predict_panel(rt, models, MODES)
+
+
+def predict_panel(rt, models, modes):
+    root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
+    tracker, _ = source_tools(rt, device)
+    contract = source_contract(source)
+    if len(modes) != 1+2*len(models):
+        raise ValueError('Each model needs center and full readouts')
     f = load_classifier(rt, contract, device)
     packet = native(source, 'U_s', contract['counts']['U_s'])[0]
     raw = np.stack([source_receive(view, (0, SOURCE[0], packet)) for view in ('clean', VIEWS[-1])])
-    if render(f, tracker, models, raw, device).shape != (len(MODES), 2):
+    if render(f, tracker, models, raw, device).shape != (len(modes), 2):
         raise ValueError('Frozen W24 source smoke failed')
     write(root/'smoke.json', dict(status='PASS', source_u_packets=1, source_truth_reads=0, target_reads=0))
     print('W24_PACKET_RECONSTRUCTION_SMOKE PASS', flush=True)
@@ -283,7 +290,7 @@ def predict(rt):
     out = root/FULL
     out.mkdir()
     np.savez(out/'predictions.npz', **matrix)
-    write(out/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=[*MODES, 'outer_half'],
+    write(out/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=[*modes, 'outer_half'],
           views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0,
           waveform=dict(route=FULL, scratch=True, archived_outer_control=True)))
 
