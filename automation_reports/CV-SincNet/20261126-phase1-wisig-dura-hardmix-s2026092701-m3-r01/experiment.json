@@ -99,12 +99,13 @@
   "execution": {
     "host": "N607",
     "launch_owner": "codex-wisig-dura-hardmix-20261126",
-    "gpu_policy": "Up to 3 GPU jobs, at most one this run per GPU, at least 12,288 MiB available and fewer than two existing compute processes on the selected GPU. CPU bank uses 12 workers. Separate CPU scorer.",
+    "gpu_policy": "User-directed continuation of admission based only on live free memory, at least 12,288 MiB. Up to three concurrent rows with at most one owned worker on each GPU. Preserve rows already admitted under the original scheduler.",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-s2026092701-m3-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-s2026092701-m3-r01/logs",
     "local_artifact_root": "E:/type10-7/local_artifacts/20261126-phase1-wisig-dura-hardmix-s2026092701-m3-r01",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_dura_hardmix dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-phase1-wisig-dura-hardmix-s2026092701-m3-r01-release/runtime.json",
-    "stop_rule": "Stop affected dependent stages on contract or smoke failure, nonfinite training, incorrect ancestry, or incomplete prediction closure. Preserve all outputs and other owners. No stopping by accuracy."
+    "stop_rule": "Stop affected dependent stages on contract or smoke failure, nonfinite training, incorrect ancestry, or incomplete prediction closure. Preserve all outputs and other owners. No stopping by accuracy.",
+    "resource_handoff_ref": "experiments/pamf_unrolled_restore/wisig_dura_hardmix_gpu_handoff.py"
   },
   "expected_artifacts": [
     "source_smoke.json",
