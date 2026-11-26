@@ -38,7 +38,9 @@ BAND_TUNE_RUN = '20261126-phase1-lora-w24-band-direction-tune-s2026112991-r01'
 BAND_TUNE_ARMS = ('band_tune_control', 'band_tune_direction')
 BAND_ADAPTER_RUN = '20261126-phase1-lora-w24-band-adapter-s2026112991-r01'
 BAND_ADAPTER_ARMS = ('band_adapter_time', 'band_adapter_frequency')
-OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS)
+BAND_REFINE_RUN = '20261126-phase1-lora-w24-band-polar-refine-s2026112991-r01'
+BAND_REFINE_ARMS = ('band_cartesian', 'band_polar')
+OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS)
 OUTER_BASELINE = 'outer_parent_half'
 OUTER_PARENT = '20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01'
 VARIANTS = {
@@ -50,6 +52,7 @@ VARIANTS = {
     'coherent-error': (BIAS_RUN, BIAS_ARMS),
     'band-tune': (BAND_TUNE_RUN, BAND_TUNE_ARMS),
     'band-adapter': (BAND_ADAPTER_RUN, BAND_ADAPTER_ARMS),
+    'band-refine': (BAND_REFINE_RUN, BAND_REFINE_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -73,8 +76,9 @@ def trial(kind):
     run, arms = VARIANTS[kind]
     modes = ('direct', 'all_half', *(f'{arm}_{alpha}' for alpha in ('half', 'full') for arm in arms))
     contrasts = ((modes[3], modes[2]), (modes[5], modes[4]), (modes[3], modes[0]))
-    if kind in ('band-tune', 'band-adapter'):
-        return Trial(run, arms, 1800, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
+    if kind in ('band-tune', 'band-adapter', 'band-refine'):
+        steps = 1200 if kind == 'band-refine' else 1800
+        return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
     return Trial(run, arms, 3600, modes, contrasts, ROUTES[:1])
 
 
@@ -116,6 +120,10 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_band_adapter import restorer as adapter_restorer
 
         return adapter_restorer(training, frequency=arm == BAND_ADAPTER_ARMS[1])
+    if arm in BAND_REFINE_ARMS:
+        from experiments.pamf_lora_main.w24_band_refine import BandRefiner
+
+        return BandRefiner(training, polar=arm == BAND_REFINE_ARMS[1])
     if arm != 'three':
         return training.DuraW24()
 
@@ -191,18 +199,26 @@ def qualified_source(root, kind=True):
 
 def source_recipe(training, arm, *, initialize=None):
     def finalize(model, _tracker, _calibration):
-        trained = (model.band_adapter,) if arm in BAND_ADAPTER_ARMS else model.priors
+        if arm in BAND_ADAPTER_ARMS:
+            trained, key = (model.band_adapter,), 'adapter_gradient_norms'
+        elif arm in BAND_REFINE_ARMS:
+            trained, key = (model.head,), 'head_gradient_norms'
+            if any(p.requires_grad or p.grad is not None for p in model.backbone.parameters()):
+                raise ValueError('Expected a frozen source backbone for band refinement')
+        else:
+            trained, key = model.priors, 'prior_gradient_norms'
         grads = [sum(float(p.grad.square().sum()) for p in module.parameters() if p.grad is not None)**.5
                  for module in trained]
         if not all(0 < value < float('inf') for value in grads):
             raise FloatingPointError(f'Invalid gradient in a trainable W24 prior or adapter: {grads}')
-        key = 'adapter_gradient_norms' if arm in BAND_ADAPTER_ARMS else 'prior_gradient_norms'
         info = dict(input_gate=False, prior_count=len(model.priors), **{key: grads},
                     parameters=sum(p.numel() for p in model.parameters()))
         if arm in OUTER_TUNE_ARMS:
             info['source_parent'] = OUTER_PARENT
         if arm in BAND_ADAPTER_ARMS:
             info['trainable_parameters'] = sum(p.numel() for p in model.band_adapter.parameters())
+        if arm in BAND_REFINE_ARMS:
+            info.update(trainable_parameters=sum(p.numel() for p in model.head.parameters()), backbone_frozen=True)
         return None, info
 
     spec = trial(ARM_TRIAL[arm])
@@ -257,11 +273,14 @@ def fit(config, arm, *, smoke):
                 from experiments.pamf_lora_main.w24_band_adapter import load_parent
 
                 load_parent(model, weights)
+            elif arm in BAND_REFINE_ARMS:
+                model.backbone.load_state_dict(weights, strict=True)
             else:
                 model.load_state_dict(weights, strict=True)
 
         weight = WEIGHT if arm == BAND_TUNE_ARMS[1] else 0.
-        calculate = objective_for(dura_w24_model, band_direction_weight=weight)
+        calculate = (objective_for(dura_w24_model, refine_band=True) if arm in BAND_REFINE_ARMS
+                     else objective_for(dura_w24_model, band_direction_weight=weight))
     numerical_policy()
     channel_blind_source.fit(rt, smoke=smoke, recipe=source_recipe(dura_w24_train, arm, initialize=initialize),
                              calculate=calculate, receiver_batches=True, prepare=prepare,
@@ -285,6 +304,8 @@ def load_candidate(root, contract, device, arm):
         raise ValueError(f'Unverified source freeze for {arm}')
     if arm in OUTER_TUNE_ARMS and summary.get('source_parent') != OUTER_PARENT:
         raise ValueError(f'Unverified warm start for {arm}')
+    if arm in BAND_REFINE_ARMS and summary.get('backbone_frozen') is not True:
+        raise ValueError(f'Unverified frozen source backbone for {arm}')
     checkpoint = torch.load(row / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
         raise ValueError(f'Invalid {arm} checkpoint source binding')
@@ -382,7 +403,7 @@ def publish(args):
     releases, runs = project / 'releases', project / 'runs'
     pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7], 'final-radius': [0, 5, 6, 7],
              'peer': [3, 7, 6, 5], 'coherent-error': [0, 3, 5, 7], 'band-tune': [7, 6, 3, 0, 2],
-             'band-adapter': [0, 3, 5, 7]}
+             'band-adapter': [0, 3, 5, 7], 'band-refine': [6, 7, 2, 0, 3]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
