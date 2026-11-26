@@ -148,8 +148,12 @@ def predict_source(runtime):
             OUTER_BASELINE, UNET_BASELINE, UNET_FIDELITY_ARMS, load_candidate, restore_center, trial,
         )
 
-        names = trial(third_prior).arms
+        design = trial(third_prior)
+        names = design.arms
         arms = [load_candidate(root, contract, device, arm) for arm in names]
+        source_intermediate = design.source_intermediate
+        intermediate = ([load_candidate(root, contract, device, arm, source_step=source_intermediate)[0]
+                         for arm in names] if source_intermediate is not None else [])
         unet_parent = (load_candidate(Path(rt['unet_parent']), contract, device, UNET_FIDELITY_ARMS[0])[0]
                        if UNET_BASELINE in modes else None)
         outer_parent = None
@@ -167,6 +171,8 @@ def predict_source(runtime):
                 outputs.append(restore_center(original, wide_delta(unet_parent, track, original), .5))
             if outer_parent is not None:
                 outputs.append(restore_center(original, wide_delta(outer_parent, track, original), .5))
+            outputs.extend(restore_center(original, wide_delta(model, track, original), .5)
+                           for model in intermediate)
             rows = (original, old, *outputs)
             return np.stack([classify_aperture(f, x) for x in rows]), [len(packets)] * (len(modes)-1)
     elif learning_outer:
@@ -272,8 +278,9 @@ def predict_source(runtime):
                         'PREDICTIONS_FROZEN', ids, list(VIEWS), 0, 0):
                     raise ValueError('Expected frozen outer-loss source predictions')
                 index = mark['modes'].index('outer_objective_half')
+                current = modes.index(OUTER_BASELINE)
                 with np.load(parent / 'predictions.npz', allow_pickle=False) as archive:
-                    if any(not np.array_equal(archive[v][index], output[route][v][-1]) for v in VIEWS):
+                    if any(not np.array_equal(archive[v][index], output[route][v][current]) for v in VIEWS):
                         raise ValueError('Outer parent prediction did not reproduce')
             if third_prior and UNET_BASELINE in modes:
                 from experiments.pamf_lora_main.w24_edit_cross import check_controls
@@ -286,6 +293,8 @@ def predict_source(runtime):
         if third_prior:
             policy = dict(ungated=True, amplitudes=[.5, 1.], candidate_run=rt['run_id'],
                           candidate_steps=arms[0][1]['steps'])
+            if source_intermediate is not None:
+                policy['source_intermediate'] = source_intermediate
         elif learning_outer:
             policy = dict(ungated=True, amplitude=.5, candidate_run=rt['run_id'], candidate_steps=new_frozen['steps'])
             if joint_edges:

@@ -165,8 +165,23 @@ def chirp_component_risk(output, target):
     return torch.stack(risks).mean(0)
 
 
+def weak_private_gain_risk(response, desired):
+    """Complex gain error along measured zero-mean chirp differences."""
+    reference = torch.fft.fft(desired, norm='ortho')
+    error = torch.fft.fft(response - desired, norm='ortho')
+    frequency = torch.fft.fftfreq(desired.shape[-1], device=desired.device).abs()
+    bands = ((frequency > 0) & (frequency <= 1 / 32), (frequency > 1 / 32) & (frequency <= 1 / 8))
+    result = []
+    for band in bands:
+        weak = reference[..., band]
+        power = weak.abs().square().mean(-1)
+        gain_error = (error[..., band] * weak.conj()).mean(-1) / (power + 1e-4)
+        result.append(gain_error.abs().square().log1p().mean())
+    return torch.stack(result).mean()
+
+
 def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None, colored_noise=None,
-                  common_bands=None, posterior_primary=False, clean_projection=None):
+                  common_bands=None, posterior_primary=False, clean_projection=None, weak_gain=None):
     if transport_probe is not None:
         from .w24_probe_transport import probe_views
     if colored_noise is not None:
@@ -228,6 +243,13 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
         endpoint_weight = 0. if posterior_primary else .18
         weights = parts.new_tensor((.5, .5, .25, endpoint_weight, .15, .30, .03, 1.))
         loss = parts @ weights
+        if weak_gain is not None:
+            # The last two fitting packets are clean identity examples, not disturbed probes.
+            count = len(raw) - 2 if with_identity else len(raw)
+            gain_risk = weak_private_gain_risk(response[:count, 1:], desired[:count, 1:])
+            parts = torch.cat((parts, gain_risk[None]))
+            if weak_gain:
+                loss = loss + .35 * gain_risk
         if complex_fidelity is not None:
             # Only the two same-packet disturbed views contribute. Clean rows have their own identity loss.
             count = len(raw) - 2 if with_identity else len(raw)

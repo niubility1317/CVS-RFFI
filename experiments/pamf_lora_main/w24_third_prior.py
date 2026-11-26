@@ -69,8 +69,11 @@ POSTERIOR_ARMS = ('posterior_all_bins', 'posterior_exclude_bin')
 PROJECTION_RUN = '20261127-phase1-lora-w24-clean-projection-s2026112991-r01'
 PROJECTION_ARMS = ('projection_control', 'projection_clean_aux')
 SCRATCH_PRIOR_ARMS = (*POSTERIOR_ARMS, *PROJECTION_ARMS)
+WEAK_TRANSFER_RUN = '20261127-phase1-lora-w24-weak-transfer-s2026112991-r01'
+WEAK_TRANSFER_ARMS = ('weak_gain_control', 'weak_gain_private')
+WEAK_TRANSFER_INTERMEDIATE = 24000
 UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
-UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS)
+UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS, *WEAK_TRANSFER_ARMS)
 EXPERT_RUN = '20261126-phase1-lora-w24-spectral-experts-s2026112991-r01'
 EXPERT_ARMS = ('experts_packet', 'experts_band')
 UNET_BASELINE = 'frozen_unet_half'
@@ -103,6 +106,7 @@ VARIANTS = {
     'common-refine': (UNET_COMMON_RUN, UNET_COMMON_ARMS),
     'spectral-posterior': (POSTERIOR_RUN, POSTERIOR_ARMS),
     'clean-projection': (PROJECTION_RUN, PROJECTION_ARMS),
+    'weak-transfer': (WEAK_TRANSFER_RUN, WEAK_TRANSFER_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -117,6 +121,7 @@ class Trial:
     source_modes: tuple
     contrasts: tuple
     routes: tuple = ROUTES
+    source_intermediate: int | None = None
 
 
 def trial(kind):
@@ -127,6 +132,13 @@ def trial(kind):
     run, arms = VARIANTS[kind]
     modes = ('direct', 'all_half', *(f'{arm}_{alpha}' for alpha in ('half', 'full') for arm in arms))
     contrasts = ((modes[3], modes[2]), (modes[5], modes[4]), (modes[3], modes[0]))
+    if arms == WEAK_TRANSFER_ARMS:
+        intermediate = tuple(f'{arm}_s{WEAK_TRANSFER_INTERMEDIATE}_half' for arm in arms)
+        comparisons = ((intermediate[1], intermediate[0]), (modes[2], intermediate[0]), (modes[3], intermediate[1]))
+        baselines = (UNET_BASELINE, OUTER_BASELINE)
+        return Trial(run, arms, 48000, (*modes, *baselines, *intermediate),
+                     (*contrasts, *((modes[3], base) for base in baselines), *comparisons),
+                     ROUTES[:1], WEAK_TRANSFER_INTERMEDIATE)
     if arms[0] in OUTER_TUNE_ARMS:
         steps = 1200 if kind == 'band-refine' else 1800
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
@@ -279,6 +291,7 @@ def qualified_source(root, kind=True):
                 or predictions['views'] != list(VIEWS) or len(ids) != 300 or len(set(ids)) != 300
                 or (physical_ids is not None and ids != physical_ids)
                 or waveform['candidate_steps'] != spec.steps or waveform['candidate_run'] != spec.run
+                or waveform.get('source_intermediate') != spec.source_intermediate
                 or waveform['route'] != route or waveform['ungated'] is not True
                 or waveform['amplitudes'] != [.5, 1.]
                 or waveform['activation'] != dict.fromkeys(VIEWS, [300]*(len(spec.source_modes)-1))
@@ -350,6 +363,9 @@ def source_recipe(training, arm, *, initialize=None):
             info.update(initialization='random', across_chirps=arm != PACKET_UNET_ARMS[0])
         if arm in UNET_FIDELITY_ARMS:
             info['complex_fidelity'] = arm == UNET_FIDELITY_ARMS[1]
+        if arm in WEAK_TRANSFER_ARMS:
+            info.update(private_weak_gain=arm == WEAK_TRANSFER_ARMS[1],
+                        source_intermediate=WEAK_TRANSFER_INTERMEDIATE)
         if arm in UNET_COMPONENT_ARMS:
             info.update(separate_chirps=True, separate_loss=arm == UNET_COMPONENT_ARMS[1])
         if arm in UNET_WARM_ARMS:
@@ -375,9 +391,9 @@ def source_recipe(training, arm, *, initialize=None):
     spec = trial(ARM_TRIAL[arm])
     name = f'w24_{arm}_prior' if arm in ARMS else f'w24_{arm}'
     milestones = (spec.steps // 3, 2 * spec.steps // 3)
-    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *SCRATCH_PRIOR_ARMS):
+    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *SCRATCH_PRIOR_ARMS, *WEAK_TRANSFER_ARMS):
         milestones = (2000, 6000, 12000, 18000)
-    if arm in PROJECTION_ARMS:
+    if arm in (*PROJECTION_ARMS, *WEAK_TRANSFER_ARMS):
         milestones = (*milestones, 24000, 36000, 42000)
     if arm in UNET_WARM_ARMS:
         milestones = (2000, 6000, 9000)
@@ -386,6 +402,21 @@ def source_recipe(training, arm, *, initialize=None):
                    model=partial(restorer, training, arm), finalize_calibration=finalize,
                    initialize=initialize, coarse_first=training.RECIPE.coarse_first
                    and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS, *EXPERT_ARMS, *SCRATCH_PRIOR_ARMS))
+
+
+def snapshot_objective(calculate, archived, contract, snapshot, checkpoint_step):
+    import torch
+
+    def capture(model, tracker, raw, rng, *, with_identity, recipe, step):
+        # Validation at this milestone follows its update. The next fit call starts
+        # before another update, with exactly the completed milestone weights.
+        if with_identity and step == checkpoint_step + 1:
+            proof = archived.proof(contract, replace(recipe, steps=checkpoint_step))
+            with snapshot.open('xb') as stream:
+                torch.save(dict(proof=proof, weights=model.state_dict(), threshold=None), stream)
+        return calculate(model, tracker, raw, rng, with_identity=with_identity, recipe=recipe, step=step)
+
+    return capture
 
 
 def fit(config, arm, *, smoke):
@@ -429,8 +460,10 @@ def fit(config, arm, *, smoke):
         transport = (arm == UNET_TRANSPORT_ARMS[1]) if arm in UNET_TRANSPORT_ARMS else None
         colored_noise = (arm == UNET_NOISE_COLOR_ARMS[1]) if arm in UNET_NOISE_COLOR_ARMS else None
         common_bands = (arm == UNET_COMMON_ARMS[1]) if arm in UNET_COMMON_ARMS else None
+        weak_gain = (arm == WEAK_TRANSFER_ARMS[1]) if arm in WEAK_TRANSFER_ARMS else None
         calculate = objective_for(dura_w24_model, complex_fidelity=fidelity, separate_loss=separation,
-                                  transport_probe=transport, colored_noise=colored_noise, common_bands=common_bands)
+                                  transport_probe=transport, colored_noise=colored_noise, common_bands=common_bands,
+                                  posterior_primary=weak_gain is not None, weak_gain=weak_gain)
     if arm in SCRATCH_PRIOR_ARMS:
         from experiments.pamf_lora_main.w24_packet_unet import objective_for
 
@@ -505,12 +538,17 @@ def fit(config, arm, *, smoke):
         else:
             calculate = objective_for(dura_w24_model, band_direction_weight=weight)
     numerical_policy()
-    channel_blind_source.fit(rt, smoke=smoke, recipe=source_recipe(dura_w24_train, arm, initialize=initialize),
+    recipe = source_recipe(dura_w24_train, arm, initialize=initialize)
+    if arm in WEAK_TRANSFER_ARMS and not smoke:
+        contract = dura_w24_train.source_contract(Path(rt['source_root']))
+        snapshot = Path(rt['run_root']) / f'{recipe.name}-step{WEAK_TRANSFER_INTERMEDIATE}.pt'
+        calculate = snapshot_objective(calculate, channel_blind_source, contract, snapshot, WEAK_TRANSFER_INTERMEDIATE)
+    channel_blind_source.fit(rt, smoke=smoke, recipe=recipe,
                              calculate=calculate, receiver_batches=True, prepare=prepare,
                              make_tracker=dura_w24_train.WideTracker)
 
 
-def read_candidate_weights(root, contract, device, arm, training, archived):
+def read_candidate_weights(root, contract, device, arm, training, archived, *, source_step=None):
     import torch
     from experiments.cric_dura_comparison.io import read
 
@@ -538,6 +576,9 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
         raise ValueError(f'Unverified packet U-Net architecture for {arm}')
     if arm in UNET_FIDELITY_ARMS and summary.get('complex_fidelity') is not (arm == UNET_FIDELITY_ARMS[1]):
         raise ValueError(f'Unverified packet U-Net complex fidelity objective for {arm}')
+    if arm in WEAK_TRANSFER_ARMS and (summary.get('private_weak_gain') is not (arm == WEAK_TRANSFER_ARMS[1])
+                                      or summary.get('source_intermediate') != WEAK_TRANSFER_INTERMEDIATE):
+        raise ValueError(f'Unverified weak gain training objective for {arm}')
     if arm in UNET_COMPONENT_ARMS and (summary.get('separate_chirps') is not True
                                        or summary.get('separate_loss') is not (arm == UNET_COMPONENT_ARMS[1])):
         raise ValueError(f'Unverified packet U-Net chirp decomposition for {arm}')
@@ -561,16 +602,24 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
     if arm in EXPERT_ARMS and (summary.get('expert_parents') != [OUTER_PARENT, UNET_FIDELITY_RUN]
                                or summary.get('local_router') is not (arm == EXPERT_ARMS[1])):
         raise ValueError(f'Unverified spectral expert provenance for {arm}')
-    checkpoint = torch.load(row / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
+    if source_step is None:
+        path = row / f'{recipe.name}-model.pt'
+    else:
+        if arm not in WEAK_TRANSFER_ARMS or source_step != WEAK_TRANSFER_INTERMEDIATE:
+            raise ValueError('The requested source comparison checkpoint was not registered')
+        path = row / f'{recipe.name}-step{source_step}.pt'
+        expected = archived.proof(contract, replace(recipe, steps=source_step))
+    checkpoint = torch.load(path, map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
         raise ValueError(f'Invalid {arm} checkpoint source binding')
     return recipe, checkpoint['weights'], summary
 
 
-def load_candidate(root, contract, device, arm):
+def load_candidate(root, contract, device, arm, *, source_step=None):
     training = importlib.import_module('lora_wide_dura_archive.dura_w24_train')
     archived = importlib.import_module('lora_wide_dura_archive.channel_blind_source')
-    recipe, weights, summary = read_candidate_weights(root, contract, device, arm, training, archived)
+    recipe, weights, summary = read_candidate_weights(root, contract, device, arm, training, archived,
+                                                       source_step=source_step)
     model = recipe.model().to(device).eval().requires_grad_(False)
     model.load_state_dict(weights, strict=True)
     return model, summary
@@ -673,7 +722,7 @@ def publish(args):
              'packet-unet-fidelity': [2, 7, 6, 5], 'spectral-experts': [0, 3, 5, 7, 2],
              'chirp-components': [3, 2], 'probe-transport': [0, 3, 7], 'noise-color': [2, 3, 0],
              'common-refine': [0, 3, 2, 7], 'spectral-posterior': [0, 3, 2, 7],
-             'clean-projection': [0, 2, 3, 5]}
+             'clean-projection': [0, 2, 3, 5], 'weak-transfer': [0, 3, 2, 5]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
