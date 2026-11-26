@@ -16,8 +16,11 @@ def direction_risk(correction, target):
     return ((1 - cosine) * usable).sum() / usable.sum().clamp_min(1)
 
 
-def objective_for(archive):
-    """Retain the frozen recipe's draws and losses and add one first-stage loss."""
+def objective_for(archive, *, output_bias=False):
+    """Retain the frozen recipe's draws and losses and add one matched term."""
+    if output_bias:
+        from experiments.pamf_lora_main.w24_source_bias import BIAS_WEIGHT, coherent_error
+
     window = archive.WIDE
     risk = archive.waveform_risk
 
@@ -55,6 +58,9 @@ def objective_for(archive):
         a_weight, b_weight, c_weight = recipe.loss_weights(step)
         weights = values.new_tensor((.6 * a_weight, .4 * a_weight, .35 * b_weight, .65 * b_weight,
                                      .30, c_weight, .07, .015, .35))
+        if output_bias:
+            bias = coherent_error(prediction, center, clean_frame, with_identity=with_identity)
+            return values @ weights + BIAS_WEIGHT * bias, torch.cat((values, bias[None]))
         # The source clean/received edit is only a loss target. Exclude the
         # clean exposures explicitly and leave the artificial probe to its
         # original transfer loss. Deployment calls the unchanged model.

@@ -32,12 +32,15 @@ RADIUS_RUN = '20261126-phase1-lora-w24-final-radius-s2026112991-r01'
 RADIUS_ARMS = ('radius_control', 'radius_adaptive')
 PEER_RUN = '20261126-phase1-lora-w24-peer-innovation-s2026112991-r01'
 PEER_ARMS = ('innovation_local', 'innovation_peer')
+BIAS_RUN = '20261126-phase1-lora-w24-coherent-error-s2026112991-r01'
+BIAS_ARMS = ('coherent_control', 'coherent_error')
 VARIANTS = {
     'direction': (DIRECTION_RUN, DIRECTION_ARMS),
     'readout': (READOUT_RUN, READOUT_ARMS),
     'robust': (ROBUST_RUN, ROBUST_ARMS),
     'final-radius': (RADIUS_RUN, RADIUS_ARMS),
     'peer': (PEER_RUN, PEER_ARMS),
+    'coherent-error': (BIAS_RUN, BIAS_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -205,10 +208,10 @@ def fit(config, arm, *, smoke):
         return (train, torch.empty(0, device=device), held), contract
 
     calculate = dura_w24_model.objective
-    if arm == 'direction_first':
+    if arm in ('direction_first', 'coherent_error'):
         from experiments.pamf_lora_main.w24_first_direction import objective_for
 
-        calculate = objective_for(dura_w24_model)
+        calculate = objective_for(dura_w24_model, output_bias=arm == 'coherent_error')
     numerical_policy()
     channel_blind_source.fit(rt, smoke=smoke, recipe=source_recipe(dura_w24_train, arm),
                              calculate=calculate, receiver_batches=True, prepare=prepare,
@@ -325,7 +328,8 @@ def publish(args):
     rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
     releases, runs = project / 'releases', project / 'runs'
-    pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7], 'final-radius': [0, 5, 6, 7], 'peer': [3, 7, 6, 5]}
+    pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7], 'final-radius': [0, 5, 6, 7],
+             'peer': [3, 7, 6, 5], 'coherent-error': [0, 3, 5, 7]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
