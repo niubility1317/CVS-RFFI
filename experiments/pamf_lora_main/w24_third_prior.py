@@ -50,8 +50,11 @@ HALF_PRIMARY_RUN = '20261126-phase1-lora-w24-half-primary-s2026112991-r01'
 HALF_PRIMARY_ARMS = ('half_aux_control', 'half_primary')
 CARRIER_ANCHOR_RUN = '20261126-phase1-lora-w24-carrier-anchor-s2026112991-r01'
 CARRIER_ANCHOR_ARMS = ('carrier_linear', 'carrier_affine')
+SIGNED_PROBE_RUN = '20261126-phase1-lora-w24-signed-probe-s2026112991-r01'
+SIGNED_PROBE_ARMS = ('probe_positive', 'probe_signed')
 OUTER_TUNE_ARMS = (*BAND_TUNE_ARMS, *BAND_ADAPTER_ARMS, *BAND_REFINE_ARMS,
-                   *WHITE_ARMS, *BAND_PRECISION_ARMS, *SEVERITY_ARMS, *HALF_PRIMARY_ARMS, *CARRIER_ANCHOR_ARMS)
+                   *WHITE_ARMS, *BAND_PRECISION_ARMS, *SEVERITY_ARMS, *HALF_PRIMARY_ARMS, *CARRIER_ANCHOR_ARMS,
+                   *SIGNED_PROBE_ARMS)
 OUTER_BASELINE = 'outer_parent_half'
 OUTER_PARENT = '20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01'
 VARIANTS = {
@@ -69,6 +72,7 @@ VARIANTS = {
     'half-primary': (HALF_PRIMARY_RUN, HALF_PRIMARY_ARMS),
     'severity-weight': (SEVERITY_RUN, SEVERITY_ARMS),
     'carrier-anchor': (CARRIER_ANCHOR_RUN, CARRIER_ANCHOR_ARMS),
+    'signed-probe': (SIGNED_PROBE_RUN, SIGNED_PROBE_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -257,6 +261,8 @@ def source_recipe(training, arm, *, initialize=None):
             info['severity_weighted'] = arm == SEVERITY_ARMS[1]
         if arm in CARRIER_ANCHOR_ARMS:
             info['final_carrier_anchor'] = arm == CARRIER_ANCHOR_ARMS[1]
+        if arm in SIGNED_PROBE_ARMS:
+            info['signed_probe_transfer'] = arm == SIGNED_PROBE_ARMS[1]
         return None, info
 
     spec = trial(ARM_TRIAL[arm])
@@ -331,6 +337,8 @@ def fit(config, arm, *, smoke):
             calculate = objective_for(dura_w24_model, half_primary=arm == HALF_PRIMARY_ARMS[1])
         elif arm in CARRIER_ANCHOR_ARMS:
             calculate = objective_for(dura_w24_model)
+        elif arm in SIGNED_PROBE_ARMS:
+            calculate = objective_for(dura_w24_model, signed_probe=arm == SIGNED_PROBE_ARMS[1])
         else:
             calculate = objective_for(dura_w24_model, band_direction_weight=weight)
     numerical_policy()
@@ -360,6 +368,8 @@ def load_candidate(root, contract, device, arm):
         raise ValueError(f'Unverified frozen source backbone for {arm}')
     if arm in CARRIER_ANCHOR_ARMS and summary.get('final_carrier_anchor') is not (arm == CARRIER_ANCHOR_ARMS[1]):
         raise ValueError(f'Unverified final carrier anchor for {arm}')
+    if arm in SIGNED_PROBE_ARMS and summary.get('signed_probe_transfer') is not (arm == SIGNED_PROBE_ARMS[1]):
+        raise ValueError(f'Unverified signed probe transfer for {arm}')
     checkpoint = torch.load(row / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
         raise ValueError(f'Invalid {arm} checkpoint source binding')
@@ -460,7 +470,8 @@ def publish(args):
              'band-adapter': [0, 3, 5, 7], 'band-refine': [6, 7, 2, 0, 3],
              'white-corruption': [0, 3, 6, 7, 2], 'band-precision': [0, 3, 6, 7],
              'half-primary': [0, 3, 5, 7],
-             'severity-weight': [6, 5, 3, 0, 7, 2], 'carrier-anchor': [0, 3, 6, 7, 5, 2]}
+             'severity-weight': [6, 5, 3, 0, 7, 2], 'carrier-anchor': [0, 3, 6, 7, 5, 2],
+             'signed-probe': [0, 3, 7, 6, 2, 5]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),

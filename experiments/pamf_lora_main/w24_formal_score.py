@@ -217,4 +217,5 @@ if __name__ == '__main__':
     matched.add_argument('--half-primary', dest='third_prior', action='store_const', const='half-primary')
     matched.add_argument('--severity-weight', dest='third_prior', action='store_const', const='severity-weight')
     matched.add_argument('--carrier-anchor', dest='third_prior', action='store_const', const='carrier-anchor')
+    matched.add_argument('--signed-probe', dest='third_prior', action='store_const', const='signed-probe')
     score(**vars(parser.parse_args()))

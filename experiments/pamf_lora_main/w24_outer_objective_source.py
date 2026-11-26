@@ -48,7 +48,7 @@ def recipe_for(training, *, joint_edges=False):
 
 
 def objective_for(archived, *, joint_edges=False, band_direction_weight=None, refine_band=False,
-                  white_corruption=None, severity_weighted=None, half_primary=False):
+                  white_corruption=None, severity_weighted=None, half_primary=False, signed_probe=None):
     # This reuses the original module's coordinates, source perturbation and loss primitives.
     import torch
 
@@ -81,11 +81,16 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
                     for _ in range(2))
         if with_identity:
             a[-2:] = b[-2:] = clean[-2:]
-        data = torch.stack((a, b, torch.cat((a[..., :window] + change, a[..., window:]), dim=-1)), dim=1)
+        views = (a, b, torch.cat((a[..., :window] + change, a[..., window:]), dim=-1))
+        references = (center, center, center + change)
+        if signed_probe is not None:
+            views += (torch.cat((a[..., :window] - change, a[..., window:]), dim=-1),)
+            references += (center - change,)
+        data = torch.stack(views, dim=1)
         observed = data.flatten(0, 1)
         y, phase, quality, rms = archived.coordinates(tracker, archived.real_iq(observed[..., :window]))
         frame = phase * rms
-        ground = torch.stack((center, center, center + change), dim=1).flatten(0, 1) / frame
+        ground = torch.stack(references, dim=1).flatten(0, 1) / frame
         (coarse, first, final), action, variance, _, _ = model.propose(y, quality, rms, observed[..., window:])
         half = y + .5 * (final - y)
         prediction = (half * frame).unflatten(0, data.shape[:2])
@@ -94,6 +99,13 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
         expected = archived.split(delta)
         preserve = (archived.transfer_risk(signal[:, :1], expected[:, :1])
                     + archived.transfer_risk(signal[:, 1:], expected[:, 1:]))
+        if signed_probe is not None:
+            reverse = archived.split((prediction[:, 0] - prediction[:, 3]) / clean_frame)
+            preserve_reverse = (archived.transfer_risk(reverse[:, :1], expected[:, :1])
+                                + archived.transfer_risk(reverse[:, 1:], expected[:, 1:]))
+            positive_risk = preserve
+            if signed_probe:
+                preserve = .5 * (positive_risk + preserve_reverse)
         consistency = ((prediction[:, 0] - prediction[:, 1]) / clean_frame).abs().square().mean()
         identity = y.real.new_zeros(())
         outer_identity = y.real.new_zeros(())
@@ -103,7 +115,7 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
             plain = half.unflatten(0, data.shape[:2])[-2:, :2, [0, 7]]
             received = y.unflatten(0, data.shape[:2])[-2:, :2, [0, 7]]
             outer_identity = risk(plain, received)
-            n_disturbed -= 6
+            n_disturbed -= 2 * len(views)
         if severity_weighted is None:
             half_risk = risk(half, ground)
             outer_disturbed = risk(half[:n_disturbed, [0, 7]], ground[:n_disturbed, [0, 7]])
@@ -114,7 +126,7 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
             outer_disturbed = chirp_risk[:n_disturbed, [0, 7]].mean()
             inner_disturbed = chirp_risk[:n_disturbed, 1:-1].mean()
             # Keep unweighted losses on the identity samples and the weak-detail probe.
-            paired = chirp_risk[:n_disturbed].unflatten(0, (-1, 3))[:, :2]
+            paired = chirp_risk[:n_disturbed].unflatten(0, (-1, len(views)))[:, :2]
             paired_risk = .5 * (paired[..., [0, 7]].mean(-1) + paired[..., 1:-1].mean(-1))
             count = len(paired)
             severity = disturbance(data[:count, :2, :, :window], center[:count])
@@ -132,13 +144,15 @@ def objective_for(archived, *, joint_edges=False, band_direction_weight=None, re
                                      .30, c_weight, .07, .015, .35, .35))
         loss = values @ weights
         report = torch.cat((values, outer_disturbed[None], inner_disturbed[None]))
+        if signed_probe is not None:
+            report = torch.cat((report, positive_risk[None], preserve_reverse[None]))
         if severity_weighted is not None:
             report = torch.cat((report, upper_risk[None], correction[None]))
         if band_direction_weight is not None or refine_band:
             # Undo the chirp RMS normalization, retaining the dechirped frame.
             # Keep the two matched noisy views and leave the probe/clean losses intact.
-            edit = ((half - y) * rms)[:n_disturbed].unflatten(0, (-1, 3))[:, :2]
-            desired = ((ground - y) * rms)[:n_disturbed].unflatten(0, (-1, 3))[:, :2]
+            edit = ((half - y) * rms)[:n_disturbed].unflatten(0, (-1, len(views)))[:, :2]
+            desired = ((ground - y) * rms)[:n_disturbed].unflatten(0, (-1, len(views)))[:, :2]
             if refine_band:
                 band_loss = band_edit_risk(edit, desired)
                 loss = loss + EDIT_WEIGHT * band_loss
