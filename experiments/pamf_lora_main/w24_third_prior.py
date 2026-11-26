@@ -24,6 +24,8 @@ ROUTES = ('full_native', 'native_residual_w24_v1')
 ISOLATION = ('F_reads', 'TX_reads', 'V_reads', 'target_reads', 'practical_reads', 'trace_reads')
 DIRECTION_RUN = '20261126-phase1-lora-w24-first-direction-s2026112991-r01'
 DIRECTION_ARMS = ('direction_control', 'direction_first')
+READOUT_RUN = '20261126-phase1-lora-w24-trained-readout-s2026112991-r01'
+READOUT_ARMS = ('readout_control', 'readout_adaptive')
 
 
 @dataclass(frozen=True)
@@ -39,17 +41,28 @@ class Trial:
 def trial(kind):
     if kind is True:
         return Trial(RUN, ARMS, STEPS, MODES, CONTRASTS)
-    if kind == 'direction':
-        modes = ('direct', 'all_half', 'direction_control_half', 'direction_first_half',
-                 'direction_control_full', 'direction_first_full')
-        return Trial(DIRECTION_RUN, DIRECTION_ARMS, 3600, modes,
-                     ((modes[3], modes[2]), (modes[5], modes[4]), (modes[3], modes[0])), ROUTES[:1])
-    raise ValueError(f'Unknown matched W24 trial: {kind}')
+    variants = {'direction': (DIRECTION_RUN, DIRECTION_ARMS), 'readout': (READOUT_RUN, READOUT_ARMS)}
+    if kind not in variants:
+        raise ValueError(f'Unknown matched W24 trial: {kind}')
+    run, arms = variants[kind]
+    modes = ('direct', 'all_half', *(f'{arm}_{alpha}' for alpha in ('half', 'full') for arm in arms))
+    return Trial(run, arms, 3600, modes,
+                 ((modes[3], modes[2]), (modes[5], modes[4]), (modes[3], modes[0])), ROUTES[:1])
 
 
 def restorer(training, arm):
-    if arm not in (*ARMS, *DIRECTION_ARMS):
+    if arm not in (*ARMS, *DIRECTION_ARMS, *READOUT_ARMS):
         raise ValueError(f'Unknown prior arm: {arm}')
+    if arm == 'readout_adaptive':
+        from experiments.pamf_lora_main.w24_readout_strength import adaptive_final
+
+        class AdaptiveReadout(training.DuraW24):
+            def propose(self, y, quality, rms, edges):
+                (coarse, first, final), action, variance, noise, support = super().propose(y, quality, rms, edges)
+                final = adaptive_final(y, final, noise, rms)
+                return (coarse, first, final), action, variance, noise, support
+
+        return AdaptiveReadout()
     if arm != 'three':
         return training.DuraW24()
 
@@ -68,7 +81,7 @@ def restorer(training, arm):
 
 
 def fit_inputs(rt, arm):
-    if arm not in (*ARMS, *DIRECTION_ARMS):
+    if arm not in (*ARMS, *DIRECTION_ARMS, *READOUT_ARMS):
         raise ValueError(f'Unknown prior arm: {arm}')
     return dict(source_root=rt['source_root'], run_root=str(PurePosixPath(rt['run_root']) / arm))
 
@@ -128,8 +141,9 @@ def source_recipe(training, arm):
         return None, dict(input_gate=False, prior_count=len(model.priors), prior_gradient_norms=grads,
                           parameters=sum(p.numel() for p in model.parameters()))
 
-    spec = trial('direction' if arm in DIRECTION_ARMS else True)
-    name = f'w24_{arm}' if arm in DIRECTION_ARMS else f'w24_{arm}_prior'
+    kind = 'readout' if arm in READOUT_ARMS else 'direction' if arm in DIRECTION_ARMS else True
+    spec = trial(kind)
+    name = f'w24_{arm}_prior' if arm in ARMS else f'w24_{arm}'
     return replace(training.RECIPE, name=name, steps=spec.steps,
                    validation_steps=(spec.steps // 3, 2 * spec.steps // 3),
                    model=partial(restorer, training, arm), finalize_calibration=finalize)
@@ -272,7 +286,7 @@ def publish(args):
     from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN
 
     ctx = read(args.context)
-    kind = 'direction' if args.direction else True
+    kind = args.kind
     run = trial(kind).run
     rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
@@ -283,7 +297,8 @@ def publish(args):
               native_target_root=str(releases / f'{DATA_RUN}-release' / 'data/target'),
               classifier_root=str(runs / AUG_RUN), w24_release_root=str(releases / f'{W24_RUN}-release'),
               training_release_root=str(releases / f'{TRAIN_RUN}-release'), third_prior=kind,
-              cpu_workers=8, allowed_gpus=[5, 6, 1, 0], max_workers=2, max_compute_processes=8)
+              cpu_workers=8, allowed_gpus=[0, 3, 7] if kind == 'readout' else [5, 6, 1, 0],
+              max_workers=2, max_compute_processes=8)
     rt['external_releases'] = [rt[k] for k in ('source_root', 'classifier_root', 'w24_release_root',
                                                'training_release_root', 'native_target_root')] + [str(runs / name) for name in (SWEEP_RUN, RUN_UNGATED)]
     release(args.repo, args.output, rt, args.ssh_config)
@@ -295,7 +310,7 @@ def collect_score(args):
     import json
 
     root = PurePosixPath(read(args.submit)['run_root'])
-    kind = 'direction' if args.direction else True
+    kind = args.kind
     if not re.fullmatch(r'/[A-Za-z0-9_./-]+', str(root)) or root.name != trial(kind).run:
         raise ValueError('Unexpected immutable N607 run root')
     connection = ['-F', str(args.ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
@@ -338,13 +353,15 @@ if __name__ == '__main__':
     for phase in ('fit-smoke', 'fit', 'fit-arm'):
         cmd = actions.add_parser(phase)
         cmd.add_argument('runtime', type=Path)
-        cmd.add_argument('arm', choices=(*ARMS, *DIRECTION_ARMS))
+        cmd.add_argument('arm', choices=(*ARMS, *DIRECTION_ARMS, *READOUT_ARMS))
     pub = actions.add_parser('publish')
-    pub.add_argument('--direction', action='store_true')
     for key in ('repo', 'output', 'context', 'ssh-config'):
         pub.add_argument('--' + key, type=Path, required=True)
     collector = actions.add_parser('collect-score')
-    collector.add_argument('--direction', action='store_true')
+    for command in (pub, collector):
+        variants = command.add_mutually_exclusive_group()
+        variants.add_argument('--direction', dest='kind', action='store_const', const='direction', default=True)
+        variants.add_argument('--readout', dest='kind', action='store_const', const='readout')
     for key in ('submit', 'dataset', 'output', 'ssh-config'):
         collector.add_argument('--' + key, type=Path, required=True)
     args = parser.parse_args()

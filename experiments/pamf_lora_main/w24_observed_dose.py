@@ -30,6 +30,7 @@ from experiments.pamf_lora_main.w24_native_full import (
 )
 from experiments.pamf_lora_main.w24_native_residual_source import BATCH as SOURCE_BATCH, WAVEFORM_NAMESPACE, ungated_latency
 from experiments.pamf_lora_main.w24_outer_objective_source import RUN as PARENT, load_candidate
+from experiments.pamf_lora_main.w24_readout_strength import readout_gain
 from experiments.pamf_lora_main.w24_wide_transfer import load_restorer, received_aperture, training_runtime
 
 
@@ -39,12 +40,6 @@ CANDIDATE = 'observed_dose'
 MODES = ('direct', 'outer_half', CANDIDATE)
 FULL_CASES = tuple(k for k, route in cases().items() if route == FULL)
 SIX_GAIN, LOW_GAIN = 18, 10
-
-
-def readout_gain(variance, rms):
-    power = rms.square()
-    noise = (variance * power).sum(dim=-2, keepdim=True) / power.sum(dim=-2, keepdim=True).clamp_min(1e-12)
-    return .5 + noise / (noise + .275**2)
 
 
 def source_qualifies(scores):
