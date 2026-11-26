@@ -1,0 +1,29 @@
+# LoRa W24 冻结恢复修正方向与强度互换（Full 源域）
+
+- run_id：`20261126-diagnostic-lora-w24-edit-cross-source-s2026112559-r01`
+- group_id：`lora-w24-performance-mechanism`；类别：`diagnostic`；阶段：`Phase1`
+- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
+- 当前状态为技术失败，真实源 smoke 完成前预测进程退出。保留独立目录及原始日志。后续 [r03](../20261126-diagnostic-lora-w24-edit-cross-source-s2026112559-r03/report.md) 完成相同矩阵。
+
+## 目的与对照
+
+Cross frozen outer and half-primary edit direction with reciprocal total or tracked-band L2 strength. Test whether increased edit strength harms recognition even with original direction.
+
+## 数据、seed与模型来源
+
+实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
+逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+
+## 执行与存储
+
+命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
+实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+## 结果与覆盖
+
+尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+
+## 交接
+
+记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
