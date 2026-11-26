@@ -9,7 +9,7 @@ from experiments.cric_dura_comparison.io import read, write
 from .data import label_ids, packet_indices, recording
 from .w24_formal import (
     FULL, LIMIT, ROUTE, ROUTES, SEEDS, TARGET, VIEWS, cases, evaluation_modes,
-    evaluation_routes, evaluation_seeds, receipt,
+    evaluation_seeds, receipt,
 )
 
 
@@ -18,13 +18,16 @@ BOOTSTRAP_SEED = 2026112587
 MEASURES = (*VIEWS, 'six_scene')
 
 
-def load_frozen(predictions, ungated=False, outer_objective=False, third_prior=False):
+def load_frozen(predictions, ungated=False, outer_objective=False, third_prior=False, *, observed_plans=None):
     ungated = ungated or outer_objective or bool(third_prior)
-    routes = evaluation_routes(third_prior)
+    plans = observed_plans if observed_plans is not None else {
+        case: receipt(case, ungated, outer_objective, third_prior) for case in cases(third_prior)
+    }
+    routes = tuple(dict.fromkeys(p['processing_route'] for p in plans.values()))
     records, activity = {route: {} for route in routes}, {route: {} for route in routes}
-    for case, route in cases(third_prior).items():
+    for case, expected in plans.items():
         part = predictions / case
-        expected = receipt(case, ungated, outer_objective, third_prior)
+        route = expected['processing_route']
         n_seeds, n_modes = len(expected['seeds']), len(expected['modes'])
         if read(part / 'complete.json') != expected:
             raise ValueError(f'Incomplete or mismatched W24 shard {case}')
@@ -47,7 +50,7 @@ def load_frozen(predictions, ungated=False, outer_objective=False, third_prior=F
                     raise ValueError(f'Changed W24 labels exceed actual activity for {case}/{rx}/{view}')
                 if ungated and count[-1] != LIMIT:
                     raise ValueError(f'Incomplete ungated recovery coverage for {case}/{rx}/{view}')
-                if third_prior and not (count[-3:] == LIMIT).all():
+                if (third_prior or observed_plans is not None) and not (count[-3:] == LIMIT).all():
                     raise ValueError(f'Incomplete matched two-/three-prior coverage for {case}/{rx}/{view}')
                 if outer_objective and count[-2] != LIMIT:
                     raise ValueError(f'Incomplete archived all-packet comparator for {case}/{rx}/{view}')
@@ -124,11 +127,7 @@ def acceptance(results, ungated=False, outer_objective=False, third_prior=False)
     wide = evaluation_modes(FULL, ungated, outer_objective, third_prior)[-1]
     full = results[FULL][wide]['pooled']
     if third_prior:
-        clean = full['correct_by_scene']['clean']
-        low = full['correct_by_scene']['practical_low_urban']
-        gaps = dict(six=162000-full['six_correct'], low_urban=25500-low, clean=28566-clean)
-        checks = {f'full_{name}_goal': gap <= 0 for name, gap in gaps.items()}
-        return dict(checks=checks, all_numeric_checks_pass=all(checks.values()), full_correct_count_gaps=gaps)
+        return full_target_acceptance(full)
     if ungated:
         checks = dict(full_six_at_least_87=full['six_correct'] >= 156600,
                       full_low_urban_at_least_80=full['correct_by_scene']['practical_low_urban'] >= 24000)
@@ -149,10 +148,34 @@ def acceptance(results, ungated=False, outer_objective=False, third_prior=False)
                 full_clean_minus_six=gap, additional_gap_at_most_3pp=gap <= .03)
 
 
+def full_target_acceptance(full):
+    clean = full['correct_by_scene']['clean']
+    low = full['correct_by_scene']['practical_low_urban']
+    gaps = dict(six=162000-full['six_correct'], low_urban=25500-low, clean=28566-clean)
+    checks = {f'full_{name}_goal': gap <= 0 for name, gap in gaps.items()}
+    return dict(checks=checks, all_numeric_checks_pass=all(checks.values()), full_correct_count_gaps=gaps)
+
+
+def score_observed_dose(predictions, dataset, output):
+    from .w24_observed_dose import CANDIDATE, FULL_CASES, formal_receipt
+
+    plans = {case: formal_receipt(case) for case in FULL_CASES}
+    matrices, activity = load_frozen(predictions, ungated=True, observed_plans=plans)
+    modes = {FULL: plans[FULL_CASES[0]]['modes']}
+    score_matrix(matrices, activity, modes, dataset, output, evaluation_seeds(True),
+                 lambda results: full_target_acceptance(results[FULL][CANDIDATE]['pooled']))
+
+
 def score(predictions, dataset, output, ungated=False, outer_objective=False, third_prior=False):
     ungated = ungated or outer_objective or bool(third_prior)
     matrices, activity = load_frozen(predictions, ungated, outer_objective, third_prior)
     seeds = evaluation_seeds(ungated)
+    modes = {route: evaluation_modes(route, ungated, outer_objective, third_prior) for route in matrices}
+    score_matrix(matrices, activity, modes, dataset, output, seeds,
+                 lambda results: acceptance(results, ungated, outer_objective, third_prior))
+
+
+def score_matrix(matrices, activity, modes_by_route, dataset, output, seeds, verdict):
     output.mkdir(parents=True, exist_ok=False)
     truth = []
     with zipfile.ZipFile(dataset / 'multiple_receiver_test.zip') as archive:
@@ -162,7 +185,7 @@ def score(predictions, dataset, output, ungated=False, outer_objective=False, th
     labels = np.asarray(truth)[:, None, None, None, :]
     result, contrasts = {}, {}
     for route in matrices:
-        modes = evaluation_modes(route, ungated, outer_objective, third_prior)
+        modes = modes_by_route[route]
         hit = matrices[route] == labels
         result[route] = {m:readout(hit[:, :, :, i], seeds) for i,m in enumerate(modes)}
         candidate = hit[:, :, :, -1].astype(np.int16)
@@ -171,7 +194,7 @@ def score(predictions, dataset, output, ungated=False, outer_objective=False, th
         n_physical=len(TARGET)*LIMIT, n_six=len(TARGET)*LIMIT*len(seeds)*6, bootstrap_seed=BOOTSTRAP_SEED,
         bootstrap_draws=DRAWS, direct_clean_parity='exact' if len(matrices) == 2 else 'archive-verified',
         readouts=result, paired=contrasts,
-        acceptance=acceptance(result, ungated, outer_objective, third_prior), activity=activity))
+        acceptance=verdict(result), activity=activity))
 
 
 if __name__ == '__main__':
