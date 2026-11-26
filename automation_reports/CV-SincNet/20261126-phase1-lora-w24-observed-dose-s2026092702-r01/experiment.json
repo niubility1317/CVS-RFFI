@@ -1,0 +1,195 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-observed-dose-s2026092702-r01",
+  "group_id": "lora-w24-performance",
+  "display_name": "LoRa W24 adaptive receive-noise readout (Full only)",
+  "description": "One receive-only smooth strength for frozen W24 outer-objective edits, compared with identical fixed-half direction.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-screen",
+    "full-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02",
+    "20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and latest user instruction limiting the current run to Full practical.",
+  "code": {
+    "commit": "fc7adb0c010071a8cceb4990c405823f31235e3e",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "Archived N607 CVS-RFFI with exact registered W24 release",
+    "cwd": "Registered archive releases/20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "Matching 300 source V opaque IDs and original 30,000 Full target packet order, if qualified.",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 1,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Prior frozen exact source-packet replay and original same-packet clean/direct/half coordinates.",
+    "support_query_ref": null,
+    "leo_config_ref": "Only the registered native Full circuit and clean with existing W24 physical coordinates."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "No fitting. The candidate uses only current received IQ and frozen source-only weights. No noise traces or source labels until independent fixed-prediction scoring."
+  },
+  "checkpoint": {
+    "initialization": "No fitting; read-only inference.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "40000-update frozen source-only LoRa center restorer"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "E104 frozen default reader only"
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Pinned architecture and tracker archive"
+      }
+    ],
+    "contract_check_ref": "Source frozen checkpoint binding and actual paired blind decisions must match the immutable prior source run.",
+    "provenance_verdict": "Original compliant frozen source models, no dynamic weights, no training or calibration.",
+    "selection_rule": "Preset gain g = .5 + q/(q+.275^2), q = chirp-power-weighted native out-of-band noise estimate. Full source gate: at least +18/1800 overall and +10/300 in low urban versus frozen same-weight half, clean correct count at least direct. Then automatically predict the same Full 30000-packet seven-scene matrix and score truth-last."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "One GPU for source; if qualified two available GPUs for the 3 Full shards, at most one task worker per GPU, 12 GiB actual free minimum. Prefer physical GPU 3,0 before 5,6.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-observed-dose-s2026092702-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-observed-dose-s2026092702-r01",
+    "local_artifact_root": "local_artifacts/20261126-phase1-lora-w24-observed-dose-s2026092702-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_observed_dose publish --repo <worktree> --context <context> --ssh-config <config> --output <local-release>",
+    "stop_rule": "Stop on checkpoint, source physical order, actual paired control parity, gain range, target receipt/coverage, or scorer validation failure."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "full_native/source-predictions.json",
+    "full_native/source-scores.json",
+    "predictions/<Full shard>/<RX>.npz (conditional)",
+    "readout/scores/scores.json (conditional)"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "same-packet accuracy",
+      "paired corrected and harmed",
+      "95% RX-stratified intervals",
+      "gain quantiles",
+      "B1 latency",
+      "formal goal counts"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-observed-dose-s2026092702-r01/full_native/predictions.npz and conditional predictions/",
+    "scorer_ref": "w24_observed_dose score-source and independent local score_observed_dose"
+  },
+  "rows": [
+    {
+      "row_id": "observed-dose",
+      "method": "Paired fixed-half control and measured-noise variable full-route readout with frozen DURA, direct comparison and archived controls.",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_observed_dose.py",
+      "resolved_config_ref": "releases/20261126-phase1-lora-w24-observed-dose-s2026092702-r01-release/runtime.json",
+      "data_overrides": {
+        "fit_updates": 0,
+        "source_V": 300,
+        "conditional_target_Full": 30000
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Zero parameter updates; full source panel first, conditional exact paired formal Full 30000 packets.",
+      "output_root": "runs/20261126-phase1-lora-w24-observed-dose-s2026092702-r01",
+      "log_path": "runs/20261126-phase1-lora-w24-observed-dose-s2026092702-r01/predict-source.log",
+      "command": "python -m experiments.pamf_lora_main.w24_observed_dose dispatch <runtime>",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "full_native/source-predictions.json",
+        "full_native/source-scores.json",
+        "predictions/<Full shard>/<RX>.npz (conditional)",
+        "readout/scores/scores.json (conditional)"
+      ]
+    }
+  ],
+  "notes": [
+    "Candidate and fixed-half control share exact direction and checkpoint. Q is measured by the existing receive-only FFT noise estimator; no isolated noise traces are used at any stage of this run.",
+    "The source threshold is fixed before this candidate sees source V predictions. Source scores are independent from prediction. Failed source runs are retained.",
+    "Full only according to the latest scope; current Full goals 162000/180000, 25500/30000 low urban and 28566/30000 clean."
+  ],
+  "registered_at": "2026-11-26T04:30:56+00:00"
+}
