@@ -1,0 +1,2 @@
+{"at": "2026-11-26T15:29:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-26T15:32:35+00:00", "status": "RUNNING", "note": "VERIFIED N607 dispatcher, exact worker PIDs and training CWD, CUDA 0/3, genuine U-only checkpoint startup, positive head gradients and frozen inherited parameters.", "evidence": ["release/submit.json", "state.json", "common_refine_control-fit.log", "common_refine_bands-fit.log"], "row_id": null}

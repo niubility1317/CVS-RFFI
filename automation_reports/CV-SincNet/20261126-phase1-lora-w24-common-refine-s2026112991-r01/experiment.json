@@ -1,0 +1,258 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-common-refine-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 包内公共复谱细化与双频段监督（Full）",
+  "description": "Test joint supervision of two common spectrum regions behind a frozen packet U-Net.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "7119dc112a50b31255ad4acf43d4f3e11b903f17",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "Original 7615e8e4 archived training release for fitting; archived W24 inference release for prediction."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 20500,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "TX-blind source U IQ and paired generic perturbations only until freeze. Source V and, if qualified, Full-only target; no Residual execution."
+  },
+  "checkpoint": {
+    "initialization": "Load verified frozen original 24,000-step U-Net model tensors into backbone only. 41,138 new head parameters, zero output layer, fresh AdamW on both arms.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Archived code and frozen external comparator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 evaluator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Previously frozen source comparator only in independent evaluation. No fitting or freezing access."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Verified original-loss U-Net source-only model weights, terminal 24000 steps, both arms. Also fixed frozen source comparison."
+      }
+    ],
+    "contract_check_ref": "Same registered source IQ partition, verified original data and training proof, matching checkpoint binding and fixed terminal source selection. E104 only after both new weights are frozen.",
+    "provenance_verdict": "Exact source-only U-Net ancestor, no optimizer inheritance. Entire ancestor stays frozen during new fitting and calibrating.",
+    "selection_rule": "Fixed head step 12000. Half candidate six-scenes strictly above matched rows, low urban at least best fixed row, clean at least direct. Qualified target Full three shards and independent scoring."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "Candidate cards 0, 3, 2, 7. Two distinct cards, at least 12 GiB free and verified incumbent Python capacity. One arm per card.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-phase1-lora-w24-common-refine-s2026112991-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior publish --common-refine --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-common-refine-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261126-phase1-lora-w24-common-refine-s2026112991-r01/release",
+    "stop_rule": "Stop on a systemic technical/protocol failure, incompatible source or frozen comparator, collision, or prediction/scoring failure. Preserve all artifacts. Source scores gate only target eligibility via preregistered paired rules."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "common_refine_control-fit.log",
+    "common_refine_bands-fit.log",
+    "smoke.json",
+    "*/smoke-w24_common_refine_*.json",
+    "*/w24_common_refine_*-complete.json",
+    "*/w24_common_refine_*-model.pt",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional formal/predictions/{shard}/{rx}.npz",
+    "conditional independent scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/full_native/predictions.npz; conditional runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/formal/predictions",
+    "scorer_ref": "Independent source scorer; E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior collect-score --common-refine after the three formal Full shards freeze."
+  },
+  "rows": [
+    {
+      "row_id": "common_refine_control",
+      "method": "Shared common refiner with ordinary original risk",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_spectral_experts.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/common_refine_control/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "12000 head-only steps; frozen source-only backbone from exact terminal 24000 U-Net step; same AdamW and data.",
+      "output_root": "runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/common_refine_control",
+      "log_path": "runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/common_refine_control-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/common_refine_control/fit-inputs.json common_refine_control",
+      "expected_artifacts": [
+        "w24_common_refine_control-model.pt",
+        "w24_common_refine_control-complete.json",
+        "smoke-w24_common_refine_control.json"
+      ]
+    },
+    {
+      "row_id": "common_refine_bands",
+      "method": "Same refiner plus separate complex common-band risk",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_spectral_experts.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/common_refine_bands/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "12000 head-only steps; frozen source-only backbone from exact terminal 24000 U-Net step; same AdamW and data.",
+      "output_root": "runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/common_refine_bands",
+      "log_path": "runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/common_refine_bands-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261126-phase1-lora-w24-common-refine-s2026112991-r01/common_refine_bands/fit-inputs.json common_refine_bands",
+      "expected_artifacts": [
+        "w24_common_refine_bands-model.pt",
+        "w24_common_refine_bands-complete.json",
+        "smoke-w24_common_refine_bands.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both arms have identical new 41,138-parameter common spectral head and frozen parent. Before fit, zero output is exactly parent.",
+    "Physical common correction is equal across chirps after multiplying by observed RMS in the tracking phase frame. Additional half-step cap of 0.22 packet RMS.",
+    "Only candidate adds equal near/far common risk of 0.25 each on legal same-source paired receive IQ. No use of source diagnostic simulator traces or W24 fit supervision."
+  ],
+  "registered_at": "2026-11-26T15:29:35+00:00"
+}
