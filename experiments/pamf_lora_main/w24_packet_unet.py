@@ -165,9 +165,11 @@ def chirp_component_risk(output, target):
     return torch.stack(risks).mean(0)
 
 
-def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None):
+def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None, colored_noise=None):
     if transport_probe is not None:
         from .w24_probe_transport import probe_views
+    if colored_noise is not None:
+        from .w24_noise_color import noise_views
 
     def calculate(model, tracker, raw, rng, *, with_identity, recipe, step):
         raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
@@ -179,8 +181,13 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transpo
         weak = archive.weak_difference(framed)
         if transport_probe is None:
             delta = weak * clean_frame
-            a, b = (tracker.aperture(archive.condition_waveforms(raw.unflatten(-1, (8, 1024)), rng).flatten(-2))
+            if colored_noise is None:
+                a, b = (tracker.aperture(
+                    archive.condition_waveforms(raw.unflatten(-1, (8, 1024)), rng).flatten(-2))
                     for _ in range(2))
+            else:
+                a, b = noise_views(raw, clean, tracker.aperture, archive.condition_waveforms, rng,
+                                   colored=colored_noise or not with_identity)
             if with_identity:
                 a[-2:] = b[-2:] = clean[-2:]
             views = torch.stack((a, b, torch.cat((a[..., :CENTER] + delta, a[..., CENTER:]), dim=-1)), dim=1)

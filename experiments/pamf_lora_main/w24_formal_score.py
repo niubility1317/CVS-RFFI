@@ -223,4 +223,5 @@ if __name__ == '__main__':
     matched.add_argument('--spectral-experts', dest='third_prior', action='store_const', const='spectral-experts')
     matched.add_argument('--chirp-components', dest='third_prior', action='store_const', const='chirp-components')
     matched.add_argument('--probe-transport', dest='third_prior', action='store_const', const='probe-transport')
+    matched.add_argument('--noise-color', dest='third_prior', action='store_const', const='noise-color')
     score(**vars(parser.parse_args()))
