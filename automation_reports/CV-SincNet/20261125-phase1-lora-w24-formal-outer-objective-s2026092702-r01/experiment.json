@@ -21,14 +21,14 @@
   "replaces_run_id": null,
   "authorization": "Active LoRa and WiSig restoration research goal authorizes isolated component diagnostics.",
   "code": {
-    "commit": "Committed evaluator verified when the source candidate is eligible for publication",
+    "commit": "91fa158ab622f9029f8ec170db4740a9972bb8ab",
     "checkout": "E:/codex/home/worktrees/lora-dura-stage-supervision/standard_ce_baselines_20261010",
     "environment": "N607 archived W24 runtime Python and independent local CPU truth-last scorer",
     "cwd": "original frozen W24 reader release for prediction"
   },
   "data": {
     "dataset": "IEEE DataPort LoRa multiple receiver",
-    "version": "Registered W24 15 unseen receiver native test matrix",
+    "version": "lora_full_packets_v1",
     "representation": "8 chirps, 384 complex center samples + 48 native edge samples",
     "contract_ref": "Identical native_target_root and source_root as immutable 20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
     "physical_ids_ref": "The archived native receive cache physical order; 2000 packets in each of 15 receivers",
@@ -67,7 +67,7 @@
     },
     "train_ratio": null,
     "capsule_id": null,
-    "split_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
     "validation_ref": "Exact per-packet fresh direct parity against the blind archive for every tested view",
     "support_query_ref": null,
     "leo_config_ref": null
