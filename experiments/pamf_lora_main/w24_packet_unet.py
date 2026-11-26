@@ -165,7 +165,10 @@ def chirp_component_risk(output, target):
     return torch.stack(risks).mean(0)
 
 
-def objective_for(archive, *, complex_fidelity=None, separate_loss=None):
+def objective_for(archive, *, complex_fidelity=None, separate_loss=None, transport_probe=None):
+    if transport_probe is not None:
+        from .w24_probe_transport import probe_views
+
     def calculate(model, tracker, raw, rng, *, with_identity, recipe, step):
         raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
         clean = tracker.aperture(raw)
@@ -174,16 +177,25 @@ def objective_for(archive, *, complex_fidelity=None, separate_loss=None):
         framed, phase, _, rms = coordinates(tracker, archive.real_iq(center))
         clean_frame = phase * rms
         weak = archive.weak_difference(framed)
-        delta = weak * clean_frame
-        a, b = (tracker.aperture(archive.condition_waveforms(raw.unflatten(-1, (8, 1024)), rng).flatten(-2))
-                for _ in range(2))
-        if with_identity:
-            a[-2:] = b[-2:] = clean[-2:]
-        views = torch.stack((a, b, torch.cat((a[..., :CENTER] + delta, a[..., CENTER:]), dim=-1)), dim=1)
+        if transport_probe is None:
+            delta = weak * clean_frame
+            a, b = (tracker.aperture(archive.condition_waveforms(raw.unflatten(-1, (8, 1024)), rng).flatten(-2))
+                    for _ in range(2))
+            if with_identity:
+                a[-2:] = b[-2:] = clean[-2:]
+            views = torch.stack((a, b, torch.cat((a[..., :CENTER] + delta, a[..., CENTER:]), dim=-1)), dim=1)
+            probe_center = center + delta
+        else:
+            # Use the same before-channel protocol on held U_s for both arms.
+            views, clean_probe = probe_views(raw, clean, tracker, archive.condition_waveforms, rng, weak,
+                                             through_channel=transport_probe or not with_identity,
+                                             with_identity=with_identity)
+            probe_center = clean_probe[..., :CENTER]
+            weak = (probe_center - center) / clean_frame
         observed = views.flatten(0, 1)
         y, phase, quality, rms = coordinates(tracker, archive.real_iq(observed[..., :CENTER]))
         frame = phase * rms
-        target = torch.stack((center, center, center + delta), dim=1).flatten(0, 1) / frame
+        target = torch.stack((center, center, probe_center), dim=1).flatten(0, 1) / frame
         time, full = model(y, quality, rms, observed[..., CENTER:])
         half = y + .5 * (full - y)
         waveform = archive.waveform_risk

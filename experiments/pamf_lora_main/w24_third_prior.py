@@ -58,7 +58,9 @@ UNET_FIDELITY_RUN = '20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r
 UNET_FIDELITY_ARMS = ('unet_standard_long', 'unet_complex_long')
 UNET_COMPONENT_RUN = '20261126-phase1-lora-w24-chirp-components-s2026112991-r01'
 UNET_COMPONENT_ARMS = ('unet_component_control', 'unet_component_supervised')
-UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS)
+UNET_TRANSPORT_RUN = '20261126-phase1-lora-w24-probe-transport-s2026112991-r01'
+UNET_TRANSPORT_ARMS = ('probe_after_channel', 'probe_through_channel')
+UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_TRANSPORT_ARMS)
 EXPERT_RUN = '20261126-phase1-lora-w24-spectral-experts-s2026112991-r01'
 EXPERT_ARMS = ('experts_packet', 'experts_band')
 UNET_BASELINE = 'frozen_unet_half'
@@ -86,6 +88,7 @@ VARIANTS = {
     'packet-unet': (PACKET_UNET_RUN, PACKET_UNET_ARMS),
     'packet-unet-fidelity': (UNET_FIDELITY_RUN, UNET_FIDELITY_ARMS),
     'chirp-components': (UNET_COMPONENT_RUN, UNET_COMPONENT_ARMS),
+    'probe-transport': (UNET_TRANSPORT_RUN, UNET_TRANSPORT_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -113,9 +116,9 @@ def trial(kind):
     if arms[0] in OUTER_TUNE_ARMS:
         steps = 1200 if kind == 'band-refine' else 1800
         return Trial(run, arms, steps, (*modes, OUTER_BASELINE), (*contrasts, (modes[3], OUTER_BASELINE)), ROUTES[:1])
-    if arms in (EXPERT_ARMS, UNET_COMPONENT_ARMS):
+    if arms in (EXPERT_ARMS, UNET_COMPONENT_ARMS, UNET_TRANSPORT_ARMS):
         baselines = (UNET_BASELINE, OUTER_BASELINE)
-        steps = 24000 if arms == UNET_COMPONENT_ARMS else 6000
+        steps = {EXPERT_ARMS: 6000, UNET_COMPONENT_ARMS: 24000, UNET_TRANSPORT_ARMS: 12000}[arms]
         return Trial(run, arms, steps, (*modes, *baselines),
                      (*contrasts, *((modes[3], baseline) for baseline in baselines)), ROUTES[:1])
     if arms[0] in UNET_ARMS:
@@ -207,6 +210,8 @@ def fit_inputs(rt, arm):
         inputs['source_parent'] = rt['source_parent']
     if arm in EXPERT_ARMS:
         inputs.update(source_parent=rt['source_parent'], unet_parent=rt['unet_parent'])
+    if arm in UNET_TRANSPORT_ARMS:
+        inputs['unet_parent'] = rt['unet_parent']
     return inputs
 
 
@@ -311,6 +316,9 @@ def source_recipe(training, arm, *, initialize=None):
             info['complex_fidelity'] = arm == UNET_FIDELITY_ARMS[1]
         if arm in UNET_COMPONENT_ARMS:
             info.update(separate_chirps=True, separate_loss=arm == UNET_COMPONENT_ARMS[1])
+        if arm in UNET_TRANSPORT_ARMS:
+            info.update(initialization='verified_unet_model_only', unet_parent=UNET_FIDELITY_RUN,
+                        probe_through_channel=arm == UNET_TRANSPORT_ARMS[1])
         if arm in EXPERT_ARMS:
             info.update(expert_parents=[OUTER_PARENT, UNET_FIDELITY_RUN], local_router=arm == EXPERT_ARMS[1],
                         trainable_parameters=sum(p.numel() for p in model.router.parameters()))
@@ -318,8 +326,11 @@ def source_recipe(training, arm, *, initialize=None):
 
     spec = trial(ARM_TRIAL[arm])
     name = f'w24_{arm}_prior' if arm in ARMS else f'w24_{arm}'
-    milestones = (2000, 6000, 12000, 18000) if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS) else (
-        spec.steps // 3, 2 * spec.steps // 3)
+    milestones = (spec.steps // 3, 2 * spec.steps // 3)
+    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS):
+        milestones = (2000, 6000, 12000, 18000)
+    if arm in UNET_TRANSPORT_ARMS:
+        milestones = (2000, 6000, 9000)
     return replace(training.RECIPE, name=name, steps=spec.steps,
                    validation_steps=milestones,
                    model=partial(restorer, training, arm), finalize_calibration=finalize,
@@ -339,6 +350,8 @@ def fit(config, arm, *, smoke):
         paths.add('source_parent')
     if arm in EXPERT_ARMS:
         paths.update(('source_parent', 'unet_parent'))
+    if arm in UNET_TRANSPORT_ARMS:
+        paths.add('unet_parent')
     if set(rt) != paths:
         raise ValueError('Fit may receive only registered source paths and its own output root')
 
@@ -363,7 +376,19 @@ def fit(config, arm, *, smoke):
 
         fidelity = (arm == UNET_FIDELITY_ARMS[1]) if arm in UNET_FIDELITY_ARMS else None
         separation = (arm == UNET_COMPONENT_ARMS[1]) if arm in UNET_COMPONENT_ARMS else None
-        calculate = objective_for(dura_w24_model, complex_fidelity=fidelity, separate_loss=separation)
+        transport = (arm == UNET_TRANSPORT_ARMS[1]) if arm in UNET_TRANSPORT_ARMS else None
+        calculate = objective_for(dura_w24_model, complex_fidelity=fidelity, separate_loss=separation,
+                                  transport_probe=transport)
+    if arm in UNET_TRANSPORT_ARMS:
+        parent = Path(rt['unet_parent'])
+        if parent != Path(rt['run_root']).parent.parent / UNET_FIDELITY_RUN:
+            raise ValueError('Expected the registered source-only probe transport initializer')
+        contract = dura_w24_train.source_contract(Path(rt['source_root']))
+        _, weights, _ = read_candidate_weights(parent, contract, 'cpu', UNET_FIDELITY_ARMS[0],
+                                                dura_w24_train, channel_blind_source)
+
+        def initialize(model, _tracker, _training, _calibration):
+            model.load_state_dict(weights, strict=True)
     if arm in EXPERT_ARMS:
         from experiments.pamf_lora_main.w24_outer_objective_source import read_outer_checkpoint
         from experiments.pamf_lora_main.w24_spectral_experts import objective_for
@@ -449,7 +474,8 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
         raise ValueError(f'Unverified final carrier anchor for {arm}')
     if arm in SIGNED_PROBE_ARMS and summary.get('signed_probe_transfer') is not (arm == SIGNED_PROBE_ARMS[1]):
         raise ValueError(f'Unverified signed probe transfer for {arm}')
-    if arm in UNET_ARMS and (summary.get('initialization') != 'random'
+    initialization = 'verified_unet_model_only' if arm in UNET_TRANSPORT_ARMS else 'random'
+    if arm in UNET_ARMS and (summary.get('initialization') != initialization
                             or summary.get('across_chirps') is not (arm != PACKET_UNET_ARMS[0])):
         raise ValueError(f'Unverified packet U-Net architecture for {arm}')
     if arm in UNET_FIDELITY_ARMS and summary.get('complex_fidelity') is not (arm == UNET_FIDELITY_ARMS[1]):
@@ -457,6 +483,9 @@ def read_candidate_weights(root, contract, device, arm, training, archived):
     if arm in UNET_COMPONENT_ARMS and (summary.get('separate_chirps') is not True
                                        or summary.get('separate_loss') is not (arm == UNET_COMPONENT_ARMS[1])):
         raise ValueError(f'Unverified packet U-Net chirp decomposition for {arm}')
+    if arm in UNET_TRANSPORT_ARMS and (summary.get('unet_parent') != UNET_FIDELITY_RUN
+                                       or summary.get('probe_through_channel') is not (arm == UNET_TRANSPORT_ARMS[1])):
+        raise ValueError(f'Unverified packet U-Net probe transport for {arm}')
     if arm in EXPERT_ARMS and (summary.get('expert_parents') != [OUTER_PARENT, UNET_FIDELITY_RUN]
                                or summary.get('local_router') is not (arm == EXPERT_ARMS[1])):
         raise ValueError(f'Unverified spectral expert provenance for {arm}')
@@ -570,7 +599,7 @@ def publish(args):
              'severity-weight': [6, 5, 3, 0, 7, 2], 'carrier-anchor': [0, 3, 6, 7, 5, 2],
              'signed-probe': [0, 3, 7, 6, 2, 5], 'packet-unet': [0, 3, 7, 6, 2, 5],
              'packet-unet-fidelity': [2, 7, 6, 5], 'spectral-experts': [0, 3, 5, 7, 2],
-             'chirp-components': [3, 2]}
+             'chirp-components': [3, 2], 'probe-transport': [0, 3, 7]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
