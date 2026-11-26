@@ -1,0 +1,256 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-band-adapter-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 第二级 MAP 窄带时域与频域支路",
+  "description": "在已冻结的首尾联合父版上，比较两种同容量复数支路对第二级 MAP 提案的作用。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-band-direction-tune-s2026112991-r01",
+    "20261126-diagnostic-lora-w24-band-polar-source-s2026112559-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "ca7080ed542a4e90cf14bc832f4dd0914b514916",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "Original 7615e8e4 archived training release for fitting; archived W24 inference release for prediction."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 20500,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full and native_residual_w24_v1 practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "TX-blind source U IQ and paired generic perturbations only until freeze. Source V and, if qualified, Full-only target; no Residual execution."
+  },
+  "checkpoint": {
+    "initialization": "Strict source-only archived outer-loss 40,000-step parent in both arms, frozen FP32 base. Same initialization and zero terminal convolution for adapters.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Archived code and frozen external comparator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 evaluator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Strict 40000-step source-only initialization to both arms. Proof verified in fit."
+      }
+    ],
+    "contract_check_ref": "Native W24 matched source fit proof, exact reader F/complete.json binding, fixed blind control archive",
+    "provenance_verdict": "Fixed-iteration source-only parent on same U_s cache with hidden TX and zero F, V, practical, trace or target reads. Chosen by source evidence only.",
+    "selection_rule": "Freeze at step 1800. On the preassigned Full 300-packet source panel, the frequency adapter with fixed half readout must exceed direct, matched time adapter, archival 40k and outer-loss parent on six-scene correct count, meet all four on low urban and meet direct on clean. Then dispatch three formal Full shards."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 physical GPU pool 0, 3, 5, 7 in enumerated order, one worker per GPU, two total, at least 12 GiB free and fewer than 8 compute processes per card.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-phase1-lora-w24-band-adapter-s2026112991-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior publish --band-adapter --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/release",
+    "stop_rule": "Stop dependent phases on wrong role, invalid gradients/numerics, source baseline mismatch, missing artifacts or formal prediction mismatch. Preserve artifacts and other jobs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "band_adapter_time-fit.log",
+    "band_adapter_frequency-fit.log",
+    "smoke.json",
+    "*/smoke-w24_innovation_*.json",
+    "*/w24_innovation_*-complete.json",
+    "*/w24_innovation_*-model.pt",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional formal/predictions/{shard}/{rx}.npz",
+    "conditional independent scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/full_native/predictions.npz; conditional runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/formal/predictions",
+    "scorer_ref": "Independent source scorer; E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior collect-score --band-adapter after the three formal Full shards freeze."
+  },
+  "rows": [
+    {
+      "row_id": "band_adapter_time",
+      "method": "Final prior band-limited time adapter",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_third_prior.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/band_adapter_time/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "40000 parent updates plus 1800 fresh batch-16 updates at the original final joint-phase loss weights.",
+      "output_root": "runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/band_adapter_time",
+      "log_path": "runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/band_adapter_time-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/band_adapter_time/fit-inputs.json band_adapter_time",
+      "expected_artifacts": [
+        "w24_band_adapter_time-model.pt",
+        "w24_band_adapter_time-complete.json",
+        "smoke-w24_band_adapter_time.json"
+      ]
+    },
+    {
+      "row_id": "band_adapter_frequency",
+      "method": "Final prior band-limited frequency adapter",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_third_prior.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/band_adapter_frequency/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "40000 parent updates plus 1800 fresh batch-16 updates at the original final joint-phase loss weights.",
+      "output_root": "runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/band_adapter_frequency",
+      "log_path": "runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/band_adapter_frequency-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit runs/20261126-phase1-lora-w24-band-adapter-s2026112991-r01/band_adapter_frequency/fit-inputs.json band_adapter_frequency",
+      "expected_artifacts": [
+        "w24_band_adapter_frequency-model.pt",
+        "w24_band_adapter_frequency-complete.json",
+        "smoke-w24_band_adapter_frequency.json"
+      ]
+    }
+  ],
+  "notes": [
+    "The exact same lawful outer-loss G parent is verified and strictly loaded in both arms, then kept frozen. The 4,202-parameter adapter in each arm shares parameter shapes and initial values and starts at zero output.",
+    "Inputs are 9–32 kHz two-sided projections of current received IQ, previous MAP, normalized adjoint innovation and original second prior edit, plus an off-band noise estimate. The control reads the time representation and the experiment reads the complex spectrum. The branch output is restricted to the same band, subject to a 0.15 packet RMS cap before the usual prior projection and two CG. Fixed half writeback in both arms.",
+    "Same archived outer loss, 20,000 unlabeled U_s, 500 held U_s, same AdamW batch 16 and one fixed 1800-step annealed schedule. No F, TX, target, V or simulation traces during fit. E104 is loaded after freeze.",
+    "The fixed parent source prediction must reproduce on all seven Full views. Full readout is diagnostic. Only the half frequency adapter can promote, and formal access uses Full only, independent truth-last."
+  ],
+  "registered_at": "2026-11-26T07:10:19+00:00"
+}
