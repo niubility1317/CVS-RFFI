@@ -191,7 +191,9 @@ def main():
     for phase in ('dispatch', 'predict-source', 'score-source'):
         actions.add_parser(phase).add_argument('runtime', type=Path)
     pub = actions.add_parser('publish')
-    pub.add_argument('--band-direction', action='store_true')
+    variants = pub.add_mutually_exclusive_group()
+    variants.add_argument('--band-direction', action='store_true')
+    variants.add_argument('--band-polar', action='store_true')
     for name in ('repo', 'context', 'ssh-config', 'output'):
         pub.add_argument('--'+name, type=Path, required=True)
     args = parser.parse_args()
@@ -203,13 +205,23 @@ def main():
             from experiments.pamf_lora_main.w24_band_direction import predict_bands
 
             predict_bands(rt)
+        elif rt.get('band_polar'):
+            from experiments.pamf_lora_main.w24_band_polar import predict_bands
+
+            predict_bands(rt)
         else:
             predict(rt)
     elif args.action == 'score-source':
-        if read(args.runtime).get('band_direction'):
+        rt = read(args.runtime)
+        if rt.get('band_direction'):
             from experiments.pamf_lora_main.w24_band_direction import CONTRASTS as contrasts, MODES as modes
 
             score(args.runtime, modes=modes, contrasts=contrasts)
+        elif rt.get('band_polar'):
+            from experiments.pamf_lora_main.w24_band_polar import CONTRASTS, MODES, verify_reference
+
+            verify_reference(rt)
+            score(args.runtime, modes=MODES, contrasts=CONTRASTS)
         else:
             score(args.runtime)
     else:
@@ -223,14 +235,21 @@ def main():
 
             run = band_run
             rt['band_direction'] = True
+        elif args.band_polar:
+            from experiments.pamf_lora_main.w24_band_polar import DIRECTION_RUN, RUN as polar_run
+
+            run = polar_run
+            rt['band_polar'] = True
         rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'), run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'), classifier_root=str(runs/AUG_RUN),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),
                   training_release_root=str(releases/f'{TRAIN_RUN}-release'),
-                  allowed_gpus=[0, 3, 5, 6] if args.band_direction else [5, 6, 3, 0], cpu_workers=8)
+                  allowed_gpus=[0, 3, 5, 6] if args.band_direction or args.band_polar else [5, 6, 3, 0], cpu_workers=8)
         rt['external_releases'] = [rt[k] for k in ('source_root','classifier_root','w24_release_root','training_release_root')]
         rt['external_releases'].append(str(runs/PARENT))
+        if args.band_polar:
+            rt['external_releases'].append(str(runs / DIRECTION_RUN))
         release(args.repo, args.output, rt, args.ssh_config)
 
 
