@@ -1,0 +1,254 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 整包时频 U-Net 长训和复数保真损失（Full）",
+  "description": "Test signed direction, actual gain and relative chirp fidelity at a matched 24,000-step budget, using the same randomly initialized packet network.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "f4b6ebc069e4cacf93bb9e614cfc6fa9c575da53",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "Original 7615e8e4 archived training release for fitting; archived W24 inference release for prediction."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 20500,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "TX-blind source U IQ and paired generic perturbations only until freeze. Source V and, if qualified, Full-only target; no Residual execution."
+  },
+  "checkpoint": {
+    "initialization": "Both new matched U-Nets are randomly initialized at seed 2026112991, with no parent weight or optimizer loaded.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Archived code and frozen external comparator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 evaluator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Previously frozen source comparator only, loaded after both candidates freeze."
+      }
+    ],
+    "contract_check_ref": "Native W24 source proof and initialized-from-scratch evidence; exact E104 default head only on frozen predictions.",
+    "provenance_verdict": "No upstream weights in fit or freeze. Source U role only; no F, V, targets, TX, practical or trace.",
+    "selection_rule": "Freeze at update 24000. Candidate half exceeds direct, matched half, original all-half and outer parent half on six scenes, meets all four on low urban and meets direct on clean. Eligible candidates run Full formal three shards, fixed predictions and independent truth-last."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 GPU order 2, 7, 6, 5. Separate from the short-run GPU 0/3 pool. Two GPUs with at least 12 GiB free and fewer than eight total compute contexts. One fit per GPU and no mutation of existing jobs.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior publish --packet-unet-fidelity --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/release",
+    "stop_rule": "Stop dependent phases on wrong role, failed branch gradients/numerics, source baseline mismatch, missing artifacts or prediction mismatch. Preserve artifacts and other jobs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "unet_standard_long-fit.log",
+    "unet_complex_long-fit.log",
+    "smoke.json",
+    "*/smoke-w24_unet_*.json",
+    "*/w24_unet_*-complete.json",
+    "*/w24_unet_*-model.pt",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional formal/predictions/{shard}/{rx}.npz",
+    "conditional independent scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/full_native/predictions.npz; conditional runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/formal/predictions",
+    "scorer_ref": "Independent source scorer; E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior collect-score --packet-unet-fidelity after the three formal Full shards freeze."
+  },
+  "rows": [
+    {
+      "row_id": "unet_standard_long",
+      "method": "Packet-wide time-frequency U-Net; original short-screen objective extended to 24000 steps",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_packet_unet.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/unet_standard_long/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "24000 AdamW updates from random initialization, batch 16 physical packets. Fixed snapshots of held U diagnostics at 2000,6000,12000,18000 and terminal.",
+      "output_root": "runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/unet_standard_long",
+      "log_path": "runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/unet_standard_long-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/unet_standard_long/fit-inputs.json unet_standard_long",
+      "expected_artifacts": [
+        "w24_unet_standard_long-model.pt",
+        "w24_unet_standard_long-complete.json",
+        "smoke-w24_unet_standard_long.json"
+      ]
+    },
+    {
+      "row_id": "unet_complex_long",
+      "method": "Same U-Net and schedule; add signed complex direction, amplitude, adjacent chirp preservation and stronger identity",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_packet_unet.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/unet_complex_long/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "24000 AdamW updates from random initialization, batch 16 physical packets. Fixed snapshots of held U diagnostics at 2000,6000,12000,18000 and terminal.",
+      "output_root": "runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/unet_complex_long",
+      "log_path": "runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/unet_complex_long-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01/unet_complex_long/fit-inputs.json unet_complex_long",
+      "expected_artifacts": [
+        "w24_unet_complex_long-model.pt",
+        "w24_unet_complex_long-complete.json",
+        "smoke-w24_unet_complex_long.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both arms run the same 308676-parameter packet-wide U-Net from the same random initialization on 20000 source U_s packets with hidden TX, batch 16 and 24000 AdamW updates. No source parent, classifier, V, target, practical replay or traces in fit/freeze. Fixed holdout of 500 source U_s packets, no calibration.",
+    "Long control keeps the base primary half-window risk, full auxiliary, weak physical transfer, same-packet paired consistency and clean identity of the short architectural screen. Both arms use identical generic nuisance and actual paired source IQ. The modified objective adds .25 signed complex direction risk, .10 gain risk, .20 adjacent chirp difference waveform risk and +1 to clean identity. Direction and gain use the actually applied half edit, label-free exact source pairing and all non-DC bins grouped 1-8, 9-32, 33-80, 81-192. Four groups are equally weighted. No deployment-time exact reference, scene or receiver rule.",
+    "Primary hypothesis: splitting direction and gain and explicitly preserving differences between adjacent chirps improves real packet classification at the same budget while retaining clean and base comparisons. Report raw direction/gain/neighbor terms for both arms on a common held U disturbance stream regardless of optimize flag. Intermediate scores are source waveform only, no reader.",
+    "Formal promotion checks unchanged. Freeze once at 24000. Full only, 300-packet source V seven views after freeze; same E104 scoring and direct/original/control/best DURA anchored gate. Qualified candidate automatically enters the three Full target shards, then independent scoring."
+  ],
+  "registered_at": "2026-11-26T09:26:58+00:00"
+}
