@@ -87,6 +87,10 @@ WiSig 的现代正式对照固定 Main split 共 168,000 个物理包，含 cros
 
 **拟合带内跨 chirp 复数校正。** 在相同 1,024 个合法源配对上，用实收中心和冻结父版实际半量修正拟合 9–32 双侧频点的复数残差。逐条独立和跨八条 chirp 的岭拟合均将受扰留出波形误差降低约 5.2%，低城区的新增修正中位数约为实收中心 L2 的 4.8%。同一 300 个源 V 上两组均得到 1,440/1,800 六景正确、170/300 低城区、297/300 clean。较首尾父版，六景少 1 次，低城区少 7 包。固定线性复数映射可产生明显实际改动，但当前全局跨 chirp 系数没有比逐条独立拟合提供更多识别收益。 [频点复数校正](../../automation_reports/CV-SincNet/20261126-phase1-lora-w24-spectral-cov-source-s2026112991-r01/report.md)
 
+**延续的窄带和弱细节对照。** 等能量邻域方向头的相邻频点组相对相邻 chirp 六景 +5［1，10］、低城区 +3［0，6.03］。相对首尾父版六景持平、低城区少 2 包，低城区实际 IQ 差 RMS 中位仅为实收中心的 0.097%。正负弱细节监督相对只训练正向的匹配组改善了反向传递误差约 11.8%，冻结半量六景少判对 7 次，低城区持平，clean 少 1 包。两项均完成 Full 源域独立评分，未晋级。 [邻域方向](../../automation_reports/CV-SincNet/20261126-phase1-lora-w24-local-direction-s2026112991-r01/report.md) · [双侧监督](../../automation_reports/CV-SincNet/20261126-phase1-lora-w24-signed-probe-s2026112991-r01/report.md)
+
+**独立整包时谱网络。** 新架构从零训练，不继承 DURA 权重。相比同容量逐 chirp 注意力，1,200 步整包组六景多判对 333 次［272，397］，低城区多 37 包［18，57］，clean 多 54 包。相对首尾父版，整包组仍少 140 次、29 包和 11 包。已启动每臂 12,000 步的原损失与复数分带／差分／clean 恒等损失匹配对照，固定三个训练阶段，在权重全部冻结后才以同一个 W24 评分。 [短训验证](../../automation_reports/CV-SincNet/20261126-phase1-lora-w24-packet-reconstruction-s2026112991-r01/report.md) · [长训登记](../../automation_reports/CV-SincNet/20261126-phase1-lora-w24-packet-long-objective-s2026112991-r01/report.md)
+
 - **11:35 HKT 运行快照。** `20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01` 通过真实 E104 源 smoke，原负责人的 Full 和 Residual 预测当时有 6 份 RX 盲预测，六个分片尚未全部固定。随后结果见上文。中心与边缘联合训练仅已确认源域结果。 [首尾版正式登记](../../automation_reports/CV-SincNet/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01/report.md)
 - **两次旧 W24 复测属于技术失败。** IO 与 SatAug Full 的 r01 在真实权重 smoke 失败；r02 目录仍显示 `PREDICT`，但各自四个分片在首个受扰视图报 `ModuleNotFoundError: experiments.pamf_unrolled_restore.denoise`，每条链只发现四份 clean 数组，未找到所属预测工人。已有 clean 产物保留。这些是预测链失败，训练完成和同权重另一套正式成绩仍各自成立。把受扰信道生成放进与正式同入口、同 CPU 子进程导入顺序的源 U 检查，可在正式矩阵前发现这类故障。
 - **下一个机制的优先级。** LoRa 首先检验扰动下首尾中心窗的复相位、幅度和细微谱差异能否由实收预测，并用 clean 恒等约束控制过修。边缘保留为独立消融，因为精确扣噪和当前可部署边缘头的结果方向不同。双路线共用模型及读出；源域冻结后同包看实际回写、整量输出、每一步和接收机分布。第三步展开仍是可检验的 R17 假设，需匹配两步结构、源数据、预算、回写和 clean，同时披露额外参数与两次 CG 的成本。当前新增三步实验保留在本地草稿阶段，没有发布。

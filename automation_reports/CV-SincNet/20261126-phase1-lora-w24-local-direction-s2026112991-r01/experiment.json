@@ -1,0 +1,183 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-local-direction-s2026112991-r01",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 等能量局部频点／chirp 方向对照（Full）",
+  "description": "Compare equal parameter local frequency and chirp directions in the actually deployed half-edit. Preserve absolute band 9–32 energy, all other bins and edge IQ.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 goal, lawful source U_s same-waveform paired IQ, frozen W24 only after added source coefficients freeze, Full route.",
+  "code": {
+    "commit": "80fdabf34c43df6b2b67f935ab5e2cd65cc98275",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "Archived N607 CVS-RFFI with exact registered W24 release",
+    "cwd": "Registered archive releases/20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "Same 300 unique opaque source V packet IDs as frozen outer-objective source run",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 1664,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Native split 392005. One 1536/128 disjoint unlabeled source fit/holdout. Same frozen 300-source physical IDs and prior direct/outer parity.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean. Prediction uses generated receive IQ."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source calibration and source screen. No F/TX/V/target access at fit or freeze. DURA and W24 checkpoints read only for their allowed roles."
+  },
+  "checkpoint": {
+    "initialization": "Fixed outer parent. Two matched 5698-real-parameter residual MLPs; identical seed and zero last layer for parent reproduction.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "40000-update frozen source-only LoRa center restorer"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "E104 frozen default reader only"
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Pinned architecture and tracker archive"
+      }
+    ],
+    "contract_check_ref": "Source frozen checkpoint binding and actual paired blind decisions must match the immutable prior source run.",
+    "provenance_verdict": "Contract-bound LoRa U_s frozen parent; U_s IQ only for new coefficients. W24 for frozen source inference.",
+    "selection_rule": "Freeze checkpoint at 384 steps. Candidate frequency arm requires parent+18 six, parent+10 low, clean at least direct, and positive six/low over matched chirp arm to advance."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "One GPU, 3 then 7, 0, 6; >=12 GiB free and existing remote process cap. 8 CPU workers.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-local-direction-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-local-direction-s2026112991-r01",
+    "local_artifact_root": "local_artifacts/20261126-phase1-lora-w24-local-direction-s2026112991-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_local_direction publish --repo <worktree> --context <source-context> --ssh-config <config> --output <local-release>",
+    "stop_rule": "Stop on data/contract, archived actual controls, shape or finite-number failure, missing views, failing real no-query smoke or independent truth-last."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "{route}/predictions.npz",
+    "{route}/source-predictions.json",
+    "{route}/source-scores.json",
+    "fit-smoke.json",
+    "fit-complete.json",
+    "direction.pt"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldout direction risk",
+      "same-packet counts",
+      "net and paired interval",
+      "added actual IQ difference",
+      "receiver groups"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-local-direction-s2026112991-r01/{route}/predictions.npz",
+    "scorer_ref": "experiments.pamf_lora_main.w24_local_direction score-source through existing truth-last scorer"
+  },
+  "rows": [
+    {
+      "row_id": "local-direction",
+      "method": "Frozen W24 direct/outer half, two matched 3-slot context MLPs with neighbors along chirp or within a frequency sideband. Actual band edit normalized to parent norm.",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_local_direction.py",
+      "resolved_config_ref": "releases/20261126-phase1-lora-w24-local-direction-s2026112991-r01-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300,
+        "U_s_fit": 1536,
+        "U_s_holdout": 128
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "384 AdamW steps per arm, batch 48 and shared sampled rows. 1536 U_s train and 128 U_s holdout with one generic paired and one clean view, 300 source V x seven views.",
+      "output_root": "runs/20261126-phase1-lora-w24-local-direction-s2026112991-r01",
+      "log_path": "runs/20261126-phase1-lora-w24-local-direction-s2026112991-r01/fit-source.log",
+      "command": "python -m experiments.pamf_lora_main.w24_local_direction dispatch <runtime>",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "{route}/predictions.npz",
+        "{route}/source-predictions.json",
+        "{route}/source-scores.json",
+        "fit-smoke.json",
+        "fit-complete.json",
+        "direction.pt"
+      ]
+    }
+  ],
+  "notes": [
+    "One scope: the 9–32 signed frequency bins of the actual half-edit, held at original per-packet band norm.",
+    "Both heads use the same center features and MLP widths; only observed adjacency axis differs. Each signed sideband and chirp train edge uses index repetition.",
+    "U_s direction loss uses clean-minus-disturbed true source difference only in same-waveform generic pairs. Identity pairs target the parent direction at twice the loss weight. No F or target accesses.",
+    "No target path in this source screen. Complete source Full guards, independent P0/P1 and proof from source archive.",
+    "No new Residual processing."
+  ],
+  "registered_at": "2026-11-26T09:15:20+00:00"
+}

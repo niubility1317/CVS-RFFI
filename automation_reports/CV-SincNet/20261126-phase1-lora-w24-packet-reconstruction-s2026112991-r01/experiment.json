@@ -1,0 +1,185 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-packet-reconstruction-s2026112991-r01",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 独立时谱整包恢复网络（Full）",
+  "description": "From-scratch packet IQ reconstruction using a time/spectral dual decoder, native edge head and global chirp-token attention; compare to matched blocked-attention control and frozen historical counts.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 goal, lawful source U_s same-waveform paired IQ, frozen W24 only after added source coefficients freeze, Full route.",
+  "code": {
+    "commit": "e9780f2dbda4c924cb2421551c130ae6b3364763",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "Archived N607 CVS-RFFI with exact registered W24 release",
+    "cwd": "Registered archive releases/20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "Same 300 unique opaque source V packet IDs as frozen outer-objective source run",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 8352,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Native source split 392005. 8192 available U_s fit and 160 disjoint heldout. 300 frozen source V IDs, with direct and outer decisions from original immutable source matrix.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean. Prediction uses generated receive IQ."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source calibration and source screen. No F/TX/V/target access at fit or freeze. DURA and W24 checkpoints read only for their allowed roles."
+  },
+  "checkpoint": {
+    "initialization": "From scratch, equal initialized random parameters, 404695 learned per arm. No DURA weight reused. Fixed public analytic aperture and tracking code.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Frozen source predictions used as a matched comparison after both scratch candidates freeze"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "E104 frozen default reader only"
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Pinned analytic aperture, tracking and generic waveform generator code only, no learned checkpoint"
+      }
+    ],
+    "contract_check_ref": "Source frozen checkpoint binding and actual paired blind decisions must match the immutable prior source run.",
+    "provenance_verdict": "No historical restoration weight used in fit, freeze or candidate predictions. Historical outer predictions appended by unchanged physical order for post-freeze paired scoring only.",
+    "selection_rule": "Final step 1200 fixed. Packet full arm advances after meeting parent+18 six and parent+10 low, clean at least direct, and positive six and low over matched per-chirp full. Center-only outputs are locked ablations."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "One GPU, 7 then 3, 0, 6; at least 12 GiB free and existing process cap; eight CPU workers for prediction.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-packet-reconstruction-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-packet-reconstruction-s2026112991-r01",
+    "local_artifact_root": "local_artifacts/20261126-phase1-lora-w24-packet-reconstruction-s2026112991-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_packet_reconstruction publish --repo <worktree> --context <context> --ssh-config <config> --output <local-release>",
+    "stop_rule": "Stop on source permissions/provenance, missing real source smoke, nonfinite waveform risk, data parity, malformed predictions, or independent score failure."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "{route}/predictions.npz",
+    "{route}/source-predictions.json",
+    "{route}/source-scores.json",
+    "fit-smoke.json",
+    "fit-complete.json",
+    "packet-reconstruction.pt"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldout time and complex-spectrum risk",
+      "native edge risk",
+      "per-scene same-packet correctness",
+      "net paired intervals",
+      "receiver groups",
+      "latency and memory"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-packet-reconstruction-s2026112991-r01/{route}/predictions.npz",
+    "scorer_ref": "experiments.pamf_lora_main.w24_packet_reconstruction score-source via independent source scoring"
+  },
+  "rows": [
+    {
+      "row_id": "packet-reconstruction",
+      "method": "W24 direct and frozen outer source references; from-scratch time/spectrum/edge network, with either full packet token attention or chirp-aligned block-diagonal attention mask; each model read out as center only and center+edge.",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_packet_reconstruction.py",
+      "resolved_config_ref": "releases/20261126-phase1-lora-w24-packet-reconstruction-s2026112991-r01-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300,
+        "U_s_fit": 8192,
+        "U_s_holdout": 160
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0006,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "1200 updates each, shared samples and generic draw, batch 8 includes one clean identity. One fixed 160 U_s holdout and 300 source V x seven views.",
+      "output_root": "runs/20261126-phase1-lora-w24-packet-reconstruction-s2026112991-r01",
+      "log_path": "runs/20261126-phase1-lora-w24-packet-reconstruction-s2026112991-r01/fit-source.log",
+      "command": "python -m experiments.pamf_lora_main.w24_packet_reconstruction dispatch <runtime>",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "{route}/predictions.npz",
+        "{route}/source-predictions.json",
+        "{route}/source-scores.json",
+        "fit-smoke.json",
+        "fit-complete.json",
+        "packet-reconstruction.pt"
+      ]
+    }
+  ],
+  "notes": [
+    "Both candidates share 404695 trainable weights, seed, optimizer and batches. Token attention topology is the matching change.",
+    "Consensus of time-domain residual and spectral observation-minus-predicted-noise branches, with a separate shared boundary head.",
+    "Frozen analytic receive tracking and RMS restore physical output coordinates. Training objective combines center, 1–32 complex spectrum, two independent branches, edges and inter-chirp difference losses.",
+    "No access to trained G, W24, source validation, TX truth or target in fit or freeze. W24 independent evaluation after freeze.",
+    "Full only. Smoke and separate truth-last paired source scoring then science judgment. No new Residual.",
+    "One targeted correction from independent P0/P1 review. Pinned analytic tracker import verified read-only using actual source U_s on N607, no learned weights loaded."
+  ],
+  "registered_at": "2026-11-26T09:21:17+00:00"
+}
