@@ -1,0 +1,2 @@
+{"at": "2026-11-26T14:24:22+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-26T14:27:39+00:00", "status": "RUNNING", "note": "N607 VERIFIED: dispatcher 1231878, actual source fit workers 1232528 GPU 2 and 1232529 GPU 3, expected CWD, command and growing log. Two exact source checkpoint smoke checks passed.", "evidence": ["release/submit.json", "state.json", "wideband_noise_control-fit.log", "bandlimited_noise-fit.log"], "row_id": null}
