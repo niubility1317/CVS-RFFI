@@ -933,7 +933,8 @@ def collect_score(args):
             or (cpu and kind != PRACTICAL_KIND)):
         raise ValueError('Unexpected immutable N607 run root')
     connection = ['-F', str(args.ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
-    deadline = monotonic() + 12*60*60
+    wait_hours = 48 if cpu else 12
+    deadline = monotonic() + wait_hours*60*60
     last = None
     while True:
         state = None
@@ -958,7 +959,7 @@ def collect_score(args):
                 break
         if monotonic() >= deadline:
             raise TimeoutError('No terminal N607 state in scoring window')
-        sleep(40)
+        sleep(90 if cpu else 40)
     args.output.mkdir(parents=True)
     predictions = (root if cpu else root/'formal')/'predictions'
     subprocess.run(['scp', *connection, '-r', 'N607:' + str(predictions), str(args.output)],
