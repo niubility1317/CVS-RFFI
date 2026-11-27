@@ -1,0 +1,288 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa 原生 8,192 点 clean 指纹与易混类别间隔对照（Full）",
+  "description": "Matched frozen E104 clean embedding distances vs loss of relative separation from the most confusable wrong clean transmission prototype.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "raw8192",
+    "w24",
+    "fixed-e104",
+    "full-only",
+    "truth-last",
+    "clean-geometry"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+    "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+    "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa native raw performance goal, frozen E104 training loss and high-confidence source clean U_s pseudo-label authorization.",
+  "code": {
+    "commit": "e58268ebed6d205a852ca5c873843d16289c0ddf",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Both original native G paths observe and output all 8192 complex samples. An extra normalized embedding loss on L_s alone changes only training. Original W24 follows G.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Only lawful L_s true labels generate 10 clean E104 prototypes and exclude the correct TX from selection of train-only rivals. U_s uses prior approved high-confidence clean E104 pseudo-label CE; no hidden U_s labels. Reader frozen. Fit reads no source V, target, exact simulation actions or registered practical."
+  },
+  "checkpoint": {
+    "initialization": "Both arms strictly load the same source-qualified native E104 G, 313796 trainable G parameters, frozen E104/default head, reset AdamW.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+        "role": "Same raw observation contract and pretarget source-qualified initialization. Recursively verify formal archival parent."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+        "role": "Same-contract G initialization and archived Full comparison."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen source training teacher and evaluation default head."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "The native parent passed a declared source rule before deployment. Target results never select fitting, hyperparameters, thresholds or retry.",
+    "selection_rule": "Both freeze at 15000. Only rival_margin_native may promote. Six exceeds clean_anchor_native, same raw parent, archived W24 and other fixed comparators. Low urban exceeds matched clean-anchor and at least remaining controls; clean at least direct and raw parent on the same 300 source V packets."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 [7,2,0,6]. Actual free ≥12 GiB and <8 resident contexts. Two fit or two formal workers with no other owner changes.",
+    "remote_run_root": "runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --raw-clean-margin --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/release",
+    "stop_rule": "Stop dependent stages on bad source contract/parent, inactive true-L/pseudo-U/clean-geometry actual smoke gradient, nonfinite loss or malformed freeze. No formal after source gate fails."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional predictions/{full-shard}/complete.json",
+    "conditional independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "sampled waveform and clean training losses",
+      "strong source branch actual sampled exposures and nominal SNR range",
+      "observed change of fixed W24 aperture",
+      "source clean-geometry loss logs and active gradient"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/full_native/predictions.npz; conditional runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/predictions",
+    "scorer_ref": "Independent source score then conditional local w24_joint_pamf collect after all Full shards are frozen."
+  },
+  "rows": [
+    {
+      "row_id": "clean_anchor_native",
+      "method": "Clean anchor distance at matched scale",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/clean_anchor_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "relative_clean_geometry": false,
+        "geometry_weight": 0.35
+      },
+      "seeds": {
+        "model": 2026113021,
+        "split": 392005,
+        "data": 2026113021,
+        "augmentation": 2026113021,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113021 shared source draw and generic augmentation, plus 1 for identical original strong branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "15000 updates per arm after the same 18000-step raw parent; 8 labeled plus 8 unlabeled draws per update.",
+      "output_root": "runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/clean_anchor_native",
+      "log_path": "runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/clean_anchor_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/clean_anchor_native/fit-inputs.json clean_anchor_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "rival_margin_native",
+      "method": "One-sided clean rival separation loss",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/rival_margin_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "relative_clean_geometry": true,
+        "geometry_weight": 0.35
+      },
+      "seeds": {
+        "model": 2026113021,
+        "split": 392005,
+        "data": 2026113021,
+        "augmentation": 2026113021,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113021 shared source draw and generic augmentation, plus 1 for identical original strong branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "15000 updates per arm after the same 18000-step raw parent; 8 labeled plus 8 unlabeled draws per update.",
+      "output_root": "runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/rival_margin_native",
+      "log_path": "runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/rival_margin_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01/rival_margin_native/fit-inputs.json rival_margin_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both use matched source pairing, original chirp preparation, raw waveform MSE/spectral, fixed-reader CE, clean identity and approved accepted pseudo CE. Raw network and default E104 head unchanged.",
+    "A frozen normalized clean E104 L_s embedding centroid per lawful visible TX gives the negative prototype bank. For each labeled clean packet embedding c, choose the highest-cosine wrong prototype p. Recover normalized embedding z, clean gap m=max(1-c dot p,1e-4), positive error e=-(z-c) dot c. The control loss is mean log1p(ReLU(e)/m). The candidate changes only e to e+(z-c) dot p. Both multiply this extra term by 0.35 and only gradients to z via recovered L_s are allowed.",
+    "No new feature-bank loss on U_s. Prototypes, clean counterparts and the nearest false class are kept separate from model updates. This is training geometry only; no new classifier, prototype or auxiliary input during inference.",
+    "Same 300 source Full V packets and conditional official seven-scene Full with independent truth-last."
+  ],
+  "registered_at": "2026-11-27T10:07:37+00:00"
+}
