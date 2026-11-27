@@ -151,7 +151,7 @@ def native_band_risks(error, reference, frame):
 
 
 def source_objective(model, received, reference, *, with_identity, audit_references=(),
-                     spectral_weight=None):
+                     spectral_weight=None, center_project=None, center_weight=0.):
     stages, frame = model(received)
     actual = torch.lerp(received, stages[-1], .5)
     error = actual - reference
@@ -178,6 +178,13 @@ def source_objective(model, received, reference, *, with_identity, audit_referen
         spectral_risk = bands.reshape(3, 2).mean(0) @ bands.new_tensor((.30, .70))
         loss = loss + spectral_weight * spectral_risk
         parts = torch.cat((parts, bands.detach()))
+    if center_project is not None:
+        from .w24_native_center import direction_terms
+
+        with torch.set_grad_enabled(torch.is_grad_enabled() and bool(center_weight)):
+            angle, metrics = direction_terms(center_project, error, reference - received)
+        loss = loss + center_weight * angle
+        parts = torch.cat((parts, angle.detach().reshape(1), metrics))
     if audit_references:
         with torch.no_grad():
             audit = torch.stack([((actual - wave).abs().square().mean(-1)

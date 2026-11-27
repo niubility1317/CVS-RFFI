@@ -233,4 +233,5 @@ if __name__ == '__main__':
     matched.add_argument('--native-packet-dura', dest='third_prior', action='store_const', const='native-packet-dura')
     matched.add_argument('--native-additive', dest='third_prior', action='store_const', const='native-additive')
     matched.add_argument('--native-band-risk', dest='third_prior', action='store_const', const='native-band-risk')
+    matched.add_argument('--native-center-direction', dest='third_prior', action='store_const', const='native-center-direction')
     score(**vars(parser.parse_args()))

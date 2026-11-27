@@ -82,9 +82,11 @@ NATIVE_ADDITIVE_RUN = '20261127-phase1-lora-w24-native-additive-s2026112991-r01'
 NATIVE_ADDITIVE_ARMS = ('native_restore_original', 'native_remove_additive')
 NATIVE_SPECTRAL_RUN = '20261127-phase1-lora-w24-native-band-risk-s2026112991-r01'
 NATIVE_SPECTRAL_ARMS = ('native_band_control', 'native_band_risk')
-NATIVE_PAIRED_ARMS = (*NATIVE_ADDITIVE_ARMS, *NATIVE_SPECTRAL_ARMS)
+NATIVE_CENTER_RUN = '20261127-phase1-lora-w24-native-center-direction-s2026112991-r01'
+NATIVE_CENTER_ARMS = ('native_center_control', 'native_center_direction')
+NATIVE_PAIRED_ARMS = (*NATIVE_ADDITIVE_ARMS, *NATIVE_SPECTRAL_ARMS, *NATIVE_CENTER_ARMS)
 NATIVE_MODEL_ARMS = (*NATIVE_PACKET_ARMS, *NATIVE_PAIRED_ARMS)
-NATIVE_ADD_ONLY = (NATIVE_ADDITIVE_ARMS[1], *NATIVE_SPECTRAL_ARMS)
+NATIVE_ADD_ONLY = (NATIVE_ADDITIVE_ARMS[1], *NATIVE_SPECTRAL_ARMS, *NATIVE_CENTER_ARMS)
 LONG_UNET_ARMS = (*WEAK_TRANSFER_ARMS, *POLYPHASE_ARMS, *ADDITIVE_REFERENCE_ARMS)
 UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
 UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS,
@@ -127,6 +129,7 @@ VARIANTS = {
     'native-packet-dura': (NATIVE_PACKET_RUN, NATIVE_PACKET_ARMS),
     'native-additive': (NATIVE_ADDITIVE_RUN, NATIVE_ADDITIVE_ARMS),
     'native-band-risk': (NATIVE_SPECTRAL_RUN, NATIVE_SPECTRAL_ARMS),
+    'native-center-direction': (NATIVE_CENTER_RUN, NATIVE_CENTER_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -164,7 +167,7 @@ def trial(kind):
                      (*contrasts, *((modes[3], base) for base in baselines), *comparisons),
                      ROUTES[:1], WEAK_TRANSFER_INTERMEDIATE)
     if arms in (POLYPHASE_ARMS, ADDITIVE_REFERENCE_ARMS, NATIVE_PACKET_ARMS, NATIVE_ADDITIVE_ARMS,
-                NATIVE_SPECTRAL_ARMS):
+                NATIVE_SPECTRAL_ARMS, NATIVE_CENTER_ARMS):
         baselines = (UNET_BASELINE, OUTER_BASELINE)
         return Trial(run, arms, 24000 if arms[0] in NATIVE_MODEL_ARMS else 48000, (*modes, *baselines),
                      (*contrasts, *((modes[3], base) for base in baselines)), ROUTES[:1])
@@ -304,6 +307,10 @@ def native_spectral_weight(arm):
     return .50 if arm == NATIVE_SPECTRAL_ARMS[1] else 0.
 
 
+def native_center_weight(arm):
+    return .20 if arm == NATIVE_CENTER_ARMS[1] else 0.
+
+
 def promotion(routes, kind=True):
     spec = trial(kind)
     direct, mature, control, candidate = spec.source_modes[:4]
@@ -418,6 +425,8 @@ def source_recipe(training, arm, *, initialize=None):
                         shared_generic_action=True)
         if arm in NATIVE_SPECTRAL_ARMS:
             info['native_spectral_weight'] = native_spectral_weight(arm)
+        if arm in NATIVE_CENTER_ARMS:
+            info['native_center_weight'] = native_center_weight(arm)
         if arm in NATIVE_MODEL_ARMS:
             info.update(initialization='random', native_capture_samples=8192, observation_steps=2)
         if arm in UNET_COMPONENT_ARMS:
@@ -519,12 +528,18 @@ def fit(config, arm, *, smoke):
         from experiments.pamf_lora_main.w24_packet_dura import native_additive_pair, source_objective
 
         spectral_weight = native_spectral_weight(arm) if arm in NATIVE_SPECTRAL_ARMS else None
+        center_project = None
+        if arm in NATIVE_CENTER_ARMS:
+            from experiments.pamf_lora_main.w24_native_center import NativeCenterProjection
+
+            center_project = NativeCenterProjection().to('cuda:0')
 
         def calculate(model, _tracker, raw, rng, *, with_identity, recipe, step):
             received, references = native_additive_pair(raw, rng, with_identity=with_identity)
             reference = references[arm in NATIVE_ADD_ONLY]
             return source_objective(model, received, reference, with_identity=with_identity,
-                                    audit_references=references, spectral_weight=spectral_weight)
+                                    audit_references=references, spectral_weight=spectral_weight,
+                                    center_project=center_project, center_weight=native_center_weight(arm))
     if arm in ('direction_first', 'coherent_error'):
         from experiments.pamf_lora_main.w24_first_direction import objective_for
 
@@ -669,6 +684,8 @@ def read_candidate_weights(root, contract, device, arm, training, archived, *, s
         raise ValueError(f'Unverified additive reference for {arm}')
     if arm in NATIVE_SPECTRAL_ARMS and summary.get('native_spectral_weight') != native_spectral_weight(arm):
         raise ValueError(f'Unverified native spectral supervision for {arm}')
+    if arm in NATIVE_CENTER_ARMS and summary.get('native_center_weight') != native_center_weight(arm):
+        raise ValueError(f'Unverified native center supervision for {arm}')
     if arm in NATIVE_MODEL_ARMS and (summary.get('initialization') != 'random'
                                       or summary.get('native_capture_samples') != 8192
                                       or summary.get('observation_steps') != 2):
@@ -819,7 +836,8 @@ def publish(args):
              'common-refine': [0, 3, 2, 7], 'spectral-posterior': [0, 3, 2, 7],
              'clean-projection': [0, 2, 3, 5], 'weak-transfer': [0, 3, 2, 5],
              'polyphase': [0, 2, 3, 5], 'additive-reference': [0, 7, 2, 3],
-             'native-packet-dura': [3, 5, 6], 'native-additive': [0, 3, 5, 6], 'native-band-risk': [0, 3, 5, 6]}
+             'native-packet-dura': [3, 5, 6], 'native-additive': [0, 3, 5, 6],
+             'native-band-risk': [0, 3, 5, 6], 'native-center-direction': [0, 3, 5, 6]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
