@@ -1,0 +1,263 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-w24-native-center-direction-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 整段 DURA 中心复数修正方向（Full）",
+  "description": "Matched raw 8192-point DURA. Both target noiseless post-action IQ. Candidate adds only direction loss on fixed, unnormalised native-rate center resampling.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261127-phase1-lora-w24-additive-reference-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-packet-dura-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-additive-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-band-risk-s2026112991-r01",
+    "20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "5c738acf9bbb2ae40620fb096e84e57911f4e0b5",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "Original 7615e8e4 archived training release for fitting; archived W24 inference release for prediction."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MHz through DURA; untouched W24 front end receives the resulting packet.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 20500,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "TX-blind source U IQ and paired generic perturbations only until freeze. Source V and, if qualified, Full-only target; no Residual execution."
+  },
+  "checkpoint": {
+    "initialization": "Same random seed 2026112991, 111698 parameters per arm, no imported checkpoint or optimizer.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Archived code and frozen external comparator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 evaluator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Previously frozen source comparator only in independent evaluation. No fitting or freezing access."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Unchanged original-loss 24,000-step U-Net for frozen evaluation comparison only, no fitting access"
+      }
+    ],
+    "contract_check_ref": "Registered source U and physical IDs for scratch fitting. All comparison checkpoints and frozen E104 opened only for post-freeze comparison.",
+    "provenance_verdict": "No checkpoint used in fit. Historical DURA, U-Net and W24 checkpoint rows are independent frozen source comparisons.",
+    "selection_rule": "Freeze step 24000. Candidate .5 readout must strictly beat all matched and fixed controls on six-scene count, match the best on low urban, and match direct clean before Full target."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "Prefer 0, 3; use 5 or 6 subject to 12 GiB and incumbent limits; one fit per card.",
+    "remote_run_root": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior publish --native-center-direction --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/release",
+    "stop_rule": "Stop on a systemic technical/protocol failure, incompatible source or frozen comparator, collision, or prediction/scoring failure. Preserve all artifacts. Source scores gate only target eligibility via preregistered paired rules."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "native_center_control-fit.log",
+    "native_center_direction-fit.log",
+    "smoke.json",
+    "*/smoke-w24_*.json",
+    "*/w24_*-complete.json",
+    "*/w24_*-model.pt",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional formal/predictions/{shard}/{rx}.npz",
+    "conditional independent scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/full_native/predictions.npz; conditional runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/formal/predictions",
+    "scorer_ref": "Independent source scorer; E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior collect-score --native-center-direction after the three formal Full shards freeze."
+  },
+  "rows": [
+    {
+      "row_id": "native_center_control",
+      "method": "Native additive-only loss, center angle metrics recorded without gradient",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_packet_dura.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/native_center_control/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "24000 scratch updates, batch 16, AdamW; held steps 2000, 6000, 12000, 18000 and final 24000.",
+      "output_root": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/native_center_control",
+      "log_path": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/native_center_control-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/native_center_control/fit-inputs.json native_center_control",
+      "expected_artifacts": [
+        "w24_native_center_control-model.pt",
+        "w24_native_center_control-complete.json",
+        "smoke-w24_native_center_control.json"
+      ]
+    },
+    {
+      "row_id": "native_center_direction",
+      "method": "Same loss plus source-only center complex direction risk",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_packet_dura.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/native_center_direction/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "24000 scratch updates, batch 16, AdamW; held steps 2000, 6000, 12000, 18000 and final 24000.",
+      "output_root": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/native_center_direction",
+      "log_path": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/native_center_direction-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/native_center_direction/fit-inputs.json native_center_direction",
+      "expected_artifacts": [
+        "w24_native_center_direction-model.pt",
+        "w24_native_center_direction-complete.json",
+        "smoke-w24_native_center_direction.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Shared full native input/output architecture, source U_s split, scratch seed, RNG, paired perturbation and pre-addition reference.",
+    "Candidate adds .20 * mean(reliability*(1-cosine)) on center edit versus exact synthetic additive edit. Reliability is source center disturbance power divided by itself plus .002. Projection is a standalone 48/125 fixed linear filter with the same centered support, no network or W24 values read in fitting.",
+    "Center error, cosine and amplitude ratio logged in both arms, no extra losses in the control. Same 24000-step half-output fit. Preregistered Full-only after paired source qualification."
+  ],
+  "registered_at": "2026-11-27T03:38:40+00:00"
+}
