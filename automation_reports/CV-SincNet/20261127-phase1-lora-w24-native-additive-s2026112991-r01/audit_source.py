@@ -38,7 +38,7 @@ def paired_counts(delta, views):
 
 
 def audit(root, source):
-    if root.name != RUN or (root / 'native_residual_w24_v1').exists():
+    if (root / 'native_residual_w24_v1').exists():
         raise ValueError('Expected the registered Full-only run')
     state = read(root / 'state.json')
     if state['status'] not in ('SOURCE_SCORED', 'FORMAL_PREDICTING', 'PREDICTIONS_FROZEN', 'FAILED'):
@@ -48,7 +48,8 @@ def audit(root, source):
     score = read(route / 'source-scores.json')
     if (frozen['status'] != 'PREDICTIONS_FROZEN' or frozen['source_truth_reads'] or frozen['target_reads']
             or score['status'] != 'ANALYZED' or not score['source_truth_last'] or score['target_reads']
-            or frozen['waveform'] != score['waveform'] or score['n_packets'] != 300
+            or frozen['waveform'] != score['waveform'] or frozen['waveform']['candidate_run'] != RUN
+            or score['n_packets'] != 300
             or score['n_practical'] != 1800):
         raise ValueError('Unexpected source prediction or scoring evidence')
     views, modes, ids = (frozen[k] for k in ('views', 'modes', 'physical_ids'))
