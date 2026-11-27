@@ -69,7 +69,7 @@ class NativeTaskRestorer(nn.Module):
             state['temporal_position'] = F.interpolate(pos,size=128,mode='linear',align_corners=False)[0].T.contiguous()
             self.core.load_state_dict(state,strict=True)
 
-    def forward(self, raw, *, return_intermediate=False):
+    def forward(self, raw, *, return_intermediate=False, coarse_only=False):
         packets = raw.unflatten(-1,(8,1024))
         with torch.no_grad():
             framed, rotation, coherence, *_ = self.tracker.track(torch.stack((packets.real,packets.imag),dim=2))
@@ -80,6 +80,8 @@ class NativeTaskRestorer(nn.Module):
                    reliability(self.projector(raw),rms,localized=self.localized))
         corrected = self.core(observed,coherence.unsqueeze(-1),rms,edges,reliability=cue)[-1]
         coarse = raw + .5 * ((corrected-observed) * rotation * rms).flatten(-2)
+        if coarse_only:
+            return coarse
         if self.core.refine is not None:
             estimate = observed + .5 * (corrected-observed).detach()
             edit = self.core.refine(observed,estimate)
@@ -398,9 +400,13 @@ def load_readers(joint, rt, device):
     return f,model,tracker,contract
 
 
-def restored_raw(model, raw, mode, device):
+def restored_raw(model, raw, mode, device, *, coarse_only=False):
     iq=tensor(raw.view(np.float32),device).view(torch.complex64)
-    if mode in TASK_STAGES[1:]:
+    if coarse_only:
+        if mode not in PAIR_ARMS:
+            raise ValueError('The first-stage-only readout requires a paired denoiser')
+        out=model[mode](iq,coarse_only=True)
+    elif mode in TASK_STAGES[1:]:
         out=model[mode](iq)
     else:
         out=model(iq) if mode==TASK else model(iq,stage=mode)
@@ -409,5 +415,6 @@ def restored_raw(model, raw, mode, device):
     return np.asarray(out.detach().cpu().view(torch.float32).tolist(),dtype=np.float32).view(np.complex64)
 
 
-def render(joint, f, model, mode, raw, device):
-    return joint.classify_aperture(f,joint.received_aperture(restored_raw(model,raw,mode,device),device))
+def render(joint, f, model, mode, raw, device, *, coarse_only=False):
+    wave=restored_raw(model,raw,mode,device,coarse_only=coarse_only)
+    return joint.classify_aperture(f,joint.received_aperture(wave,device))

@@ -97,6 +97,12 @@ def test_refinement_preserves_parent_at_start_and_cannot_update_first_stage():
         (model.core.time_edit.weight,model.core.refine.time.edit.weight),allow_unused=True)
     assert fusion is None and restore is not None and restore.abs().sum()>0
 
+    def unexpected_stage_two(*args):
+        raise AssertionError('First-stage readout must bypass refinement')
+
+    with model.core.refine.register_forward_pre_hook(unexpected_stage_two), torch.no_grad():
+        torch.testing.assert_close(model(iq,coarse_only=True),first,rtol=0.,atol=0.)
+
 
 def test_raw_formal_receipt_preserves_w24_parent_and_source_control():
     for run,stages in train.RUNS.items():

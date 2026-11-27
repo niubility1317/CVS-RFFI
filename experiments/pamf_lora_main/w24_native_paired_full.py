@@ -26,11 +26,20 @@ from experiments.pamf_lora_main import w24_joint_pamf as joint, w24_native_train
 
 
 RUN = '20261127-phase1-lora-raw8192-paired-denoise-full-s2026113027-r01'
+COARSE_RUN = '20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01'
 FIT_COMMIT = 'fc8c14c22b5de5c3198dcca00a3e45d3827a4555'
+FULL_COMMIT = '5ce5dbd491e2259b4edd821e51489d2112ae371b'
 CONTROL, CANDIDATE = native.PAIR_ARMS
+COARSE_ROLES = ('clean_mean_coarse', 'shared_action_coarse')
 
 
-def formal_receipt(case):
+def formal_receipt(case, run=RUN):
+    if run==COARSE_RUN:
+        parent = formal_receipt(case)
+        return dict(parent,modes=[*parent['modes'],*COARSE_ROLES],candidate_run=COARSE_RUN,
+                    reference_run=RUN,first_stage_only=True)
+    if run!=RUN:
+        raise ValueError('Unknown paired Full matrix')
     fit = joint.formal_receipt(case,native.PAIR_RUN)
     return dict(fit,modes=[*fit['modes'][:-1], CONTROL, CANDIDATE],candidate_run=RUN,
                 fit_run=native.PAIR_RUN,fit_commit=FIT_COMMIT)
@@ -65,7 +74,12 @@ def await_original_dispatch(fit_root, fit_release):
     raise TimeoutError('Original run still owns its output')
 
 
-def baseline_for(fit, fit_root, case):
+def baseline_for(fit, fit_root, case, *, run=RUN):
+    if run==COARSE_RUN:
+        previous = fit_root.parent/RUN/'predictions'/case
+        if read(previous/'complete.json') != formal_receipt(case):
+            raise ValueError('Previous two-stage Full comparator is not frozen')
+        return previous, native.PAIR_ARMS
     # An already frozen blind candidate shard may be reused in full, regardless of any score.
     previous = fit_root/'predictions'/case
     if (previous/'complete.json').is_file():
@@ -90,18 +104,26 @@ def smoke(rt):
     source = Path(fit['source_root'])
     iq = joint.native(source,'U_s',contract['counts']['U_s'])[0]
     samples = np.stack([joint.source_receive(v,(0,joint.SOURCE[0],iq)) for v in ('clean',joint.VIEWS[-1])])
+    coarse_only = rt['run_id']==COARSE_RUN
     for arm in native.PAIR_ARMS:
-        if native.render(joint,f,models,arm,samples,'cuda:0').shape != (2,):
+        if coarse_only:
+            iq_tensor=joint.tensor(samples.view(np.float32),'cuda:0').view(torch.complex64)
+            whole_first,_=models[arm](iq_tensor,return_intermediate=True)
+            torch.testing.assert_close(models[arm](iq_tensor,coarse_only=True),whole_first,rtol=0.,atol=0.)
+        if native.render(joint,f,models,arm,samples,'cuda:0',coarse_only=coarse_only).shape != (2,):
             raise ValueError('Real two-arm no-query smoke did not produce complete predictions')
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',fit_commit=FIT_COMMIT,
-          arms=list(native.PAIR_ARMS),source_u_count=1,target_reads=0,target_truth_reads=0))
+          arms=list(native.PAIR_ARMS),first_stage_only=coarse_only,source_u_count=1,target_reads=0,target_truth_reads=0))
 
 
 @torch.no_grad()
 def predict(rt,case):
     fit, fit_root, _ = fit_runtime(rt)
-    expected = formal_receipt(case)
-    baseline, arms = baseline_for(fit,fit_root,case)
+    run = rt['run_id']
+    coarse_only = run==COARSE_RUN
+    expected = formal_receipt(case,run)
+    baseline, arms = baseline_for(fit,fit_root,case,run=run)
+    new_modes = COARSE_ROLES if coarse_only else arms
     f, models, _, _ = native.load_readers(joint,fit,'cuda:0')
     target = Path(fit['native_target_root'])
     joint.target_contract(target)
@@ -122,13 +144,13 @@ def predict(rt,case):
                     for i in range(0,joint.LIMIT,batch):
                         packets = np.stack([next(stream) for _ in range(min(batch,joint.LIMIT-i))])
                         direct = joint.classify_aperture(f,joint.received_aperture(packets,'cuda:0'))
-                        labels = [native.render(joint,f,models,arm,packets,'cuda:0') for arm in arms]
+                        labels = [native.render(joint,f,models,arm,packets,'cuda:0',coarse_only=coarse_only) for arm in arms]
                         pieces.append(np.stack((direct,*labels)))
                     key = f'{receiver}/{view}'
                     rows, used = joint.append_blind_prediction(
                         old[view],np.concatenate(pieces,axis=1)[None],activity[key],joint.LIMIT)
                     predictions[view],counts[key] = order_pair(rows,used,reused=arms==(CONTROL,))
-                    print('PAIRED_NATIVE_FULL',receiver,view,'NEW_READOUTS',*arms,flush=True)
+                    print('PAIRED_NATIVE_FULL',receiver,view,'NEW_READOUTS',*new_modes,flush=True)
             np.savez(out/f'{receiver}.npz',**predictions)
     write(out/'activity.json',counts)
     write(out/'complete.json',expected)
@@ -156,11 +178,20 @@ def dispatch(path):
         _,fit_root,fit_release = fit_runtime(rt)
         status(status='WAIT_FROZEN_PAIR',fit_run=native.PAIR_RUN)
         await_original_dispatch(fit_root,fit_release)
+        if rt['run_id']==COARSE_RUN:
+            previous = fit_root.parent/RUN
+            release = fit_release.parent/f'{RUN}-release'
+            if (read(release/'runtime.json')['code_commit']!=FULL_COMMIT
+                    or read(previous/'state.json')!=dict(status='PREDICTIONS_FROZEN',
+                       cases=list(joint.FULL_CASES),target_truth_read=False)
+                    or any(read(previous/'predictions'/case/'complete.json')!=formal_receipt(case)
+                           for case in joint.FULL_CASES)):
+                raise ValueError('Missing exact prior frozen two-stage Full matrix')
         status(status='SOURCE_SMOKE')
         joint.schedule(rt,[('smoke','pair-smoke')],launch)
         status(status='FORMAL_PREDICTING',route=joint.FULL)
         joint.schedule(rt,[('predict',case) for case in joint.FULL_CASES],launch)
-        if any(read(root/'predictions'/case/'complete.json')!=formal_receipt(case) for case in joint.FULL_CASES):
+        if any(read(root/'predictions'/case/'complete.json')!=formal_receipt(case,rt['run_id']) for case in joint.FULL_CASES):
             raise ValueError('Incomplete paired Full predictions')
         status(status='PREDICTIONS_FROZEN',cases=list(joint.FULL_CASES),target_truth_read=False)
     except Exception as exc:
@@ -168,20 +199,22 @@ def dispatch(path):
         raise
 
 
-def score(predictions,dataset,output):
+def score(predictions,dataset,output,run=RUN):
     from experiments.pamf_lora_main.w24_formal_score import load_frozen, score_matrix, full_target_acceptance
 
-    plans = {case:formal_receipt(case) for case in joint.FULL_CASES}
+    plans = {case:formal_receipt(case,run) for case in joint.FULL_CASES}
     matrices, activity = load_frozen(predictions,ungated=True,observed_plans=plans)
     plan = plans[joint.FULL_CASES[0]]
+    rows = COARSE_ROLES if run==COARSE_RUN else native.PAIR_ARMS
+    compared = ('direct','complex_response_half',native.TASK)+(native.PAIR_ARMS if run==COARSE_RUN else ())
     score_matrix(matrices,activity,{joint.FULL:plan['modes']},dataset,output,tuple(plan['seeds']),
-                 lambda results:{arm:full_target_acceptance(results[joint.FULL][arm]['pooled']) for arm in native.PAIR_ARMS},
-                 additional_pairings=((CONTROL,'direct'),(CONTROL,'complex_response_half'),(CONTROL,native.TASK)))
+                 lambda results:{arm:full_target_acceptance(results[joint.FULL][arm]['pooled']) for arm in rows},
+                 additional_pairings=tuple((rows[0],ref) for ref in compared))
 
 
 def collect(args):
     root = PurePosixPath(read(args.submit)['run_root'])
-    if root.name != RUN:
+    if root.name not in (RUN,COARSE_RUN):
         raise ValueError('Expected the registered paired Full run')
     connection = ['-F',str(args.ssh_config),'-o','BatchMode=yes','-o','ConnectTimeout=10']
     deadline, last = monotonic()+16*60*60, None
@@ -204,7 +237,7 @@ def collect(args):
         raise TimeoutError('Paired Full collector exceeded its observation window')
     args.output.mkdir(parents=True)
     subprocess.run(['scp',*connection,'-r','N607:'+str(root/'predictions'),str(args.output)],check=True,timeout=300)
-    score(args.output/'predictions',args.dataset,args.output/'scores')
+    score(args.output/'predictions',args.dataset,args.output/'scores',root.name)
 
 
 def main():
@@ -222,6 +255,8 @@ def main():
         cmd = actions.add_parser(action)
         for field in fields:
             cmd.add_argument('--'+field,required=True,type=Path)
+        if action=='publish':
+            cmd.add_argument('--coarse',action='store_true')
     args = parser.parse_args()
     if args.action=='dispatch':
         dispatch(args.runtime)
@@ -237,10 +272,14 @@ def main():
         project = PurePosixPath(rt['project'])
         runs,releases = project/'runs',project/'releases'
         w24 = releases/f'{joint.W24_RUN}-release'
-        rt.update(run_id=RUN,runner=__spec__.name,code_commit=release_commit(args.repo),
-                  release_root=str(releases/f'{RUN}-release'),run_root=str(runs/RUN),
-                  w24_release_root=str(w24),allowed_gpus=[6,7,2,0,3],max_workers=2,max_compute_processes=8,cpu_workers=6,
-                  external_releases=[str(x) for x in (w24,releases/f'{native.PAIR_RUN}-release',runs/native.PAIR_RUN)])
+        run = COARSE_RUN if args.coarse else RUN
+        external = [w24,releases/f'{native.PAIR_RUN}-release',runs/native.PAIR_RUN]
+        if args.coarse:
+            external.extend((releases/f'{RUN}-release',runs/RUN))
+        rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
+                  release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
+                  w24_release_root=str(w24),allowed_gpus=[0,7,6,2,3] if args.coarse else [6,7,2,0,3],
+                  max_workers=2,max_compute_processes=8,cpu_workers=6,external_releases=[str(x) for x in external])
         release(args.repo,args.output,rt,args.ssh_config)
 
 

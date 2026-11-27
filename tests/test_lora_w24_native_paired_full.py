@@ -43,3 +43,17 @@ def test_reuse_reorders_frozen_candidate_without_changing_base_or_truth(tmp_path
     ordered, counts = evaluator.order_pair(value,[1,2,3],reused=True)
     assert np.array_equal(ordered,value[:,[0,1,3,2]])
     assert counts == [1,3,2]
+
+
+def test_first_stage_matrix_reuses_the_full_frozen_two_stage_prefix(tmp_path):
+    case = joint.FULL_CASES[0]
+    fit_root = tmp_path/evaluator.native.PAIR_RUN
+    previous = tmp_path/evaluator.RUN/'predictions'/case
+    previous.mkdir(parents=True)
+    before = evaluator.formal_receipt(case)
+    write(previous/'complete.json',before)
+    plan = evaluator.formal_receipt(case,evaluator.COARSE_RUN)
+    assert plan['modes']==[*before['modes'],*evaluator.COARSE_ROLES]
+    assert plan['reference_run']==evaluator.RUN and plan['first_stage_only']
+    assert plan['target_truth_read'] is False and plan['receivers']==before['receivers']
+    assert evaluator.baseline_for({},fit_root,case,run=evaluator.COARSE_RUN)==(previous,evaluator.native.PAIR_ARMS)
