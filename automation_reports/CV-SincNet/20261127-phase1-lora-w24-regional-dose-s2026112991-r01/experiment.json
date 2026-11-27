@@ -1,0 +1,199 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-w24-regional-dose-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 固定方向的逐包分区幅度估计",
+  "description": "Test whether receiver-observable gain along a fixed learned direction improves held waveforms and source truth-last accuracy.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02",
+    "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA performance research goal.",
+  "code": {
+    "commit": "fbf2414205c1ecacc9ed6aeceeeef7cef726545a",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "Ordinary N607 account, explicit approved GPU capacity or two-thread CPU fallback; frozen archive CPU E104 independent evaluation.",
+    "cwd": "Immutable source release for gain fit; archived W24 release for CPU prediction and scoring."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MHz through DURA; untouched W24 front end receives the resulting packet.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "First 800 per receiver from the pre-existing 4,000/rx U fit order, original separate 500 U held IDs, and the fixed original 300 V panel.",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "U_s_fit_physical": 4000,
+      "U_s_fit_received": 4000,
+      "U_s_fit_clean": 4000,
+      "U_s_held": 500,
+      "V_after_freeze": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Reuse VALIDATED_ONCE lora_full_packets_v1 registered V order and true E104.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Only frozen source weights, U_s IQ and same-source simulated pairs for gain estimation; no W24, V, TX or target before freeze. Oracle only in isolated source V column."
+  },
+  "checkpoint": {
+    "initialization": "Freeze exact-additive and 24,000-step fixed-dose direction weights; fit only two weighted ridge gain models from scratch.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r01",
+        "role": "Exact terminal frozen 24,000 update direction head and original optimizer budget."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+        "role": "Fixed source-only Practical exact-additive 24000 update checkpoint for both readouts."
+      },
+      {
+        "ref": "W24 E104 2026092702",
+        "role": "Independent source evaluation after direction checkpoint freeze."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02",
+        "role": "Identical source V physical IDs and first three independently scored reference predictions."
+      }
+    ],
+    "contract_check_ref": "Exact r01 current terminal checkpoint, original parent, E104 readout, 300 source V IDs and endpoint parity.",
+    "provenance_verdict": "Frozen parent of the same LoRa source contract; original source-only checkpoint",
+    "selection_rule": "One deterministic freeze. Adaptive gain must improve >=18 merged correct, positive paired lower bound, >=6 low urban and preserve source direct clean versus fixed-dose direction; also must beat the constant six-view control. Oracle never eligible."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current LoRa DURA direction-training goal",
+    "gpu_policy": "One eligible GPU prioritized 7,0,3,6,5; else start two-thread CPU immediately. Source prediction two CPU threads and two replay workers.",
+    "remote_run_root": "runs/20261127-phase1-lora-w24-regional-dose-s2026112991-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-w24-regional-dose-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-w24-regional-dose-s2026112991-r01",
+    "launch_command": "python -u -m experiments.pamf_lora_main.w24_regional_dose_source publish --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-regional-dose-s2026112991-r01/release",
+    "stop_rule": "Binding, no-query smoke, nonfinite fit, baseline prediction parity or truth-last closure failure; retain outputs and preserve other owners."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "fit-smoke.json",
+    "gain.pt",
+    "fit-complete.json",
+    "fit-source.log",
+    "smoke.json",
+    "predictions.npz",
+    "source-predictions.json",
+    "source-scores.json",
+    "predict-source.log",
+    "score-source.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source clean count",
+      "six practical counts",
+      "low urban count",
+      "paired corrections and harms",
+      "matched regional waveform residuals"
+    ],
+    "dimensions": [
+      "six fixed readouts",
+      "source V seven views",
+      "five source RX",
+      "500 disjoint U held waveform"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-w24-regional-dose-s2026112991-r01/predictions.npz",
+    "scorer_ref": "w24_factor_audit.score_source, independent CPU"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-direction-regional-gain",
+      "method": "One full-packet phase and IQ direction head with separate hard pre-RMS center and edge norms",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_fixed_dose_direction.py",
+      "resolved_config_ref": "releases/20261127-phase1-lora-w24-regional-dose-s2026112991-r01-release/runtime.json",
+      "data_overrides": {
+        "U_s_fit_physical": 4000,
+        "U_s_fit_received": 4000,
+        "U_s_fit_clean": 4000,
+        "U_s_held": 500,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "target": 0
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "New source fit seed 2026112991; registered V panel and Full draw; independent E104 seed 2026092702.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "weighted ridge closed-form",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "4,000 paired U_s source physical packets plus their identity views, 500 held. One fit, 300 source V x seven views x six readouts.",
+      "output_root": "runs/20261127-phase1-lora-w24-regional-dose-s2026112991-r01",
+      "log_path": "runs/20261127-phase1-lora-w24-regional-dose-s2026112991-r01/fit-source.log",
+      "command": "python -u -m experiments.pamf_lora_main.w24_regional_dose_source publish --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-regional-dose-s2026112991-r01/release",
+      "expected_artifacts": [
+        "state.json",
+        "fit-smoke.json",
+        "gain.pt",
+        "fit-complete.json",
+        "fit-source.log",
+        "smoke.json",
+        "predictions.npz",
+        "source-predictions.json",
+        "source-scores.json",
+        "predict-source.log",
+        "score-source.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Receive-only observable features: outer/shoulder spectral medians, adjacent chirp coherence, regional power, edit ratio, and received/edit alignment.",
+    "Same frozen correction directions with per-region bounded gain [0,1.75]. Fixed intercept control shares the same WLS fit support.",
+    "Source reference projected on the frozen actual learned direction supplies the gain target; separate exact least-squares amplitude source diagnostic keeps clean at the fixed direction output."
+  ],
+  "registered_at": "2026-11-27T13:01:50+00:00"
+}
