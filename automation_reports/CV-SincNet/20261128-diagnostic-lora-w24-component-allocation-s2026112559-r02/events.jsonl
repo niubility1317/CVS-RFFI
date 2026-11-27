@@ -1,1 +1,2 @@
 {"at": "2026-11-27T17:01:05+00:00", "status": "PLANNED", "note": "修复已复现的归档 NumPy 转换问题，独立 r02 使用原固定矩阵。", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-27T17:08:19+00:00", "status": "ANALYZED", "note": "真实无目标冒烟、固定六路源盲预测和独立评分完成，4,200 条共享基线逐包一致。", "evidence": ["runs/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02/state.json", "source-independent/source-scores.json", "source-independent/independent-recount.json"], "row_id": null}
