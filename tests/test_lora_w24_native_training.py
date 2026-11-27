@@ -3,7 +3,7 @@ import torch
 from experiments.pamf_lora_main import w24_joint_pamf as joint
 from experiments.pamf_lora_main import w24_native_training as train
 from experiments.pamf_lora_main.w24_native_dura import NativeDura, iq_error, source_pair
-from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, reliability
+from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, VisibleIQ, reliability
 from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 from experiments.pamf_restoration.models import complex_iq, pair
 
@@ -100,3 +100,18 @@ def test_nonstationary_source_shape_preserves_energy_and_is_reproducible():
     torch.testing.assert_close(a,b,rtol=0,atol=0)
     torch.testing.assert_close(a.abs().square().sum((1,2)),noise.abs().square().sum((1,2)))
     assert not torch.equal(a,noise)
+
+
+def test_visible_wave_objective_projects_the_error_and_its_gradient():
+    idx=torch.tensor([[[0,1],[2,3]]])
+    taps=torch.tensor([[.5,.5],[.5,.5]])
+    edges=torch.tensor([[4]])
+    operator=InvisibleIQ(idx,taps,edges,width=6)
+    x=torch.tensor([[1+1j,2j,3j,4j,5j,6j]],requires_grad=True)
+    value=VisibleIQ.apply(x,operator)
+    torch.testing.assert_close(value,x-operator(x))
+    weight=torch.tensor([[1+0j,2j,-1j,1j,0j,9j]])
+    g,=torch.autograd.grad((value*weight.conj()).real.sum(),x)
+    torch.testing.assert_close(g,weight-operator(weight))
+    assert g[0,-1]==0
+    torch.testing.assert_close(operator(g),torch.zeros_like(g))

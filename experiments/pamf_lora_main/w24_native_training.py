@@ -11,7 +11,7 @@ from torch.nn import functional as F
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main.data import BANDWIDTH_HZ
-from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, reliability
+from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, VisibleIQ, reliability
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.w24_native_dura import (
     NativeDura, NATIVE_LENGTH, STAGES, action_loss, capture_scale, coarse_loss, iq_error, source_pair,
@@ -25,11 +25,13 @@ TASK_RUN = '20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01'
 TASK = 'raw_e104_strong'
 REL_RUN = '20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01'
 REL_ARMS = ('chirp_reliability','local_reliability')
-TASK_STAGES = (TASK,*REL_ARMS)
-RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), REL_RUN: REL_ARMS}
+VISIBLE_RUN = '20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01'
+WAVE_ARMS = ('full_wave_native','visible_wave_native')
+TASK_STAGES = (TASK,*REL_ARMS,*WAVE_ARMS)
+RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS}
 STAGE_RUN = {stage:run for run,stages in RUNS.items() for stage in stages}
-SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015}
-STEPS = dict(zip((*STAGES,*TASK_STAGES),(10000,10000,12000,18000,15000,15000),strict=True))
+SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015,VISIBLE_RUN: 2026113017}
+STEPS = dict(zip((*STAGES,*TASK_STAGES),(10000,10000,12000,18000,15000,15000,15000,15000),strict=True))
 BATCH_ROLE = 8
 DURA_LR = 2e-4
 TASK_LR = 4e-5
@@ -88,6 +90,10 @@ def _proof(stage,contract,model_proof):
             or model_proof['localized_reliability']!=(stage==REL_ARMS[-1])
             or model_proof['source_envelope_fraction']!=.5):
         raise ValueError('Unexpected native reliability parent or branch')
+    if stage in WAVE_ARMS and (model_proof['F_trainable']
+            or model_proof['initialization']!=TASK_RUN
+            or model_proof['visible_waveform']!=(stage==WAVE_ARMS[-1])):
+        raise ValueError('Unexpected native waveform objective or parent')
 
 
 def load_stage(root, stage, contract, module, device):
@@ -111,7 +117,7 @@ def dura_model(root, contract, device, stage=STAGES[-1], *, parents_only=False):
     return model
 
 
-def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng):
+def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *, waveform_projector=None):
     n=len(label)
     raw=raw/capture_scale(raw)
     observed=mix(raw.unflatten(-1,(8,1024)),rng).flatten(-2)
@@ -125,9 +131,13 @@ def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng):
     lc=.5*(F.cross_entropy(clean_logits,label)+F.cross_entropy(clean_prediction,label))
     teacher=clean_logits.detach().softmax(-1)
     kl=.5*F.kl_div(clean_prediction.log_softmax(-1),teacher,reduction='batchmean')
-    error=(restored-raw)
+    error=restored-raw
+    wave_ref=raw
+    if waveform_projector is not None:
+        error=VisibleIQ.apply(error,waveform_projector)
+        wave_ref=raw-waveform_projector(raw)
     error_spectral=torch.fft.fft(error,norm='ortho').abs().square()
-    power=torch.fft.fft(raw,norm='ortho').abs().square()
+    power=torch.fft.fft(wave_ref,norm='ortho').abs().square()
     spectral=(error_spectral/(.001+power+.03*power.mean(-1,keepdim=True))).log1p().mean()
     mse=error.abs().square().mean()
     fidelity=(clean_out-raw[:n]).abs().square().mean()
@@ -151,21 +161,26 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     order=np.random.default_rng(seed)
     rng=torch.Generator(device=device).manual_seed(seed)
     probes=torch.Generator(device=device).manual_seed(seed+11)
+    waveform_projector=None
     if is_task:
         contract,reader,g0,frontend=joint.boot(rt,device)
         if stage==TASK:
             parent=joint.continuation_parent(rt,contract,reader,g0,device,joint.RUN_STRONG)
             model=task_model(parent,device)
         else:
-            projector=build_projector(frontend,device)
             base=task_model(None,device)
             load_stage(Path(rt['project'])/'runs'/TASK_RUN,TASK,contract,base.core,device)
-            model=task_model(None,device,projector=projector,localized=stage==REL_ARMS[-1])
-            state=base.core.state_dict()
-            state['reliability_stem.weight']=model.core.reliability_stem.weight.detach().clone()
-            model.core.load_state_dict(state,strict=True)
-            if not smoke:
-                del base
+            model=base
+            if stage in REL_ARMS:
+                projector=build_projector(frontend,device)
+                model=task_model(None,device,projector=projector,localized=stage==REL_ARMS[-1])
+                state=base.core.state_dict()
+                state['reliability_stem.weight']=model.core.reliability_stem.weight.detach().clone()
+                model.core.load_state_dict(state,strict=True)
+                if not smoke:
+                    del base
+            if stage==WAVE_ARMS[-1]:
+                waveform_projector=build_projector(frontend,device)
         trained=model.core
         reader.requires_grad_(False).eval()
         original=importlib.import_module('lora_wide_dura_archive.dura_w24_model').condition_waveforms
@@ -204,7 +219,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                     residue=frontend.aperture(missing/scale).abs().max()
                     if not residue < 3e-6:
                         raise ValueError('Unstable W24-invisible native component')
-            parts=training_task_parts(joint,model,reader,frontend,mix,raw,label,rng)
+            parts=training_task_parts(joint,model,reader,frontend,mix,raw,label,rng,
+                                      waveform_projector=waveform_projector)
             accepted+=parts[7].detach()
             loss=parts@weights
             if smoke:
@@ -249,6 +265,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     if stage in REL_ARMS:
         proof.update(initialization=TASK_RUN,localized_reliability=stage==REL_ARMS[-1],
                      source_envelope_fraction=.5)
+    if stage in WAVE_ARMS:
+        proof.update(initialization=TASK_RUN,visible_waveform=stage==WAVE_ARMS[-1])
     summary=dict(**proof,status='PASS' if smoke else 'SOURCE_FROZEN',
                  gradient=fit_gradient,CE_to_G=supervised,pseudo_CE_to_G=pseudo_gradient,
                  worker_seconds=monotonic()-started,parameters=sum(x.numel() for x in trained.parameters()),
@@ -271,9 +289,9 @@ def load_readers(joint, rt, device):
         load_stage(root,TASK,contract,model.core,device)
         model.eval().requires_grad_(False)
     else:
-        projector=build_projector(tracker,device)
+        projector=build_projector(tracker,device) if run==REL_RUN else None
         model={}
-        for stage in REL_ARMS:
+        for stage in RUNS[run]:
             restorer=task_model(None,device,projector=projector,localized=stage==REL_ARMS[-1])
             load_stage(root,stage,contract,restorer.core,device)
             model[stage]=restorer.eval().requires_grad_(False)
@@ -282,7 +300,7 @@ def load_readers(joint, rt, device):
 
 def restored_raw(model, raw, mode, device):
     iq=tensor(raw.view(np.float32),device).view(torch.complex64)
-    if mode in REL_ARMS:
+    if mode in (*REL_ARMS,*WAVE_ARMS):
         out=model[mode](iq)
     else:
         out=model(iq) if mode==TASK else model(iq,stage=mode)

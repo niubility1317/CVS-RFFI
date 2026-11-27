@@ -46,6 +46,19 @@ class InvisibleIQ(nn.Module):
         return torch.view_as_complex(hidden.to(raw.real.dtype).contiguous())
 
 
+class VisibleIQ(torch.autograd.Function):
+    """Orthogonal projection with the same adjoint in backward."""
+
+    @staticmethod
+    def forward(ctx, raw, projector):
+        ctx.projector = projector
+        return raw - projector(raw)
+
+    @staticmethod
+    def backward(ctx, gradient):
+        return gradient - ctx.projector(gradient.contiguous()), None
+
+
 def reliability(invisible, rms, *, localized):
     residual = invisible.unflatten(-1,(8,1024)) / rms
     bucket = residual.abs().square().unflatten(-1,(16,64)).mean(-1)
