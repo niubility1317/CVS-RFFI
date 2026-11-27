@@ -241,13 +241,13 @@ def predict_wifi(config, folder):
     freeze(folder, ids, matrix)
 
 
-def score(rt):
+def score(rt, *, archived_wisig=None):
     if os.environ.get("CUDA_VISIBLE_DEVICES") != "":
         raise ValueError("Scoring requires an independent CPU process")
     root = Path(rt["run_root"])
     matrices = {}
     for dataset in ("lora", "wisig"):
-        folder = (root if dataset == "lora" else root.parent / WISIG_RUN) / dataset
+        folder = (root.parent / archived_wisig if dataset == "wisig" and archived_wisig else root) / dataset
         marker = read(folder / "frozen.json")
         if any(marker[k] != v for k, v in dict(status="PREDICTIONS_FROZEN", modes=list(MODES),
                 views=list(VIEWS), source_truth_reads=0, target_reads=0).items()):
@@ -372,7 +372,7 @@ def main():
     elif args.action == "dispatch":
         dispatch(args.runtime, rt)
     elif args.action == "score":
-        score(rt)
+        score(rt, archived_wisig=WISIG_RUN)
     else:
         numerical_policy()
         folder = Path(rt["run_root"]) / args.action
