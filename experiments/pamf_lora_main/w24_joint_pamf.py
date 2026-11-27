@@ -865,6 +865,7 @@ def main():
     pseudo_options.add_argument('--raw-visible-wave',dest='run_id',action='store_const',const=raw_train.VISIBLE_RUN)
     pseudo_options.add_argument('--raw-clean-margin',dest='run_id',action='store_const',const=raw_train.GEOMETRY_RUN)
     pseudo_options.add_argument('--raw-stream-context',dest='run_id',action='store_const',const=raw_train.STREAM_RUN)
+    pseudo_options.add_argument('--raw-paired-denoise',dest='run_id',action='store_const',const=raw_train.PAIR_RUN)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -928,7 +929,8 @@ def main():
                            RUN_COV: [7,6,0,3,2,5], RUN_VIEW: [7,0,2,6,3,5],
                            raw_train.DURA_RUN: [6,5], raw_train.TASK_RUN: [2,3],
                            raw_train.REL_RUN: [7,6,2,0], raw_train.VISIBLE_RUN: [7,2,6,3],
-                           raw_train.GEOMETRY_RUN: [7,2,0,6], raw_train.STREAM_RUN: [6,5,7,2,0]}
+                           raw_train.GEOMETRY_RUN: [7,2,0,6], raw_train.STREAM_RUN: [6,5,7,2,0],
+                           raw_train.PAIR_RUN: [6,7,2,0,3]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),

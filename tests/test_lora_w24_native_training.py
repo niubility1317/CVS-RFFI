@@ -5,6 +5,7 @@ from experiments.pamf_lora_main import w24_native_training as train
 from experiments.pamf_lora_main.w24_clean_geometry import clean_geometry_risk
 from experiments.pamf_lora_main.w24_native_dura import NativeDura, iq_error, source_pair
 from experiments.pamf_lora_main.w24_native_stream import NativeStreamRefiner
+from experiments.pamf_lora_main.w24_native_noise_pair import NoisePairRefiner, PairedNoiseViews
 from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, VisibleIQ, reliability
 from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 from experiments.pamf_restoration.models import complex_iq, pair
@@ -60,6 +61,41 @@ def test_native_stream_only_crosses_real_chirp_seams_in_continuous_arm():
     torch.testing.assert_close(independent[...,1024:],adjacent[...,1024:],rtol=0.,atol=0.)
     assert torch.count_nonzero(adjacent[0,:1023]) == 0
     assert (adjacent-coarse).abs().max() <= .25*raw.abs().square().mean().sqrt()
+
+
+def test_paired_source_changes_only_the_independent_training_witness():
+    clean = torch.randn(32,256,dtype=torch.complex64,generator=torch.Generator().manual_seed(19))
+    original, shared = (PairedNoiseViews('cpu',shared_action=value) for value in (False,True))
+    source = lambda: torch.Generator().manual_seed(271)
+    left, left_witness = original(clean, source())
+    right, right_witness = shared(clean, source())
+    torch.testing.assert_close(left,right,rtol=0.,atol=0.)
+    assert original.selected==shared.selected and original.acted==shared.acted
+    mask = (right_witness-left_witness).abs().amax(-1)>1e-5
+    assert mask.sum()==shared.acted and mask.any()
+    assert ((right[mask]-right_witness[mask]).abs().amax(dim=-1)>1e-5).all()
+
+
+def test_refinement_preserves_parent_at_start_and_cannot_update_first_stage():
+    class Tracker(torch.nn.Module):
+        def track(self, parts):
+            iq = torch.complex(*parts.unbind(dim=2))
+            return iq, torch.ones_like(iq), torch.ones_like(iq.real[...,0])
+
+    model = train.NativeTaskRestorer(Tracker())
+    iq = torch.randn(1,8192,dtype=torch.complex64,generator=torch.Generator().manual_seed(7))
+    with torch.no_grad():
+        parent = model(iq)
+    model.core.refine = NoisePairRefiner()
+    first, final = model(iq,return_intermediate=True)
+    torch.testing.assert_close(first,parent,rtol=0.,atol=0.)
+    torch.testing.assert_close(final,parent,rtol=0.,atol=0.)
+    with torch.no_grad():
+        model.core.refine.time.edit.weight.fill_(.01)
+    _, final = model(iq,return_intermediate=True)
+    fusion, restore = torch.autograd.grad(final.real.mean(),
+        (model.core.time_edit.weight,model.core.refine.time.edit.weight),allow_unused=True)
+    assert fusion is None and restore is not None and restore.abs().sum()>0
 
 
 def test_raw_formal_receipt_preserves_w24_parent_and_source_control():

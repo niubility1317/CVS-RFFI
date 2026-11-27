@@ -19,6 +19,9 @@ from experiments.pamf_lora_main.w24_native_dura import (
 )
 from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 from experiments.pamf_lora_main.w24_native_stream import NativeStreamRefiner
+from experiments.pamf_lora_main.w24_native_noise_pair import (
+    NoisePairRefiner, PairedNoiseViews, PAIR_WEIGHT, intermediate_loss,
+)
 from experiments.pamf_restoration.models import complex_iq, pair
 
 
@@ -34,14 +37,18 @@ GEOMETRY_ARMS = ('clean_anchor_native','rival_margin_native')
 GEOMETRY_WEIGHT = .35
 STREAM_RUN = '20261127-phase1-lora-raw8192-stream-context-s2026113023-r01'
 STREAM_ARMS = ('chirp_context_native', 'stream_context_native')
-CONTINUATIONS = {REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS, GEOMETRY_RUN: GEOMETRY_ARMS, STREAM_RUN: STREAM_ARMS}
+PAIR_RUN = '20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01'
+PAIR_ARMS = ('clean_mean_native', 'shared_action_native')
+CONTINUATIONS = {REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS, GEOMETRY_RUN: GEOMETRY_ARMS,
+                 STREAM_RUN: STREAM_ARMS, PAIR_RUN: PAIR_ARMS}
 TASK_STAGES = (TASK, *(arm for modes in CONTINUATIONS.values() for arm in modes))
 RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), **CONTINUATIONS}
 STAGE_RUN = {stage:run for run,stages in RUNS.items() for stage in stages}
 SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015,VISIBLE_RUN: 2026113017,
-         GEOMETRY_RUN: 2026113021, STREAM_RUN: 2026113023}
+         GEOMETRY_RUN: 2026113021, STREAM_RUN: 2026113023, PAIR_RUN: 2026113027}
 STEPS = {**dict(zip(STAGES,(10000,10000,12000),strict=True)), TASK:18000,
-         **dict.fromkeys((*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS),15000), **dict.fromkeys(STREAM_ARMS,18000)}
+         **dict.fromkeys((*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS),15000), **dict.fromkeys(STREAM_ARMS,18000),
+         **dict.fromkeys(PAIR_ARMS,20000)}
 BATCH_ROLE = 8
 DURA_LR = 2e-4
 TASK_LR = 4e-5
@@ -55,13 +62,14 @@ class NativeTaskRestorer(nn.Module):
         self.projector, self.localized = projector, localized
         self.core = PacketUNet(across_chirps=True,center=1024,with_reliability=projector is not None)
         self.core.stream = None
+        self.core.refine = None
         if parent is not None:
             state = parent.state_dict()
             pos = state['temporal_position'].T.unsqueeze(0)
             state['temporal_position'] = F.interpolate(pos,size=128,mode='linear',align_corners=False)[0].T.contiguous()
             self.core.load_state_dict(state,strict=True)
 
-    def forward(self, raw):
+    def forward(self, raw, *, return_intermediate=False):
         packets = raw.unflatten(-1,(8,1024))
         with torch.no_grad():
             framed, rotation, coherence, *_ = self.tracker.track(torch.stack((packets.real,packets.imag),dim=2))
@@ -72,6 +80,11 @@ class NativeTaskRestorer(nn.Module):
                    reliability(self.projector(raw),rms,localized=self.localized))
         corrected = self.core(observed,coherence.unsqueeze(-1),rms,edges,reliability=cue)[-1]
         coarse = raw + .5 * ((corrected-observed) * rotation * rms).flatten(-2)
+        if self.core.refine is not None:
+            estimate = observed + .5 * (corrected-observed).detach()
+            edit = self.core.refine(observed,estimate)
+            final = coarse.detach() + (edit * rotation * rms).flatten(-2)
+            return (coarse,final) if return_intermediate else final
         return coarse if self.core.stream is None else self.core.stream(raw, coarse)
 
 
@@ -114,6 +127,9 @@ def _proof(stage,contract,model_proof):
     if stage in STREAM_ARMS and (model_proof['F_trainable'] or model_proof['initialization']!=TASK_RUN
                                  or model_proof['continuous_stream']!=(stage==STREAM_ARMS[-1])):
         raise ValueError('Unexpected native stream context or parent')
+    if stage in PAIR_ARMS and (model_proof['F_trainable'] or model_proof['initialization']!=TASK_RUN
+                               or model_proof['same_action_witness']!=(stage==PAIR_ARMS[-1])):
+        raise ValueError('Unexpected paired-noise context or parent')
 
 
 def load_stage(root, stage, contract, module, device):
@@ -140,9 +156,15 @@ def dura_model(root, contract, device, stage=STAGES[-1], *, parents_only=False):
 def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *, waveform_projector=None, geometry=None):
     n=len(label)
     raw=raw/capture_scale(raw)
-    observed=mix(raw.unflatten(-1,(8,1024)),rng).flatten(-2)
-    restored=model(observed)
-    clean_out=model(raw[:n])
+    paired=isinstance(mix,PairedNoiseViews)
+    if paired:
+        observed,witness=mix(raw,rng)
+        coarse,restored=model(observed,return_intermediate=True)
+        coarse_clean,clean_out=model(raw[:n],return_intermediate=True)
+    else:
+        observed=mix(raw.unflatten(-1,(8,1024)),rng).flatten(-2)
+        restored=model(observed)
+        clean_out=model(raw[:n])
     clean_ap, _=joint.normalize_aperture(frontend.aperture(raw))
     repaired_ap, _=joint.normalize_aperture(frontend.aperture(restored))
     clean_end, _=joint.normalize_aperture(frontend.aperture(clean_out))
@@ -168,6 +190,8 @@ def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *,
         prototypes, relative=geometry
         estimated_feature,clean_feature,_=feature.split(n)
         parts+=(clean_geometry_risk(estimated_feature,clean_feature,label,prototypes,relative=relative),)
+    if paired:
+        parts+=(intermediate_loss(frontend,coarse,witness,coarse_clean,raw[:n]),)
     return torch.stack(parts)
 
 
@@ -182,7 +206,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     is_task=stage in TASK_STAGES
     seed=SEEDS[run]+(STAGES.index(stage) if stage in STAGES else 0)
     torch.manual_seed(seed)
-    count=2 if smoke and stage not in (*GEOMETRY_ARMS,*STREAM_ARMS) else BATCH_ROLE
+    count=2 if smoke and stage not in (*GEOMETRY_ARMS,*STREAM_ARMS,*PAIR_ARMS) else BATCH_ROLE
     steps=1 if smoke else STEPS[stage]
     order=np.random.default_rng(seed)
     rng=torch.Generator(device=device).manual_seed(seed)
@@ -209,13 +233,18 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                 waveform_projector=build_projector(frontend,device)
             if stage in STREAM_ARMS:
                 model.core.stream=NativeStreamRefiner(continuous=stage==STREAM_ARMS[-1]).to(device)
+            if stage in PAIR_ARMS:
+                model.core.refine=NoisePairRefiner().to(device)
         trained=model.core
         reader.requires_grad_(False).eval()
-        original=importlib.import_module('lora_wide_dura_archive.dura_w24_model').condition_waveforms
-        shape = (LocalizedWhite(torch.Generator(device=device).manual_seed(seed+2))
-                 if stage in REL_ARMS else None)
-        mix=joint.StrongSourceMix(original,torch.Generator(device=device).manual_seed(seed+1),
-                                  device,enabled=True,noise_shape=shape)
+        if stage in PAIR_ARMS:
+            mix=PairedNoiseViews(device,shared_action=stage==PAIR_ARMS[-1])
+        else:
+            original=importlib.import_module('lora_wide_dura_archive.dura_w24_model').condition_waveforms
+            shape = (LocalizedWhite(torch.Generator(device=device).manual_seed(seed+2))
+                     if stage in REL_ARMS else None)
+            mix=joint.StrongSourceMix(original,torch.Generator(device=device).manual_seed(seed+1),
+                                      device,enabled=True,noise_shape=shape)
         labels=joint.training_labels(source,contract)
     else:
         contract=source_contract(source)
@@ -232,10 +261,11 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     optimizer=torch.optim.AdamW(trained.parameters(),lr=TASK_LR if is_task else DURA_LR,weight_decay=1e-4)
     schedule=torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,steps,eta_min=2e-6 if is_task else 2e-5)
     accepted=torch.zeros((),device=device)
-    weights=torch.tensor((1.,.65,.3,.30,.25,1.5,1.,0.) + ((GEOMETRY_WEIGHT,) if geometry is not None else ()),
-                         device=device)
+    extra=(GEOMETRY_WEIGHT,) if geometry is not None else (PAIR_WEIGHT,) if stage in PAIR_ARMS else ()
+    weights=torch.tensor((1.,.65,.3,.30,.25,1.5,1.,0.)+extra,device=device)
     started=monotonic()
     fit_gradient = supervised = pseudo_gradient = geometry_gradient = stream_gradient = None
+    intermediate_gradient = None
     for step in range(1,steps+1):
         l=order.choice(len(l_iq),count,replace=False)
         u=order.choice(len(u_iq),count,replace=False)
@@ -259,8 +289,9 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
             accepted+=parts[7].detach()
             loss=parts@weights
             if smoke:
-                supervised=joint.norm_gradient(torch.autograd.grad(parts[0],trained.parameters(),retain_graph=True))
-                pseudo_gradient=joint.norm_gradient(torch.autograd.grad(parts[6],trained.parameters(),retain_graph=True))
+                readout=tuple(trained.refine.parameters() if stage in PAIR_ARMS else trained.parameters())
+                supervised=joint.norm_gradient(torch.autograd.grad(parts[0],readout,retain_graph=True))
+                pseudo_gradient=joint.norm_gradient(torch.autograd.grad(parts[6],readout,retain_graph=True))
                 if not (0<supervised<float('inf') and 0<pseudo_gradient<float('inf')):
                     raise ValueError('Actual E104 L_s and accepted clean U_s must train native IQ')
                 if geometry is not None:
@@ -273,6 +304,14 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                         parts[0],trained.stream.edit.parameters(),retain_graph=True))
                     if not 0<stream_gradient<float('inf'):
                         raise ValueError('E104 classification loss has no finite native stream gradient')
+                if stage in PAIR_ARMS:
+                    first=tuple(p for key,p in trained.named_parameters() if not key.startswith('refine.'))
+                    if any(x is not None and torch.count_nonzero(x)
+                           for x in torch.autograd.grad(parts[0],first,retain_graph=True,allow_unused=True)):
+                        raise ValueError('Final recognition loss must not update the paired-noise first stage')
+                    intermediate_gradient=joint.norm_gradient(torch.autograd.grad(parts[8],first,retain_graph=True))
+                    if not 0<intermediate_gradient<float('inf'):
+                        raise ValueError('Paired-view loss must update the first stage')
         else:
             clean,observed,exact,variance=source_pair(raw,rng)
             incoming=pair(observed)
@@ -317,12 +356,17 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                      clean_prototype_source_count=len(l_iq))
     if stage in STREAM_ARMS:
         proof.update(initialization=TASK_RUN,continuous_stream=stage==STREAM_ARMS[-1])
+    if stage in PAIR_ARMS:
+        proof.update(initialization=TASK_RUN,same_action_witness=stage==PAIR_ARMS[-1],
+                     generic_action_exposures=int(mix.acted))
     summary=dict(**proof,status='PASS' if smoke else 'SOURCE_FROZEN',
                  gradient=fit_gradient,CE_to_G=supervised,pseudo_CE_to_G=pseudo_gradient,geometry_to_G=geometry_gradient,
                  worker_seconds=monotonic()-started,parameters=sum(x.numel() for x in trained.parameters()),
                  peak_cuda_bytes=torch.cuda.max_memory_allocated() if device.startswith('cuda') else 0)
     if stage in STREAM_ARMS:
         summary['CE_to_stream']=stream_gradient
+    if stage in PAIR_ARMS:
+        summary['pair_to_coarse']=intermediate_gradient
     if not smoke:
         with (folder/'model.pt').open('xb') as out:
             torch.save(dict(contract=contract,proof=proof,model=trained.state_dict()),out)
@@ -347,6 +391,8 @@ def load_readers(joint, rt, device):
             restorer=task_model(None,device,projector=projector,localized=stage==REL_ARMS[-1])
             if stage in STREAM_ARMS:
                 restorer.core.stream=NativeStreamRefiner(continuous=stage==STREAM_ARMS[-1]).to(device)
+            if stage in PAIR_ARMS:
+                restorer.core.refine=NoisePairRefiner().to(device)
             load_stage(root,stage,contract,restorer.core,device)
             model[stage]=restorer.eval().requires_grad_(False)
     return f,model,tracker,contract
