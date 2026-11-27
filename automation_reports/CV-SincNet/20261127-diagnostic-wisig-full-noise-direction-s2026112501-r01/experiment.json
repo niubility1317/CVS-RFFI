@@ -1,0 +1,172 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01",
+  "group_id": "phase1-wisig-observable-recovery",
+  "display_name": "WiSig Full 源域中心与边缘等能量换方向及精确扣噪",
+  "description": "Compare direct, frozen R69, both-region equal energy exact noise direction, and exact noise subtraction on the same 360 source V packets.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "oracle_diagnostic",
+    "matched_physical_packets",
+    "full_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-diagnostic-wisig-waveform-source-s2026112501-r01",
+    "20261125-diagnostic-wisig-action-noise-s2026112501-r01",
+    "20261125-diagnostic-wisig-action-noise-s2026112501-r02",
+    "20261125-phase1-wisig-native-fir-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests paired LoRa/WiSig exact-noise and equal-energy interventions. Isolated source diagnostic only.",
+  "code": {
+    "commit": "68f7a0c1aff772a57ea34e14f74f2d5df187568b",
+    "checkout": "E:\\codex\\home\\worktrees\\lora-w24-chirp-components\\standard_ce_baselines_20261010",
+    "environment": "N607 archived WiSig Native FIR runtime Python",
+    "cwd": "releases/20261125-phase1-wisig-native-fir-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig",
+    "version": "Main split source V 25 MS/s, post_sync/noeq",
+    "representation": "256 complex samples at 25 MS/s, central 208 points and first/last 24 points for diagnostic intervention.",
+    "contract_ref": "20261125-phase1-wisig-native-fir-source-m4-r01 source cache, complete.json",
+    "physical_ids_ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01 15 strata with 24 packets per stratum",
+    "label_map_ref": "Registered WiSig source V labels by physical ID",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 4,
+      "V": 360
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "WiSig Main source V",
+    "validation_ref": "Frozen original native-FIR decisions and isolated receive reference panel",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered default Full practical/post_sync/noeq only."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only attribution with separate truth-last scoring of native practical views; no training or target access."
+  },
+  "checkpoint": {
+    "initialization": "No training.",
+    "sources": [
+      {
+        "ref": "20261125-diagnostic-wisig-waveform-source-s2026112501-r01",
+        "role": "Frozen R69 and direct waveform parity, frozen Main Tri-SIG-TIME 2026092701 reader"
+      },
+      {
+        "ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01",
+        "role": "Verified known-noise Full reference only"
+      }
+    ],
+    "contract_check_ref": "Exact archived direct and R69 decisions for all 360 source IDs in all seven Full views.",
+    "provenance_verdict": "Existing frozen WiSig reader, R69 and same-row source replay, no new checkpoint.",
+    "selection_rule": "Four fixed source diagnostic arms. No selection, fitting or target path."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "One eligible GPU with at least 12 GiB of memory, checked with shared workload.",
+    "remote_run_root": "runs/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01",
+    "remote_log_root": "runs/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01",
+    "launch_command": "python -m experiments.pamf_unrolled_restore.wisig_full_noise_direction publish --repo . --context E:/type10-7/local_artifacts/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01/source-context.json --output E:/type10-7/local_artifacts/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01/release --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Fail downstream on source provenance, frozen decision or physical ID mismatch, incomplete coverage, or nonfinite waveform."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "predictions.npz",
+    "predictions-frozen.json",
+    "scores.json",
+    "predict.log",
+    "score.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "six and per scene accuracy",
+      "paired corrections and harms",
+      "RX/day/TX",
+      "region residual and relative dose"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "four source diagnostic rows"
+    ],
+    "prediction_ref": "runs/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01/predictions.npz",
+    "scorer_ref": "Independent source label process after frozen coverage and reference IDs."
+  },
+  "rows": [
+    {
+      "row_id": "full-noise-direction",
+      "method": "Direct, frozen R69, both-regions norm-matched exact direction, both-regions exact additive subtraction.",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_full_noise_direction.py",
+      "resolved_config_ref": "releases/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01-release/runtime.json",
+      "data_overrides": {
+        "source_V": 360,
+        "smoke_U": 4,
+        "route": "full"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026112501,
+        "augmentation": 2026101901,
+        "support": null,
+        "evaluation": 2026112501
+      },
+      "seed_notes": "Uses the original reader model seed, fixed split, registered receive draw and source-panel subsample. Exact source reconstructor checkpoint identities are in checkpoint.sources.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No training, fixed four modes and seven views.",
+      "output_root": "runs/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01",
+      "log_path": "runs/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01/predict.log",
+      "command": "python -m experiments.pamf_unrolled_restore.wisig_full_noise_direction publish --repo . --context E:/type10-7/local_artifacts/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01/source-context.json --output E:/type10-7/local_artifacts/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01/release --ssh-config E:/type10-7/tools/n607_ssh_config",
+      "expected_artifacts": [
+        "predictions.npz",
+        "scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No target data. Freeze all source predictions before independently joining source labels.",
+    "Both oracle treatments preserve original R69 clean. Actual R69 edit norm measured separately in each native region.",
+    "Exact subtraction retains other simulator action including synchronization offsets. The same 256-point classifier sees all arms."
+  ],
+  "registered_at": "2026-11-27T07:03:06+00:00"
+}

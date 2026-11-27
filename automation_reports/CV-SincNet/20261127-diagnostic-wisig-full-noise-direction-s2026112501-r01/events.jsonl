@@ -1,0 +1,4 @@
+{"at": "2026-11-27T07:03:06+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-27T07:10:08+00:00", "status": "RUNNING", "note": "VERIFIED release, GPU 0 and real frozen reader/R69 smoke before source V or oracle data.", "evidence": "runs/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01/smoke.json", "row_id": null}
+{"at": "2026-11-27T07:10:08+00:00", "status": "PREDICTIONS_COMPLETE", "note": "Four rows x seven Full source views x 360 packets; endpoints reproduce the frozen reference.", "evidence": "runs/20261127-diagnostic-wisig-full-noise-direction-s2026112501-r01/predictions-frozen.json", "row_id": null}
+{"at": "2026-11-27T07:10:08+00:00", "status": "ANALYZED", "note": "Independent source truth-last and matched summary with existing LoRa isolated results. No target reads.", "evidence": "report.md", "row_id": null}
