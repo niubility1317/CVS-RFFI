@@ -8,7 +8,7 @@ import torch
 
 from experiments.cric_dura_comparison.io import write
 from experiments.pamf_unrolled_restore import wisig_practical_supervised_fit as trainer
-from experiments.pamf_unrolled_restore.wisig_practical_supervised import BANK_RUN, COUNTS, receipt, source_bank
+from experiments.pamf_unrolled_restore.wisig_practical_supervised import BANK_RUN, COUNTS, FIT_RUN, frozen_fit_root, receipt, source_bank
 from experiments.pamf_unrolled_restore.wisig_practical_supervised_fit import (
     ARMS, FIT, HELD, REGIONS, PacketDenoiser, load_arrays, matched_target, objective,
 )
@@ -78,6 +78,14 @@ class KnownNoiseSupervisionTests(unittest.TestCase):
             self.assertEqual(tuple(models), ARMS)
             self.assertTrue(all(not model.training and all(not p.requires_grad for p in model.parameters())
                                 for model in models.values()))
+
+    def test_cpu_formal_binds_the_existing_fit_run(self):
+        with TemporaryDirectory() as folder:
+            project = Path(folder)
+            expected = project/'runs'/FIT_RUN
+            self.assertEqual(frozen_fit_root(dict(project=folder, fit_root=str(expected))), expected)
+            with self.assertRaisesRegex(ValueError, 'registered r02'):
+                frozen_fit_root(dict(project=folder, fit_root=str(project/'different')))
 
 
 if __name__ == '__main__':

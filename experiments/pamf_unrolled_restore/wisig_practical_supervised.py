@@ -16,27 +16,30 @@ if __package__ is None:
     pamf_unrolled_restore.__path__.append(str(Path(__file__).resolve().parent))
 
 from experiments.cric_dura_comparison.io import read, tensor, write
-from experiments.pamf_lora_main.packet_runner import schedule
 from experiments.pamf_unrolled_restore.wisig_forced_clean import COUNTS, FORCED, REPLAY, SEEDS, SPLITS, reference_runtime
-from experiments.pamf_unrolled_restore.wisig_native_fir_anchor_probe import PARENT
 from experiments.pamf_unrolled_restore.wisig_practical_supervised_fit import ARMS, fit, load_models, make_bank, validate_bank
 
 
-RUN = '20261127-phase1-wisig-practical-known-noise-full-s2026112795-r02'
+RUN = '20261127-phase1-wisig-practical-known-noise-full-s2026112795-r03'
 BANK_RUN = '20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01'
+FIT_RUN = '20261127-phase1-wisig-practical-known-noise-full-s2026112795-r02'
 METHODS = ('raw', 'R69', *ARMS)
 
 
 def bind_readers(c):
     from experiments.cric_dura_comparison.bootstrap import numerical_policy
     from experiments.pamf_repl_view_shuffle.runner import activate
-    from experiments.pamf_unrolled_restore.wisig_preamble_dura_target import readers
+    from experiments.pamf_unrolled_restore.wisig_preamble_dura_target import F_RUN, historical, load_reader
 
     activate(c)
     numerical_policy()
-    originals, heads = readers(c)
-    if tuple(originals) != SEEDS or tuple(heads) != SEEDS:
-        raise ValueError('Unexpected WiSig recognizer seeds')
+    originals, heads = {}, {}
+    for seed in SEEDS:
+        cfg = historical(Path(c['recognizer_run']), 'predict', seed)
+        head, evidence = load_reader(cfg['source_output'], read(cfg['source_contract']), 'cpu')
+        if (evidence['run_id'], evidence['row_id'], evidence['model_seed']) != (F_RUN, cfg['row_id'], seed):
+            raise ValueError('Frozen source head or WiSig seed changed')
+        originals[seed], heads[seed] = cfg, head.eval().requires_grad_(False)
     return originals, heads
 
 
@@ -55,15 +58,23 @@ def source_bank(rt):
     return bank
 
 
+def frozen_fit_root(rt):
+    root = Path(rt['fit_root'])
+    if root != Path(rt['project'])/'runs'/FIT_RUN:
+        raise ValueError('Expected the registered r02 frozen models')
+    return root
+
+
 @torch.no_grad()
 def smoke(rt):
     from experiments.pamf_unrolled_restore.wisig_dura_stress import classify
 
     root = Path(rt['run_root'])
-    models = load_models(root)
+    torch.set_num_threads(2)
+    models = load_models(frozen_fit_root(rt), 'cpu')
     _, heads = bind_readers(reference_runtime(rt))
     with np.load(source_bank(rt)/'held.npz', allow_pickle=False) as src:
-        panels = [tensor(src[name][:8], 'cuda:0') for name in ('clean', 'observed')]
+        panels = [tensor(src[name][:8], 'cpu') for name in ('clean', 'observed')]
     timings = {}
     for arm, model in models.items():
         for iq in panels:
@@ -72,14 +83,13 @@ def smoke(rt):
                 raise ValueError('Failed frozen source-only reader integration')
         latency = []
         for _ in range(16):
-            torch.cuda.synchronize()
             start = perf_counter()
             classify(heads, restored_iq(model, panels[1][:1]))
-            torch.cuda.synchronize()
             latency.append((perf_counter()-start)*1000)
         timings[arm] = float(np.median(latency[4:]))
     write(root/'smoke.json', dict(status='PASS', arms=list(ARMS), seeds=list(SEEDS), source_only=True,
-          target_reads=0, tx_reads=0, batch=1, restoration_and_three_readers_median_ms=timings))
+          target_reads=0, tx_reads=0, device='cpu', threads=2, batch=1,
+          restoration_and_three_readers_median_ms=timings))
     print('WISIG_KNOWN_NOISE_FROZEN_SOURCE_SMOKE_PASS', timings, flush=True)
 
 
@@ -110,7 +120,8 @@ def predict(rt, split):
     if read(root/'smoke.json')['status'] != 'PASS':
         raise ValueError('Expected the source-only frozen IQ smoke')
     c = reference_runtime(rt)
-    models = load_models(root)
+    torch.set_num_threads(2)
+    models = load_models(frozen_fit_root(rt), 'cpu')
     originals, heads = bind_readers(c)
     first = originals[SEEDS[0]]
     if any(view_root(c, z, 'full', split) != view_root(c, first, 'full', split)
@@ -127,7 +138,7 @@ def predict(rt, split):
         arrays = {arm: np.empty((len(SEEDS), len(ids)), dtype=np.uint8) for arm in ARMS}
         for start in range(0, len(ids), BATCH):
             order = slice(start, start+BATCH)
-            iq = tensor(data[order if positions is None else positions[order]], 'cuda:0')
+            iq = tensor(data[order if positions is None else positions[order]], 'cpu')
             for arm, model in models.items():
                 arrays[arm][:, order] = classify(heads, restored_iq(model, iq))
             if (start//BATCH) % 128 == 0:
@@ -213,38 +224,32 @@ def dispatch(runtime):
     reference_runtime(rt)
     root = Path(rt['run_root'])
     root.mkdir()
-    for name in ('logs', 'predictions', 'configs'):
+    for name in ('logs', 'predictions'):
         (root/name).mkdir()
     state = root/'state.json'
     entry = str(Path(__file__).resolve())
-    source_cwd, target_cwd = (Path(rt[k]) for k in ('teacher_release', 'reference'))
+    reference = Path(rt['reference'])
 
-    def launch(_plan, phase, name, gpu=None):
-        source = phase == 'fit'
-        reference = source_cwd if source else target_cwd
-        cfg = root/'configs'/f'{phase}.json' if source else runtime
-        env = dict(os.environ, PYTHONPATH=str(reference), CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
+    def launch(phase, name):
+        env = dict(os.environ, PYTHONPATH=str(reference), CUDA_VISIBLE_DEVICES='',
                    OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='2')
         with (root/'logs'/f'{phase}-{name}.log').open('x', encoding='utf-8') as log:
-            job = subprocess.Popen([rt['python'], '-u', entry, phase, str(cfg), name], cwd=reference,
+            job = subprocess.Popen([rt['python'], '-u', entry, phase, str(runtime), name], cwd=reference,
                                    env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
-        print('WISIG_KNOWN_NOISE_STARTED', phase, name, job.pid, gpu, flush=True)
+        print('WISIG_KNOWN_NOISE_STARTED', phase, name, job.pid, 'cpu', flush=True)
         return job
 
     try:
-        bank = source_bank(rt)
-        write(root/'configs'/'fit.json', dict(run_root=str(root), bank=str(bank)))
-        write(state, dict(status='SOURCE_TRAINING', device='cpu', workers=len(ARMS), source_bank=str(bank)))
-        workers = {arm: launch(rt, 'fit', arm) for arm in ARMS}
-        exit_codes = {arm: job.wait() for arm, job in workers.items()}
+        write(state, dict(status='SOURCE_SMOKE', device='cpu'))
+        if launch('smoke', 'frozen').wait():
+            raise RuntimeError('Frozen WiSig reader CPU source smoke failed')
+        write(state, dict(status='TARGET_PREDICTING', device='cpu'), exclusive=False)
+        workers = {split: launch('predict', split) for split in SPLITS}
+        exit_codes = {split: job.wait() for split, job in workers.items()}
         if any(exit_codes.values()):
-            raise RuntimeError(f'Source-only WiSig CPU fit failed: {exit_codes}')
-        write(state, dict(status='SOURCE_SMOKE'), exclusive=False)
-        schedule(rt, [('smoke', 'frozen')], launch)
-        write(state, dict(status='TARGET_PREDICTING'), exclusive=False)
-        schedule(rt, [('predict', s) for s in SPLITS], launch)
+            raise RuntimeError(f'WiSig Full CPU prediction failed: {exit_codes}')
         write(state, dict(status='PREDICTIONS_FROZEN'), exclusive=False)
-        if launch(rt, 'score', 'independent').wait():
+        if launch('score', 'independent').wait():
             raise RuntimeError('Independent WiSig Full scorer exited unsuccessfully')
         write(state, dict(status='ANALYZED'), exclusive=False)
     except Exception as exc:
@@ -271,15 +276,13 @@ def main():
         rt = {k: context[k] for k in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(rt['project'])
         releases, runs = project/'releases', project/'runs'
-        teacher = releases/f'{PARENT}-release'
         reference = releases/f'{FORCED}-release'
         bank = runs/BANK_RUN/'source-bank'
+        fit_root = runs/FIT_RUN
         rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{RUN}-release'), run_root=str(runs/RUN),
-                  teacher_release=str(teacher), reference=str(reference), source_bank=str(bank),
-                  external_releases=list(map(str, (teacher, reference, bank, runs/FORCED, runs/REPLAY))),
-                  allowed_gpus=[7, 2, 6, 5, 1, 4, 0, 3], max_workers=2, max_compute_processes=2,
-                  training_cap=True)
+                  reference=str(reference), source_bank=str(bank), fit_root=str(fit_root),
+                  external_releases=list(map(str, (reference, bank, fit_root, runs/FORCED, runs/REPLAY))))
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'dispatch':
         dispatch(args.runtime)
