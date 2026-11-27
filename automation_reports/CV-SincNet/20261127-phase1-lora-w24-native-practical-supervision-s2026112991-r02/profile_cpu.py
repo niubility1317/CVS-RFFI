@@ -1,21 +1,33 @@
 """Time the frozen Full Practical readouts on source-only N607 IQ."""
 
 import argparse
+from importlib.util import module_from_spec, spec_from_file_location
 import json
+import os
 from pathlib import Path
+import sys
 from time import perf_counter_ns
 
 import numpy as np
 import torch
 
-from experiments.pamf_lora_main import w24_formal as formal
-from experiments.pamf_lora_main.w24_native_full import native_full_view
-from experiments.pamf_lora_main.w24_third_prior import PRACTICAL_KIND
-
-
 @torch.no_grad()
 def profile(runtime):
     rt = json.loads(runtime.read_text(encoding='utf-8'))
+    original = Path(rt['w24_release_root'])
+    os.chdir(original)
+    sys.path.insert(0, str(original))
+    from experiments import pamf_lora_main
+
+    # Follow the archived prediction worker's source import order.
+    directory = runtime.resolve().parent/'experiments'/'pamf_lora_main'
+    pamf_lora_main.__path__.append(str(directory))
+    loader = spec_from_file_location('experiments.pamf_lora_main.w24_formal', directory/'w24_formal.py')
+    formal = module_from_spec(loader)
+    loader.loader.exec_module(formal)
+    from experiments.pamf_lora_main.w24_native_full import native_full_view
+    from experiments.pamf_lora_main.w24_third_prior import PRACTICAL_KIND
+
     if not formal.cpu_practical(rt) or rt.get('third_prior') != PRACTICAL_KIND or rt.get('ungated') is not True:
         raise ValueError('The frozen two-arm Full Practical CPU runtime is required')
     rt.pop('native_target_root')
@@ -58,4 +70,4 @@ def profile(runtime):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('runtime', type=Path)
-    print(json.dumps(profile(parser.parse_args().runtime), indent=2))
+    print(json.dumps(profile(parser.parse_args().runtime.resolve()), indent=2))
