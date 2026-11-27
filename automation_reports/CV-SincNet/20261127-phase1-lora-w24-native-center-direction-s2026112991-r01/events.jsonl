@@ -1,2 +1,5 @@
 {"at": "2026-11-27T03:38:40+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-27T03:40:38+00:00", "status": "RUNNING", "note": "VERIFIED immutable release, paired raw U_s smoke, GPU 0/3 workers and growing matching fit logs.", "evidence": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/state.json", "row_id": null}
+{"at": "2026-11-27T06:04:56+00:00", "status": "TRAINING_COMPLETE", "note": "Both 24000-step matched native source checkpoints frozen.", "evidence": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/state.json", "row_id": null}
+{"at": "2026-11-27T06:04:56+00:00", "status": "PREDICTIONS_COMPLETE", "note": "Complete 7 x 8 x 300 blind source matrix.", "evidence": "runs/20261127-phase1-lora-w24-native-center-direction-s2026112991-r01/full_native/predictions.npz", "row_id": null}
+{"at": "2026-11-27T06:04:56+00:00", "status": "ANALYZED", "note": "Independent source truth-last: source low urban promotion failed. Later user-requested Full run has independent root.", "evidence": "report.md", "row_id": null}
