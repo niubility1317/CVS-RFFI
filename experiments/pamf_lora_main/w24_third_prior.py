@@ -76,6 +76,8 @@ POLYPHASE_RUN = '20261127-phase1-lora-w24-polyphase-s2026112991-r01'
 POLYPHASE_ARMS = ('aperture_context', 'native_polyphase')
 ADDITIVE_REFERENCE_RUN = '20261127-phase1-lora-w24-additive-reference-s2026112991-r01'
 ADDITIVE_REFERENCE_ARMS = ('restore_original', 'remove_additive')
+NATIVE_PACKET_RUN = '20261127-phase1-lora-w24-native-packet-dura-s2026112991-r01'
+NATIVE_PACKET_ARMS = ('native_dura_center', 'native_dura_whole')
 LONG_UNET_ARMS = (*WEAK_TRANSFER_ARMS, *POLYPHASE_ARMS, *ADDITIVE_REFERENCE_ARMS)
 UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
 UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS,
@@ -115,6 +117,7 @@ VARIANTS = {
     'weak-transfer': (WEAK_TRANSFER_RUN, WEAK_TRANSFER_ARMS),
     'polyphase': (POLYPHASE_RUN, POLYPHASE_ARMS),
     'additive-reference': (ADDITIVE_REFERENCE_RUN, ADDITIVE_REFERENCE_ARMS),
+    'native-packet-dura': (NATIVE_PACKET_RUN, NATIVE_PACKET_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -130,6 +133,10 @@ class Trial:
     contrasts: tuple
     routes: tuple = ROUTES
     source_intermediate: int | None = None
+
+    @property
+    def fit_arms(self):
+        return self.arms[1:] if self.arms == NATIVE_PACKET_ARMS else self.arms
 
 
 def trial(kind):
@@ -147,9 +154,9 @@ def trial(kind):
         return Trial(run, arms, 48000, (*modes, *baselines, *intermediate),
                      (*contrasts, *((modes[3], base) for base in baselines), *comparisons),
                      ROUTES[:1], WEAK_TRANSFER_INTERMEDIATE)
-    if arms in (POLYPHASE_ARMS, ADDITIVE_REFERENCE_ARMS):
+    if arms in (POLYPHASE_ARMS, ADDITIVE_REFERENCE_ARMS, NATIVE_PACKET_ARMS):
         baselines = (UNET_BASELINE, OUTER_BASELINE)
-        return Trial(run, arms, 48000, (*modes, *baselines),
+        return Trial(run, arms, 24000 if arms == NATIVE_PACKET_ARMS else 48000, (*modes, *baselines),
                      (*contrasts, *((modes[3], base) for base in baselines)), ROUTES[:1])
     if arms[0] in OUTER_TUNE_ARMS:
         steps = 1200 if kind == 'band-refine' else 1800
@@ -233,6 +240,10 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_polyphase import NativePolyphaseUNet
 
         return NativePolyphaseUNet(native_context=arm == POLYPHASE_ARMS[1])
+    if arm in NATIVE_PACKET_ARMS:
+        from experiments.pamf_lora_main.w24_packet_dura import NativePacketDura
+
+        return NativePacketDura()
     if arm in UNET_ARMS:
         from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 
@@ -261,6 +272,8 @@ def restorer(training, arm):
 def fit_inputs(rt, arm):
     if arm not in ARM_TRIAL:
         raise ValueError(f'Unknown prior arm: {arm}')
+    if arm == NATIVE_PACKET_ARMS[0]:
+        raise ValueError('The center-only readout reuses the single complete-packet checkpoint')
     inputs = dict(source_root=rt['source_root'], run_root=str(PurePosixPath(rt['run_root']) / arm))
     if arm in OUTER_TUNE_ARMS:
         inputs['source_parent'] = rt['source_parent']
@@ -336,6 +349,8 @@ def source_recipe(training, arm, *, initialize=None):
             trained, key = (model.lower, model.upper, model.prior), 'spectral_prior_gradient_norms'
         elif arm in PROJECTION_ARMS:
             trained, key = (model.encoder, model.context, model.decoder), 'clean_prior_gradient_norms'
+        elif arm in NATIVE_PACKET_ARMS:
+            trained, key = (model.coarse, *model.priors), 'native_packet_gradient_norms'
         elif arm in UNET_ARMS:
             trained = (model.stem, model.temporal, model.axis, model.time_edit, model.spectral)
             key = 'unet_gradient_norms'
@@ -386,6 +401,8 @@ def source_recipe(training, arm, *, initialize=None):
             info.update(native_polyphase=arm == POLYPHASE_ARMS[1], pre_channel_probe=True)
         if arm in ADDITIVE_REFERENCE_ARMS:
             info.update(additive_only=arm == ADDITIVE_REFERENCE_ARMS[1], shared_generic_action=True)
+        if arm in NATIVE_PACKET_ARMS:
+            info.update(initialization='random', native_capture_samples=8192, observation_steps=2)
         if arm in UNET_COMPONENT_ARMS:
             info.update(separate_chirps=True, separate_loss=arm == UNET_COMPONENT_ARMS[1])
         if arm in UNET_WARM_ARMS:
@@ -411,7 +428,8 @@ def source_recipe(training, arm, *, initialize=None):
     spec = trial(ARM_TRIAL[arm])
     name = f'w24_{arm}_prior' if arm in ARMS else f'w24_{arm}'
     milestones = (spec.steps // 3, 2 * spec.steps // 3)
-    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *SCRATCH_PRIOR_ARMS, *LONG_UNET_ARMS):
+    if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *SCRATCH_PRIOR_ARMS, *LONG_UNET_ARMS,
+               *NATIVE_PACKET_ARMS):
         milestones = (2000, 6000, 12000, 18000)
     if arm in (*PROJECTION_ARMS, *LONG_UNET_ARMS):
         milestones = (*milestones, 24000, 36000, 42000)
@@ -421,7 +439,8 @@ def source_recipe(training, arm, *, initialize=None):
                    validation_steps=milestones,
                    model=partial(restorer, training, arm), finalize_calibration=finalize,
                    initialize=initialize, coarse_first=training.RECIPE.coarse_first
-                   and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS, *EXPERT_ARMS, *SCRATCH_PRIOR_ARMS))
+                   and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS, *EXPERT_ARMS, *SCRATCH_PRIOR_ARMS,
+                                   *NATIVE_PACKET_ARMS))
 
 
 def snapshot_objective(calculate, archived, contract, snapshot, checkpoint_step):
@@ -446,6 +465,8 @@ def fit(config, arm, *, smoke):
     from experiments.pamf_lora_main import channel_blind_source, dura_w24_model, dura_w24_train
 
     rt = read(config)
+    if arm == NATIVE_PACKET_ARMS[0]:
+        raise ValueError('The center-only readout has no separate source fit')
     paths = {'source_root', 'run_root'}
     if arm in OUTER_TUNE_ARMS:
         paths.add('source_parent')
@@ -468,6 +489,15 @@ def fit(config, arm, *, smoke):
         return (train, torch.empty(0, device=device), held), contract
 
     calculate, initialize = dura_w24_model.objective, None
+    if arm in NATIVE_PACKET_ARMS:
+        from experiments.pamf_lora_main.w24_packet_dura import source_objective
+
+        def calculate(model, _tracker, raw, rng, *, with_identity, recipe, step):
+            clean = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
+            received = dura_w24_model.condition_waveforms(clean.unflatten(-1, (8, 1024)), rng).flatten(-2)
+            if with_identity:
+                received[-2:] = clean[-2:]
+            return source_objective(model, received, clean, with_identity=with_identity)
     if arm in ('direction_first', 'coherent_error'):
         from experiments.pamf_lora_main.w24_first_direction import objective_for
 
@@ -608,6 +638,10 @@ def read_candidate_weights(root, contract, device, arm, training, archived, *, s
     if arm in ADDITIVE_REFERENCE_ARMS and (summary.get('additive_only') is not (arm == ADDITIVE_REFERENCE_ARMS[1])
                                            or summary.get('shared_generic_action') is not True):
         raise ValueError(f'Unverified additive reference for {arm}')
+    if arm in NATIVE_PACKET_ARMS and (summary.get('initialization') != 'random'
+                                      or summary.get('native_capture_samples') != 8192
+                                      or summary.get('observation_steps') != 2):
+        raise ValueError('Unverified native full-packet checkpoint')
     if arm in UNET_COMPONENT_ARMS and (summary.get('separate_chirps') is not True
                                        or summary.get('separate_loss') is not (arm == UNET_COMPONENT_ARMS[1])):
         raise ValueError(f'Unverified packet U-Net chirp decomposition for {arm}')
@@ -647,7 +681,8 @@ def read_candidate_weights(root, contract, device, arm, training, archived, *, s
 def load_candidate(root, contract, device, arm, *, source_step=None):
     training = importlib.import_module('lora_wide_dura_archive.dura_w24_train')
     archived = importlib.import_module('lora_wide_dura_archive.channel_blind_source')
-    recipe, weights, summary = read_candidate_weights(root, contract, device, arm, training, archived,
+    fit_arm = NATIVE_PACKET_ARMS[1] if arm in NATIVE_PACKET_ARMS else arm
+    recipe, weights, summary = read_candidate_weights(root, contract, device, fit_arm, training, archived,
                                                        source_step=source_step)
     model = recipe.model().to(device).eval().requires_grad_(False)
     model.load_state_dict(weights, strict=True)
@@ -690,14 +725,14 @@ def dispatch(runtime):
     try:
         if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Expected the registered W24 evaluator archive')
-        for arm in spec.arms:
+        for arm in spec.fit_arms:
             (root / arm).mkdir()
             write(root / arm / 'fit-inputs.json', fit_inputs(rt, arm))
         cards = available(rt['allowed_gpus'], rt['max_compute_processes'])
-        if len(cards) < len(spec.arms):
-            raise RuntimeError('The matched pair requires two GPUs with sufficient free memory')
-        status(status='SOURCE_TRAINING', arms=list(spec.arms), steps=spec.steps, available_gpus=cards)
-        schedule(rt, [('fit', arm) for arm in spec.arms], training_job)
+        if len(cards) < len(spec.fit_arms):
+            raise RuntimeError('Insufficient eligible GPUs for the registered training rows')
+        status(status='SOURCE_TRAINING', arms=list(spec.fit_arms), steps=spec.steps, available_gpus=cards)
+        schedule(rt, [('fit', arm) for arm in spec.fit_arms], training_job)
         status(status='SOURCE_FROZEN', arms=list(spec.arms), steps=spec.steps)
         deadline = monotonic() + 600
         while not (cards := available(rt['allowed_gpus'], rt['max_compute_processes'])):
@@ -752,7 +787,8 @@ def publish(args):
              'chirp-components': [3, 2], 'probe-transport': [0, 3, 7], 'noise-color': [2, 3, 0],
              'common-refine': [0, 3, 2, 7], 'spectral-posterior': [0, 3, 2, 7],
              'clean-projection': [0, 2, 3, 5], 'weak-transfer': [0, 3, 2, 5],
-             'polyphase': [0, 2, 3, 5], 'additive-reference': [0, 7, 2, 3]}
+             'polyphase': [0, 2, 3, 5], 'additive-reference': [0, 7, 2, 3],
+             'native-packet-dura': [3, 5, 6]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),

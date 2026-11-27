@@ -186,11 +186,14 @@ def bindings(rt, routes, device):
     archive, parent = training_runtime(rt)
     wide, tracker, threshold, frozen = load_restorer(archive, parent, contract, device)
     if rt.get('third_prior'):
-        from experiments.pamf_lora_main.w24_third_prior import load_candidate, trial
+        from experiments.pamf_lora_main.w24_third_prior import NATIVE_PACKET_ARMS, load_candidate, trial
 
         source = Path(rt['candidate_root'])
         names = trial(rt['third_prior']).arms
-        arms = [load_candidate(source, contract, device, arm) for arm in names]
+        if names == NATIVE_PACKET_ARMS:
+            arms = [load_candidate(source, contract, device, names[-1])] * 2
+        else:
+            arms = [load_candidate(source, contract, device, arm) for arm in names]
         info = dict(epochs=epochs, source_frozen_G=source.name, steps=arms[0][1]['steps'],
                     parameters={arm: summary['parameters'] for arm, (_, summary) in zip(names, arms, strict=True)})
         return heads, [model for model, _ in arms], tracker, None, {}, info
@@ -233,6 +236,16 @@ def ungated_decisions(heads, g, tracker, original, *, packets=None):
     return np.stack([classify_aperture(f, wide) for f in heads])
 
 
+def native_readouts(model, packets, original, fraction):
+    if packets.shape != (len(original), 8192) or packets.dtype != np.complex64:
+        raise ValueError('Full-packet DURA requires the raw 8,192 complex received samples')
+    raw = tensor(packets.view(np.float32), original.device).view(torch.complex64)
+    restored = torch.lerp(raw, model.restore_native(raw), fraction)
+    whole = received_aperture(np.from_dlpack(restored.cpu().contiguous()), original.device)
+    center = torch.cat((whole[..., :384], original[..., 384:]), dim=-1)
+    return center, whole
+
+
 @torch.no_grad()
 def candidate_labels(heads, g, tracker, packets, device):
     original = received_aperture(packets, device)
@@ -244,6 +257,12 @@ def candidate_labels(heads, g, tracker, packets, device):
 def prior_labels(heads, arms, tracker, packets, device):
     original = received_aperture(packets, device)
     direct = np.stack([classify_aperture(f, original) for f in heads])
+    if hasattr(arms[-1], 'restore_native'):
+        if len(arms) != 2 or arms[0] is not arms[1]:
+            raise ValueError('Native readout ablation must share its frozen full-packet weights')
+        alternatives = native_readouts(arms[-1], packets, original, .5)
+        return np.stack((direct, *(np.stack([classify_aperture(f, view) for f in heads])
+                                   for view in alternatives)), axis=1), len(original)
     return np.stack((direct, *(ungated_decisions(heads, arm, tracker, original, packets=packets) for arm in arms)),
                     axis=1), len(original)
 

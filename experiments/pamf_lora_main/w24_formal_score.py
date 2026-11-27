@@ -230,4 +230,5 @@ if __name__ == '__main__':
     matched.add_argument('--weak-transfer', dest='third_prior', action='store_const', const='weak-transfer')
     matched.add_argument('--polyphase', dest='third_prior', action='store_const', const='polyphase')
     matched.add_argument('--additive-reference', dest='third_prior', action='store_const', const='additive-reference')
+    matched.add_argument('--native-packet-dura', dest='third_prior', action='store_const', const='native-packet-dura')
     score(**vars(parser.parse_args()))
