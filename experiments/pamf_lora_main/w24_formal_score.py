@@ -88,6 +88,12 @@ def bootstrap_counts(delta):
             np.stack(per_rx))
 
 
+def scene_summary(counts, denominator):
+    return dict(correct_by_scene=dict(zip(VIEWS, counts.tolist(), strict=True)),
+                accuracy_by_scene=dict(zip(VIEWS, (counts/denominator).tolist(), strict=True)),
+                six_correct=int(counts[1:].sum()), six_accuracy=float(counts[1:].sum()/(denominator*6)))
+
+
 def readout(correct, seeds=SEEDS):
     # correct is [receiver, view, reader seed, physical packet].
     counts = correct.sum(-1)
@@ -95,11 +101,8 @@ def readout(correct, seeds=SEEDS):
     for j, seed in enumerate((*seeds, 'pooled')):
         cells = counts[:, :, j] if j < len(seeds) else counts.sum(2)
         denom = LIMIT * (1 if j < len(seeds) else len(seeds))
-        views = cells.sum(0)
         result[str(seed)] = dict(
-            correct_by_scene=dict(zip(VIEWS, views.tolist(), strict=True)),
-            accuracy_by_scene=dict(zip(VIEWS, (views/(len(TARGET)*denom)).tolist(), strict=True)),
-            six_correct=int(views[1:].sum()), six_accuracy=float(views[1:].sum()/(len(TARGET)*denom*6)),
+            **scene_summary(cells.sum(0), len(TARGET)*denom),
             by_receiver={rx: dict(zip(VIEWS, cells[i].tolist(), strict=True)) for i, rx in enumerate(TARGET)})
     return result
 
@@ -119,6 +122,36 @@ def paired(delta, seeds=SEEDS):
                                  for k, rx in enumerate(TARGET)})
         result[str(seed)] = summary
     return result
+
+
+def transmitter_groups(hit, truth, modes, seeds):
+    """Group the already truth-joined correctness matrix by physical transmitter."""
+    reordered = hit.transpose(1, 2, 3, 0, 4)  # view, seed, mode, receiver, packet
+    groups = {}
+    for tx in np.unique(truth):
+        mask = truth == tx
+        n = int(mask.sum())
+        group = reordered[..., mask]
+        readouts = {mode: {} for mode in modes}
+        contrasts = {mode: {} for mode in modes[:-1]}
+        for reader, seed in enumerate((*seeds, 'pooled')):
+            block = group[:, reader:reader+1] if reader < len(seeds) else group
+            denom = n*block.shape[1]
+            counts = block.sum((1, 3))
+            for i, mode in enumerate(modes):
+                readouts[mode][str(seed)] = scene_summary(counts[:, i], denom)
+            candidate, baselines = block[:, :, -1:], block[:, :, :-1]
+            repairs = (candidate & ~baselines).sum((1, 3))
+            harms = (~candidate & baselines).sum((1, 3))
+            repairs = np.vstack((repairs, repairs[1:].sum(0)))
+            harms = np.vstack((harms, harms[1:].sum(0)))
+            for i, mode in enumerate(modes[:-1]):
+                contrasts[mode][str(seed)] = {
+                    view: dict(repairs=int(r), harms=int(h), net=int(r-h))
+                    for view, r, h in zip(MEASURES, repairs[:, i], harms[:, i], strict=True)
+                }
+        groups[str(tx)] = dict(n_physical=n, readouts=readouts, paired=contrasts)
+    return groups
 
 
 def acceptance(results, ungated=False, outer_objective=False, third_prior=False):
@@ -166,35 +199,42 @@ def score_observed_dose(predictions, dataset, output):
                  lambda results: full_target_acceptance(results[FULL][CANDIDATE]['pooled']))
 
 
-def score(predictions, dataset, output, ungated=False, outer_objective=False, third_prior=False):
+def score(predictions, dataset, output, ungated=False, outer_objective=False, third_prior=False, *, by_transmitter=False):
     ungated = ungated or outer_objective or bool(third_prior)
     matrices, activity = load_frozen(predictions, ungated, outer_objective, third_prior)
     seeds = evaluation_seeds(ungated)
     modes = {route: evaluation_modes(route, ungated, outer_objective, third_prior) for route in matrices}
     score_matrix(matrices, activity, modes, dataset, output, seeds,
-                 lambda results: acceptance(results, ungated, outer_objective, third_prior))
+                 lambda results: acceptance(results, ungated, outer_objective, third_prior),
+                 by_transmitter=by_transmitter)
 
 
-def score_matrix(matrices, activity, modes_by_route, dataset, output, seeds, verdict):
+def score_matrix(matrices, activity, modes_by_route, dataset, output, seeds, verdict, *, by_transmitter=False):
     output.mkdir(parents=True, exist_ok=False)
     truth = []
     with zipfile.ZipFile(dataset / 'multiple_receiver_test.zip') as archive:
         for i, rx in enumerate(TARGET):
             with recording(archive, f'{rx}_test.h5', output) as capture:
                 truth.append(label_ids(capture, LIMIT)[packet_indices(LIMIT, i)])
-    labels = np.asarray(truth)[:, None, None, None, :]
-    result, contrasts = {}, {}
+    truth = np.asarray(truth)
+    labels = truth[:, None, None, None, :]
+    result, contrasts, groups = {}, {}, {}
     for route in matrices:
         modes = modes_by_route[route]
         hit = matrices[route] == labels
         result[route] = {m:readout(hit[:, :, :, i], seeds) for i,m in enumerate(modes)}
         candidate = hit[:, :, :, -1].astype(np.int16)
         contrasts[route] = {m:paired(candidate - hit[:, :, :, i], seeds) for i,m in enumerate(modes[:-1])}
-    write(output / 'scores.json', dict(status='ANALYZED', truth_last=True, seeds=list(seeds),
+        if by_transmitter:
+            groups[route] = transmitter_groups(hit, truth, modes, seeds)
+    summary = dict(status='ANALYZED', truth_last=True, seeds=list(seeds),
         n_physical=len(TARGET)*LIMIT, n_six=len(TARGET)*LIMIT*len(seeds)*6, bootstrap_seed=BOOTSTRAP_SEED,
         bootstrap_draws=DRAWS, direct_clean_parity='exact' if len(matrices) == 2 else 'archive-verified',
         readouts=result, paired=contrasts,
-        acceptance=verdict(result), activity=activity))
+        acceptance=verdict(result), activity=activity)
+    if by_transmitter:
+        summary['by_transmitter'] = groups
+    write(output / 'scores.json', summary)
 
 
 if __name__ == '__main__':
@@ -202,6 +242,7 @@ if __name__ == '__main__':
     for key in ('predictions','dataset','output'):
         parser.add_argument('--'+key, type=Path, required=True)
     parser.add_argument('--ungated', action='store_true')
+    parser.add_argument('--by-transmitter', action='store_true')
     parser.add_argument('--outer-objective', action='store_true')
     matched = parser.add_mutually_exclusive_group()
     matched.add_argument('--third-prior', action='store_true')

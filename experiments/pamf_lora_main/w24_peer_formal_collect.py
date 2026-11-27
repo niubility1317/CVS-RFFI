@@ -58,7 +58,7 @@ def collect(submit, dataset, output, ssh_config):
         if data.keys() != keys or any(type(value) is not int or not 0 <= value <= LIMIT for value in data.values()):
             raise ValueError(f'Invalid CPU direct comparison for {case}')
         parity.update(data)
-    score(output/'predictions', dataset, output/'scores', third_prior=PEER_SPECTRAL_KIND)
+    score(output/'predictions', dataset, output/'scores', third_prior=PEER_SPECTRAL_KIND, by_transmitter=True)
     (output/'cpu-direct-parity.json').write_text(json.dumps(parity, indent=2)+'\n', encoding='utf-8')
 
 
