@@ -1,0 +1,202 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r03",
+  "group_id": "phase1-lora-wisig-packet-dura",
+  "display_name": "LoRa 与 WiSig 共用 Packet U-Net 先验和 DURA 求解的源域对照",
+  "description": "同一两步 MAP 和修正剂量限制，分别在 LoRa 与 WiSig 上比较直通、原生 DURA、Packet U-Net、组合。单种子，先做固定源 V 配对否证。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "wisig",
+    "packet-unet",
+    "dura",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+    "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+    "20261125-phase1-wisig-native-fir-source-m4-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02"
+  ],
+  "replaces_run_id": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+  "authorization": "当前用户要求在 LoRa 与 WiSig 验证结合 Packet U-Net 和 DURA。",
+  "code": {
+    "commit": "098c7278f7231e9d354cd5ac2b1fa512ad76a702",
+    "checkout": "codex/lora-wisig-packet-dura-20261127",
+    "environment": "N607 CVS-RFFI PyTorch CUDA FP32, separate CPU scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort multi-receiver LoRa and WiSig/ManySig Main split",
+    "version": "lora_full_packets_v1; WiSig registered R17/WiSig Main source cache",
+    "representation": "LoRa complex 8192 at 1 MS/s -> original W24. WiSig complex 256 -> original Tri-SIG-TIME SSL.",
+    "contract_ref": "LoRa parent frozen source contract.json; WiSig 20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "LoRa established 300 Full source V panel; WiSig 1800 existing validation_full/physical_ids.npy IDs",
+    "label_map_ref": "Original frozen E104 (10) and WiSig Main seed 2026092701 (6); independent scorer only.",
+    "source_receivers": [
+      "LoRa b200_1,b200_mini_1,b210_1,pluto_1,rtl_1",
+      "WiSig Main archived source cache"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": 2100
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005; WiSig Main split",
+    "validation_ref": "Reuse registered validates-once source handles and fixed physical panels.",
+    "support_query_ref": null,
+    "leo_config_ref": "In both datasets, existing source Full practical six and clean; WiSig uses cache, LoRa exact source_receive replay."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Shared architecture with dataset-specific checkpoints. WiSig new fit sees only TX-hidden source U_s with generic noise and echo. No F weights or outputs in its objective. No target access."
+  },
+  "checkpoint": {
+    "initialization": "LoRa exact same-contract frozen Packet U-Net and native R02/R07; WiSig Packet U-Net scratch + original R69 inference context.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+        "role": "same-contract LoRa prior and frozen E104 configuration"
+      },
+      {
+        "ref": "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+        "role": "same-contract LoRa R02/R07 action estimate and frozen archive R17 comparator"
+      },
+      {
+        "ref": "20261125-phase1-wisig-native-fir-source-m4-r01",
+        "role": "WiSig archived R69 loader, original Main source and frozen classifier binding"
+      }
+    ],
+    "contract_check_ref": "Pinned historical releases, runtime contracts, strict weight loads and fixed-panel comparator check.",
+    "provenance_verdict": "Each dataset uses only weights with its own existing source contract. New WiSig fit from scratch.",
+    "selection_rule": "Each dataset's hybrid must strictly improve both single-module comparators and direct on six-scene total, with low urban and clean at least as high as every control. First run is source-only; formal expansion requires both dataset source gates."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current Codex chat, LoRa-WiSig Packet-DURA comparison",
+    "gpu_policy": "LoRa only in r03. Reuse running WiSig r02. Same GPU selection limits.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -m experiments.pamf_lora_main.packet_dura_crossdata publish E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --output E:/type10-7/local_artifacts/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03/release --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop on illegal or mismatched data/weights, failed no-query smoke, finite check, missing prediction or systemic launch failure. Preserve all partial artifacts, no target access."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "lora.log",
+    "score.log",
+    "lora/smoke.json",
+    "lora/predictions.npz",
+    "lora/frozen.json",
+    "source-scores.json",
+    "WiSig same matrices and training proof in r02"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct_count",
+      "accuracy",
+      "paired repair/harm/net",
+      "paired receiver-stratified percentile intervals"
+    ],
+    "dimensions": [
+      "dataset",
+      "Full",
+      "seven views",
+      "physical_id",
+      "receiver"
+    ],
+    "prediction_ref": "r03/lora/predictions.npz and r02/wisig/predictions.npz",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03/source-scores.json"
+  },
+  "rows": [
+    {
+      "row_id": "lora",
+      "method": "Paired matrix: direct, original DURA, Packet U-Net, hybrid",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/packet_dura_crossdata.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03-release/runtime.json",
+      "data_overrides": {
+        "V": 300,
+        "contract_U_s": 25200
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112559
+      },
+      "seed_notes": "Historical weights retain parent seeds (LoRa G 2026113011 and DURA 2026113009/10/11, WiSig R69 2026092701). Null values mean no new model/draw, fixed registered panel or no support.",
+      "k": null,
+      "scenario": "clean + six Full practical views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "frozen comparator/solver; no updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03/lora",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03/lora.log",
+      "command": "python -u -m experiments.pamf_lora_main.packet_dura_crossdata lora /home/szu2070436088/2510044040/CV-SincNet/releases/20261127-phase1-lora-wisig-packet-dura-s2026113021-r03-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.npz",
+        "frozen.json"
+      ]
+    },
+    {
+      "row_id": "wisig",
+      "method": "Paired matrix: direct, original DURA, Packet U-Net, hybrid",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/packet_dura_crossdata.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261127-phase1-lora-wisig-packet-dura-s2026113021-r02-release/runtime.json",
+      "data_overrides": {
+        "V": 1800,
+        "contract_U_s": 56700
+      },
+      "seeds": {
+        "model": 2026113021,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026113022,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical weights retain parent seeds (LoRa G 2026113011 and DURA 2026113009/10/11, WiSig R69 2026092701). Null values mean no new model/draw, fixed registered panel or no support.",
+      "k": null,
+      "scenario": "clean + six Full practical views",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "single shared WiSig fit, 1600 steps batch 24, cosine to 3e-5",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261127-phase1-lora-wisig-packet-dura-s2026113021-r02/wisig",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261127-phase1-lora-wisig-packet-dura-s2026113021-r02/wisig.log",
+      "command": "python -u -m experiments.pamf_lora_main.packet_dura_crossdata wisig /home/szu2070436088/2510044040/CV-SincNet/releases/20261127-phase1-lora-wisig-packet-dura-s2026113021-r02-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.npz",
+        "frozen.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Hybrid uses frozen per-packet action and variance, +0.02 normalized variance floor, 2 CG updates, cap additional edit RMS at 0.5 of the proposal edit RMS.",
+    "Fit the WiSig Packet U-Net once for both learned arms. V panels and frozen labels remain out of fit. WiSig uses eight contiguous 32-point groups; LoRa uses eight 1024-point chirps.",
+    "Both datasets have role definitions in their referenced contracts. The combined 2100 V total is just coverage; do not pool scores across datasets.",
+    "R02 fixes only historical archive import order. Both archived dependency imports passed isolated N607 probes before relaunch.",
+    "R03 corrects LoRa classifier archive shadowing only and runs LoRa only. The complete r02 WiSig prediction matrix is reused after its frozen marker; r03 scorer checks both complete before loading source truth. Seed, scientific matrix, training budget and source gate unchanged. Real two-row LoRa CPU smoke with exact readers succeeded on N607 before r03 release."
+  ],
+  "registered_at": "2026-11-27T09:23:38+00:00"
+}
