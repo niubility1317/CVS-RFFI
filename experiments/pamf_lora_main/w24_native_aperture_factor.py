@@ -25,7 +25,7 @@ from experiments.pamf_lora_main.w24_third_prior import NATIVE_SPECTRAL_ARMS, NAT
 from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN, load_restorer, received_aperture, training_runtime
 
 
-RUN = '20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01'
+RUN = '20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r02'
 FULL = 'full_native'
 MODES = ('direct', 'control_half', 'band_half', 'band_center', 'band_edges',
          'equal_center', 'equal_edges', 'equal_both', 'exact_center', 'exact_edges', 'exact_both')
@@ -76,7 +76,7 @@ def noise_measures(observed, control, band, ideal):
     return np.concatenate(rows, axis=-1)[:, 0]
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def render(f, models, received, signal, device):
     raw = tensor(received.view(np.float32), device).view(torch.complex64)
     restored = [np.from_dlpack(torch.lerp(raw, g.restore_native(raw), .5).cpu().contiguous())

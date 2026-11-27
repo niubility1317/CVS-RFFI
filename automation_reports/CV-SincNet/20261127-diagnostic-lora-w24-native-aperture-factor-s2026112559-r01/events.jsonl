@@ -1,0 +1,2 @@
+{"at": "2026-11-27T03:27:51+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-27T03:29:15+00:00", "status": "FAILED", "note": "E104 Sinc filter requires tensor version counters; strict inference mode failed in source-only smoke before source prediction.", "evidence": "runs/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01/predict-source.log", "row_id": null}

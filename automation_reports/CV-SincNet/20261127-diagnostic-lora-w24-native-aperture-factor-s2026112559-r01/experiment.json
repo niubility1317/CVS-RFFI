@@ -1,0 +1,179 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 整段 DURA 中心／边缘冻结归因（Full）",
+  "description": "Cross center and edge edits of the two frozen raw-capture DURA models, then replace control corrections by exact noise directions at matched per-region energy and exact amplitude.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261127-phase1-lora-w24-native-band-risk-s2026112991-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261126-diagnostic-lora-w24-noise-components-s2026112559-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa goal explicitly allows isolated source IQ and exact simulator component diagnostics, no target path, Full only.",
+  "code": {
+    "commit": "91be4823a9d8dd9672eac0f39ff79819b201ba30",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "Archived N607 CVS-RFFI with exact registered W24 release",
+    "cwd": "Registered archive releases/20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "Paired fixed 300 source V physical packet IDs, same order as the frozen native band-risk comparison.",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 1,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; exact E104 direct and two native readout endpoints before truth.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean. Prediction uses generated receive IQ."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only exact simulated additive noise in a fixed diagnostic matrix. No fitting, threshold selection, or target scope. Independent source truth-last."
+  },
+  "checkpoint": {
+    "initialization": "No new parameters; isolate exact source synthetic components.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-native-band-risk-s2026112991-r01",
+        "role": "Two scratch 24000-step native source-only DURA half readouts, replay and parity."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Exact frozen E104 default head."
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Pinned source-only archive and original model class binding."
+      }
+    ],
+    "contract_check_ref": "Exact source binding and predictions for direct, control half and band-risk half.",
+    "provenance_verdict": "Both 24000-step source-only checkpoints are frozen in the registered prior run. No new training.",
+    "selection_rule": "No fitting, threshold or candidate selection. All fixed counterfactuals reported."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "One data context, preferred N607 GPU 0/3/5/6, current 12 GiB and per-owner shared context limits.",
+    "remote_run_root": "runs/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01",
+    "remote_log_root": "runs/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_native_aperture_factor publish --repo . --context E:/type10-7/local_artifacts/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01/source-context.json --output E:/type10-7/local_artifacts/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01/release --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop on invalid source lineage or real smoke, incomplete/failing same-packet source parity, missing views or independent score failure."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "predict-source.log",
+    "score-source.log",
+    "full_native/aperture-measurements.npz"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy by scene",
+      "same-packet repairs and harms",
+      "matched-RX intervals",
+      "projected and remaining center noise power"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01/{route}/predictions.npz",
+    "scorer_ref": "experiments.pamf_lora_main.w24_native_aperture_factor score-source, independent source truth-last"
+  },
+  "rows": [
+    {
+      "row_id": "native-aperture-factor",
+      "method": "Eleven frozen full-aperture endpoints, center/edge crossover and exact additive source interventions",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_native_aperture_factor.py",
+      "resolved_config_ref": "releases/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300,
+        "U_s_fit": 0,
+        "U_s_holdout": 0
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No training. 11 frozen readout rows, 300 physical source V packets, seven views.",
+      "output_root": "runs/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01",
+      "log_path": "runs/20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r01/predict-source.log",
+      "command": "python -m experiments.pamf_lora_main.w24_native_aperture_factor dispatch <runtime>",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "full_native/source-predictions.json",
+        "full_native/predictions.npz",
+        "full_native/source-scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No new fit. Reproduce direct and both full-capture restorers through original W24.",
+    "Freeze complete 7 x 11 x 300 before reading source truth. Center and edge mixing uses each hybrid center RMS. Equal directions match per-packet regional edit L2 before scaling.",
+    "Exact isolation starts from native control half, substitutes oracle noise correction in center, edges and both. On verified raw clean, those treatments keep control to isolate additive noise. No target path or formal test."
+  ],
+  "registered_at": "2026-11-27T03:27:51+00:00"
+}
