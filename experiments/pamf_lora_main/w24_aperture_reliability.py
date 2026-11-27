@@ -23,7 +23,7 @@ class InvisibleIQ(nn.Module):
         aperture = csr_matrix((coefficients,(rows,columns)),shape=(row.size,width),dtype=np.float64)
         aperture.eliminate_zeros()
         gram = splu((aperture@aperture.T).tocsc())
-        dual = np.empty((row.size,width),dtype=np.float32)
+        dual = np.empty((row.size,width),dtype=np.float64)
         # Solve blocks of right-hand sides, keeping the temporary native matrix small.
         for offset in range(0,row.size,128):
             count = min(128,row.size-offset)
@@ -31,18 +31,19 @@ class InvisibleIQ(nn.Module):
             axis = np.arange(count)
             basis[offset+axis,axis] = 1.
             dual[offset:offset+count] = (aperture.T @ gram.solve(basis)).T
-        observe = np.ascontiguousarray(aperture.toarray().T,dtype=np.float32)
+        observe = np.ascontiguousarray(aperture.toarray().T,dtype=np.float64)
         # The archived CUDA runtime predates the NumPy 2 tensor bridge.
-        self.register_buffer('observe',torch.frombuffer(memoryview(observe),dtype=torch.float32).view(observe.shape),
+        self.register_buffer('observe',torch.frombuffer(memoryview(observe),dtype=torch.float64).view(observe.shape),
                              persistent=False)
-        self.register_buffer('lift',torch.frombuffer(memoryview(dual),dtype=torch.float32).view(dual.shape),
+        self.register_buffer('lift',torch.frombuffer(memoryview(dual),dtype=torch.float64).view(dual.shape),
                              persistent=False)
 
     @torch.no_grad()
     def forward(self, raw):
-        iq = torch.view_as_real(raw).transpose(1,2).flatten(0,1)
-        visible = ((iq @ self.observe) @ self.lift).unflatten(0,(len(raw),2)).transpose(1,2).contiguous()
-        return raw - torch.view_as_complex(visible)
+        # Small singular values near native edges make single-precision lifting inaccurate.
+        iq = torch.view_as_real(raw).transpose(1,2).flatten(0,1).double()
+        hidden = (iq - (iq @ self.observe) @ self.lift).unflatten(0,(len(raw),2)).transpose(1,2)
+        return torch.view_as_complex(hidden.to(raw.real.dtype).contiguous())
 
 
 def reliability(invisible, rms, *, localized):
