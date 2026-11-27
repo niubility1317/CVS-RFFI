@@ -1,0 +1,216 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 分量方向训练的正式 Full 配对测试",
+  "description": "Test two matched checkpoint readouts with the same grouped inference on the complete 30,000 Full matrix.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "truth-last",
+    "peer-spectral-direction",
+    "full-completion"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261128-phase1-lora-w24-component-directions-s2026112991-r01",
+    "20261127-phase1-lora-w24-peer-spectral-direction-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requires formal Full test performance. Source scores are diagnostic.",
+  "code": {
+    "commit": "Resolved Git HEAD of the recorded branch at publication",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 CPU FP32 W24 archive, at most one prediction shard worker with two intraop threads and two replay workers; local independent CPU scorer.",
+    "cwd": "Immutable formal release controller then original W24 archive for prediction workers."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MHz through DURA; untouched W24 front end receives the resulting packet.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Original fixed 15 unseen receiver x 2000 same-route physical packets. Clean and all six registered Full practical scenes.",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "U_s_no_query_smoke": 4,
+      "target_physical": 30000
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Registered LoRa source/target contract with independent source seed, namespace and packets.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Test fixed source-only weights through received-IQ-only grouped readouts and archived matching Full references. Independent truth-last after all three closed shards."
+  },
+  "checkpoint": {
+    "initialization": "No adjustment. Load both source-frozen 48000-step peer heads and common legal Practical parent.",
+    "sources": [
+      {
+        "ref": "20261128-phase1-lora-w24-component-directions-s2026112991-r01",
+        "role": "Prespecified terminal component-direction trained checkpoint."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-peer-spectral-direction-s2026112991-r01",
+        "role": "Same-seed and same-budget unmodified source-only peer direction control, grouped forward."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+        "role": "Source-only Practical parent for center component energies and native edges."
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+        "role": "Registered archived blind references for direct, old DURA, old complex response and wide all-packet half."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 with original default head and preprocessing."
+      }
+    ],
+    "contract_check_ref": "Fixed terminal source-only proof, loaded real checkpoints with source U no-target smoke, original blind-reference exact bindings.",
+    "provenance_verdict": "Both learned direction heads fit exclusively on legal source IQ with identical source contract.",
+    "selection_rule": "Evaluate both fixed checkpoints on the same Full matrix after terminal freeze. No source accuracy gate and no target feedback."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current active LoRa DURA goal",
+    "gpu_policy": "CPU only. Wait for a valid frozen terminal checkpoint, then one CPU prediction shard worker, two inference and two replay threads.",
+    "remote_run_root": "runs/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01",
+    "remote_log_root": "runs/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01",
+    "launch_command": "python -u -m experiments.pamf_lora_main.w24_formal publish --component-directions-cpu --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01/release",
+    "stop_rule": "Stop for source freeze/provenance, technical smoke, prediction, immutable artifact or scoring error."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json if newly predicted",
+    "logs/source-smoke.log",
+    "logs/full_native-{shard}.log",
+    "predictions/{shard}/complete.json",
+    "predictions/{shard}/activity.json",
+    "predictions/{shard}/cpu-direct-parity.json",
+    "predictions/{shard}/{rx}.npz",
+    "independent scores/scores.json with RX and TX results"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "registered Full",
+      "seven views",
+      "15 target receivers",
+      "six paired readouts",
+      "10 target transmitter classes"
+    ],
+    "prediction_ref": "runs/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01/predictions",
+    "scorer_ref": "w24_peer_formal_collect with component matrix; independent local target truth after all 3 shard closures."
+  },
+  "rows": [
+    {
+      "row_id": "component-direction-formal-full",
+      "method": "Fixed grouped readout of the matched old peer head and newly trained component direction head",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_practical_supervision.py",
+      "resolved_config_ref": "releases/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01-release/runtime.json",
+      "data_overrides": {
+        "native_full": 30000,
+        "source_u_smoke": 4,
+        "seed": 2026092702
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "3 independent 10,000 packet prediction shards. Same E104 and seven scenes; no fit.",
+      "output_root": "runs/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01",
+      "log_path": "runs/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01/logs",
+      "command": "python -u -m experiments.pamf_lora_main.w24_formal publish --component-directions-cpu --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01/release",
+      "expected_artifacts": [
+        "state.json",
+        "smoke.json if newly predicted",
+        "logs/source-smoke.log",
+        "logs/full_native-{shard}.log",
+        "predictions/{shard}/complete.json",
+        "predictions/{shard}/activity.json",
+        "predictions/{shard}/cpu-direct-parity.json",
+        "predictions/{shard}/{rx}.npz",
+        "independent scores/scores.json with RX and TX results"
+      ]
+    }
+  ],
+  "notes": [
+    "Formal acceptance requires >=162000/180000 six practical, >=25500/30000 low urban and >=28566/30000 clean.",
+    "Component norms and native edges remain identical to the frozen parent before W24 rescaling. Two Learnable readouts always run.",
+    "Use existing archived blind controls. Report CPU-vs-archive direct disagreements. Preserve other CPU Full tasks.",
+    "Full only. No weak or Residual expansion in this experiment."
+  ],
+  "registered_at": "2026-11-27T17:16:27+00:00"
+}

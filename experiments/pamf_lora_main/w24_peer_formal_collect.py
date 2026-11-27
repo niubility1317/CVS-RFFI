@@ -8,17 +8,19 @@ import subprocess
 from time import monotonic, sleep
 
 from .w24_formal import (
-    LIMIT, PEER_CPU_RUNS, PEER_SPECTRAL_KIND, RUN_PEER_SPECTRAL_CPU, RUN_PEER_SPECTRAL_FULL, VIEWS, cases, receipt,
+    COMPONENT_DIRECTIONS_KIND, LIMIT, PEER_CPU_RUNS, PEER_SPECTRAL_KIND, RUN_COMPONENT_DIRECTIONS_CPU,
+    RUN_PEER_SPECTRAL_CPU, RUN_PEER_SPECTRAL_FULL, VIEWS, cases, receipt,
 )
 from .w24_formal_score import score
 
 
 def collect(submit, dataset, output, ssh_config):
     remote = PurePosixPath(json.loads(submit.read_text(encoding='utf-8-sig'))['run_root'])
-    if remote.name not in PEER_CPU_RUNS or not re.fullmatch(r'/[a-zA-Z0-9_./-]+', str(remote)):
+    if remote.name not in (*PEER_CPU_RUNS, RUN_COMPONENT_DIRECTIONS_CPU) or not re.fullmatch(r'/[a-zA-Z0-9_./-]+', str(remote)):
         raise ValueError('Expected this immutable peer spectral Full run')
     flags = ['-F', str(ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
-    matrix = cases(PEER_SPECTRAL_KIND)
+    kind = COMPONENT_DIRECTIONS_KIND if remote.name == RUN_COMPONENT_DIRECTIONS_CPU else PEER_SPECTRAL_KIND
+    matrix = cases(kind)
     expected = dict(status='PREDICTIONS_FROZEN', cases=list(matrix), target_truth_read=False)
     prior = None
     deadline = monotonic() + 48*60*60
@@ -61,14 +63,14 @@ def collect(submit, dataset, output, ssh_config):
 
     parity = {}
     for case in matrix:
-        proof = receipt(case, True, third_prior=PEER_SPECTRAL_KIND)
+        proof = receipt(case, True, third_prior=kind)
         marker = output/'predictions'/case/'cpu-direct-parity.json'
         data = json.loads(marker.read_text(encoding='utf-8'))
         keys = {f'{rx}/{view}' for rx in proof['receivers'] for view in VIEWS}
         if data.keys() != keys or any(type(value) is not int or not 0 <= value <= LIMIT for value in data.values()):
             raise ValueError(f'Invalid CPU direct comparison for {case}')
         parity.update(data)
-    score(output/'predictions', dataset, output/'scores', third_prior=PEER_SPECTRAL_KIND, by_transmitter=True)
+    score(output/'predictions', dataset, output/'scores', third_prior=kind, by_transmitter=True)
     (output/'cpu-direct-parity.json').write_text(json.dumps(parity, indent=2)+'\n', encoding='utf-8')
 
 

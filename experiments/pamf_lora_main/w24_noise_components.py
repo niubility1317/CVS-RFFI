@@ -6,6 +6,7 @@ import numpy as np
 import torch
 
 from .dura_repair import real_iq
+from .w24_component_directions import aligned_spectrum_parts
 from .w24_edit_budget_audit import CENTER, FULL, RUN as ORACLE_RUN, predict, receive_center, score
 from .w24_edit_cross import check_controls
 from .w24_native_full import VIEWS, classify_aperture
@@ -23,16 +24,6 @@ CONTRASTS = (*((key, 'outer_half') for key in MODES[2:]),
 
 def power(value):
     return value.abs().square().mean((-2, -1), keepdim=True)
-
-
-def aligned_spectrum_parts(value, phase):
-    """Split the aligned complex spectrum into common and zero-mean chirp parts."""
-    frame = phase / phase.abs().clamp_min(1e-12)
-    spec = torch.fft.fft(value * frame.conj(), norm='ortho')
-    bins = (torch.fft.fftfreq(CENTER, device=value.device) * CENTER).round().abs()
-    near = bins <= 32
-    common = spec.mean(-2, keepdim=True)
-    return spec, common.expand_as(spec), spec - common, near, frame
 
 
 def component_edits(noise, phase):

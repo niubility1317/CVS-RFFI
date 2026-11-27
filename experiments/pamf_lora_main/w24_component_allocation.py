@@ -2,12 +2,7 @@
 
 import torch
 
-from .w24_noise_components import aligned_spectrum_parts
-
-
-def components(value, phase):
-    _, common, private, near, frame = aligned_spectrum_parts(value, phase)
-    return torch.stack((common * near, common * ~near, private * near, private * ~near), dim=1), frame
+from .w24_component_directions import components
 
 
 def counterfactual_edits(estimated, exact, phase):

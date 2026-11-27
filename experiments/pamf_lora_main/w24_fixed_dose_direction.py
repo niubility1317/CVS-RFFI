@@ -44,7 +44,7 @@ FIT_FIELDS = ('project', 'run_root', 'source_root', 'practical_cache', 'training
 ISOLATION = dict(F_reads=0, TX_reads=0, V_reads=0, target_reads=0)
 
 
-def source_parent(rt, device):
+def source_parent_and_tracker(rt, device):
     import experiments
 
     runs = Path(rt['project'])/'runs'
@@ -55,11 +55,15 @@ def source_parent(rt, device):
     # The archived loader temporarily prepends its module directory.
     if not isinstance(experiments.__path__, list):
         experiments.__path__ = list(experiments.__path__)
-    load_restorer(*training_runtime(rt), contract, device)
+    _, tracker, _, _ = load_restorer(*training_runtime(rt), contract, device)
     model, info = load_candidate(root, contract, device, ARM)
     if info['steps'] != STEPS or any(info[k] != 0 for k in ISOLATION):
         raise ValueError('Practical exact-additive source provenance differs')
-    return model
+    return model, tracker
+
+
+def source_parent(rt, device):
+    return source_parent_and_tracker(rt, device)[0]
 
 
 def dtype_policy():

@@ -1,0 +1,193 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-lora-w24-component-directions-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 四分量复数方向恢复训练",
+  "description": "Add four within-component angular losses to the matched whole-packet peer-spectral recipe.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last",
+    "component-direction"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261127-phase1-lora-w24-peer-spectral-direction-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+    "20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA performance research goal.",
+  "code": {
+    "commit": "Resolved Git HEAD of the recorded branch at publication",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 single admissible CUDA card, BF16 convolution on supported devices and FP32 masked attention; CPU truth-last.",
+    "cwd": "Immutable release for GPU fitting; original W24 E104 release for post-freeze CPU smoke, prediction and scoring."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MHz through DURA; untouched W24 front end receives the resulting packet.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Original registered U_s practical trace bank and deterministic 4000 per receiver fit plus 500 independent held; frozen 300 same-ID source V panel.",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "U_s_fit": 20000,
+      "U_s_held": 500,
+      "V_after_freeze": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Reuse VALIDATED_ONCE lora_full_packets_v1 registered V order and true E104.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only isolated fitting, frozen received-only evaluation, source labels joined only by the independent source scorer."
+  },
+  "checkpoint": {
+    "initialization": "Freeze the same Practical source-only parent. Initialize the 25,732-parameter head from the same original random seed as the frozen peer reference.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+        "role": "Frozen original 24000-step additive half restoration, including edges."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-peer-spectral-direction-s2026112991-r01",
+        "role": "Independent matched 48000-step reference scored with the identical grouped readout."
+      },
+      {
+        "ref": "W24 E104 2026092702",
+        "role": "Evaluation only after source freeze."
+      }
+    ],
+    "contract_check_ref": "Matched simulated source IQ, native W24 center projection, measured phase and unchanged frozen parent.",
+    "provenance_verdict": "Same legal LoRa source role and paired additive reference, no F, TX, V or target during fit.",
+    "selection_rule": "Freeze the prescribed terminal 48000-step checkpoint. Source metrics diagnose. On a valid freeze the registered Full run proceeds regardless of source accuracy."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current LoRa DURA direction-training goal",
+    "gpu_policy": "One available GPU under current shared training cap, priority 7,0,3,2,6,5. After freeze two-thread CPU inference, two replay workers.",
+    "remote_run_root": "runs/20261128-phase1-lora-w24-component-directions-s2026112991-r01",
+    "remote_log_root": "runs/20261128-phase1-lora-w24-component-directions-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-lora-w24-component-directions-s2026112991-r01",
+    "launch_command": "python -u -m experiments.pamf_lora_main.w24_peer_spectral_direction_source publish --component-directions --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261128-phase1-lora-w24-component-directions-s2026112991-r01/release",
+    "stop_rule": "Mismatched source/weight bindings, nonfinite source check/training, baseline parity or blind closure/scorer error. Preserve existing healthy owner tasks and partial outputs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "fit-smoke.json",
+    "fit-source.log",
+    "fit-complete.json",
+    "direction.pt",
+    "smoke.json",
+    "source-b1.json",
+    "source-predictions.json",
+    "predictions.npz",
+    "source-scores.json",
+    "predict-source.log",
+    "score-source.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "six practical count",
+      "clean count",
+      "low urban count",
+      "paired changes",
+      "held directional loss trajectory",
+      "CPU B1"
+    ],
+    "dimensions": [
+      "native Full; 300 same source V packets; seven views; five readouts; five source receivers"
+    ],
+    "prediction_ref": "runs/20261128-phase1-lora-w24-component-directions-s2026112991-r01/predictions.npz",
+    "scorer_ref": "w24_factor_audit.score_source, independent CPU"
+  },
+  "rows": [
+    {
+      "row_id": "train-component-directions",
+      "method": "Matched source-only peer-spectral with four orthogonal complex direction losses",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_fixed_dose_direction.py",
+      "resolved_config_ref": "releases/20261128-phase1-lora-w24-component-directions-s2026112991-r01-release/runtime.json",
+      "data_overrides": {
+        "U_s_fit": 20000,
+        "U_s_held": 500,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "target": 0
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "New source fit seed 2026112991; registered V panel and Full draw; independent E104 seed 2026092702.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, wd 1e-4, grad clip 1",
+      "lr": "cosine 2e-4 to 2e-5",
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single seed. 48000 AdamW steps; batch 16 including 2 clean identity rows. Frozen 24k Practical parent, 20000 fit/500 held source U packets.",
+      "output_root": "runs/20261128-phase1-lora-w24-component-directions-s2026112991-r01",
+      "log_path": "runs/20261128-phase1-lora-w24-component-directions-s2026112991-r01/fit-source.log",
+      "command": "python -u -m experiments.pamf_lora_main.w24_peer_spectral_direction_source publish --component-directions --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261128-phase1-lora-w24-component-directions-s2026112991-r01/release",
+      "expected_artifacts": [
+        "state.json",
+        "fit-smoke.json",
+        "fit-source.log",
+        "fit-complete.json",
+        "direction.pt",
+        "smoke.json",
+        "source-b1.json",
+        "source-predictions.json",
+        "predictions.npz",
+        "source-scores.json",
+        "predict-source.log",
+        "score-source.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Identical PeerSpectralDirection structure, random initialization and AdamW trajectory length as the matched peer reference.",
+    "Add 0.50 times average component angle loss on the cross-chirp center proposal. Tracker phase is measured from observed center IQ.",
+    "Both frozen alternatives use identical grouped deployment: use the four parent component norms and preserve original parent native edges.",
+    "The Full formal test is preregistered separately and waits for the legal terminal checkpoint, without source score selection."
+  ],
+  "registered_at": "2026-11-27T17:16:27+00:00"
+}
