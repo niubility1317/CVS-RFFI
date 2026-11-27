@@ -1,1 +1,2 @@
 {"at": "2026-11-27T16:57:18+00:00", "status": "PLANNED", "note": "登记只读源域固定总量的分量析因。", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-27T17:01:05+00:00", "status": "FAILED", "note": "归档 Torch 与 NumPy 桥在无目标冒烟阶段失败。", "evidence": ["runs/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r01/state.json", "runs/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r01/predict-source.log"], "row_id": null}

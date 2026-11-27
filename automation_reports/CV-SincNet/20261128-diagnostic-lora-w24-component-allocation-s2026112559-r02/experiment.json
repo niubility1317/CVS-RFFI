@@ -1,0 +1,179 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 共同与逐 chirp 分量的固定总量析因",
+  "description": "Separate four component energy shares and within-component directions at fixed total center edit energy.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261128-diagnostic-lora-w24-component-allocation-s2026112559-r01",
+    "20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01",
+    "20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r02",
+    "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02"
+  ],
+  "replaces_run_id": "20261128-diagnostic-lora-w24-component-allocation-s2026112559-r01",
+  "authorization": "Active LoRa DURA goal directs isolated source-only mechanism diagnosis.",
+  "code": {
+    "commit": "Resolved Git HEAD of the recorded branch at publication",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 archived W24 evaluator CPU FP32; two Torch threads, two channel replay workers.",
+    "cwd": "Exact W24 evaluator release for both prediction and independent CPU scoring."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01 same 300 frozen, balanced source V packets and six Full realizations.",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 1,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Source-only Full V order and both archived practical baseline decisions match on clean and every disturbed scene.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean. Prediction uses generated receive IQ."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only isolation. No target data or labels. Exactly known components are used in diagnostic readouts only."
+  },
+  "checkpoint": {
+    "initialization": "No training. Freeze existing exact-additive r02 terminal 24000 step source-only model and W24 E104/default head.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+        "role": "fixed exact additive arm, physical half edit"
+      },
+      {
+        "ref": "W24 E104 2026092702",
+        "role": "frozen evaluation only"
+      }
+    ],
+    "contract_check_ref": "Recorded Practical parent and E104; native view replay; unchanged direct and frozen half output for every physical packet.",
+    "provenance_verdict": "The single 24000-step exact-additive checkpoint is frozen in the registered r02 source run. No new training.",
+    "selection_rule": "Every prespecified source readout is measured, no thresholds or candidate rankings derived from target."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current active Codex LoRa DURA goal",
+    "gpu_policy": "No GPU. Two CPU inference threads, up to two replay workers.",
+    "remote_run_root": "runs/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02",
+    "remote_log_root": "runs/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02",
+    "launch_command": "python -u -m experiments.pamf_lora_main.w24_practical_direction_factor publish --component-allocation --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02/release",
+    "stop_rule": "Stop on real source-checkpoint smoke, IQ realization, source contract, paired physical ID, numerical, or prediction/scoring closure failure."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "predictions.npz",
+    "source-predictions.json",
+    "source-scores.json",
+    "predict-source.log",
+    "score-source.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "frozen six-view and low urban counts",
+      "paired repairs, harms, and RX-stratified 95% intervals",
+      "center fixed norm and frozen native edges",
+      "both baseline decision parity"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02/predictions.npz",
+    "scorer_ref": "w24_factor_audit.score_source in separate source-only process"
+  },
+  "rows": [
+    {
+      "row_id": "source-component-allocation-factorial",
+      "method": "Fixed total center correction, four orthogonal component norms/directions/both, and exact center reference",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_practical_direction_factor.py",
+      "resolved_config_ref": "releases/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300,
+        "U_s_fit": 0,
+        "U_s_holdout": 0
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "300 packets, seven views, six fixed readouts, no fit.",
+      "output_root": "runs/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02",
+      "log_path": "runs/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02/predict-source.log",
+      "command": "python -u -m experiments.pamf_lora_main.w24_practical_direction_factor publish --component-allocation --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02/release",
+      "expected_artifacts": [
+        "state.json",
+        "smoke.json",
+        "predictions.npz",
+        "source-predictions.json",
+        "source-scores.json",
+        "predict-source.log",
+        "score-source.log"
+      ]
+    }
+  ],
+  "notes": [
+    "The split uses an observation-derived unit phase, the mean and zero-sum chirp components, and absolute FFT bin <=32 versus >32.",
+    "Norm-only uses true normalized per-component energies and existing within-component direction. If the existing direction is absent on reference support, keep the original correction on that packet.",
+    "Direction-only retains the original per-component norms; all fixed-energy rows retain original total center norm. Exact center is an unconstrained diagnostic.",
+    "Keep the frozen half native edges for all intervention arms. Clean preserves frozen readout. E104 per-row normalization stays unchanged.",
+    "This evaluation creates no new checkpoint and opens no target files. It is separate from both ongoing formal Full runs.",
+    "Supersedes the failed r01 checkpoint smoke. Use the existing buffer/DLPack paths and cast complex128 apertures to complex64 before the tensor boundary."
+  ],
+  "registered_at": "2026-11-27T17:01:05+00:00"
+}

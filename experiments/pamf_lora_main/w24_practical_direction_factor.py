@@ -27,7 +27,7 @@ from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN, load_restore
 
 
 RUN = '20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01'
-ALLOCATION_RUN = '20261128-diagnostic-lora-w24-component-allocation-s2026112559-r01'
+ALLOCATION_RUN = '20261128-diagnostic-lora-w24-component-allocation-s2026112559-r02'
 REFERENCE = '20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r02'
 ARM = PRACTICAL_ARMS[1]
 MODES = ('direct', 'frozen_half', 'true_amplitude', 'true_direction', 'true_both', 'projected_amplitude')
@@ -79,14 +79,15 @@ def render_allocations(head, recovery, tracker, y, s):
     original_iq = tensor(model_iq(received, center_rms(received)), 'cpu')
     _, phase, _, _ = coordinates(tracker, original_iq[..., :CENTER])
     original = received[..., :CENTER]
-    estimated = torch.from_numpy(frozen[..., :CENTER] - original)
-    exact = torch.from_numpy(signal[..., :CENTER] - original)
+    estimated, exact = (tensor(np.ascontiguousarray(wave[..., :CENTER] - original,
+                                                   dtype=np.complex64).view(np.float32), 'cpu').view(torch.complex64)
+                        for wave in (frozen, signal))
     edits = counterfactual_edits(estimated, exact, phase)
-    active = np.any(exact.numpy() != 0, axis=(1, 2))
+    active = np.any(signal[..., :CENTER] != original, axis=(1, 2))
     rows = [received, frozen]
     for edit in edits:
         candidate = frozen.copy()
-        candidate[active, :, :CENTER] = original[active] + edit.numpy()[active]
+        candidate[active, :, :CENTER] = original[active] + np.from_dlpack(edit.contiguous())[active]
         rows.append(candidate)
     return np.stack([classify_aperture(head, tensor(model_iq(v, center_rms(v)), 'cpu')) for v in rows])
 
