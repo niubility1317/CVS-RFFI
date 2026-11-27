@@ -21,6 +21,12 @@ N607 r01 完成 25,200 个源域配对。原调度器并发上限过宽，已独
 
 - 本地 `frozen-source` 已归档两份原冻结权重、训练日志、终止摘要和冒烟产物。核对了 N607 冻结状态、两份权重归档完整性以及训练摘要中 W24、TX、源 V、目标读取均为零。
 
+## 固定源 V 对照补齐
+
+补齐诊断 `20261128-diagnostic-lora-w24-practical-r02-frozen-source-s2026112559-r01` 复用正式 CPU 发布的 `runtime.json`、原 E104、两份原 24,000 步权重和同一 0.5 回写。采用精确方向析因诊断已封存的 300 个源 V 物理包顺序和 Full 星地观测，clean 与六景各输出直通、等能量方向监督、精确扣噪监督三路。部署读出只接收实收 IQ。 [原冻结源 V 诊断](../20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01/report.md)
+
+在 N607 复用正式发布的 Python 环境与原 W24 工作目录，以低优先级使用两个推理线程和两个信道重放进程。分别执行 `evaluate_frozen_source_cpu.py predict <runtime.json>` 和独立的 `score <runtime.json>`。预测先用源 U_s 运行真实权重冒烟，逐景核对共享直通和精确扣噪监督判决。冒烟、绑定或共享判决不一致时停止。输出单独保存到同名 run，包括 `smoke.json`、`predictions.npz`、`source-predictions.json` 和 `source-scores.json`。全矩阵固定后才由评分进程打开源真值。分数只用于诊断差异。 [诊断入口](evaluate_frozen_source_cpu.py)
+
 ## 整包残余时移的源域复核
 
 使用 r01 已封存配对库中的 500 个互斥留出源 U 包，重用每包已分配的 Full 场景、不生成新的信道抽样。记录中间 6 条 chirp，在交错的 3 条上以同包地面 IQ 和加噪前信号估计 −32 至 +32 点的整数位移。每个位移分别拟合一个包内共用相位斜率，相关量对每条 chirp 的复增益不敏感。用另外 3 条从未参与拟合的 chirp 核对相干度，对零位移与选定位移使用各自在拟合组得到的相位斜率。该检查只使用隔离源参考，不加载识别器或 TX 标签。
