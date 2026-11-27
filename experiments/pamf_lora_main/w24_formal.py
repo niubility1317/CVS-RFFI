@@ -144,9 +144,17 @@ def blind_reference(rt):
 
 
 def verify_matched_source(rt):
-    from experiments.pamf_lora_main.w24_third_prior import frozen_source_results, qualified_source, trial
+    from experiments.pamf_lora_main.w24_third_prior import PRACTICAL_KIND, frozen_source_results, qualified_source, trial
 
     root, kind = Path(rt['candidate_root']), rt['third_prior']
+    if kind == PRACTICAL_KIND:
+        spec = trial(kind)
+        runs = Path(rt['project']) / 'runs'
+        if (rt.get('run_id') != spec.run or root != runs/spec.run or Path(rt['run_root']) != root/'formal'
+                or spec.routes != (FULL,)):
+            raise ValueError('Expected the registered fixed Full Practical supervision matrix')
+        frozen_source_results(root, kind)
+        return
     if rt.get('run_id') != RUN_NATIVE_CENTER:
         qualified_source(root, kind)
         return

@@ -84,8 +84,11 @@ NATIVE_SPECTRAL_RUN = '20261127-phase1-lora-w24-native-band-risk-s2026112991-r01
 NATIVE_SPECTRAL_ARMS = ('native_band_control', 'native_band_risk')
 NATIVE_CENTER_RUN = '20261127-phase1-lora-w24-native-center-direction-s2026112991-r01'
 NATIVE_CENTER_ARMS = ('native_center_control', 'native_center_direction')
+PRACTICAL_RUN = '20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r01'
+PRACTICAL_KIND = 'native-practical-supervision'
+PRACTICAL_ARMS = ('practical_matched_dose', 'practical_exact_additive')
 NATIVE_PAIRED_ARMS = (*NATIVE_ADDITIVE_ARMS, *NATIVE_SPECTRAL_ARMS, *NATIVE_CENTER_ARMS)
-NATIVE_MODEL_ARMS = (*NATIVE_PACKET_ARMS, *NATIVE_PAIRED_ARMS)
+NATIVE_MODEL_ARMS = (*NATIVE_PACKET_ARMS, *NATIVE_PAIRED_ARMS, *PRACTICAL_ARMS)
 NATIVE_ADD_ONLY = (NATIVE_ADDITIVE_ARMS[1], *NATIVE_SPECTRAL_ARMS, *NATIVE_CENTER_ARMS)
 LONG_UNET_ARMS = (*WEAK_TRANSFER_ARMS, *POLYPHASE_ARMS, *ADDITIVE_REFERENCE_ARMS)
 UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
@@ -130,6 +133,7 @@ VARIANTS = {
     'native-additive': (NATIVE_ADDITIVE_RUN, NATIVE_ADDITIVE_ARMS),
     'native-band-risk': (NATIVE_SPECTRAL_RUN, NATIVE_SPECTRAL_ARMS),
     'native-center-direction': (NATIVE_CENTER_RUN, NATIVE_CENTER_ARMS),
+    PRACTICAL_KIND: (PRACTICAL_RUN, PRACTICAL_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -167,7 +171,7 @@ def trial(kind):
                      (*contrasts, *((modes[3], base) for base in baselines), *comparisons),
                      ROUTES[:1], WEAK_TRANSFER_INTERMEDIATE)
     if arms in (POLYPHASE_ARMS, ADDITIVE_REFERENCE_ARMS, NATIVE_PACKET_ARMS, NATIVE_ADDITIVE_ARMS,
-                NATIVE_SPECTRAL_ARMS, NATIVE_CENTER_ARMS):
+                NATIVE_SPECTRAL_ARMS, NATIVE_CENTER_ARMS, PRACTICAL_ARMS):
         baselines = (UNET_BASELINE, OUTER_BASELINE)
         return Trial(run, arms, 24000 if arms[0] in NATIVE_MODEL_ARMS else 48000, (*modes, *baselines),
                      (*contrasts, *((modes[3], base) for base in baselines)), ROUTES[:1])
@@ -294,6 +298,10 @@ def fit_inputs(rt, arm):
         inputs.update(source_parent=rt['source_parent'], unet_parent=rt['unet_parent'])
     if arm in UNET_WARM_ARMS:
         inputs['unet_parent'] = rt['unet_parent']
+    if arm in PRACTICAL_ARMS:
+        inputs['practical_cache'] = str(PurePosixPath(rt['run_root'])/'source_practical')
+    if arm == PRACTICAL_ARMS[0]:
+        inputs['dose_parent'] = rt['dose_parent']
     return inputs
 
 
@@ -431,6 +439,9 @@ def source_recipe(training, arm, *, initialize=None):
             info['native_spectral_weight'] = native_spectral_weight(arm)
         if arm in NATIVE_CENTER_ARMS:
             info['native_center_weight'] = native_center_weight(arm)
+        if arm in PRACTICAL_ARMS:
+            info.update(legal_source_practical_traces=True, supervision=arm,
+                        dose_parent=NATIVE_CENTER_RUN if arm == PRACTICAL_ARMS[0] else None)
         if arm in NATIVE_MODEL_ARMS:
             info.update(initialization='random', native_capture_samples=8192, observation_steps=2)
         if arm in UNET_COMPONENT_ARMS:
@@ -504,6 +515,10 @@ def fit(config, arm, *, smoke):
         paths.update(('source_parent', 'unet_parent'))
     if arm in UNET_WARM_ARMS:
         paths.add('unet_parent')
+    if arm in PRACTICAL_ARMS:
+        paths.add('practical_cache')
+    if arm == PRACTICAL_ARMS[0]:
+        paths.add('dose_parent')
     if set(rt) != paths:
         raise ValueError('Fit may receive only registered source paths and its own output root')
 
@@ -519,6 +534,24 @@ def fit(config, arm, *, smoke):
         return (train, torch.empty(0, device=device), held), contract
 
     calculate, initialize = dura_w24_model.objective, None
+    if arm in PRACTICAL_ARMS:
+        from experiments.pamf_lora_main.w24_packet_dura import NativePacketDura
+        from experiments.pamf_lora_main.w24_practical_supervision import PracticalLoss, training_sets
+
+        run = Path(rt['run_root']).parent
+        if run.name != PRACTICAL_RUN or Path(rt['practical_cache']) != run / 'source_practical':
+            raise ValueError('Expected the immutable source-only Practical cache')
+        teacher = None
+        if arm == PRACTICAL_ARMS[0]:
+            parent = Path(rt['dose_parent'])
+            if parent != run.parent / NATIVE_CENTER_RUN:
+                raise ValueError('The regional norm source must be the registered frozen native direction model')
+            contract = dura_w24_train.source_contract(Path(rt['source_root']))
+            _, weights, _ = read_candidate_weights(parent, contract, 'cpu', NATIVE_CENTER_ARMS[1],
+                                                   dura_w24_train, channel_blind_source)
+            teacher = NativePacketDura().to('cuda:0').eval().requires_grad_(False)
+            teacher.load_state_dict(weights, strict=True)
+        prepare, calculate = training_sets, PracticalLoss('cuda:0', teacher)
     if arm in NATIVE_PACKET_ARMS:
         from experiments.pamf_lora_main.w24_packet_dura import source_objective
 
@@ -690,6 +723,10 @@ def read_candidate_weights(root, contract, device, arm, training, archived, *, s
         raise ValueError(f'Unverified native spectral supervision for {arm}')
     if arm in NATIVE_CENTER_ARMS and summary.get('native_center_weight') != native_center_weight(arm):
         raise ValueError(f'Unverified native center supervision for {arm}')
+    if arm in PRACTICAL_ARMS and (summary.get('legal_source_practical_traces') is not True
+                                  or summary.get('supervision') != arm
+                                  or summary.get('dose_parent') != (NATIVE_CENTER_RUN if arm == PRACTICAL_ARMS[0] else None)):
+        raise ValueError(f'Unverified legal source-only Practical supervision for {arm}')
     if arm in NATIVE_MODEL_ARMS and (summary.get('initialization') != 'random'
                                       or summary.get('native_capture_samples') != 8192
                                       or summary.get('observation_steps') != 2):
@@ -777,6 +814,14 @@ def dispatch(runtime):
     try:
         if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Expected the registered W24 evaluator archive')
+        if kind == PRACTICAL_KIND:
+            config = root/'cache-inputs.json'
+            write(config, dict(source_root=rt['source_root'], cache_root=str(root/'source_practical'),
+                               frozen_sources=rt['frozen_sources'], workers=rt['cpu_workers']))
+            proc = start('cache-practical', 'source-practical-cache', None, reference, own, config)
+            status(status='SOURCE_CACHE_BUILDING', pid=proc.pid)
+            if proc.wait():
+                raise RuntimeError('Source-only Practical pair generation failed')
         for arm in spec.fit_arms:
             (root / arm).mkdir()
             write(root / arm / 'fit-inputs.json', fit_inputs(rt, arm))
@@ -798,15 +843,19 @@ def dispatch(runtime):
                 raise RuntimeError(f'{phase} failed')
         results = [read(root / route / 'source-scores.json')['scores'] for route in spec.routes]
         promote = promotion(results, kind)
-        status(status='SOURCE_SCORED', promote=promote, arms=list(spec.arms), steps=spec.steps)
-        if promote:
-            qualified_source(root, kind)
+        fields = dict(formal_requested=True) if kind == PRACTICAL_KIND else {}
+        status(status='SOURCE_SCORED', promote=promote, arms=list(spec.arms), steps=spec.steps, **fields)
+        if promote or kind == PRACTICAL_KIND:
+            if kind == PRACTICAL_KIND:
+                frozen_source_results(root, kind)
+            else:
+                qualified_source(root, kind)
             config = root / 'formal-runtime.json'
             write(config, dict(rt, candidate_root=str(root), run_root=str(root/'formal'), ungated=True))
             job = start('dispatch', 'formal-dispatch', None, reference, own.with_name('w24_formal.py'), config)
             status(status='FORMAL_PREDICTING', pid=job.pid)
             if job.wait() or read(root/'formal'/'state.json')['status'] != 'PREDICTIONS_FROZEN':
-                raise RuntimeError('Qualified candidate formal predictions did not freeze')
+                raise RuntimeError('Formal predictions did not freeze')
             status(status='PREDICTIONS_FROZEN', target_truth_read=False)
     except Exception as error:
         status(status='FAILED', error=str(error))
@@ -841,7 +890,8 @@ def publish(args):
              'clean-projection': [0, 2, 3, 5], 'weak-transfer': [0, 3, 2, 5],
              'polyphase': [0, 2, 3, 5], 'additive-reference': [0, 7, 2, 3],
              'native-packet-dura': [3, 5, 6], 'native-additive': [0, 3, 5, 6],
-             'native-band-risk': [0, 3, 5, 6], 'native-center-direction': [0, 3, 5, 6]}
+             'native-band-risk': [0, 3, 5, 6], 'native-center-direction': [0, 3, 5, 6],
+             PRACTICAL_KIND: [0, 3]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
@@ -858,6 +908,9 @@ def publish(args):
     if UNET_BASELINE in trial(kind).source_modes:
         rt['unet_parent'] = str(runs / UNET_FIDELITY_RUN)
         rt['external_releases'].append(rt['unet_parent'])
+    if kind == PRACTICAL_KIND:
+        rt['dose_parent'] = str(runs / NATIVE_CENTER_RUN)
+        rt['external_releases'].append(rt['dose_parent'])
     release(args.repo, args.output, rt, args.ssh_config)
 
 
@@ -890,7 +943,7 @@ def collect_score(args):
                 last = state['status']
             if state['status'] == 'FAILED':
                 raise RuntimeError(state['error'])
-            if state['status'] == 'SOURCE_SCORED' and not state['promote']:
+            if state['status'] == 'SOURCE_SCORED' and not state['promote'] and kind != PRACTICAL_KIND:
                 return
             if state['status'] == 'PREDICTIONS_FROZEN':
                 break
@@ -907,6 +960,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action', required=True)
     actions.add_parser('dispatch').add_argument('runtime', type=Path)
+    actions.add_parser('cache-practical').add_argument('runtime', type=Path)
     for phase in ('fit-smoke', 'fit', 'fit-arm'):
         cmd = actions.add_parser(phase)
         cmd.add_argument('runtime', type=Path)
@@ -925,6 +979,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.action == 'publish':
         publish(args)
+    elif args.action == 'cache-practical':
+        from experiments.cric_dura_comparison.io import read
+        from experiments.pamf_lora_main.w24_practical_supervision import cache_source
+
+        cache_source(read(args.runtime))
     elif args.action == 'dispatch':
         dispatch(args.runtime)
     elif args.action == 'collect-score':
