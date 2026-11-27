@@ -9,3 +9,7 @@
 N607 按现行训练并发和 12,288 MiB 余量规则选择一张卡，按 7、0、3、2、6、5 优先，在原发布训练环境执行。实际冻结点为两组各完成 24,000 步后的同一末步，不依赖源 V。预测前先跑实际源 U 无目标冒烟。固定 300 包源 V 七景的两条控制预测需逐包复现，封存后才独立评分。记录每组参数、训练时间、显存和完整训练日志。启动命令为 `python -m experiments.pamf_lora_main.w24_peer_spectral_direction_source publish --post-peer-refinement --repo . --context <既有 Practical 源上下文> --ssh-config <N607 配置> --output <独占本地发布目录>`。按同一次登记提交发布，源码运行于相应 N607 发布目录，源评使用原 W24 运行目录。
 
 源训练目录 `runs/20261128-phase1-lora-w24-post-peer-refinement-s2026112991-r01`，保存 `fit-smoke.json`、`fit-source.log`、`refinement.pt`、`fit-complete.json`、源预测与评分。数据契约、末步权重、实际源冒烟、有限性、对照复现或封存失败时停止该阶段并保留原产物。源正确率只用于分析。 [配对正式 Full](../20261128-phase1-lora-w24-formal-post-peer-refinement-cpu-s2026092702-r01/report.md)
+
+## 实际发布
+
+N607 启动 **VERIFIED**，执行提交 `71fd1815bc9598c0b7f083812eb524aeab6351a0`。单份发布归档比对、远端编译、31 项定向测试和限定范围独立审查通过。实际 GPU 0、训练进程归属及日志增长已核实。真实源 U_s 双臂前向和反向冒烟通过，训练侧 W24、TX、源 V 和目标读取均为零。本地源归档进程等源预测及独立评分封存后自动回收权重和日志。
