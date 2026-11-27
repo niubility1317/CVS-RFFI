@@ -120,6 +120,51 @@ def test_peer_collector_does_not_download_or_score_unqualified_source(tmp_path, 
     assert calls == ['ssh'] and not output.exists()
 
 
+def test_full_handoff_routes_negative_source_to_same_matrix(tmp_path):
+    root, rt = peer_runtime(tmp_path)
+    previous = tmp_path/'runs'/formal.RUN_PEER_SPECTRAL_CPU
+    (previous/'predictions').mkdir(parents=True)
+    run = formal.RUN_PEER_SPECTRAL_FULL
+    rt.update(run_id=run, run_root=str(previous.parent/run))
+    assert formal.cpu_formal(rt)
+    write(previous/'state.json', {'status': 'WAITING_FOR_PEER_SOURCE_SCORE'})
+    assert formal.peer_formal_handoff(rt) is None
+    write(previous/'state.json', {'status': 'SOURCE_NOT_QUALIFIED', 'target_truth_read': False})
+    write(root/'state.json', {'status': 'SOURCE_SCORED', 'promote': False, 'target_reads': 0})
+    assert formal.peer_formal_handoff(rt) == 'PREDICT'
+    formal.verify_matched_source(rt)
+    (previous/'predictions'/'unexpected').mkdir()
+    with pytest.raises(ValueError, match='Inconsistent'):
+        formal.verify_matched_source(rt)
+
+
+def test_full_handoff_reuses_frozen_legacy_rows_without_opening_target(tmp_path, monkeypatch):
+    _, rt = peer_runtime(tmp_path)
+    previous = tmp_path/'runs'/formal.RUN_PEER_SPECTRAL_CPU
+    cases = formal.cases(formal.PEER_SPECTRAL_KIND)
+    for case in cases:
+        shard = previous/'predictions'/case
+        shard.mkdir(parents=True)
+        write(shard/'complete.json', formal.receipt(case, True, third_prior=formal.PEER_SPECTRAL_KIND))
+    write(previous/'state.json', {'status': 'PREDICTIONS_FROZEN', 'cases': list(cases), 'target_truth_read': False})
+    run = formal.RUN_PEER_SPECTRAL_FULL
+    archive = tmp_path/'e104-release'
+    archive.mkdir()
+    write(archive/'submit.json', {'code_commit': formal.W24_COMMIT})
+    runtime = tmp_path/'runtime.json'
+    out = previous.parent/run
+    write(runtime, dict(rt, run_id=run, run_root=str(out), ungated=True, w24_release_root=str(archive)))
+
+    def forbidden(*args):
+        raise AssertionError('The handoff must preserve prior ownership when the same predictions exist')
+
+    monkeypatch.setattr(formal, 'blind_reference', forbidden)
+    formal.dispatch(runtime)
+    assert json.loads((out/'state.json').read_text()) == dict(status='MATCHED_FULL_EXISTS',
+        previous_run=formal.RUN_PEER_SPECTRAL_CPU, target_truth_read=False)
+    assert list((out/'predictions').iterdir()) == []
+
+
 def test_peer_score_requires_frozen_shards_before_truth(tmp_path, monkeypatch):
     from experiments.pamf_lora_main import w24_formal_score as scorer
 

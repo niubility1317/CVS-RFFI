@@ -1,4 +1,4 @@
-"""Collect and independently score the conditional peer-spectral Full evaluation."""
+"""Collect and independently score the peer-spectral Full evaluation."""
 
 import argparse
 import json
@@ -7,13 +7,15 @@ import re
 import subprocess
 from time import monotonic, sleep
 
-from .w24_formal import LIMIT, PEER_SPECTRAL_KIND, RUN_PEER_SPECTRAL_CPU, VIEWS, cases, receipt
+from .w24_formal import (
+    LIMIT, PEER_CPU_RUNS, PEER_SPECTRAL_KIND, RUN_PEER_SPECTRAL_CPU, RUN_PEER_SPECTRAL_FULL, VIEWS, cases, receipt,
+)
 from .w24_formal_score import score
 
 
 def collect(submit, dataset, output, ssh_config):
     remote = PurePosixPath(json.loads(submit.read_text(encoding='utf-8-sig'))['run_root'])
-    if remote.name != RUN_PEER_SPECTRAL_CPU or not re.fullmatch(r'/[a-zA-Z0-9_./-]+', str(remote)):
+    if remote.name not in PEER_CPU_RUNS or not re.fullmatch(r'/[a-zA-Z0-9_./-]+', str(remote)):
         raise ValueError('Expected this immutable peer spectral Full run')
     flags = ['-F', str(ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
     matrix = cases(PEER_SPECTRAL_KIND)
@@ -35,6 +37,14 @@ def collect(submit, dataset, output, ssh_config):
             if status == 'FAILED':
                 raise RuntimeError(state['error'])
             if status == 'SOURCE_NOT_QUALIFIED':
+                if remote.name != RUN_PEER_SPECTRAL_CPU:
+                    raise ValueError('Only the original conditional run may decline source qualification')
+                return
+            if status == 'MATCHED_FULL_EXISTS':
+                if remote.name != RUN_PEER_SPECTRAL_FULL or state != dict(
+                        status=status, previous_run=RUN_PEER_SPECTRAL_CPU, target_truth_read=False):
+                    raise ValueError('Invalid peer spectral Full reuse marker')
+                # The original run retains its own already-started independent collector.
                 return
             if status == 'PREDICTIONS_FROZEN':
                 if state != expected:
