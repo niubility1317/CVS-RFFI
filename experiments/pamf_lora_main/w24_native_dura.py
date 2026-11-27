@@ -5,6 +5,7 @@ import math
 
 import torch
 from torch import nn
+from torch.nn import functional as F
 
 from experiments.pamf_action_restore.models import ActionEstimator, SCALE
 from experiments.pamf_action_restore.operators import Action, soft_map
@@ -28,10 +29,21 @@ class NativeActionEstimator(ActionEstimator):
         self.initial_kernel.zero_()
         self.initial_kernel[0] = 1.
 
-    def _encode(self, received, coarse):
+    def forward(self, received, coarse):
         if received.ndim != 3 or received.shape[1:] != (2, NATIVE_LENGTH) or received.shape != coarse.shape:
             raise ValueError('Expected sole received/coarse 2 x 8192 continuous IQ')
-        return self.core.encoder(torch.cat((received, coarse), 1))
+        features = self.core.encoder(torch.cat((received,coarse),1))
+        value = features[-1]
+        global_value = self.global_head(value.mean(-1))
+        kernel = torch.complex(global_value[:, :64] + self.initial_kernel,global_value[:, 64:128])
+        kernel = kernel / kernel.norm(dim=-1,keepdim=True).clamp_min(1e-6)
+        for module,skip in zip(self.core.decode,features[-2::-1],strict=True):
+            value = module(torch.cat((F.interpolate(value,size=skip.shape[-1],mode='linear',
+                                                    align_corners=False),skip),1))
+        point = self.core.out(value)
+        main = 1 + torch.complex(point[:, 0],point[:, 1])
+        image = torch.complex(point[:, 2],point[:, 3])
+        return Action(kernel,main,image), self._variance(global_value[:, -1])
 
 
 class NativeDura(nn.Module):
