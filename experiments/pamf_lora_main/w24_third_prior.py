@@ -921,12 +921,16 @@ def publish(args):
 
 def collect_score(args):
     from experiments.cric_dura_comparison.io import read
+    from experiments.pamf_lora_main.w24_formal import RUN_PRACTICAL_CPU
     from experiments.pamf_lora_main.w24_formal_score import score
     import json
 
     root = PurePosixPath(read(args.submit)['run_root'])
     kind = args.kind
-    if not re.fullmatch(r'/[A-Za-z0-9_./-]+', str(root)) or root.name != trial(kind).run:
+    cpu = args.cpu_formal
+    expected = RUN_PRACTICAL_CPU if cpu else trial(kind).run
+    if (not re.fullmatch(r'/[A-Za-z0-9_./-]+', str(root)) or root.name != expected
+            or (cpu and kind != PRACTICAL_KIND)):
         raise ValueError('Unexpected immutable N607 run root')
     connection = ['-F', str(args.ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
     deadline = monotonic() + 12*60*60
@@ -956,7 +960,8 @@ def collect_score(args):
             raise TimeoutError('No terminal N607 state in scoring window')
         sleep(40)
     args.output.mkdir(parents=True)
-    subprocess.run(['scp', *connection, '-r', 'N607:' + str(root/'formal'/'predictions'), str(args.output)],
+    predictions = (root if cpu else root/'formal')/'predictions'
+    subprocess.run(['scp', *connection, '-r', 'N607:' + str(predictions), str(args.output)],
                    check=True, timeout=180)
     score(args.output/'predictions', args.dataset, args.output/'scores', third_prior=kind)
 
@@ -974,6 +979,7 @@ if __name__ == '__main__':
     for key in ('repo', 'output', 'context', 'ssh-config'):
         pub.add_argument('--' + key, type=Path, required=True)
     collector = actions.add_parser('collect-score')
+    collector.add_argument('--cpu-formal', action='store_true')
     for command in (pub, collector):
         variants = command.add_mutually_exclusive_group()
         variants.set_defaults(kind=True)

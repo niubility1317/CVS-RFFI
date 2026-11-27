@@ -85,3 +85,48 @@ def test_ungated_scorer_rejects_incomplete_forward_coverage(tmp_path, monkeypatc
     np.savez(folder / f"{record['receivers'][0]}.npz", **dict.fromkeys(record['views'], output))
     with pytest.raises(ValueError, match='Incomplete ungated recovery coverage'):
         scorer.load_frozen(tmp_path, ungated=True)
+
+
+def test_cpu_practical_uses_archived_controls_and_preserves_gpu_parity_check():
+    import numpy as np
+    import pytest
+    from experiments.pamf_lora_main import w24_formal as formal
+
+    reference = np.zeros((1, 4, formal.LIMIT), dtype=np.int16)
+    predicted = np.ones((1, 3, formal.LIMIT), dtype=np.int16)
+    with pytest.raises(ValueError, match='Direct decisions must match'):
+        formal.append_blind_prediction(reference, predicted, [0, 0, formal.LIMIT], formal.LIMIT)
+    merged, counts = formal.append_blind_prediction(
+        reference, predicted, [0, 0, formal.LIMIT], formal.LIMIT, require_direct_parity=False)
+    np.testing.assert_array_equal(merged[:, :4], reference)
+    np.testing.assert_array_equal(merged[:, 4:], predicted[:, 1:])
+    assert counts == [0, 0, formal.LIMIT, formal.LIMIT, formal.LIMIT]
+
+
+def test_cpu_practical_waits_for_finished_fit_without_source_score(tmp_path, monkeypatch):
+    import json
+    from experiments.pamf_lora_main import w24_formal as formal
+    from experiments.pamf_lora_main.w24_third_prior import PRACTICAL_KIND, trial
+
+    spec = trial(PRACTICAL_KIND)
+    runs = tmp_path/'runs'
+    parent = runs/spec.run
+    parent.mkdir(parents=True)
+    state = parent/'state.json'
+    state.write_text(json.dumps({'status': 'SOURCE_TRAINING'}), encoding='utf-8')
+
+    def finish_training(seconds):
+        assert seconds == 10
+        for arm in spec.fit_arms:
+            row = parent/arm
+            row.mkdir()
+            for suffix in ('complete.json', 'model.pt'):
+                (row/f'w24_{arm}-{suffix}').touch()
+        state.write_text(json.dumps({'status': 'SOURCE_FROZEN'}), encoding='utf-8')
+
+    monkeypatch.setattr(formal, 'sleep', finish_training)
+    runtime = dict(run_id=formal.RUN_PRACTICAL_CPU, run_root=str(runs/formal.RUN_PRACTICAL_CPU),
+                   project=str(tmp_path), candidate_root=str(parent), third_prior=PRACTICAL_KIND)
+    formal.verify_matched_source(runtime)
+    formal.wait_practical_cpu_source(runtime)
+    assert not (parent/formal.FULL/'source-scores.json').exists()

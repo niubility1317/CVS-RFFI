@@ -2,6 +2,7 @@
 import argparse
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
+import json
 import os
 from pathlib import Path, PurePosixPath
 import subprocess
@@ -38,6 +39,7 @@ RUN = '20261125-phase1-lora-w24-formal-both-routes-m3-r01'
 RUN_UNGATED = '20261125-phase1-lora-w24-formal-ungated-s2026092702-r01'
 RUN_OUTER = '20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01'
 RUN_NATIVE_CENTER = '20261127-phase1-lora-w24-formal-native-center-s2026092702-r01'
+RUN_PRACTICAL_CPU = '20261127-phase1-lora-w24-formal-practical-cpu-s2026092702-r01'
 NATIVE_CENTER_KIND = 'native-center-direction'
 UNGATED_COMMIT = 'aedf98271cf9473d11ee0d12a48d93e6c03bd24f'
 SEEDS = (2026092701, SEED, 2026092703)
@@ -54,6 +56,10 @@ RX_PER_JOB = 5
 SHARDS = range((len(TARGET) + RX_PER_JOB - 1) // RX_PER_JOB)
 ORIGINAL_AUG_COMMIT = '502629361a6aafa564a94947f3116e82f58c3692'
 REPLICATION_COMMIT = 'abd0f4332aba04ac4cbca42cb5a3449193a9bbf2'
+
+
+def cpu_practical(rt):
+    return rt.get('run_id') == RUN_PRACTICAL_CPU
 
 
 def evaluation_routes(third_prior=False):
@@ -150,6 +156,10 @@ def verify_matched_source(rt):
     if kind == PRACTICAL_KIND:
         spec = trial(kind)
         runs = Path(rt['project']) / 'runs'
+        if cpu_practical(rt):
+            if root != runs/spec.run or Path(rt['run_root']) != runs/RUN_PRACTICAL_CPU or spec.routes != (FULL,):
+                raise ValueError('Expected the registered CPU Full Practical matrix and frozen parent')
+            return
         if (rt.get('run_id') != spec.run or root != runs/spec.run or Path(rt['run_root']) != root/'formal'
                 or spec.routes != (FULL,)):
             raise ValueError('Expected the registered fixed Full Practical supervision matrix')
@@ -303,11 +313,11 @@ def prior_labels(heads, arms, tracker, packets, device):
                     axis=1), len(original)
 
 
-def append_blind_prediction(reference, predicted, old_activity, count):
+def append_blind_prediction(reference, predicted, old_activity, count, *, require_direct_parity=True):
     if (reference.ndim != 3 or reference.shape[0] != 1 or reference.shape[1] < 2 or reference.shape[-1] != LIMIT
             or predicted.ndim != 3 or predicted.shape[0] != 1 or predicted.shape[1] < 2
             or predicted.shape[-1] != LIMIT or reference.dtype != np.int16 or predicted.dtype != np.int16
-            or not np.array_equal(reference[:, 0], predicted[:, 0])):
+            or (require_direct_parity and not np.array_equal(reference[:, 0], predicted[:, 0]))):
         raise ValueError('Direct decisions must match the same-packet blind reference exactly')
     old_count = np.asarray(old_activity)
     if (count != LIMIT or old_count.shape != (reference.shape[1]-1,)
@@ -346,7 +356,7 @@ def batch_labels(heads, g, tracker, threshold, baseline, packets, device, *, ung
 
 @torch.no_grad()
 def smoke(rt):
-    device = 'cuda:0'
+    device = 'cpu' if cpu_practical(rt) else 'cuda:0'
     ungated = rt.get('ungated', False)
     outer = rt.get('outer_objective', False)
     third = rt.get('third_prior', False)
@@ -384,7 +394,8 @@ def smoke(rt):
 
 
 def predict(rt, case):
-    device = 'cuda:0'
+    cpu = cpu_practical(rt)
+    device = 'cpu' if cpu else 'cuda:0'
     ungated = rt.get('ungated', False)
     outer = rt.get('outer_objective', False)
     third = rt.get('third_prior', False)
@@ -410,6 +421,7 @@ def predict(rt, case):
     out = root / 'predictions' / case
     out.mkdir()
     activity = {}
+    cpu_direct_differences = {}
     with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
         for rx in expected['receivers']:
             raw = native(data, rx, LIMIT)
@@ -437,13 +449,39 @@ def predict(rt, case):
                     reference = earlier[scene]
                     if reference.shape != (1, len(prior_receipt['modes']), LIMIT):
                         raise ValueError(f'Invalid archived readout dimensions for {key}')
-                    predictions[scene], activity[key] = append_blind_prediction(reference, predicted, prior_activity[key], active)
+                    predictions[scene], activity[key] = append_blind_prediction(
+                        reference, predicted, prior_activity[key], active, require_direct_parity=not cpu)
+                    if cpu:
+                        cpu_direct_differences[key] = int(np.count_nonzero(reference[:, 0] != predicted[:, 0]))
                 else:
                     predictions[scene], activity[key] = predicted, active.tolist()
                 print('W24_FORMAL_PREDICTED', case, rx, scene, activity[key], flush=True)
             np.savez(out / f'{rx}.npz', **predictions)
     write(out / 'activity.json', activity)
+    if cpu:
+        write(out / 'cpu-direct-parity.json', cpu_direct_differences)
     write(out / 'complete.json', expected)
+
+
+def wait_practical_cpu_source(rt):
+    from experiments.pamf_lora_main.w24_third_prior import trial
+
+    root = Path(rt['candidate_root'])
+    spec = trial(rt['third_prior'])
+    artifacts = [root/arm/f'w24_{arm}-{suffix}' for arm in spec.fit_arms
+                 for suffix in ('complete.json', 'model.pt')]
+    while True:
+        try:
+            state = read(root/'state.json')['status']
+        except (FileNotFoundError, json.JSONDecodeError):
+            sleep(10)
+            continue
+        if state in ('SOURCE_FROZEN', 'RUNNING', 'SOURCE_SCORED', 'FORMAL_PREDICTING', 'PREDICTIONS_FROZEN', 'FAILED'):
+            if all(path.is_file() for path in artifacts):
+                # The ordinary no-query smoke reads and strictly validates both checkpoint proofs.
+                return
+            raise ValueError('Expected both terminal source-frozen candidate checkpoints')
+        sleep(10)
 
 
 def dispatch(runtime):
@@ -468,6 +506,9 @@ def dispatch(runtime):
                 raise ValueError('Matched formal prediction requires its own ungated matrix')
             verify_matched_source(rt)
             blind_reference(rt)
+            if cpu_practical(rt):
+                status(status='WAITING_FOR_FROZEN_CANDIDATES', device='cpu')
+                wait_practical_cpu_source(rt)
         if outer:
             if not ungated:
                 raise ValueError('The outer-objective model requires all-packet restoration')
@@ -485,18 +526,11 @@ def dispatch(runtime):
                 raise ValueError('Augmented W24 readers did not reach all source-frozen checkpoints')
             sleep(30)
 
-        status(status='WAIT_GPU')
-        deadline = monotonic() + 1800
-        allowed = rt['allowed_gpus']
-        policy = {'training_cap': True} if rt.get('training_cap') else {}
-        while not (cards := available(allowed, max_compute_processes=rt['max_compute_processes'], **policy)):
-            if not policy and monotonic() >= deadline:
-                raise ValueError('GPU wait expired')
-            sleep(20)
+        cpu = cpu_practical(rt)
         script = str(Path(__file__).resolve())
 
         def start(_plan, phase, name, gpu):
-            env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='2',
+            env = dict(os.environ, CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu), OMP_NUM_THREADS='2',
                        OPENBLAS_NUM_THREADS='1', PYTHONPATH=str(reference))
             with (root / 'logs' / f'{name}.log').open('x', encoding='utf-8') as log:
                 job = subprocess.Popen([rt['python'], '-u', script, phase, str(runtime), name],
@@ -504,13 +538,28 @@ def dispatch(runtime):
             print('W24_FORMAL_STARTED', phase, name, job.pid, gpu, flush=True)
             return job
 
-        gpu = next(i for i in allowed if i in cards)
+        gpu = None
+        if not cpu:
+            status(status='WAIT_GPU')
+            deadline = monotonic() + 1800
+            allowed = rt['allowed_gpus']
+            policy = {'training_cap': True} if rt.get('training_cap') else {}
+            while not (cards := available(allowed, max_compute_processes=rt['max_compute_processes'], **policy)):
+                if not policy and monotonic() >= deadline:
+                    raise ValueError('GPU wait expired')
+                sleep(20)
+            gpu = next(i for i in allowed if i in cards)
         status(status='SOURCE_SMOKE')
         if start(rt, 'smoke', 'source-smoke', gpu).wait():
             raise ValueError('Formal real checkpoint source smoke failed')
         status(status='TARGET_PREDICTING')
         jobs = cases(third)
-        schedule(rt, [('predict', case) for case in jobs], start)
+        if cpu:
+            for case in jobs:
+                if start(rt, 'predict', case, None).wait():
+                    raise RuntimeError(f'CPU Formal prediction failed for {case}')
+        else:
+            schedule(rt, [('predict', case) for case in jobs], start)
         for case in jobs:
             if read(root / 'predictions' / case / 'complete.json') != receipt(case, ungated, outer, third):
                 raise ValueError(f'Incomplete frozen prediction shard {case}')
@@ -534,6 +583,7 @@ def main():
     choice = publish.add_mutually_exclusive_group()
     choice.add_argument('--outer-objective', action='store_true')
     choice.add_argument('--native-center-direction', action='store_true')
+    choice.add_argument('--native-practical-cpu', action='store_true')
     for key in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--' + key, type=Path, required=True)
     args = parser.parse_args()
@@ -543,7 +593,8 @@ def main():
         project = PurePosixPath(rt['project'])
         runs, releases = project / 'runs', project / 'releases'
         data = releases / f'{DATA_RUN}-release' / 'data'
-        run = RUN_NATIVE_CENTER if args.native_center_direction else RUN_OUTER if args.outer_objective else RUN_UNGATED
+        run = (RUN_PRACTICAL_CPU if args.native_practical_cpu else RUN_NATIVE_CENTER if args.native_center_direction
+               else RUN_OUTER if args.outer_objective else RUN_UNGATED)
         rt.update(run_id=run, code_commit=release_commit(args.repo), runner=__spec__.name, ungated=True,
                   outer_objective=args.outer_objective,
                   release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
@@ -553,7 +604,14 @@ def main():
                   allowed_gpus=[0, 5, 3, 4, 2, 7, 1, 6], cpu_workers=8, max_workers=2, max_compute_processes=8)
         rt['external_releases'] = [rt[k] for k in ('source_root', 'native_target_root', 'w24_release_root',
                                                   'training_release_root')]
-        if args.native_center_direction:
+        if args.native_practical_cpu:
+            from experiments.pamf_lora_main.w24_third_prior import PRACTICAL_KIND, trial
+
+            parent = runs / trial(PRACTICAL_KIND).run
+            rt.update(third_prior=PRACTICAL_KIND, candidate_root=str(parent), allowed_gpus=[],
+                      cpu_workers=2, max_workers=1)
+            rt['external_releases'] += [str(p) for p in (runs / RUNS[SEED], parent, runs / RUN_UNGATED)]
+        elif args.native_center_direction:
             from experiments.pamf_lora_main.w24_third_prior import trial
 
             parent = runs / trial(NATIVE_CENTER_KIND).run
