@@ -45,6 +45,7 @@ class Recipe:
     domain_ce_weight: float = 0.10
     domain_uniform_weight: float = 0.10
     orthogonal_weight: float = 0.01
+    cross_rx_identity_weight: float = 0.0
 
 
 RECIPE = Recipe()
@@ -94,10 +95,31 @@ def pseudo_loss(clean, practical, teacher, cfg):
     return loss, accepted.sum()
 
 
-def objective(model, discriminator, labeled, unlabeled, teacher, temperature, epoch, cfg):
+def rx_identity_loss(features, labels, receivers):
+    """Pull same-TX examples across RXs in the identity classifier's embedding."""
+    normalized = F.normalize(features, dim=1)
+    similarities = normalized @ normalized.T / 0.15
+    same_tx = labels[:, None] == labels[None, :]
+    other_rx = receivers[:, None] != receivers[None, :]
+    positive = same_tx & other_rx
+    positive_count = positive.sum(dim=1)
+    active = positive_count > 0
+    # Exclude the anchor and other same-TX examples from its own RX.
+    # Inactive rows retain a finite denominator and contribute zero.
+    candidates = ~same_tx | other_rx | ~active[:, None]
+    normalizer = torch.logsumexp(similarities.masked_fill(~candidates, -torch.inf), dim=1)
+    positive_mean = (similarities * positive).sum(dim=1) / positive_count.clamp_min(1)
+    return ((normalizer - positive_mean) * active).sum() / active.sum().clamp_min(1)
+
+
+def objective(model, discriminator, labeled, unlabeled, teacher, temperature, epoch, cfg,
+              *, labeled_receivers=None):
     lx, ls, label = labeled
     ux, us, domain = unlabeled
-    _, (clean_l, practical_l) = paired_forward(model, lx, ls)
+    align = cfg.cross_rx_identity_weight > 0
+    if align and labeled_receivers is None:
+        raise ValueError("Cross-receiver identity loss requires labeled source receiver IDs")
+    labeled_features, (clean_l, practical_l) = paired_forward(model, lx, ls)
     feature, (clean_u, practical_u) = paired_forward(model, ux, us)
     ce = F.cross_entropy(clean_l, label) + cfg.satellite_ce_weight * F.cross_entropy(practical_l, label)
     relevant, invariant = feature[:, :128], feature[:, 128:]
@@ -119,6 +141,9 @@ def objective(model, discriminator, labeled, unlabeled, teacher, temperature, ep
         pseudo, accepted = pseudo_loss(clean_u, practical_u, teacher_prob, cfg)
     loss = (scale * ce + cfg.pseudo_weight * pseudo + cfg.domain_ce_weight * domain_ce
             + cfg.domain_uniform_weight * domain_kl + cfg.orthogonal_weight * orth)
+    if align:
+        loss = loss + cfg.cross_rx_identity_weight * rx_identity_loss(
+            labeled_features[:, 128:], label, labeled_receivers)
     return loss, accepted
 
 
@@ -153,11 +178,10 @@ def new_model(device, classes=len(CLASSES)):
     return Ni_model_2part(classes).to(device)
 
 
-def train(c, device="cuda:0"):
+def train(c, device="cuda:0", *, cfg=RECIPE):
     from copy import deepcopy
     from time import monotonic
 
-    cfg = RECIPE
     torch.manual_seed(c["model_seed"])
     expected = c.get("source_dimensions")
     source = load_source(c["source_cache"], expected=expected)
@@ -205,7 +229,9 @@ def train(c, device="cuda:0"):
             domain_optimizer.zero_grad(set_to_none=True)
             loss, accepted = objective(
                 model, discriminator, (lx, ls, tensor(meta_l["y"][li], device)),
-                (ux, us, tensor(meta_u["domain"][ui], device)), teacher, temperature, epoch, cfg)
+                (ux, us, tensor(meta_u["domain"][ui], device)), teacher, temperature, epoch, cfg,
+                labeled_receivers=(tensor(meta_l["domain"][li], device)
+                                   if cfg.cross_rx_identity_weight > 0 else None))
             loss.backward()
             nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip, error_if_nonfinite=True)
             nn.utils.clip_grad_norm_(discriminator.parameters(), cfg.grad_clip, error_if_nonfinite=True)
