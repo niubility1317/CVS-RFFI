@@ -488,8 +488,9 @@ def dispatch(runtime):
         status(status='WAIT_GPU')
         deadline = monotonic() + 1800
         allowed = rt['allowed_gpus']
-        while not (cards := available(allowed, max_compute_processes=rt['max_compute_processes'])):
-            if monotonic() >= deadline:
+        policy = {'training_cap': True} if rt.get('training_cap') else {}
+        while not (cards := available(allowed, max_compute_processes=rt['max_compute_processes'], **policy)):
+            if not policy and monotonic() >= deadline:
                 raise ValueError('GPU wait expired')
             sleep(20)
         script = str(Path(__file__).resolve())

@@ -3,6 +3,7 @@ import argparse
 from collections import Counter, deque
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import time
@@ -54,10 +55,25 @@ def worker(c, kind):
     raise ValueError('Unknown job kind')
 
 
-def available(allowed, max_compute_processes=2):
+def _validation_only(pid):
+    try:
+        process = Path('/proc') / pid
+        if (process/'comm').read_text().strip() != 'MATLAB':
+            return False
+        command = (process/'cmdline').read_bytes()
+    except OSError:
+        return False
+    return not re.search(rb'\b\w+_train\(', command) and bool(
+        re.search(rb'\b\w+_validate\(', command) or b'/attempts/validate_' in command
+    )
+
+
+def available(allowed, max_compute_processes=2, *, training_cap=False):
     def nvsmi(field):
         return subprocess.check_output(['nvidia-smi', field, '--format=csv,noheader,nounits'], text=True)
-    others = Counter(line.strip().split(',')[0] for line in nvsmi('--query-compute-apps=gpu_uuid').splitlines())
+    occupants = (line.replace(' ', '').split(',') for line in
+                 nvsmi('--query-compute-apps=gpu_uuid,pid').splitlines())
+    others = Counter(uuid for uuid, pid in occupants if not (training_cap and _validation_only(pid)))
     caps = (line.replace(' ', '').split(',') for line in
             nvsmi('--query-gpu=index,uuid,memory.free').splitlines())
     return [int(i) for i, uuid, mb in caps

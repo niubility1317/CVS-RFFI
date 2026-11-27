@@ -84,7 +84,8 @@ NATIVE_SPECTRAL_RUN = '20261127-phase1-lora-w24-native-band-risk-s2026112991-r01
 NATIVE_SPECTRAL_ARMS = ('native_band_control', 'native_band_risk')
 NATIVE_CENTER_RUN = '20261127-phase1-lora-w24-native-center-direction-s2026112991-r01'
 NATIVE_CENTER_ARMS = ('native_center_control', 'native_center_direction')
-PRACTICAL_RUN = '20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r01'
+PRACTICAL_CACHE_RUN = '20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r01'
+PRACTICAL_RUN = '20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02'
 PRACTICAL_KIND = 'native-practical-supervision'
 PRACTICAL_ARMS = ('practical_matched_dose', 'practical_exact_additive')
 NATIVE_PAIRED_ARMS = (*NATIVE_ADDITIVE_ARMS, *NATIVE_SPECTRAL_ARMS, *NATIVE_CENTER_ARMS)
@@ -299,7 +300,7 @@ def fit_inputs(rt, arm):
     if arm in UNET_WARM_ARMS:
         inputs['unet_parent'] = rt['unet_parent']
     if arm in PRACTICAL_ARMS:
-        inputs['practical_cache'] = str(PurePosixPath(rt['run_root'])/'source_practical')
+        inputs['practical_cache'] = rt['practical_cache']
     if arm == PRACTICAL_ARMS[0]:
         inputs['dose_parent'] = rt['dose_parent']
     return inputs
@@ -539,7 +540,7 @@ def fit(config, arm, *, smoke):
         from experiments.pamf_lora_main.w24_practical_supervision import PracticalLoss, training_sets
 
         run = Path(rt['run_root']).parent
-        if run.name != PRACTICAL_RUN or Path(rt['practical_cache']) != run / 'source_practical':
+        if run.name != PRACTICAL_RUN or Path(rt['practical_cache']) != run.parent / PRACTICAL_CACHE_RUN / 'source_practical':
             raise ValueError('Expected the immutable source-only Practical cache')
         teacher = None
         if arm == PRACTICAL_ARMS[0]:
@@ -815,25 +816,26 @@ def dispatch(runtime):
         if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Expected the registered W24 evaluator archive')
         if kind == PRACTICAL_KIND:
-            config = root/'cache-inputs.json'
-            write(config, dict(source_root=rt['source_root'], cache_root=str(root/'source_practical'),
-                               frozen_sources=rt['frozen_sources'], workers=rt['cpu_workers']))
-            proc = start('cache-practical', 'source-practical-cache', None, reference, own, config)
-            status(status='SOURCE_CACHE_BUILDING', pid=proc.pid)
-            if proc.wait():
-                raise RuntimeError('Source-only Practical pair generation failed')
+            cache = Path(rt['practical_cache'])
+            if read(cache/'complete.json')['status'] != 'SOURCE_TRACE_FROZEN' or not (cache/'pairs.npy').is_file():
+                raise RuntimeError('Closed r01 source-only Practical pair bank required')
         for arm in spec.fit_arms:
             (root / arm).mkdir()
             write(root / arm / 'fit-inputs.json', fit_inputs(rt, arm))
-        cards = available(rt['allowed_gpus'], rt['max_compute_processes'])
-        if len(cards) < len(spec.fit_arms):
+        def eligible():
+            policy = {'training_cap': True} if rt.get('training_cap') else {}
+            return available(rt['allowed_gpus'], rt['max_compute_processes'], **policy)
+
+        cards = eligible()
+        if kind != PRACTICAL_KIND and len(cards) < len(spec.fit_arms):
             raise RuntimeError('Insufficient eligible GPUs for the registered training rows')
-        status(status='SOURCE_TRAINING', arms=list(spec.fit_arms), steps=spec.steps, available_gpus=cards)
+        status(status='SOURCE_TRAINING' if cards else 'WAIT_GPU_TRAINING', arms=list(spec.fit_arms),
+               steps=spec.steps, available_gpus=cards)
         schedule(rt, [('fit', arm) for arm in spec.fit_arms], training_job)
         status(status='SOURCE_FROZEN', arms=list(spec.arms), steps=spec.steps)
         deadline = monotonic() + 600
-        while not (cards := available(rt['allowed_gpus'], rt['max_compute_processes'])):
-            if monotonic() >= deadline:
+        while not (cards := eligible()):
+            if kind != PRACTICAL_KIND and monotonic() >= deadline:
                 raise RuntimeError('No GPU available for frozen source evaluation')
             sleep(15)
         for phase, gpu in (('predict-source', cards[0]), ('score-source', None)):
@@ -852,7 +854,8 @@ def dispatch(runtime):
                 qualified_source(root, kind)
             config = root / 'formal-runtime.json'
             write(config, dict(rt, candidate_root=str(root), run_root=str(root/'formal'), ungated=True))
-            job = start('dispatch', 'formal-dispatch', None, reference, own.with_name('w24_formal.py'), config)
+            dispatcher = own.parents[2] if kind == PRACTICAL_KIND else reference
+            job = start('dispatch', 'formal-dispatch', None, dispatcher, own.with_name('w24_formal.py'), config)
             status(status='FORMAL_PREDICTING', pid=job.pid)
             if job.wait() or read(root/'formal'/'state.json')['status'] != 'PREDICTIONS_FROZEN':
                 raise RuntimeError('Formal predictions did not freeze')
@@ -891,7 +894,7 @@ def publish(args):
              'polyphase': [0, 2, 3, 5], 'additive-reference': [0, 7, 2, 3],
              'native-packet-dura': [3, 5, 6], 'native-additive': [0, 3, 5, 6],
              'native-band-risk': [0, 3, 5, 6], 'native-center-direction': [0, 3, 5, 6],
-             PRACTICAL_KIND: [0, 3]}
+             PRACTICAL_KIND: [0, 7, 2, 3, 6, 5, 1, 4]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
@@ -910,7 +913,9 @@ def publish(args):
         rt['external_releases'].append(rt['unet_parent'])
     if kind == PRACTICAL_KIND:
         rt['dose_parent'] = str(runs / NATIVE_CENTER_RUN)
-        rt['external_releases'].append(rt['dose_parent'])
+        rt['practical_cache'] = str(runs / PRACTICAL_CACHE_RUN / 'source_practical')
+        rt.update(max_compute_processes=2, training_cap=True)
+        rt['external_releases'].extend((rt['dose_parent'], rt['practical_cache']))
     release(args.repo, args.output, rt, args.ssh_config)
 
 
