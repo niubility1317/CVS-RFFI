@@ -45,18 +45,22 @@ ALIGN_RUN = '20261128-phase1-lora-raw8192-edit-aligned-s2026113031-r01'
 ALIGN_ARMS = ('equal_edit_native', 'orthogonal_edit_native')
 INNOVATION_RUN = '20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01'
 INNOVATION_ARMS = ('baseline_continue_native', 'spectral_innovation_native')
+PHASE_RUN = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
+PHASE_ARMS = ('frequency_inphase_native', 'frequency_quadrature_native')
+GAIN_ARMS = (INNOVATION_ARMS[-1], *PHASE_ARMS)
 CONTINUATIONS = {REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS, GEOMETRY_RUN: GEOMETRY_ARMS,
                  STREAM_RUN: STREAM_ARMS, PAIR_RUN: PAIR_ARMS, ALIGN_RUN: ALIGN_ARMS,
-                 INNOVATION_RUN: INNOVATION_ARMS}
+                 INNOVATION_RUN: INNOVATION_ARMS, PHASE_RUN: PHASE_ARMS}
 TASK_STAGES = (TASK, *(arm for modes in CONTINUATIONS.values() for arm in modes))
 RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), **CONTINUATIONS}
 STAGE_RUN = {stage:run for run,stages in RUNS.items() for stage in stages}
 SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015,VISIBLE_RUN: 2026113017,
          GEOMETRY_RUN: 2026113021, STREAM_RUN: 2026113023, PAIR_RUN: 2026113027,
-         ALIGN_RUN: 2026113031, INNOVATION_RUN: 2026113031}
+         ALIGN_RUN: 2026113031, INNOVATION_RUN: 2026113031, PHASE_RUN: 2026113037}
 STEPS = {**dict(zip(STAGES,(10000,10000,12000),strict=True)), TASK:18000,
          **dict.fromkeys((*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS),15000), **dict.fromkeys(STREAM_ARMS,18000),
-         **dict.fromkeys((*PAIR_ARMS,*ALIGN_ARMS,*INNOVATION_ARMS),20000)}
+         **dict.fromkeys((*PAIR_ARMS,*ALIGN_ARMS,*INNOVATION_ARMS),20000),
+         **dict.fromkeys(PHASE_ARMS,36000)}
 BATCH_ROLE = 8
 DURA_LR = 2e-4
 TASK_LR = 4e-5
@@ -115,6 +119,10 @@ def build_projector(frontend,device):
     return InvisibleIQ(frontend.indices,frontend.taps,frontend.edges,width=NATIVE_LENGTH).to(device)
 
 
+def spectral_innovation(stage, device):
+    return SpectralInnovation(phase_aware=stage in PHASE_ARMS,quadrature=stage==PHASE_ARMS[-1]).to(device)
+
+
 def _proof(stage,contract,model_proof):
     if (model_proof['stage'],model_proof['steps'],model_proof['raw_length'],model_proof['protocol']) != (
             stage,STEPS[stage],NATIVE_LENGTH,contract['protocol']):
@@ -151,6 +159,9 @@ def _proof(stage,contract,model_proof):
     if stage in INNOVATION_ARMS and (model_proof['F_trainable'] or model_proof['initialization']!=TASK_RUN
             or model_proof['spectral_innovation']!=(stage==INNOVATION_ARMS[-1])):
         raise ValueError('Unexpected native spectral innovation branch or parent')
+    if stage in PHASE_ARMS and (model_proof['F_trainable'] or model_proof['initialization']!=TASK_RUN
+            or model_proof['frequency_quadrature']!=(stage==PHASE_ARMS[-1])):
+        raise ValueError('Unexpected native frequency quadrature branch or parent')
 
 
 def load_stage(root, stage, contract, module, device):
@@ -240,7 +251,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     is_task=stage in TASK_STAGES
     seed=SEEDS[run]+(STAGES.index(stage) if stage in STAGES else 0)
     torch.manual_seed(seed)
-    count=2 if smoke and stage not in (*GEOMETRY_ARMS,*STREAM_ARMS,*PAIR_ARMS,*ALIGN_ARMS,*INNOVATION_ARMS) else BATCH_ROLE
+    count=2 if smoke and stage not in (*GEOMETRY_ARMS,*STREAM_ARMS,*PAIR_ARMS,*ALIGN_ARMS,*INNOVATION_ARMS,*PHASE_ARMS) else BATCH_ROLE
     steps=1 if smoke else STEPS[stage]
     order=np.random.default_rng(seed)
     rng=torch.Generator(device=device).manual_seed(seed)
@@ -269,8 +280,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                 model.core.stream=NativeStreamRefiner(continuous=stage==STREAM_ARMS[-1]).to(device)
             if stage in PAIR_ARMS:
                 model.core.refine=NoisePairRefiner().to(device)
-            if stage==INNOVATION_ARMS[-1]:
-                model.core.innovation=SpectralInnovation().to(device)
+            if stage in GAIN_ARMS:
+                model.core.innovation=spectral_innovation(stage,device)
         trained=model.core
         reader.requires_grad_(False).eval()
         if stage in PAIR_ARMS:
@@ -307,6 +318,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     intermediate_gradient = None
     orthogonal_gradient = None
     innovation_gradient = None
+    quadrature_gradient = None
     for step in range(1,steps+1):
         l=order.choice(len(l_iq),count,replace=False)
         u=order.choice(len(u_iq),count,replace=False)
@@ -325,7 +337,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
             if smoke and stage in STREAM_ARMS:
                 with torch.no_grad():
                     torch.testing.assert_close(model.core.stream(raw, raw),raw,rtol=0.,atol=0.)
-            if smoke and stage==INNOVATION_ARMS[-1]:
+            if smoke and stage in GAIN_ARMS:
                 with torch.no_grad():
                     torch.testing.assert_close(model(raw),model(raw,coarse_only=True),rtol=0.,atol=0.)
             parts=training_task_parts(joint,model,reader,frontend,mix,raw,label,rng,
@@ -361,11 +373,15 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                         parts[9],trained.parameters(),retain_graph=True))
                     if not 0<orthogonal_gradient<float('inf'):
                         raise ValueError('Selected source additive edit must have a finite orthogonal gradient')
-                if stage==INNOVATION_ARMS[-1]:
-                    innovation_gradient=joint.norm_gradient(torch.autograd.grad(
-                        parts[0],trained.innovation.gain[-1].parameters(),retain_graph=True))
+                if stage in GAIN_ARMS:
+                    gradients=torch.autograd.grad(parts[0],trained.innovation.gain[-1].parameters(),retain_graph=True)
+                    innovation_gradient=joint.norm_gradient(gradients)
                     if not 0<innovation_gradient<float('inf'):
                         raise ValueError('Frozen E104 must train the spectral innovation gain')
+                    if stage==PHASE_ARMS[-1]:
+                        quadrature_gradient=joint.norm_gradient(g[1] for g in gradients)
+                        if not 0<quadrature_gradient<float('inf'):
+                            raise ValueError('Frozen E104 must train the quadrature gain')
         else:
             clean,observed,exact,variance=source_pair(raw,rng)
             incoming=pair(observed)
@@ -417,6 +433,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
         proof.update(initialization=TASK_RUN,orthogonal_multiplier=orthogonal_multiplier)
     if stage in INNOVATION_ARMS:
         proof.update(initialization=TASK_RUN,spectral_innovation=stage==INNOVATION_ARMS[-1])
+    if stage in PHASE_ARMS:
+        proof.update(initialization=TASK_RUN,frequency_quadrature=stage==PHASE_ARMS[-1])
     summary=dict(**proof,status='PASS' if smoke else 'SOURCE_FROZEN',
                  gradient=fit_gradient,CE_to_G=supervised,pseudo_CE_to_G=pseudo_gradient,geometry_to_G=geometry_gradient,
                  worker_seconds=monotonic()-started,parameters=sum(x.numel() for x in trained.parameters()),
@@ -427,8 +445,10 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
         summary['pair_to_coarse']=intermediate_gradient
     if stage in ALIGN_ARMS:
         summary['orthogonal_to_G']=orthogonal_gradient
-    if stage==INNOVATION_ARMS[-1]:
+    if stage in GAIN_ARMS:
         summary['CE_to_innovation']=innovation_gradient
+    if stage==PHASE_ARMS[-1]:
+        summary['CE_to_quadrature']=quadrature_gradient
     if not smoke:
         with (folder/'model.pt').open('xb') as out:
             torch.save(dict(contract=contract,proof=proof,model=trained.state_dict()),out)
@@ -455,8 +475,8 @@ def load_readers(joint, rt, device):
                 restorer.core.stream=NativeStreamRefiner(continuous=stage==STREAM_ARMS[-1]).to(device)
             if stage in PAIR_ARMS:
                 restorer.core.refine=NoisePairRefiner().to(device)
-            if stage==INNOVATION_ARMS[-1]:
-                restorer.core.innovation=SpectralInnovation().to(device)
+            if stage in GAIN_ARMS:
+                restorer.core.innovation=spectral_innovation(stage,device)
             load_stage(root,stage,contract,restorer.core,device)
             model[stage]=restorer.eval().requires_grad_(False)
     return f,model,tracker,contract

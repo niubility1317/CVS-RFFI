@@ -7,12 +7,16 @@ from torch import nn
 class SpectralInnovation(nn.Module):
     """Share frequency-power evidence across chirps while retaining individual phase."""
 
-    def __init__(self):
+    def __init__(self, *, phase_aware=False, quadrature=False):
         super().__init__()
+        if quadrature and not phase_aware:
+            raise ValueError('Quadrature gain requires phase observations')
+        self.phase_aware = phase_aware
+        self.quadrature = quadrature
         self.gain = nn.Sequential(
-            nn.Conv1d(6, 32, 7, padding=3, padding_mode='circular'), nn.SiLU(),
+            nn.Conv1d(8 if phase_aware else 6, 32, 7, padding=3, padding_mode='circular'), nn.SiLU(),
             nn.Conv1d(32, 32, 9, dilation=3, padding=12, padding_mode='circular'), nn.SiLU(),
-            nn.Conv1d(32, 1, 5, padding=2, padding_mode='circular'),
+            nn.Conv1d(32, 2 if quadrature else 1, 5, padding=2, padding_mode='circular'),
         )
         nn.init.zeros_(self.gain[-1].weight)
         nn.init.zeros_(self.gain[-1].bias)
@@ -32,6 +36,16 @@ class SpectralInnovation(nn.Module):
         residual = innovation.abs().square() / noise
         shared = tuple(power.mean(1, keepdim=True).expand_as(power) for power in (local, estimate, residual))
         features = torch.stack((local, estimate, residual, *shared), dim=-2).log1p()
-        gains = self.gain(features.flatten(0, 1)).squeeze(1).unflatten(0, features.shape[:2])
-        update = .5 * gains.tanh() * self.edit_band * innovation
+        if self.phase_aware:
+            relative = (x * y.conj() / noise) / ((1. + local) * (1. + estimate)).sqrt()
+            phase = torch.stack((relative.real, relative.imag), dim=-2)
+            features = torch.cat((features,phase),dim=-2)
+        logits = self.gain(features.flatten(0, 1)).unflatten(0, features.shape[:2])
+        real = logits[..., 0, :]
+        if self.phase_aware:
+            gain = torch.complex(real, logits[..., 1, :]) if self.quadrature else real
+            gain = gain / (1. + gain.abs().square()).sqrt()
+        else:
+            gain = real.tanh()
+        update = .5 * gain * self.edit_band * innovation
         return torch.fft.ifft(update, norm='ortho')

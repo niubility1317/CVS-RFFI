@@ -127,7 +127,7 @@ def test_raw_formal_receipt_preserves_w24_parent_and_source_control():
         assert not joint.qualifies(scores,mode)
 
 
-@pytest.mark.parametrize('run',(train.ALIGN_RUN,train.INNOVATION_RUN))
+@pytest.mark.parametrize('run',(train.ALIGN_RUN,train.INNOVATION_RUN,train.PHASE_RUN))
 def test_fixed_native_arms_enter_formal_without_reading_source_scores(monkeypatch, tmp_path, run):
     def unexpected_read(*args):
         pytest.fail('Formal prediction tried to open a source score before the baseline')
@@ -183,6 +183,31 @@ def test_spectral_innovation_starts_at_parent_and_retains_chirp_complex_phase():
     torch.testing.assert_close(model(observed*phase,coarse*phase),update*phase,rtol=2e-5,atol=2e-6)
     torch.testing.assert_close(update.mean(-1),torch.zeros_like(update[...,0]),rtol=0,atol=2e-7)
     torch.testing.assert_close(model(observed,observed),torch.zeros_like(observed),rtol=0,atol=0)
+
+
+def test_phase_aware_innovation_can_turn_a_frequency_residual_with_bounded_gain():
+    control=SpectralInnovation(phase_aware=True)
+    candidate=SpectralInnovation(phase_aware=True,quadrature=True)
+    x=torch.zeros(1,8,1024,dtype=torch.complex64)
+    x[...,9]=torch.exp(1j*torch.arange(8))
+    residual=torch.fft.ifft(x,norm='ortho')
+    y,coarse=1.5*residual,.5*residual
+    torch.testing.assert_close(candidate(y,coarse),torch.zeros_like(y))
+    assert torch.autograd.grad(candidate(y,coarse).imag[...,0].sum(),
+                               candidate.gain[-1].bias)[0][1].abs()>0
+    with torch.no_grad():
+        control.gain[-1].bias.fill_(2.)
+        candidate.gain[-1].bias.copy_(torch.tensor([0.,2.]))
+    scale=1/(5**.5)
+    torch.testing.assert_close(control(y,coarse),scale*residual)
+    torch.testing.assert_close(candidate(y,coarse),1j*scale*residual)
+    theta=torch.exp(1j*torch.arange(8))[None,:,None]
+    torch.testing.assert_close(candidate(theta*y,theta*coarse),theta*candidate(y,coarse))
+    dc=torch.ones_like(y)
+    torch.testing.assert_close(candidate(dc,dc*.5),torch.zeros_like(y))
+    assert torch.isfinite(candidate(y,y*0)).all()
+    with pytest.raises(ValueError,match='phase'):
+        SpectralInnovation(quadrature=True)
 
 
 def test_native_aperture_projection_annihilates_the_exact_visible_functionals():
