@@ -16,6 +16,7 @@ if __package__ is None:
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main.full_packet_views import native, source_contract
+from experiments.pamf_lora_main.joint_unroll_source import coordinates
 from experiments.pamf_lora_main.runner import activate
 from experiments.pamf_lora_main.w24_aperture_noise_audit import CENTER, center_rms, model_iq, native_aperture
 from experiments.pamf_lora_main.w24_edit_budget_audit import full_components
@@ -26,12 +27,18 @@ from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN, load_restore
 
 
 RUN = '20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01'
+ALLOCATION_RUN = '20261128-diagnostic-lora-w24-component-allocation-s2026112559-r01'
 REFERENCE = '20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r02'
 ARM = PRACTICAL_ARMS[1]
 MODES = ('direct', 'frozen_half', 'true_amplitude', 'true_direction', 'true_both', 'projected_amplitude')
 CONTRASTS = (('true_amplitude', 'frozen_half'), ('true_direction', 'frozen_half'),
              ('true_both', 'frozen_half'), ('true_both', 'true_direction'),
              ('true_both', 'true_amplitude'), ('projected_amplitude', 'frozen_half'))
+ALLOCATION_MODES = ('direct', 'frozen_half', 'component_norms', 'component_directions',
+                    'component_both', 'exact_center')
+ALLOCATION_CONTRASTS = (*((row, 'frozen_half') for row in ALLOCATION_MODES[2:]),
+                        ('component_both', 'component_norms'), ('component_both', 'component_directions'),
+                        ('exact_center', 'component_both'))
 BATCH = 16
 
 
@@ -62,6 +69,28 @@ def render(head, recovery, y, s):
     return np.stack([classify_aperture(head, tensor(model_iq(v, center_rms(v)), 'cpu')) for v in ablations])
 
 
+@torch.no_grad()
+def render_allocations(head, recovery, tracker, y, s):
+    from experiments.pamf_lora_main.w24_component_allocation import counterfactual_edits
+
+    packets = tensor(np.ascontiguousarray(y).view(np.float32), 'cpu').view(torch.complex64)
+    restored = np.from_dlpack(torch.lerp(packets, recovery.restore_native(packets), .5).contiguous())
+    received, frozen, signal = (native_aperture(value) for value in (y, restored, s))
+    original_iq = tensor(model_iq(received, center_rms(received)), 'cpu')
+    _, phase, _, _ = coordinates(tracker, original_iq[..., :CENTER])
+    original = received[..., :CENTER]
+    estimated = torch.from_numpy(frozen[..., :CENTER] - original)
+    exact = torch.from_numpy(signal[..., :CENTER] - original)
+    edits = counterfactual_edits(estimated, exact, phase)
+    active = np.any(exact.numpy() != 0, axis=(1, 2))
+    rows = [received, frozen]
+    for edit in edits:
+        candidate = frozen.copy()
+        candidate[active, :, :CENTER] = original[active] + edit.numpy()[active]
+        rows.append(candidate)
+    return np.stack([classify_aperture(head, tensor(model_iq(v, center_rms(v)), 'cpu')) for v in rows])
+
+
 def predict(rt):
     activate(rt)
     torch.set_num_threads(2)
@@ -70,20 +99,23 @@ def predict(rt):
         raise ValueError('Expected verified frozen r02 source weights')
     contract = source_contract(source)
     head = load_classifier(rt, contract, 'cpu')
-    load_restorer(*training_runtime(rt), contract, 'cpu')
+    _, tracker, _, _ = load_restorer(*training_runtime(rt), contract, 'cpu')
     model, evidence = load_candidate(candidate, contract, 'cpu', ARM)
+    allocation = rt['run_id'] == ALLOCATION_RUN
+    modes = ALLOCATION_MODES if allocation else MODES
+    classification = partial(render_allocations, head, model, tracker) if allocation else partial(render, head, model)
     clean = native(source, 'U_s', contract['counts']['U_s'])[0]
     for scene in ('clean', VIEWS[-1]):
         y, s = full_components(scene, (0, SOURCE[0], clean), verify=True)
         obs = native_aperture(y[None])
         np.testing.assert_array_equal(model_iq(obs, center_rms(obs)), np.from_dlpack(received_aperture(y[None], 'cpu')))
-        decisions = render(head, model, y[None], s[None])
-        if decisions.shape != (len(MODES), 1) or (scene == 'clean' and not np.all(decisions[1:] == decisions[1])):
+        decisions = classification(y[None], s[None])
+        if decisions.shape != (len(modes), 1) or (scene == 'clean' and not np.all(decisions[1:] == decisions[1])):
             raise ValueError('Unmatched real source U checkpoint smoke')
     write(root/'smoke.json', dict(status='PASS', classifier_epoch=104, source_role='U_s', source_packets=1,
                                  candidate_steps=evidence['steps'], target_reads=0, source_truth_reads=0))
     rows, rx, ids = panel(source, contract)
-    reference = root.parent/REFERENCE/'full_native'
+    reference = root.parent/RUN if allocation else root.parent/REFERENCE/'full_native'
     prior = read(reference/'source-predictions.json')
     if (prior['status'], prior['physical_ids'], prior['views'], prior['target_reads']) != (
             'PREDICTIONS_FROZEN', ids, list(VIEWS), 0):
@@ -98,19 +130,27 @@ def predict(rt):
             results = []
             for i in range(0, len(jobs), BATCH):
                 y, s = (np.stack(v) for v in zip(*(next(stream) for _ in jobs[i:i+BATCH]), strict=True))
-                results.append(render(head, model, y, s))
+                results.append(classification(y, s))
                 if i % 80 == 0:
                     print('W24_PRACTICAL_DIRECTION_PROGRESS', scene, min(i+BATCH,len(jobs)), flush=True)
             predictions[scene] = np.concatenate(results, axis=1)
-            indices = [prior['modes'].index(k) for k in ('direct', 'exact_both')]
-            parity[scene] = dict(direct=int((predictions[scene][0] != archived[scene][indices[0]]).sum()),
-                exact=None if scene == 'clean' else int((predictions[scene][4] != archived[scene][indices[1]]).sum()))
+            if allocation:
+                idx = [prior['modes'].index(k) for k in ('direct', 'frozen_half')]
+                if not np.array_equal(predictions[scene][:2], archived[scene][idx]):
+                    raise ValueError(f'Frozen direct and half readouts changed in {scene}')
+            else:
+                indices = [prior['modes'].index(k) for k in ('direct', 'exact_both')]
+                parity[scene] = dict(direct=int((predictions[scene][0] != archived[scene][indices[0]]).sum()),
+                    exact=None if scene == 'clean' else int((predictions[scene][4] != archived[scene][indices[1]]).sum()))
     with (root/'predictions.npz').open('xb') as f:
         np.savez(f, **predictions)
-    write(root/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(MODES), views=list(VIEWS),
+    fields = (dict(matched_panel=RUN, fixed_center_edit_energy=True, frozen_native_edges=True,
+                   common_private_abs_bin_cutoff=32) if allocation else
+              dict(matched_panel=REFERENCE, cpu_gpu_decision_disagreements=parity))
+    write(root/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(modes), views=list(VIEWS),
           physical_ids=ids, target_reads=0, source_truth_reads=0,
-          waveform=dict(oracle_only=True, candidate=ARM, frozen_run=PRACTICAL_RUN, matched_panel=REFERENCE,
-                        device='cpu', regional_edits=True, cpu_gpu_decision_disagreements=parity)))
+          waveform=dict(oracle_only=True, candidate=ARM, frozen_run=PRACTICAL_RUN,
+                        device='cpu', regional_edits=True, **fields)))
 
 
 def dispatch(runtime):
@@ -141,6 +181,7 @@ def main():
     for phase in ('dispatch', 'predict-source', 'score-source'):
         sub.add_parser(phase).add_argument('runtime', type=Path)
     publish = sub.add_parser('publish')
+    publish.add_argument('--component-allocation', action='store_true')
     for key in ('repo', 'output', 'context', 'ssh-config'):
         publish.add_argument('--'+key, type=Path, required=True)
     args = parser.parse_args()
@@ -149,20 +190,23 @@ def main():
         rt = {k:context[k] for k in ('project','python','frozen_sources')}
         project = PurePosixPath(rt['project'])
         releases, runs = project/'releases', project/'runs'
-        rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
-                  release_root=str(releases/f'{RUN}-release'), run_root=str(runs/RUN),
+        run = ALLOCATION_RUN if args.component_allocation else RUN
+        rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
+                  release_root=str(releases/f'{run}-release'), run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'), classifier_root=str(runs/AUG_RUN),
                   w24_release_root=str(releases/f'{W24_RUN}-release'), candidate_root=str(runs/PRACTICAL_RUN),
                   training_release_root=str(releases/f'{TRAIN_RUN}-release'))
         rt['external_releases'] = [rt[k] for k in ('source_root', 'classifier_root', 'w24_release_root',
-                                    'candidate_root', 'training_release_root')] + [str(runs/REFERENCE)]
+                                    'candidate_root', 'training_release_root')] + [str(runs/(RUN if args.component_allocation else REFERENCE))]
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'dispatch':
         dispatch(args.runtime)
     elif args.action == 'predict-source':
         predict(read(args.runtime))
     else:
-        score_source(args.runtime, modes=MODES, contrasts=CONTRASTS)
+        allocation = read(args.runtime)['run_id'] == ALLOCATION_RUN
+        score_source(args.runtime, modes=ALLOCATION_MODES if allocation else MODES,
+                     contrasts=ALLOCATION_CONTRASTS if allocation else CONTRASTS)
 
 
 if __name__ == '__main__':

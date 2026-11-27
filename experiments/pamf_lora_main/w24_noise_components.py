@@ -25,15 +25,19 @@ def power(value):
     return value.abs().square().mean((-2, -1), keepdim=True)
 
 
-def component_edits(noise, phase):
-    """Project measured noise into orthogonal subspaces in its aligned receive basis."""
+def aligned_spectrum_parts(value, phase):
+    """Split the aligned complex spectrum into common and zero-mean chirp parts."""
     frame = phase / phase.abs().clamp_min(1e-12)
-    spec = torch.fft.fft(noise * frame.conj(), norm='ortho')
-    bins = (torch.fft.fftfreq(CENTER, device=noise.device) * CENTER).round().abs()
+    spec = torch.fft.fft(value * frame.conj(), norm='ortho')
+    bins = (torch.fft.fftfreq(CENTER, device=value.device) * CENTER).round().abs()
     near = bins <= 32
     common = spec.mean(-2, keepdim=True)
-    private = spec - common
-    common = common.expand_as(spec)
+    return spec, common.expand_as(spec), spec - common, near, frame
+
+
+def component_edits(noise, phase):
+    """Project measured noise into orthogonal subspaces in its aligned receive basis."""
+    spec, common, private, near, frame = aligned_spectrum_parts(noise, phase)
 
     def inverse(x):
         return -torch.fft.ifft(x, norm='ortho') * frame
