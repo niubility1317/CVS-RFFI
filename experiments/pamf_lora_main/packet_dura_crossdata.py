@@ -11,15 +11,15 @@ from time import monotonic, sleep
 import numpy as np
 import torch
 
-from experiments.cric_dura_comparison.bootstrap import numerical_policy
+from experiments.cric_dura_comparison.bootstrap import activate, numerical_policy
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 from experiments.pamf_restoration.models import complex_iq, pair
 from experiments.pamf_uncertainty_restore.models import weighted_map
 
 
-RUN = "20261127-phase1-lora-wisig-packet-dura-s2026113021-r01"
-RETRY_RUN = RUN.removesuffix("r01") + "r02"
+RUN = "20261127-phase1-lora-wisig-packet-dura-s2026113021-r03"
+WISIG_RUN = RUN.removesuffix("r03") + "r02"
 LORA_PARENT = "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01"
 LORA_DURA = "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01"
 WISIG_REFERENCE = "20261125-phase1-wisig-native-fir-source-m4-r01"
@@ -47,14 +47,14 @@ def blend(y, proposal, action, variance):
 
 def archive_imports(config, *, extra=()):
     """Resolve each historical reader against the release that produced it."""
-    from experiments.pamf_lora_main.runner import activate
     roots = [str(Path(x) / "experiments") for x in (*extra, config["release_root"])]
     activate(config)
     package = importlib.import_module("experiments")
     package.__path__[:0] = roots
-    # The launcher's subpackage is already imported by python -m.
-    lora = importlib.import_module("experiments.pamf_lora_main")
-    lora.__path__[:0] = [str(Path(root) / "pamf_lora_main") for root in roots]
+    # The entry point already loaded these two package containers.
+    for short in ("pamf_lora_main", "cric_dura_comparison"):
+        loaded = importlib.import_module(f"experiments.{short}")
+        loaded.__path__[:0] = [str(Path(root) / short) for root in roots]
 
 
 def reference(rt, dataset):
@@ -247,7 +247,7 @@ def score(rt):
     root = Path(rt["run_root"])
     matrices = {}
     for dataset in ("lora", "wisig"):
-        folder = root / dataset
+        folder = (root if dataset == "lora" else root.parent / WISIG_RUN) / dataset
         marker = read(folder / "frozen.json")
         if any(marker[k] != v for k, v in dict(status="PREDICTIONS_FROZEN", modes=list(MODES),
                 views=list(VIEWS), source_truth_reads=0, target_reads=0).items()):
@@ -325,13 +325,19 @@ def dispatch(runtime, rt):
             if monotonic() >= deadline:
                 raise RuntimeError("No N607 GPU with 12 GiB free")
             sleep(10)
-        devices = dict(zip(("lora", "wisig"), (cards * 2)[:2], strict=True))
-        workers = {name: launch(name, card) for name, card in devices.items()}
-        write(state, dict(status="RUNNING", workers={k: dict(pid=p.pid, gpu=devices[k])
-                                                   for k, p in workers.items()}))
-        exits = {name: worker.wait() for name, worker in workers.items()}
-        if any(exits.values()):
-            raise RuntimeError(f"Source worker exits: {exits}")
+        card = cards[0]
+        worker = launch("lora", card)
+        write(state, dict(status="RUNNING", workers={"lora": dict(pid=worker.pid, gpu=card)},
+                          wisig_reused=WISIG_RUN))
+        if worker.wait():
+            raise RuntimeError("LoRa source worker failed")
+        wisig_root = folder.parent / WISIG_RUN
+        write(state, dict(status="WAITING_FOR_WISIG", wisig_reused=WISIG_RUN), exclusive=False)
+        deadline = monotonic() + 1800
+        while not (wisig_root / "wisig/frozen.json").is_file():
+            if read(wisig_root / "state.json")["status"] == "FAILED" or monotonic() >= deadline:
+                raise RuntimeError("WiSig worker did not freeze its source predictions")
+            sleep(10)
         if launch("score", None).wait():
             raise RuntimeError("Independent source scorer failed")
         write(state, dict(status="SOURCE_SCORED", both_qualify=read(folder/"source-scores.json")["both_qualify"]),
@@ -353,12 +359,13 @@ def main():
         from experiments.pamf_lora_main.publish import release, release_commit
         project = rt["project"]
         release_root = f"{project}/releases"
-        rt.update(run_id=RETRY_RUN, code_commit=release_commit(Path.cwd()), runner=__spec__.name,
-                  release_root=f"{release_root}/{RETRY_RUN}-release", run_root=f"{project}/runs/{RETRY_RUN}",
+        rt.update(run_id=RUN, code_commit=release_commit(Path.cwd()), runner=__spec__.name,
+                  release_root=f"{release_root}/{RUN}-release", run_root=f"{project}/runs/{RUN}",
                   lora_ref=f"{release_root}/{LORA_PARENT}-release",
                   wisig_ref=f"{release_root}/{WISIG_REFERENCE}-release",
                   allowed_gpus=[7, 2, 0, 6, 3, 5])
-        rt["external_releases"] = [rt["lora_ref"], rt["wisig_ref"], f"{project}/runs/{LORA_DURA}"]
+        rt["external_releases"] = [rt["lora_ref"], rt["wisig_ref"], f"{project}/runs/{LORA_DURA}",
+                                   f"{project}/runs/{WISIG_RUN}"]
         release(Path.cwd(), args.output, rt, args.ssh_config)
     elif args.action == "dispatch":
         dispatch(args.runtime, rt)
