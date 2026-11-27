@@ -1,12 +1,14 @@
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 import numpy as np
 import torch
 
 from experiments.cric_dura_comparison.io import write
-from experiments.pamf_unrolled_restore.wisig_practical_supervised import COUNTS, receipt
+from experiments.pamf_unrolled_restore import wisig_practical_supervised_fit as trainer
+from experiments.pamf_unrolled_restore.wisig_practical_supervised import BANK_RUN, COUNTS, receipt, source_bank
 from experiments.pamf_unrolled_restore.wisig_practical_supervised_fit import (
     ARMS, FIT, HELD, REGIONS, PacketDenoiser, load_arrays, matched_target, objective,
 )
@@ -50,6 +52,32 @@ class KnownNoiseSupervisionTests(unittest.TestCase):
                                             trace_scope='source_only', target_reads=1, TX_reads=0, F_reads=0))
             with self.assertRaisesRegex(ValueError, 'isolated source bank'):
                 load_arrays(root, ARMS[0], 'cpu')
+
+    def test_cpu_fit_freezes_both_arms_from_the_bound_r01_bank(self):
+        rng = np.random.default_rng(11)
+        with TemporaryDirectory() as folder, patch.multiple(trainer, FIT=4, HELD=2, BATCH=2, STEPS=1):
+            project = Path(folder)
+            bank = project/'runs'/BANK_RUN/'source-bank'
+            runtime = dict(project=str(project), source_bank=str(bank))
+            write(bank/'complete.json', trainer.source_bank_proof())
+            self.assertEqual(source_bank(runtime), bank)
+            with self.assertRaisesRegex(ValueError, 'registered r01'):
+                source_bank(dict(runtime, source_bank=str(project/'other-bank')))
+            for role, start, end in (('fit', 0, 4), ('held', 4, 6)):
+                iq = rng.standard_normal((end-start, 2, 256), dtype=np.float32)
+                np.savez(bank/f'{role}.npz', ids=np.arange(start, end), observed=iq, clean=iq,
+                         direction_only=iq*.9, exact_denoise=iq*.8)
+            for arm in ARMS:
+                trainer.fit(project, bank, arm)
+                checkpoint = torch.load(project/f'{arm}.pt', map_location='cpu', weights_only=True)
+                self.assertEqual(checkpoint['metadata']['device'], 'cpu')
+                self.assertEqual(checkpoint['metadata']['cpu_threads'], 2)
+                self.assertEqual(checkpoint['metadata']['peak_cuda'], 0)
+                self.assertGreater(checkpoint['metadata']['cpu_seconds'], 0)
+            models = trainer.load_models(project, device='cpu')
+            self.assertEqual(tuple(models), ARMS)
+            self.assertTrue(all(not model.training and all(not p.requires_grad for p in model.parameters())
+                                for model in models.values()))
 
 
 if __name__ == '__main__':

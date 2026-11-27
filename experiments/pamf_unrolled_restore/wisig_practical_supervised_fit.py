@@ -2,7 +2,7 @@
 
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from time import perf_counter
+from time import perf_counter, process_time
 
 import numpy as np
 import torch
@@ -157,17 +157,23 @@ def make_bank(rt):
             np.savez(stream, ids=ids[take], observed=split_iq(observed), exact_denoise=split_iq(noiseless),
                      direction_only=split_iq(target), clean=clean[take])
         print('WISIG_KNOWN_NOISE_SOURCE_BANK_READY', name, len(take), flush=True)
-    write(root/'complete.json', dict(status='SOURCE_READY', fit=FIT, held=HELD, source_role='U_s',
-                                   trace_scope='source_only', target_reads=0, TX_reads=0, F_reads=0))
+    write(root/'complete.json', source_bank_proof())
+
+
+def source_bank_proof():
+    return dict(status='SOURCE_READY', fit=FIT, held=HELD, source_role='U_s',
+                trace_scope='source_only', target_reads=0, TX_reads=0, F_reads=0)
+
+
+def validate_bank(root):
+    if read(root/'complete.json') != source_bank_proof():
+        raise ValueError('Expected a completed isolated source bank')
 
 
 def load_arrays(root, arm, device):
     if arm not in ARMS:
         raise ValueError('Unknown frozen supervision rule')
-    marker = read(root/'complete.json')
-    if marker != dict(status='SOURCE_READY', fit=FIT, held=HELD, source_role='U_s',
-                      trace_scope='source_only', target_reads=0, TX_reads=0, F_reads=0):
-        raise ValueError('Expected a completed isolated source bank')
+    validate_bank(root)
     arrays, ids = [], []
     for role, expected in (('fit', FIT), ('held', HELD)):
         with np.load(root/f'{role}.npz', allow_pickle=False) as src:
@@ -184,15 +190,16 @@ def load_arrays(root, arm, device):
 
 
 def fit(root, bank, arm):
-    device = 'cuda:0'
+    device = 'cpu'
+    torch.set_num_threads(2)
     (received, target, clean), held = load_arrays(bank, arm, device)
     torch.manual_seed(SEED)
-    torch.backends.cuda.matmul.allow_tf32 = False
     model = PacketDenoiser().to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=1e-4)
     schedule = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, STEPS, eta_min=3e-5)
     rng = np.random.default_rng(SEED+2)
-    start, trajectory = perf_counter(), {}
+    start, cpu_start, trajectory = perf_counter(), process_time(), {}
+    print('WISIG_KNOWN_NOISE_FIT_DEVICE', arm, device, torch.get_num_threads(), flush=True)
     for step in range(1, STEPS+1):
         rows = tensor(rng.choice(FIT, BATCH, replace=False).astype(np.int64), device)
         loss = objective(model, received[rows], target[rows], clean[rows][:8])
@@ -209,23 +216,24 @@ def fit(root, bank, arm):
             print('WISIG_KNOWN_NOISE_HELD', arm, step, trajectory[str(step)], flush=True)
     record = dict(status='SOURCE_FROZEN', arm=arm, seed=SEED, batch=BATCH, steps=STEPS, fit=FIT, held=HELD,
                   parameters=sum(p.numel() for p in model.parameters()), seconds=perf_counter()-start,
-                  peak_cuda=int(torch.cuda.max_memory_allocated()), target_reads=0, TX_reads=0, F_reads=0,
+                  device=device, cpu_threads=torch.get_num_threads(), cpu_seconds=process_time()-cpu_start,
+                  peak_cuda=0, target_reads=0, TX_reads=0, F_reads=0,
                   trace_scope='source_only', trajectory=trajectory)
     with (root/f'{arm}.pt').open('xb') as stream:
         torch.save(dict(weights=model.state_dict(), metadata=record), stream)
     write(root/f'{arm}-complete.json', record)
 
 
-def load_models(root):
+def load_models(root, device='cuda:0'):
     models = {}
     for arm in ARMS:
         info = read(root/f'{arm}-complete.json')
-        saved = torch.load(root/f'{arm}.pt', map_location='cuda:0', weights_only=True)
+        saved = torch.load(root/f'{arm}.pt', map_location=device, weights_only=True)
         if (saved['metadata'] != info or info['status'] != 'SOURCE_FROZEN' or info['steps'] != STEPS
                 or info['arm'] != arm or info['trace_scope'] != 'source_only'
                 or any(info[k] for k in ('target_reads','TX_reads','F_reads'))):
             raise ValueError('Expected exact matched frozen source restoration weights')
-        model = PacketDenoiser().cuda().eval().requires_grad_(False)
+        model = PacketDenoiser().to(device).eval().requires_grad_(False)
         model.load_state_dict(saved['weights'], strict=True)
         models[arm] = model
     return models

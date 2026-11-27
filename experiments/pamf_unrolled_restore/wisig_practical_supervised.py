@@ -19,11 +19,11 @@ from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main.packet_runner import schedule
 from experiments.pamf_unrolled_restore.wisig_forced_clean import COUNTS, FORCED, REPLAY, SEEDS, SPLITS, reference_runtime
 from experiments.pamf_unrolled_restore.wisig_native_fir_anchor_probe import PARENT
-from experiments.pamf_unrolled_restore.wisig_practical_supervised_fit import ARMS, fit, load_models, make_bank
+from experiments.pamf_unrolled_restore.wisig_practical_supervised_fit import ARMS, fit, load_models, make_bank, validate_bank
 
 
-RUN = '20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01'
-SOURCE = '20261019-phase1-reception-restoration-selfsup-manysig-m6-r02'
+RUN = '20261127-phase1-wisig-practical-known-noise-full-s2026112795-r02'
+BANK_RUN = '20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01'
 METHODS = ('raw', 'R69', *ARMS)
 
 
@@ -47,6 +47,14 @@ def restored_iq(model, iq):
     return recovered
 
 
+def source_bank(rt):
+    bank = Path(rt['source_bank'])
+    if bank != Path(rt['project'])/'runs'/BANK_RUN/'source-bank':
+        raise ValueError('Expected the registered r01 source pairing artifact')
+    validate_bank(bank)
+    return bank
+
+
 @torch.no_grad()
 def smoke(rt):
     from experiments.pamf_unrolled_restore.wisig_dura_stress import classify
@@ -54,7 +62,7 @@ def smoke(rt):
     root = Path(rt['run_root'])
     models = load_models(root)
     _, heads = bind_readers(reference_runtime(rt))
-    with np.load(root/'source-bank'/'held.npz', allow_pickle=False) as src:
+    with np.load(source_bank(rt)/'held.npz', allow_pickle=False) as src:
         panels = [tensor(src[name][:8], 'cuda:0') for name in ('clean', 'observed')]
     timings = {}
     for arm, model in models.items():
@@ -210,13 +218,9 @@ def dispatch(runtime):
     state = root/'state.json'
     entry = str(Path(__file__).resolve())
     source_cwd, target_cwd = (Path(rt[k]) for k in ('teacher_release', 'reference'))
-    bank = root/'source-bank'
-    source_config = {k: rt[k] for k in ('run_root', 'project', 'source_root', 'teacher_release', 'cpu_workers')}
-    write(root/'configs'/'bank.json', source_config)
-    write(root/'configs'/'fit.json', dict(run_root=str(root), bank=str(bank)))
 
     def launch(_plan, phase, name, gpu=None):
-        source = phase in ('bank', 'fit')
+        source = phase == 'fit'
         reference = source_cwd if source else target_cwd
         cfg = root/'configs'/f'{phase}.json' if source else runtime
         env = dict(os.environ, PYTHONPATH=str(reference), CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
@@ -228,11 +232,13 @@ def dispatch(runtime):
         return job
 
     try:
-        write(state, dict(status='SOURCE_BANK'))
-        if launch(rt, 'bank', 'matched').wait():
-            raise RuntimeError('Source-only WiSig pair construction exited unsuccessfully')
-        write(state, dict(status='SOURCE_TRAINING'), exclusive=False)
-        schedule(rt, [('fit', arm) for arm in ARMS], launch)
+        bank = source_bank(rt)
+        write(root/'configs'/'fit.json', dict(run_root=str(root), bank=str(bank)))
+        write(state, dict(status='SOURCE_TRAINING', device='cpu', workers=len(ARMS), source_bank=str(bank)))
+        workers = {arm: launch(rt, 'fit', arm) for arm in ARMS}
+        exit_codes = {arm: job.wait() for arm, job in workers.items()}
+        if any(exit_codes.values()):
+            raise RuntimeError(f'Source-only WiSig CPU fit failed: {exit_codes}')
         write(state, dict(status='SOURCE_SMOKE'), exclusive=False)
         schedule(rt, [('smoke', 'frozen')], launch)
         write(state, dict(status='TARGET_PREDICTING'), exclusive=False)
@@ -267,12 +273,13 @@ def main():
         releases, runs = project/'releases', project/'runs'
         teacher = releases/f'{PARENT}-release'
         reference = releases/f'{FORCED}-release'
-        source = runs/SOURCE/'cache'
+        bank = runs/BANK_RUN/'source-bank'
         rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{RUN}-release'), run_root=str(runs/RUN),
-                  teacher_release=str(teacher), reference=str(reference), source_root=str(source),
-                  external_releases=list(map(str, (teacher, reference, source, runs/PARENT, runs/FORCED, runs/REPLAY))),
-                  allowed_gpus=[7, 2], max_workers=2, max_compute_processes=2, cpu_workers=4)
+                  teacher_release=str(teacher), reference=str(reference), source_bank=str(bank),
+                  external_releases=list(map(str, (teacher, reference, bank, runs/FORCED, runs/REPLAY))),
+                  allowed_gpus=[7, 2, 6, 5, 1, 4, 0, 3], max_workers=2, max_compute_processes=2,
+                  training_cap=True)
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'dispatch':
         dispatch(args.runtime)
