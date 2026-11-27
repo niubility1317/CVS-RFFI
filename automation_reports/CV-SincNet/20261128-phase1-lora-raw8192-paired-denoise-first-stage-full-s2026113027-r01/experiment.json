@@ -1,0 +1,215 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa 配对去噪第一阶段的正式 Full 消融",
+  "description": "Both original frozen denoisers with a fixed first-stage-only readout, paired with both frozen final-stage decisions.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "raw8192",
+    "w24",
+    "fixed-e104",
+    "full-only",
+    "truth-last",
+    "first-stage-ablation"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+    "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+    "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+    "20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01",
+    "20261127-phase1-lora-raw8192-paired-denoise-full-s2026113027-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latest user instruction: formal testing is the performance standard. Source results are diagnostics only.",
+  "code": {
+    "commit": "df834d9987f4bb3bd308a3d1ee32369cfd9c80e5",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Full native 8192-point received LoRa IQ; restored native stream then original frozen W24.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Existing Full blind target rows: all 15 unseen RX × 2000 same physical packets; source smoke 1 U_s packet.",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 1,
+      "V": 0
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "No fitting or source-score gate. Target received IQ is held blind until both registered rows are frozen. Official target labels are read only by independent local truth-last scoring after all shards."
+  },
+  "checkpoint": {
+    "initialization": "No fit. Both fixed source 20000-step denoisers exactly as used in the completed two-stage Full.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01",
+        "role": "Both fixed 20000-step source arms; immutable exact fit commit fc8c14c22b5de5c3198dcca00a3e45d3827a4555."
+      },
+      {
+        "ref": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+        "role": "Same raw observation contract and pretarget source-qualified initialization. Recursively verify formal archival parent."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+        "role": "Same-contract G initialization and archived Full comparison."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen source training teacher and evaluation default head."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "The native parent passed a declared source rule before deployment. Target results never select fitting, hyperparameters, thresholds or retry.",
+    "selection_rule": "Add both fixed first-stage readouts in the established 30k panel. No source-score or target-score selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 [0,7,6,2,3], max two own workers across two cards, each at least 12 GiB actual free and <8 contexts.",
+    "remote_run_root": "runs/20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01",
+    "remote_log_root": "runs/20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_native_paired_full publish --coarse --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01/release",
+    "stop_rule": "Stop on bad freeze/identity, phase-one tensor mismatch in real U_s smoke, target contract violation, direct row parity, or incomplete prediction matrix."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "pair-smoke.log",
+    "full_native-*.log",
+    "predictions/{shard}/complete.json",
+    "predictions/{shard}/activity.json",
+    "predictions/{shard}/{receiver}.npz",
+    "local formal/scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "seven scene accuracy",
+      "six-scene exact correct count",
+      "paired repairs/harms",
+      "clean count",
+      "low urban count",
+      "gap against full acceptance",
+      "per receiver",
+      "per transmitter"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01/predictions",
+    "scorer_ref": "w24_native_paired_full collect with official W24 load_frozen and score_matrix."
+  },
+  "rows": [
+    {
+      "row_id": "full_matched",
+      "method": "Matched first-stage-only Full: clean_mean_coarse, shared_action_coarse; read-only two-stage and baseline prefix.",
+      "purpose": "paired_frozen_evaluation",
+      "config_ref": "experiments/pamf_lora_main/w24_native_paired_full.py",
+      "resolved_config_ref": "releases/20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01-release/runtime.json",
+      "data_overrides": {
+        "source_u_smoke": 1,
+        "target_full_physical_packets": 30000,
+        "target_truth_last": true
+      },
+      "seeds": {
+        "model": 2026113027,
+        "split": 392005,
+        "data": 2026113027,
+        "augmentation": 2026113027,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113027 shared source draw and generic augmentation, plus 1 for identical original strong branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No training. 7 views x 30,000 physical packages for both first-stage paths.",
+      "output_root": "runs/20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01/predictions",
+      "log_path": "runs/20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01/full_native-*.log",
+      "command": "python -m experiments.pamf_lora_main.w24_native_paired_full dispatch releases/20261128-phase1-lora-raw8192-paired-denoise-first-stage-full-s2026113027-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions",
+        "scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Rationale from the frozen source diagnostic before the full two-stage score: the same-action first stage removed more aligned noise and its second stage reduced recognition.",
+    "Known existing formal scores are prior exposure. New comparison freezes both first-stage rows and all other settings, with no tuning, decoding rule search or target-feedback selection.",
+    "Run both first stages for all seven views. Official identical physical IDs and E104 preprocessing. Existing blind two-stage predictions and older comparators form the read-only prefix.",
+    "A single executable no-query smoke validates bitwise equality of first-stage-only vs the intermediate tensor in the normal two-stage pipeline before releasing target IQ."
+  ],
+  "registered_at": "2026-11-27T16:24:18+00:00"
+}
