@@ -40,7 +40,9 @@ RUN_UNGATED = '20261125-phase1-lora-w24-formal-ungated-s2026092702-r01'
 RUN_OUTER = '20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01'
 RUN_NATIVE_CENTER = '20261127-phase1-lora-w24-formal-native-center-s2026092702-r01'
 RUN_PRACTICAL_CPU = '20261127-phase1-lora-w24-formal-practical-cpu-s2026092702-r01'
+RUN_PEER_SPECTRAL_CPU = '20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01'
 NATIVE_CENTER_KIND = 'native-center-direction'
+PEER_SPECTRAL_KIND = 'peer-spectral-direction'
 UNGATED_COMMIT = 'aedf98271cf9473d11ee0d12a48d93e6c03bd24f'
 SEEDS = (2026092701, SEED, 2026092703)
 FULL = 'full_native'
@@ -62,7 +64,13 @@ def cpu_practical(rt):
     return rt.get('run_id') == RUN_PRACTICAL_CPU
 
 
+def cpu_formal(rt):
+    return cpu_practical(rt) or rt.get('run_id') == RUN_PEER_SPECTRAL_CPU
+
+
 def evaluation_routes(third_prior=False):
+    if third_prior == PEER_SPECTRAL_KIND:
+        return (FULL,)
     if third_prior:
         from experiments.pamf_lora_main.w24_third_prior import trial
 
@@ -81,6 +89,12 @@ def evaluation_seeds(ungated):
 
 def evaluation_modes(route, ungated, outer_objective=False, third_prior=False):
     names = MODES[route]
+    if third_prior == PEER_SPECTRAL_KIND:
+        from experiments.pamf_lora_main.w24_peer_spectral_direction_source import MODES as source_modes
+
+        if route != FULL:
+            raise ValueError('Peer spectral direction is registered for native Full only')
+        return (*names[:-1], WIDE_UNGATED, *source_modes[2:])
     if third_prior:
         from experiments.pamf_lora_main.w24_third_prior import trial
 
@@ -150,6 +164,10 @@ def blind_reference(rt):
 
 
 def verify_matched_source(rt):
+    if rt['third_prior'] == PEER_SPECTRAL_KIND:
+        if peer_source_ready(rt) is not True:
+            raise ValueError('Peer spectral source qualification is required before formal prediction')
+        return
     from experiments.pamf_lora_main.w24_third_prior import PRACTICAL_KIND, frozen_source_results, qualified_source, trial
 
     root, kind = Path(rt['candidate_root']), rt['third_prior']
@@ -176,6 +194,41 @@ def verify_matched_source(rt):
                                                  arms=list(spec.arms), steps=spec.steps)):
         raise ValueError('Unexpected frozen parent for the requested native center Full evaluation')
     frozen_source_results(root, kind)
+
+
+def peer_source_ready(rt):
+    from experiments.pamf_lora_main.w24_peer_spectral_direction_source import MODES as source_modes, RUN as source_run, eligible
+
+    runs = Path(rt['project'])/'runs'
+    root = runs/source_run
+    if (rt.get('run_id') != RUN_PEER_SPECTRAL_CPU or Path(rt['run_root']) != runs/RUN_PEER_SPECTRAL_CPU
+            or Path(rt['candidate_root']) != root or rt.get('third_prior') != PEER_SPECTRAL_KIND):
+        raise ValueError('Unexpected source binding for the peer spectral formal matrix')
+    try:
+        state = read(root/'state.json')
+    except (FileNotFoundError, json.JSONDecodeError):
+        return None
+    if state['status'] == 'FAILED':
+        raise ValueError('Peer spectral source run failed')
+    if state['status'] != 'SOURCE_SCORED':
+        return None
+    if state['target_reads'] or not isinstance(state['promote'], bool):
+        raise ValueError('Invalid frozen source qualification state')
+    if not state['promote']:
+        return False
+    marker = read(root/'source-predictions.json')
+    score = read(root/'source-scores.json')
+    wave = marker['waveform']
+    if (marker['status'] != 'PREDICTIONS_FROZEN' or marker['target_reads'] or marker['source_truth_reads']
+            or marker['views'] != list(VIEWS) or marker['modes'] != list(source_modes)
+            or len(marker['physical_ids']) != 300 or len(set(marker['physical_ids'])) != 300
+            or wave['variant'] != source_run or wave['received_only'] is not True
+            or wave['matched_center_edge_energy'] is not True
+            or score['status'] != 'ANALYZED' or score['source_truth_last'] is not True or score['target_reads']
+            or score['n_packets'] != 300 or score['n_practical'] != 1800 or score['waveform'] != wave
+            or not eligible(score)):
+        raise ValueError('Invalid peer spectral source qualification evidence')
+    return True
 
 
 def load_heads(rt, contract, device):
@@ -220,6 +273,17 @@ def bindings(rt, routes, device):
     activate(rt)
     contract = source_contract(Path(rt['source_root']))
     heads, epochs = load_heads(rt, contract, device)
+    if rt.get('third_prior') == PEER_SPECTRAL_KIND:
+        from experiments.pamf_lora_main.w24_fixed_dose_direction import RUN as previous, load_head, source_parent
+        from experiments.pamf_lora_main.w24_peer_spectral_direction_source import STEPS, load_trained
+
+        root = Path(rt['candidate_root'])
+        parent = source_parent(rt, device)
+        old, _ = load_head(root.parent/previous)
+        new = load_trained(root)
+        return heads, (parent, old, new), None, None, {}, dict(
+            epochs=epochs, source_frozen_G=root.name, steps=STEPS,
+            parameters=sum(p.numel() for p in parent.parameters()) + sum(p.numel() for p in new.parameters()))
     archive, parent = training_runtime(rt)
     wide, tracker, threshold, frozen = load_restorer(archive, parent, contract, device)
     if rt.get('third_prior'):
@@ -313,6 +377,16 @@ def prior_labels(heads, arms, tracker, packets, device):
                     axis=1), len(original)
 
 
+@torch.no_grad()
+def peer_spectral_labels(heads, models, packets):
+    from experiments.pamf_lora_main.w24_peer_spectral_direction_source import receive_readouts
+
+    direct, _, original, within, cross = receive_readouts(*models, packets)
+    labels = np.stack([np.stack([classify_aperture(f, view) for view in (direct, original, within, cross)])
+                       for f in heads])
+    return labels, len(packets)
+
+
 def append_blind_prediction(reference, predicted, old_activity, count, *, require_direct_parity=True):
     if (reference.ndim != 3 or reference.shape[0] != 1 or reference.shape[1] < 2 or reference.shape[-1] != LIMIT
             or predicted.ndim != 3 or predicted.shape[0] != 1 or predicted.shape[1] < 2
@@ -356,10 +430,14 @@ def batch_labels(heads, g, tracker, threshold, baseline, packets, device, *, ung
 
 @torch.no_grad()
 def smoke(rt):
-    device = 'cpu' if cpu_practical(rt) else 'cuda:0'
+    device = 'cpu' if cpu_formal(rt) else 'cuda:0'
     ungated = rt.get('ungated', False)
     outer = rt.get('outer_objective', False)
     third = rt.get('third_prior', False)
+    peer = third == PEER_SPECTRAL_KIND
+    if peer or rt.get('run_id') == RUN_PEER_SPECTRAL_CPU:
+        if peer_source_ready(rt) is not True or not ungated or outer:
+            raise ValueError('Peer spectral source qualification is required before formal smoke')
     append = outer or third
     seeds = evaluation_seeds(ungated)
     routes = evaluation_routes(third)
@@ -369,7 +447,9 @@ def smoke(rt):
     clean = []
     for route in routes:
         receiver = channel_job if route == FULL else receive
-        if append:
+        if peer:
+            batch = partial(peer_spectral_labels, heads, g)
+        elif append:
             batch = partial(prior_labels if third else candidate_labels, heads, g, track, device=device)
         else:
             batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device, ungated=ungated)
@@ -378,7 +458,7 @@ def smoke(rt):
         disturbed, active = batch(y)
         if append:
             coverage = clean_activity == active == len(u)
-            modes = 3 if third else 2
+            modes = 4 if peer else 3 if third else 2
         else:
             coverage = (clean_activity[-1] == active[-1] == len(u) if ungated
                         else clean_activity[-1] < len(u) and active[-1] > 0)
@@ -394,11 +474,15 @@ def smoke(rt):
 
 
 def predict(rt, case):
-    cpu = cpu_practical(rt)
+    cpu = cpu_formal(rt)
     device = 'cpu' if cpu else 'cuda:0'
     ungated = rt.get('ungated', False)
     outer = rt.get('outer_objective', False)
     third = rt.get('third_prior', False)
+    peer = third == PEER_SPECTRAL_KIND
+    if peer or rt.get('run_id') == RUN_PEER_SPECTRAL_CPU:
+        if peer_source_ready(rt) is not True or not ungated or outer:
+            raise ValueError('Peer spectral source qualification is required before formal prediction')
     append = outer or third
     root = Path(rt['run_root'])
     if read(root / 'smoke.json')['status'] != 'PASS':
@@ -407,7 +491,8 @@ def predict(rt, case):
     route = expected['processing_route']
     heads, g, track, gate, baseline, _ = bindings(rt, (route,), device)
     if append:
-        batch = partial(prior_labels if third else candidate_labels, heads, g, track, device=device)
+        batch = (partial(peer_spectral_labels, heads, g) if peer else
+                 partial(prior_labels if third else candidate_labels, heads, g, track, device=device))
         prior = blind_reference(rt) / case
         prior_receipt = receipt(case, True)
         if read(prior / 'complete.json') != prior_receipt:
@@ -501,10 +586,20 @@ def dispatch(runtime):
         outer = rt.get('outer_objective', False)
         ungated = rt.get('ungated', False)
         third = rt.get('third_prior', False)
+        if third == PEER_SPECTRAL_KIND or rt.get('run_id') == RUN_PEER_SPECTRAL_CPU:
+            if not ungated or outer:
+                raise ValueError('Peer spectral direction requires its own ungated Full matrix')
+            status(status='WAITING_FOR_PEER_SOURCE_SCORE')
+            while (ready := peer_source_ready(rt)) is None:
+                sleep(20)
+            if not ready:
+                status(status='SOURCE_NOT_QUALIFIED', target_truth_read=False)
+                return
         if third:
             if not ungated or outer:
                 raise ValueError('Matched formal prediction requires its own ungated matrix')
-            verify_matched_source(rt)
+            if third != PEER_SPECTRAL_KIND:
+                verify_matched_source(rt)
             blind_reference(rt)
             if cpu_practical(rt):
                 status(status='WAITING_FOR_FROZEN_CANDIDATES', device='cpu')
@@ -526,7 +621,7 @@ def dispatch(runtime):
                 raise ValueError('Augmented W24 readers did not reach all source-frozen checkpoints')
             sleep(30)
 
-        cpu = cpu_practical(rt)
+        cpu = cpu_formal(rt)
         script = str(Path(__file__).resolve())
 
         def start(_plan, phase, name, gpu):
@@ -584,6 +679,7 @@ def main():
     choice.add_argument('--outer-objective', action='store_true')
     choice.add_argument('--native-center-direction', action='store_true')
     choice.add_argument('--native-practical-cpu', action='store_true')
+    choice.add_argument('--peer-spectral-cpu', action='store_true')
     for key in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--' + key, type=Path, required=True)
     args = parser.parse_args()
@@ -593,7 +689,8 @@ def main():
         project = PurePosixPath(rt['project'])
         runs, releases = project / 'runs', project / 'releases'
         data = releases / f'{DATA_RUN}-release' / 'data'
-        run = (RUN_PRACTICAL_CPU if args.native_practical_cpu else RUN_NATIVE_CENTER if args.native_center_direction
+        run = (RUN_PEER_SPECTRAL_CPU if args.peer_spectral_cpu else RUN_PRACTICAL_CPU if args.native_practical_cpu
+               else RUN_NATIVE_CENTER if args.native_center_direction
                else RUN_OUTER if args.outer_objective else RUN_UNGATED)
         rt.update(run_id=run, code_commit=release_commit(args.repo), runner=__spec__.name, ungated=True,
                   outer_objective=args.outer_objective,
@@ -604,7 +701,16 @@ def main():
                   allowed_gpus=[0, 5, 3, 4, 2, 7, 1, 6], cpu_workers=8, max_workers=2, max_compute_processes=8)
         rt['external_releases'] = [rt[k] for k in ('source_root', 'native_target_root', 'w24_release_root',
                                                   'training_release_root')]
-        if args.native_practical_cpu:
+        if args.peer_spectral_cpu:
+            from experiments.pamf_lora_main.w24_fixed_dose_direction import RUN as prior_direction
+            from experiments.pamf_lora_main.w24_peer_spectral_direction_source import PRACTICAL_RUN, RUN as source_run
+
+            parent = runs/source_run
+            rt.update(third_prior=PEER_SPECTRAL_KIND, candidate_root=str(parent), allowed_gpus=[],
+                      cpu_workers=2, max_workers=1)
+            rt['external_releases'] += [str(runs/x) for x in (RUNS[SEED], RUN_UNGATED, source_run,
+                                                            PRACTICAL_RUN, prior_direction)]
+        elif args.native_practical_cpu:
             from experiments.pamf_lora_main.w24_third_prior import PRACTICAL_KIND, trial
 
             parent = runs / trial(PRACTICAL_KIND).run

@@ -8,7 +8,7 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read, write
 from .data import label_ids, packet_indices, recording
 from .w24_formal import (
-    FULL, LIMIT, ROUTE, ROUTES, SEEDS, TARGET, VIEWS, cases, evaluation_modes,
+    FULL, LIMIT, PEER_SPECTRAL_KIND, ROUTE, ROUTES, SEEDS, TARGET, VIEWS, cases, evaluation_modes,
     evaluation_seeds, receipt,
 )
 
@@ -236,4 +236,6 @@ if __name__ == '__main__':
     matched.add_argument('--native-center-direction', dest='third_prior', action='store_const', const='native-center-direction')
     matched.add_argument('--native-practical-supervision', dest='third_prior', action='store_const',
                          const='native-practical-supervision')
+    matched.add_argument('--peer-spectral-direction', dest='third_prior', action='store_const',
+                         const=PEER_SPECTRAL_KIND)
     score(**vars(parser.parse_args()))
