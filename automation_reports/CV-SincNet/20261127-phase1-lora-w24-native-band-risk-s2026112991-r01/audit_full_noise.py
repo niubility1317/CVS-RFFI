@@ -51,12 +51,17 @@ def audit(runtime):
     from experiments import pamf_lora_main
 
     pamf_lora_main.__path__.append(str(Path(rt['release_root']) / 'experiments/pamf_lora_main'))
+    from experiments.cric_dura_comparison.io import tensor
     from experiments.pamf_lora_main.full_packet_views import native, source_contract
+    from experiments.pamf_lora_main.runner import activate
     from experiments.pamf_lora_main.w24_factor_audit import trace_components
     from experiments.pamf_lora_main.w24_native_full import SOURCE, native_full_view
     from experiments.pamf_lora_main.w24_packet_dura import NativePacketDura
 
+    activate(rt)
+
     models = {}
+    fit = {}
     for arm in ARMS:
         model = NativePacketDura().eval()
         payload = torch.load(root / arm / f'w24_{arm}-model.pt', map_location='cpu', weights_only=True)
@@ -64,6 +69,8 @@ def audit(runtime):
             raise ValueError('Expected final frozen native weights')
         model.load_state_dict(payload['weights'], strict=True)
         models[arm] = model
+        proof = payload['proof']
+        fit[arm] = (proof['seed'], proof['fit_per_rx'], proof['calibration_per_rx'], proof['held_per_rx'])
 
     source = Path(rt['source_root'])
     contract = source_contract(source)
@@ -71,7 +78,13 @@ def audit(runtime):
     iq = native(source, 'U_s', contract['counts']['U_s'])
     groups = {rx: [i for i, name in enumerate(physical_ids) if name.startswith(rx + '/')]
               for rx in SOURCE}
-    rows = [(rx, i) for rx, indices in groups.items() for i in indices[-8:]]
+    if len(set(fit.values())) != 1:
+        raise ValueError('The two weights do not have a matched source partition')
+    seed, n_fit, n_cal, n_held = fit[ARMS[0]]
+    rng = np.random.default_rng(seed)
+    held = {rx: rng.permutation(indices)[n_fit+n_cal:n_fit+n_cal+n_held]
+            for rx, indices in groups.items()}
+    rows = [(rx, i) for rx, indices in held.items() for i in indices[:8]]
     if len(rows) != 40:
         raise ValueError('Expected eight fixed U_s traces per source RX')
     results = {}
@@ -83,7 +96,8 @@ def audit(runtime):
             if not fields and not np.array_equal(y, native_full_view(*args)):
                 raise ValueError('Trace replay changed the registered Full received waveform')
             fields.append((y, disturbance))
-        rx_wave, noise = [torch.from_numpy(np.asarray(a, np.complex64)) for a in zip(*fields, strict=True)]
+        rx_wave, noise = [tensor(np.asarray(a, np.complex64).view(np.float32)).view(torch.complex64)
+                          for a in zip(*fields, strict=True)]
         results[scene] = {}
         for arm, model in models.items():
             stages, frame = model(rx_wave)
