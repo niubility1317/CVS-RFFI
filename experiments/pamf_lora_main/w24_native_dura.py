@@ -7,7 +7,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from experiments.pamf_action_restore.models import ActionEstimator, SCALE
+from experiments.pamf_action_restore.models import SCALE
 from experiments.pamf_action_restore.operators import Action, soft_map
 from experiments.pamf_reception_restore.models import ComplexTFUNet, Core
 from experiments.pamf_restoration.models import complex_iq, pair
@@ -22,12 +22,17 @@ def capture_scale(iq):
     return iq.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
 
 
-class NativeActionEstimator(ActionEstimator):
+class NativeActionEstimator(nn.Module):
     def __init__(self):
         super().__init__()
+        self.core = Core(incoming=4,outgoing=4)
+        self.global_head = nn.Linear(128,129)
+        nn.init.zeros_(self.global_head.weight)
+        nn.init.zeros_(self.global_head.bias)
+        impulse = torch.zeros(64)
         # The source pairs share the capture time origin.
-        self.initial_kernel.zero_()
-        self.initial_kernel[0] = 1.
+        impulse[0] = 1.
+        self.register_buffer('initial_kernel',impulse)
 
     def forward(self, received, coarse):
         if received.ndim != 3 or received.shape[1:] != (2, NATIVE_LENGTH) or received.shape != coarse.shape:
@@ -43,7 +48,8 @@ class NativeActionEstimator(ActionEstimator):
         point = self.core.out(value)
         main = 1 + torch.complex(point[:, 0],point[:, 1])
         image = torch.complex(point[:, 2],point[:, 3])
-        return Action(kernel,main,image), self._variance(global_value[:, -1])
+        log_variance = math.log(1e-8) * (1 - torch.sigmoid(global_value[:, -1] + .351))
+        return Action(kernel,main,image), log_variance.exp()
 
 
 class NativeDura(nn.Module):
