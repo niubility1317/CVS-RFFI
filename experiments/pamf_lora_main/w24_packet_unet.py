@@ -31,14 +31,15 @@ class AttentionBlock(nn.Module):
 class PacketUNet(nn.Module):
     """Preserve each chirp's skip features while mixing coarse time and packet context."""
 
-    def __init__(self, *, across_chirps, with_state=False):
+    def __init__(self, *, across_chirps, with_state=False, center=CENTER):
         super().__init__()
+        self.center = center
         self.across_chirps = across_chirps
         self.with_state = with_state
         self.stem = block(14 if with_state else 12, WIDTH, 7)
         self.down = nn.ModuleList(block(WIDTH, WIDTH, stride=2) for _ in range(3))
         self.up = nn.ModuleList(block(2 * WIDTH, WIDTH) for _ in range(3))
-        self.temporal_position = nn.Parameter(torch.empty(CENTER // 8, WIDTH))
+        self.temporal_position = nn.Parameter(torch.empty(center // 8, WIDTH))
         self.chirp_position = nn.Parameter(torch.empty(8, WIDTH))
         nn.init.normal_(self.temporal_position, std=.02)
         nn.init.normal_(self.chirp_position, std=.02)
@@ -51,9 +52,9 @@ class PacketUNet(nn.Module):
         for output in (self.time_edit, self.spectral[-1]):
             nn.init.normal_(output.weight, std=.002)
             nn.init.zeros_(output.bias)
-        bins = (torch.fft.fftfreq(CENTER) * CENTER).round()
-        self.register_buffer('frequency', bins / (CENTER / 2), persistent=False)
-        self.register_buffer('noise_band', bins.abs() >= CENTER / 3, persistent=False)
+        bins = (torch.fft.fftfreq(center) * center).round()
+        self.register_buffer('frequency', bins / (center / 2), persistent=False)
+        self.register_buffer('noise_band', bins.abs() >= center / 3, persistent=False)
 
     def mix(self, feature, batch, chirps):
         tokens = feature.transpose(-1, -2).unflatten(0, (batch, chirps))
@@ -85,7 +86,7 @@ class PacketUNet(nn.Module):
         step = torch.stack((step.real, step.imag), dim=-1).flatten(-2)
         side_power = (power / rms.square()).log().clamp(-16., 6.) / 5.
         dy = torch.diff(y, dim=-1, prepend=y[..., :1])
-        conditions = torch.cat((quality, sn, side_power, step), dim=-1).unsqueeze(-1).expand(-1, -1, -1, CENTER)
+        conditions = torch.cat((quality, sn, side_power, step), dim=-1).unsqueeze(-1).expand(-1, -1, -1, self.center)
         inputs = torch.cat((torch.stack((y.real, y.imag, dy.real, dy.imag), dim=-2), conditions), dim=-2)
         if self.with_state:
             inputs = torch.cat((inputs,torch.stack((state.real,state.imag),dim=-2)),dim=-2)
@@ -95,7 +96,7 @@ class PacketUNet(nn.Module):
             skips.append(hidden)
             hidden = down(hidden)
         hidden = self.mix(hidden, batch, chirps)
-        spectral_context = self.context(hidden.mean(-1)).unsqueeze(-1).expand(-1, -1, CENTER)
+        spectral_context = self.context(hidden.mean(-1)).unsqueeze(-1).expand(-1, -1, self.center)
         for up, skip in zip(self.up, reversed(skips), strict=True):
             hidden = F.interpolate(hidden, size=skip.shape[-1], mode='linear', align_corners=False)
             hidden = up(torch.cat((hidden, skip), dim=1))

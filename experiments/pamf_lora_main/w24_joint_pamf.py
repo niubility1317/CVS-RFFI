@@ -39,6 +39,7 @@ from experiments.pamf_lora_main.w24_native_full import (
 )
 from experiments.pamf_lora_main.w24_observed_dose import FULL_CASES, prior_target, source_receive
 from experiments.pamf_lora_main.w24_local_covariance import CovarianceRefiner
+from experiments.pamf_lora_main import w24_native_training as raw_train
 from experiments.pamf_lora_main.w24_second_stage import SecondStage
 from experiments.pamf_lora_main.w24_strong_source import (
     COLOR_CUTOFF_HZ, STRONG_FRACTION, STRONG_SNR_DB, PassbandMatchedNoise, StrongSourceMix,
@@ -98,7 +99,8 @@ FIXED_PL_COMMIT = '37215dd615d0f651ffebe87d6aaba6af0ab7a847'
 STRONG_COMMIT = '76385bf9174440cc4e437a47bfc2fd7aff1b1fcb'
 CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
 FORMAL_ARMS = {RUN: CANDIDATE, RUN_FIXED_PL: FIXED_PL,
-               **{run: candidate for run, (_, candidate) in PARENT_TRIALS.items()}}
+               **{run: candidate for run, (_, candidate) in PARENT_TRIALS.items()},
+               **{run: arms[-1] for run, arms in raw_train.RUNS.items()}}
 MODES = ('direct', 'outer_half', 'unet_parent', *ARMS, 'joint_g_fixed_e104', 'joint_f_parent_g')
 CONTRASTS = (('joint','pamf_only'), ('joint','frozen_pamf_ce'), ('joint','unet_parent'),
              ('joint','joint_g_fixed_e104'), ('joint','joint_f_parent_g'),
@@ -225,7 +227,7 @@ def norm_gradient(values):
 
 
 def source_parent(run):
-    return RUN_STRONG if run in (RUN_COLOR,RUN_GAIN,RUN_COV,RUN_VIEW) else RUN_FIXED_PL
+    return RUN_STRONG if run in (RUN_COLOR,RUN_GAIN,RUN_COV,RUN_VIEW,*raw_train.RUNS) else RUN_FIXED_PL
 
 
 def parent_modes(parent):
@@ -567,6 +569,41 @@ def predict_pseudo(rt):
                              matched_run=parent_run,U_PL_teacher=AUG_RUN,U_PL_threshold=PL_THRESHOLD)
 
 
+@torch.no_grad()
+def predict_raw_source(rt):
+    root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
+    joint = sys.modules[__name__]
+    f,model,tracker,contract = raw_train.load_readers(joint,rt,device)
+    run = rt['run_id']
+    stages = raw_train.RUNS[run]
+    baseline_modes = parent_modes(RUN_STRONG)
+
+    def render(raw):
+        return np.stack([classify_aperture(f,received_aperture(raw,device)),
+                         *(raw_train.render(joint,f,model,stage,raw,device) for stage in stages)])
+
+    u = native(source,'U_s',contract['counts']['U_s'])[0]
+    sample = np.stack([source_receive(v,(0,SOURCE[0],u)) for v in ('clean',VIEWS[-1])])
+    corrected = raw_train.restored_raw(model,sample,stages[-1],device)
+    expected = received_aperture(corrected,device)
+    differentiable,_ = normalize_aperture(tracker.aperture(tensor(corrected.view(np.float32),device).view(torch.complex64)))
+    torch.testing.assert_close(differentiable,expected,rtol=1e-5,atol=3e-6)
+    if render(sample).shape != (1+len(stages),2):
+        raise ValueError('Expected frozen native IQ source smoke')
+    ids,matrix = source_predictions(rt,source,contract,render)
+    comparison = root.parent/RUN_STRONG/FULL
+    reference = read(comparison/'source-predictions.json')
+    if (reference['modes'] != list(baseline_modes) or reference['views'] != list(VIEWS)
+            or reference['source_truth_reads'] or reference['target_reads']):
+        raise ValueError('Expected exact native test comparison')
+    check_controls(comparison,('direct',),[0],ids,matrix)
+    with np.load(comparison/'predictions.npz',allow_pickle=False) as archived:
+        predictions = {view: np.concatenate((archived[view],matrix[view][1:])) for view in VIEWS}
+    write_source_predictions(root,ids,predictions,(*baseline_modes,*stages),
+                             steps=sum(raw_train.STEPS[a] for a in stages),matched_run=RUN_STRONG,
+                             model_input_length=8192,preprocess_after_restoration=True)
+
+
 def qualifies(scores, candidate=CANDIDATE):
     if candidate not in FORMAL_ARMS.values():
         raise ValueError('Expected a frozen-E104 candidate')
@@ -584,6 +621,12 @@ def qualifies(scores, candidate=CANDIDATE):
                 or test['by_scene']['clean'] < parent['by_scene']['clean']):
             return False
         controls.extend((control,parent))
+    if candidate in (raw_train.STAGES[-1],raw_train.TASK):
+        controls.append(scores[STRONG])
+        if test['by_scene']['clean'] < scores[STRONG]['by_scene']['clean']:
+            return False
+        if candidate == raw_train.STAGES[-1]:
+            controls.extend(scores[stage] for stage in raw_train.STAGES[:-1])
     return (test['six_correct'] > max(x['six_correct'] for x in controls)
             and test['low_urban_correct'] >= max(x['low_urban_correct'] for x in controls)
             and test['by_scene']['clean'] >= scores['direct']['by_scene']['clean'])
@@ -592,7 +635,7 @@ def qualifies(scores, candidate=CANDIDATE):
 def formal_receipt(case, run=RUN):
     if case not in FULL_CASES:
         raise ValueError('Expected Full-only shard')
-    if run in PARENT_TRIALS:
+    if run in PARENT_TRIALS or run in raw_train.RUNS:
         parent = source_parent(run)
         old = formal_receipt(case,parent)
     else:
@@ -601,7 +644,7 @@ def formal_receipt(case, run=RUN):
 
 
 def formal_reference(rt, case):
-    if rt['run_id'] not in PARENT_TRIALS:
+    if rt['run_id'] not in PARENT_TRIALS and rt['run_id'] not in raw_train.RUNS:
         return prior_target(rt,case)
     project = Path(rt['project'])
     run = source_parent(rt['run_id'])
@@ -630,10 +673,14 @@ def predict_formal(rt,case):
     expected = formal_receipt(case,rt['run_id'])
     baseline = formal_reference(rt,case)
     activity = read(baseline/'activity.json')
-    contract,f0,g0,tracker = boot(rt,device)
-    if candidate in PARENT_ARMS:
-        g0 = continuation_parent(rt,contract,f0,g0,device,source_parent(rt['run_id']))
-    model,_ = load_row(root,candidate,contract,f0,g0,device)
+    native_run = rt['run_id'] in raw_train.RUNS
+    if native_run:
+        f0,model,_,_ = raw_train.load_readers(sys.modules[__name__],rt,device)
+    else:
+        contract,f0,g0,tracker = boot(rt,device)
+        if candidate in PARENT_ARMS:
+            g0 = continuation_parent(rt,contract,f0,g0,device,source_parent(rt['run_id']))
+        model,_ = load_row(root,candidate,contract,f0,g0,device)
     target = Path(rt['native_target_root'])
     target_contract(target)
     out = root/'predictions'/case
@@ -647,10 +694,13 @@ def predict_formal(rt,case):
                 for view in VIEWS:
                     stream = iter(raw) if view=='clean' else pool.map(partial(channel_job,view,rx),enumerate(raw),chunksize=16)
                     pieces = []
-                    for i in range(0,LIMIT,PRED_BATCH):
-                        observed = received_aperture(np.stack([next(stream) for _ in range(min(PRED_BATCH,LIMIT-i))]),device)
-                        rows = (classify_aperture(f0,observed),classify_aperture(f0,recovered(model,tracker,observed)))
-                        pieces.append(np.stack(rows))
+                    batch = 8 if native_run else PRED_BATCH
+                    for i in range(0,LIMIT,batch):
+                        packets = np.stack([next(stream) for _ in range(min(batch,LIMIT-i))])
+                        observed = received_aperture(packets,device)
+                        decision = (raw_train.render(sys.modules[__name__],f0,model,candidate,packets,device)
+                                    if native_run else classify_aperture(f0,recovered(model,tracker,observed)))
+                        pieces.append(np.stack((classify_aperture(f0,observed),decision)))
                     key = f'{rx}/{view}'
                     decisions[view],counts[key] = append_blind_prediction(
                         old[view],np.concatenate(pieces,axis=1)[None],activity[key],LIMIT)
@@ -667,7 +717,7 @@ def dispatch(runtime):
     state = root/'state.json'
     run = rt['run_id']
     pseudo_arm = PSEUDO_ARMS.get(run)
-    arms = PARENT_TRIALS.get(run,(pseudo_arm,) if pseudo_arm else ARMS)
+    arms = raw_train.RUNS.get(run) or PARENT_TRIALS.get(run,(pseudo_arm,) if pseudo_arm else ARMS)
 
     def status(**values):
         write(state,values,exclusive=False)
@@ -684,7 +734,7 @@ def dispatch(runtime):
     try:
         if read(reference/'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Expected archived W24 implementation')
-        if run in PARENT_TRIALS:
+        if run in PARENT_TRIALS or run in raw_train.RUNS:
             # Check the already frozen parent's source selection outside fit.
             ancestor = source_parent(run)
             score = read(root.parent/ancestor/FULL/'source-scores.json')
@@ -698,7 +748,8 @@ def dispatch(runtime):
         cards = available(rt['allowed_gpus'],rt['max_compute_processes'])
         if not cards:
             raise RuntimeError('No sufficient N607 training memory')
-        status(status='SOURCE_TRAINING',steps=training_recipe(arms[0])[1],arms=list(arms))
+        status(status='SOURCE_TRAINING',steps=({a:raw_train.STEPS[a] for a in arms} if run in raw_train.RUNS
+                                              else training_recipe(arms[0])[1]),arms=list(arms))
         schedule(rt,[('fit-row',arm) for arm in arms],lambda _,action,arm,gpu:
                  launch(action,f'{arm}-fit',gpu,root/arm/'fit-inputs.json',arm))
         if pseudo_arm or run in PARENT_TRIALS:
@@ -723,7 +774,8 @@ def dispatch(runtime):
         status(status='SOURCE_SCORED',promote=promote)
         if promote:
             status(status='FORMAL_PREDICTING',route=FULL)
-            schedule(rt,[('predict-formal',case) for case in FULL_CASES],lambda _,action,case,gpu:
+            formal_runtime = dict(rt,max_workers=2) if run in raw_train.RUNS else rt
+            schedule(formal_runtime,[('predict-formal',case) for case in FULL_CASES],lambda _,action,case,gpu:
                      launch(action,case,gpu,runtime,case))
             if any(read(root/'predictions'/c/'complete.json') != formal_receipt(c,run) for c in FULL_CASES):
                 raise RuntimeError('Incomplete formal Full predictions')
@@ -780,7 +832,7 @@ def main():
         cmd=actions.add_parser(name)
         cmd.add_argument('runtime',type=Path)
         if name.startswith('fit'):
-            cmd.add_argument('arm',choices=(*ARMS,*USE_PSEUDO))
+            cmd.add_argument('arm',choices=(*ARMS,*USE_PSEUDO,*raw_train.STEPS))
         if name=='predict-formal':
             cmd.add_argument('case',choices=FULL_CASES)
     pub=actions.add_parser('publish')
@@ -794,6 +846,8 @@ def main():
     pseudo_options.add_argument('--task-gain',dest='run_id',action='store_const',const=RUN_GAIN)
     pseudo_options.add_argument('--local-covariance',dest='run_id',action='store_const',const=RUN_COV)
     pseudo_options.add_argument('--paired-view-risk',dest='run_id',action='store_const',const=RUN_VIEW)
+    pseudo_options.add_argument('--raw-dura',dest='run_id',action='store_const',const=raw_train.DURA_RUN)
+    pseudo_options.add_argument('--raw-e104',dest='run_id',action='store_const',const=raw_train.TASK_RUN)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -807,10 +861,16 @@ def main():
         for name in ('fit-smoke','fit'):
             subprocess.run([sys.executable,'-u',entry,name,str(args.runtime),args.arm],check=True)
     elif args.action in ('fit-smoke','fit'):
-        fit(args.runtime,args.arm,smoke=args.action=='fit-smoke')
+        if args.arm in raw_train.STEPS:
+            raw_train.fit(sys.modules[__name__],args.runtime,args.arm,smoke=args.action=='fit-smoke')
+        else:
+            fit(args.runtime,args.arm,smoke=args.action=='fit-smoke')
     elif args.action=='predict-source':
         runtime=read(args.runtime)
-        (predict_source if runtime['run_id']==RUN else predict_pseudo)(runtime)
+        if runtime['run_id'] in raw_train.RUNS:
+            predict_raw_source(runtime)
+        else:
+            (predict_source if runtime['run_id']==RUN else predict_pseudo)(runtime)
     elif args.action=='score-source':
         runtime=read(args.runtime)
         arm = PSEUDO_ARMS.get(runtime['run_id'])
@@ -825,6 +885,11 @@ def main():
             modes = (*parent_modes(ancestor),control,candidate)
             contrasts = ((candidate,control),(candidate,parent),(candidate,'outer_half'),(candidate,'direct'),
                          (control,parent))
+        if runtime['run_id'] in raw_train.RUNS:
+            stages = raw_train.RUNS[runtime['run_id']]
+            modes = (*parent_modes(RUN_STRONG),*stages)
+            contrasts = tuple((stage,prior) for i,stage in enumerate(stages)
+                              for prior in ('direct','outer_half',STRONG,*stages[:i]))
         score_source(args.runtime,modes=modes,output=Path(runtime['run_root'])/FULL,contrasts=contrasts)
     elif args.action=='predict-formal':
         predict_formal(read(args.runtime),args.case)
@@ -839,22 +904,23 @@ def main():
         gpu_preferences = {RUN: [3,0,7,2,6,5], RUN_PL: [2,6,5], RUN_FIXED_PL: [7,2,3,0,6,5],
                            RUN_FEATURE: [0,3,7,2,6,5], RUN_REFINE: [7,3,0,2,6,5],
                            RUN_STRONG: [7,0,3,2,6,5], RUN_COLOR: [0,3,7,2,6,5], RUN_GAIN: [7,2,0,3,6,5],
-                           RUN_COV: [7,6,0,3,2,5], RUN_VIEW: [7,0,2,6,3,5]}
+                           RUN_COV: [7,6,0,3,2,5], RUN_VIEW: [7,0,2,6,3,5],
+                           raw_train.DURA_RUN: [6,5], raw_train.TASK_RUN: [2,3]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),training_release_root=str(releases/f'{TRAIN_RUN}-release'),
                   classifier_root=str(runs/AUG_RUN),unet_parent=str(runs/UNET_FIDELITY_RUN),
                   allowed_gpus=gpu_preferences[run],
-                  max_workers=1 if run == RUN_PL else 3,max_compute_processes=8,cpu_workers=6)
+                  max_workers=1 if run in (RUN_PL,*raw_train.RUNS) else 3,max_compute_processes=8,cpu_workers=6)
         rt['external_releases']=[rt[k] for k in ('source_root','w24_release_root',
                                                 'training_release_root','classifier_root','unet_parent')]
         rt['external_releases'] += [str(runs/r) for r in (DURA_RUN,TRAIN_RUN)]
         if run in PSEUDO_ARMS:
             rt['external_releases'].append(str(runs/RUN))
-        if run in PARENT_TRIALS:
+        if run in PARENT_TRIALS or run in raw_train.RUNS:
             rt['external_releases'] += [str(runs/RUN_FIXED_PL),str(releases/f'{RUN_FIXED_PL}-release')]
-        if run in PARENT_TRIALS and source_parent(run) == RUN_STRONG:
+        if run in raw_train.RUNS or (run in PARENT_TRIALS and source_parent(run) == RUN_STRONG):
             rt['external_releases'] += [str(runs/RUN_STRONG),str(releases/f'{RUN_STRONG}-release')]
         if run in FORMAL_ARMS:
             rt['native_target_root']=str(releases/f'{DATA_RUN}-release'/'data/target')
