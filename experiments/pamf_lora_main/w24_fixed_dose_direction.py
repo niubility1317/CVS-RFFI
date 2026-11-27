@@ -160,14 +160,19 @@ def load_head(root):
 
 
 @torch.no_grad()
-def readouts(parent, model, y):
+def aperture_components(parent, model, y):
     wave = tensor(np.ascontiguousarray(y).view(np.float32),'cpu').view(torch.complex64)
     frozen = torch.lerp(wave,parent.restore_native(wave),.5)
     proposal = wave + model(wave, frozen-wave)
     a, b, d = (native_aperture(np.from_dlpack(z.contiguous())) for z in (wave, frozen, proposal))
     base, proposed = (tensor(np.ascontiguousarray(z,dtype=np.complex64).view(np.float32),'cpu').view(torch.complex64)
                       for z in (b-a,d-a))
-    edit = matched_aperture_edit(base,proposed)
+    return wave, a, b, matched_aperture_edit(base,proposed)
+
+
+@torch.no_grad()
+def readouts(parent, model, y):
+    _, a, b, edit = aperture_components(parent, model, y)
     candidate = a + np.from_dlpack(edit.contiguous())
     result = tuple(tensor(model_iq(v,center_rms(v)),'cpu') for v in (a,b,candidate))
     return result
