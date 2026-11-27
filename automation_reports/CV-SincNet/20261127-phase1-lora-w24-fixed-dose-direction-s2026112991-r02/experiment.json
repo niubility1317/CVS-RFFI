@@ -1,0 +1,178 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 固定幅度方向分支的 CPU 源域评测接续",
+  "description": "Evaluate the original r01 terminal head without training; fix archival SciPy complex128 aperture serialization and retain the identical source matrix.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+    "20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA performance research goal.",
+  "code": {
+    "commit": "bfc093fe5bc5ffbbde050f74b656cee677017347",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "Pinned W24 CPU runtime, no GPU. Exact original r01 terminal checkpoint.",
+    "cwd": "Owned evaluator release controller; pinned W24 archive for source-only smoke and score."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MHz through DURA; untouched W24 front end receives the resulting packet.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Exactly the r01 Practical U pair bank and original r02 carve (20,000 fit, 500 held). Same registered V panel of 300 distinct physical packets for each Full view.",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "U_s_smoke": 1,
+      "V_after_freeze": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Reuse VALIDATED_ONCE lora_full_packets_v1 registered V order and true E104.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Evaluation-only CPU source V with E104 after r01 terminal freeze. No retraining, target, or change to selection."
+  },
+  "checkpoint": {
+    "initialization": "Reuse r01 direction.pt and metadata at source step 24,000, no fit in r02.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r01",
+        "role": "Exact terminal frozen 24,000 update direction head and original optimizer budget."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+        "role": "Fixed source-only Practical exact-additive 24000 update checkpoint for both readouts."
+      },
+      {
+        "ref": "W24 E104 2026092702",
+        "role": "Independent source evaluation after direction checkpoint freeze."
+      }
+    ],
+    "contract_check_ref": "Exact r01 current terminal checkpoint, original parent, E104 readout, 300 source V IDs and endpoint parity.",
+    "provenance_verdict": "Frozen parent of the same LoRa source contract; original source-only checkpoint",
+    "selection_rule": "Last of 24000 steps, then fixed source V score. Promote eligibility only if six at least +18 vs frozen half, low urban at least +6, clean >= raw and receiver-stratified six-scene 95% lower net >0. Any formal launch after source qualification is registered separately."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current LoRa DURA direction-training goal",
+    "gpu_policy": "CPU only, zero GPU; waits for existing r01 terminal checkpoint, two inference and two replay workers.",
+    "remote_run_root": "runs/20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02",
+    "remote_log_root": "runs/20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02",
+    "launch_command": "python -u -m experiments.pamf_lora_main.w24_fixed_dose_direction publish --frozen-source-eval --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02/release",
+    "stop_rule": "Missing invalid terminal fit proof, source contract or CPU real-checkpoint smoke, prediction closure or scoring failure. Existing GPU fit preserved."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "predictions.npz",
+    "source-predictions.json",
+    "source-scores.json",
+    "predict-source.log",
+    "score-source.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "seven-view accuracy",
+      "paired corrections and receiver fractions"
+    ],
+    "dimensions": [
+      "same original Full source-only panel",
+      "seven views",
+      "five source RX",
+      "same three frozen endpoints"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02/predictions.npz",
+    "scorer_ref": "w24_factor_audit.score_source, independent CPU"
+  },
+  "rows": [
+    {
+      "row_id": "cpu-frozen-source-eval",
+      "method": "One full-packet phase and IQ direction head with separate hard pre-RMS center and edge norms",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_fixed_dose_direction.py",
+      "resolved_config_ref": "releases/20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02-release/runtime.json",
+      "data_overrides": {
+        "U_s_smoke": 1,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "target": 0
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "New source fit seed 2026112991; registered V panel and Full draw; independent E104 seed 2026092702.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No fit in r02, same r01 terminal state. 300 source V packets x seven views x three rows.",
+      "output_root": "runs/20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02",
+      "log_path": "runs/20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02/predict-source.log",
+      "command": "python -u -m experiments.pamf_lora_main.w24_fixed_dose_direction publish --frozen-source-eval --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02/release",
+      "expected_artifacts": [
+        "state.json",
+        "smoke.json",
+        "predictions.npz",
+        "source-predictions.json",
+        "source-scores.json",
+        "predict-source.log",
+        "score-source.log"
+      ]
+    }
+  ],
+  "notes": [
+    "R01 fitting logic, parent, optimizer, predictions on the existing formal task, and promotion criteria remain unchanged.",
+    "The original evaluator reinterpreted complex128 aperture differences as complex64 and expanded the sample axis. r02 converts dtype before the byte view.",
+    "Read-only real U probe on N607 verified exact CPU raw/half parity and pre-scale norm relative errors below 1e-6. Both existing controllers are independent."
+  ],
+  "registered_at": "2026-11-27T12:22:53+00:00"
+}
