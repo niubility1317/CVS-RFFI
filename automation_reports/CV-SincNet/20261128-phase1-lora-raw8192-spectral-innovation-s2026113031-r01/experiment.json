@@ -1,0 +1,290 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa 原生 8,192 点分频残差更新与同预算续训（Full）",
+  "description": "One matched baseline continuation isolates training budget for the registered previous alignment trial. The architectural candidate learns a bounded real gain for each observed spectral innovation, retaining phase and full packet support.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "raw8192",
+    "w24",
+    "fixed-e104",
+    "full-only",
+    "truth-last",
+    "spectral-innovation"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+    "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+    "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa native raw performance goal, frozen E104 training loss and high-confidence source clean U_s pseudo-label authorization.",
+  "code": {
+    "commit": "2aa48b40e7b042b39c0361a0d11fb9d94d0e3ae1",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192-point complex recovery. Complete eight chirps through a fixed phase tracker. The candidate FFT update uses only the observation and the trainable coarse estimate. Frozen E104 preprocessing remains 8x2x432.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Authorized L_s and U_s capturing native source IQ, original generic waveform simulation, L_s true CE, frozen E104 clean U_s pseudo-CE at confidence .95; no U_s TX, V, exact benchmark traces or target during training. Both rows fixed before official Full seven-view prediction."
+  },
+  "checkpoint": {
+    "initialization": "Same immutable legal 313796-parameter native E104 18k parent in both. Restart AdamW. Candidate adds 10785 trainable parameters, with zero final gains so it starts at identical output.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+        "role": "Same raw observation contract and pretarget source-qualified initialization. Recursively verify formal archival parent."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+        "role": "Same-contract G initialization and archived Full comparison."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen source training teacher and evaluation default head."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "Pretarget source-selected common parent; same-contract role binding. Prior alignment trial contributes an archived comparison, with no trained weights inherited. Its observed target ordering does not select the new arms.",
+    "selection_rule": "Fixed 20000 continuations. Both enter Full for all seven views regardless of source accuracy. Source V is reference only. Target performance requires at least 162000/180000, 25500/30000 and 28566/30000 for practical six, low urban and clean respectively."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 [0,7,2,6,3], min 12 GiB actual free and fewer than 8 contexts, at most two workers and one per card.",
+    "remote_run_root": "runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01",
+    "remote_log_root": "runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --raw-spectral-innovation --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/release",
+    "stop_rule": "Stop dependent stages on illegal input roles, failed E104 or gain gradient, candidate not identical to parent before updates, nonfinite fit, failed freeze, or incomplete matched Full predictions. Source-reference failure is diagnostic and recorded."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "source-reference-status.json",
+    "predictions/{full-shard}/complete.json",
+    "independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "sampled waveform and clean training losses",
+      "strong source branch actual sampled exposures and nominal SNR range",
+      "observed change of fixed W24 aperture",
+      "Same-packet assessment of 20000-step additional budget and a bounded phase-preserving spectral update"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout including previous fixed aligned arms by archival pairing"
+    ],
+    "prediction_ref": "runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/predictions for both arms across the same 30000 physical IDs.",
+    "scorer_ref": "Local independent w24_joint_pamf collect reads truth only after all three formal shards and both modes are fixed. Source V readouts are reference."
+  },
+  "rows": [
+    {
+      "row_id": "baseline_continue_native",
+      "method": "Unmodified native objective continuation",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/baseline_continue_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "spectral_innovation": false,
+        "trainable_parameters": 313796
+      },
+      "seeds": {
+        "model": 2026113031,
+        "split": 392005,
+        "data": 2026113031,
+        "augmentation": 2026113031,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113031 shared source draw and generic augmentation, plus 1 for identical strong branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "20000 new updates after the fixed raw parent, 8 L_s and 8 U_s per update.",
+      "output_root": "runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/baseline_continue_native",
+      "log_path": "runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/baseline_continue_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/baseline_continue_native/fit-inputs.json baseline_continue_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "spectral_innovation_native",
+      "method": "Learned per-chirp observation innovation",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/spectral_innovation_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "spectral_innovation": true,
+        "trainable_parameters": 324581
+      },
+      "seeds": {
+        "model": 2026113031,
+        "split": 392005,
+        "data": 2026113031,
+        "augmentation": 2026113031,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113031 shared source draw and generic augmentation, plus 1 for identical strong branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "20000 new updates after the fixed raw parent, 8 L_s and 8 U_s per update.",
+      "output_root": "runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/spectral_innovation_native",
+      "log_path": "runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/spectral_innovation_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r01/spectral_innovation_native/fit-inputs.json spectral_innovation_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Hypothesis: a per-frequency signed real update made only along the observed-minus-coarse innovation corrects under- or over-subtraction while preserving the per-chirp complex direction. Its DC term is exactly zero.",
+    "Same frequency gains module on all eight chirps. Six inputs are the local and across-chirp mean powers of observation, coarse estimate and their residual, all relative to observation-only outer-frequency noise proxy. No across-chirp averaging of complex samples.",
+    "Both arms use the original fixed E104 true and pseudo-label losses, raw waveform and spectral losses, and clean consistency. No prior alignment loss in either arm. The previous alignment trial is only a separately frozen archived comparison for budget attribution.",
+    "The matched baseline continuation retains the common native architecture, seed, data/perturbation draw, optimizer and budget from the alignment run. The candidate jointly trains the native base and the added module. The zero initialized gain starts at the baseline exactly.",
+    "The fixed matrix is clean plus all six Full practical views on the same 30000 physical packets and 15 unseen receivers. Both arms evaluated once after complete freeze. Source V is only a reference, no performance gate."
+  ],
+  "registered_at": "2026-11-27T19:46:22+00:00"
+}
