@@ -47,12 +47,38 @@ def zero_dc(iq):
     return iq - iq.mean(-1, keepdim=True)
 
 
+def chirp_reference():
+    t = torch.arange(CHIRP, dtype=torch.float64) / 1e6
+    angle = 2 * torch.pi * 125e3 * (t.square() / .002048 - t / 2)
+    return torch.polar(torch.ones_like(angle), angle).to(torch.complex64)
+
+
+def receive_coordinates(raw, chirp):
+    native = raw.unflatten(-1, (CHIRPS, CHIRP))
+    scale = native.abs().square().mean((-2, -1), keepdim=True).clamp_min(1e-12).sqrt()
+    wave = native / scale
+    dechirped = wave * chirp.conj()
+    bins = torch.fft.fft(dechirped, n=4 * CHIRP).abs().argmax(-1, keepdim=True)
+    t = torch.arange(CHIRP, device=raw.device)
+    phase = 2 * torch.pi * bins * t / (4 * CHIRP)
+    rotation = chirp * torch.polar(torch.ones_like(phase), phase)
+    residual = wave * rotation.conj()
+    lag = CHIRP // 16
+    slope = (residual[..., lag:] * residual[..., :-lag].conj()).mean(-1, keepdim=True).angle() / lag
+    phase = slope.clamp(-torch.pi / (4 * CHIRP), torch.pi / (4 * CHIRP)) * t
+    rotation = rotation * torch.polar(torch.ones_like(phase), phase)
+    aligned = wave * rotation.conj()
+    carrier = aligned.mean(-1, keepdim=True)
+    rotation = rotation * torch.polar(torch.ones_like(carrier.real), carrier.angle())
+    aligned = wave * rotation.conj()
+    quality = (carrier.abs().square() / aligned.abs().square().mean(-1, keepdim=True).clamp_min(1e-12)).clamp(0, 1)
+    return aligned, wave, rotation * scale, quality
+
+
 class NativePacketDura(nn.Module):
     def __init__(self):
         super().__init__()
-        t = torch.arange(CHIRP, dtype=torch.float64) / 1e6
-        angle = 2 * torch.pi * 125e3 * (t.square() / .002048 - t / 2)
-        self.register_buffer('chirp', torch.polar(torch.ones_like(angle), angle).to(torch.complex64), persistent=False)
+        self.register_buffer('chirp', chirp_reference(), persistent=False)
         f = torch.fft.fftfreq(CHIRP).abs()
         self.register_buffer('noise_band', f >= .35, persistent=False)
         self.register_buffer('detail_band', (f > 0) & (f <= .04), persistent=False)
@@ -60,25 +86,7 @@ class NativePacketDura(nn.Module):
         self.priors = nn.ModuleList(PacketPrior(12, 4) for _ in range(2))
 
     def coordinates(self, raw):
-        native = raw.unflatten(-1, (CHIRPS, CHIRP))
-        scale = native.abs().square().mean((-2, -1), keepdim=True).clamp_min(1e-12).sqrt()
-        wave = native / scale
-        dechirped = wave * self.chirp.conj()
-        bins = torch.fft.fft(dechirped, n=4 * CHIRP).abs().argmax(-1, keepdim=True)
-        t = torch.arange(CHIRP, device=raw.device)
-        phase = 2 * torch.pi * bins * t / (4 * CHIRP)
-        rotation = self.chirp * torch.polar(torch.ones_like(phase), phase)
-        residual = wave * rotation.conj()
-        lag = CHIRP // 16
-        slope = (residual[..., lag:] * residual[..., :-lag].conj()).mean(-1, keepdim=True).angle() / lag
-        phase = slope.clamp(-torch.pi / (4 * CHIRP), torch.pi / (4 * CHIRP)) * t
-        rotation = rotation * torch.polar(torch.ones_like(phase), phase)
-        aligned = wave * rotation.conj()
-        carrier = aligned.mean(-1, keepdim=True)
-        rotation = rotation * torch.polar(torch.ones_like(carrier.real), carrier.angle())
-        aligned = wave * rotation.conj()
-        quality = (carrier.abs().square() / aligned.abs().square().mean(-1, keepdim=True).clamp_min(1e-12)).clamp(0, 1)
-        return aligned, wave, rotation * scale, quality
+        return receive_coordinates(raw, self.chirp)
 
     def forward(self, raw):
         if raw.ndim != 2 or raw.shape[-1] != PACKET or not raw.is_complex():
