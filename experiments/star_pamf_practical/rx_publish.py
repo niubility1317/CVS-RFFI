@@ -69,17 +69,33 @@ def publish(config, output):
                           run_root=ROOT, python=PYTHON, command=COMMAND, paths=paths)
 
 
+def publish_rx_report(config, output):
+    from .publish import publish_bundle
+
+    reporter = RUN + "-cross-rx-reporting"
+    release = PROJECT / "releases" / (reporter + "-release")
+    paths = ["experiments/star_pamf_practical", "experiments/pamf_comparison_matrix",
+             "experiments/pamf_advisor_supplements/plan.py", "experiments/practical_full_2x2",
+             "experiments/cric_dura_comparison", "code/leo_practical"]
+    command = [PYTHON, "-u", "-m", "experiments.star_pamf_practical.rx_report", "--root", str(ROOT)]
+    return publish_bundle(config, output, run=reporter, project=PROJECT, release=release,
+                          run_root=ROOT.parent / reporter, python=PYTHON, command=command, paths=paths)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     actions = parser.add_subparsers(dest="action", required=True)
     register = actions.add_parser("register")
     register.add_argument("--template", required=True, type=Path)
     register.add_argument("--output", required=True, type=Path)
-    release = actions.add_parser("publish")
-    release.add_argument("--ssh-config", required=True, type=Path)
-    release.add_argument("--output", required=True, type=Path)
+    for name in ("publish", "publish-cross-rx"):
+        release = actions.add_parser(name)
+        release.add_argument("--ssh-config", required=True, type=Path)
+        release.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     if args.action == "register":
         write(args.output, specification(read(args.template)))
-    else:
+    elif args.action == "publish":
         publish(args.ssh_config, args.output)
+    else:
+        publish_rx_report(args.ssh_config, args.output)
