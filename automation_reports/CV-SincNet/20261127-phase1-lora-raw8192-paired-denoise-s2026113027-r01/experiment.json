@@ -1,0 +1,299 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa 原生 8,192 点同信道独立加噪的两阶段恢复（Full）",
+  "description": "Matched native two-stage recovery. Supervise the first stage toward an independent noisy view with or without the input channel action. Frozen E104 supervises only the second stage.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "raw8192",
+    "w24",
+    "fixed-e104",
+    "full-only",
+    "truth-last",
+    "paired-denoise"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+    "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+    "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa native raw performance goal, frozen E104 training loss and high-confidence source clean U_s pseudo-label authorization.",
+  "code": {
+    "commit": "fc8c14c22b5de5c3198dcca00a3e45d3827a4555",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Two complex 8192-point native inputs are generated only in training. The actual observation is matched in the two arms and is the only inference input.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Noisy waveform pairs come only from lawful L_s/U_s source IQ using generic simulation not registered practical settings. Train sees only paired waveforms, no exact action/noise trace, target or V. Real labels L_s only; U_s uses the fixed E104 clean confidence .95 pseudo-label for stage two."
+  },
+  "checkpoint": {
+    "initialization": "Both load the same immutable native E104 18k parent for stage one. Add seeded time/spectral second stage with zero complex output, and reset AdamW. Total 325480 trainable G parameters. E104 fully frozen.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+        "role": "Same raw observation contract and pretarget source-qualified initialization. Recursively verify formal archival parent."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+        "role": "Same-contract G initialization and archived Full comparison."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen source training teacher and evaluation default head."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "The native parent passed a declared source rule before deployment. Target results never select fitting, hyperparameters, thresholds or retry.",
+    "selection_rule": "Both freeze at 20000. Only shared_action_native can promote. Six exceeds control, original native parent, historical W24 and all declared source controls. Low exceeds matched arm and reaches other controls. Clean at least raw parent/direct, on same 300 source V packets."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 [6,7,2,0,3], min 12 GiB actual free and <8 contexts, at most two workers and one per card.",
+    "remote_run_root": "runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --raw-paired-denoise --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/release",
+    "stop_rule": "Stop dependent stages on failed matched native parent, true CE or clean pseudo CE missing in second-stage gradients, first-stage witness gradient missing, final CE reaching upstream, nonfinite loss or invalid freeze. No Full if source does not qualify."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional predictions/{full-shard}/complete.json",
+    "conditional independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "sampled waveform and clean training losses",
+      "strong source branch actual sampled exposures and nominal SNR range",
+      "observed change of fixed W24 aperture",
+      "paired waveform objective, causal stage gradient, paired noise direction and dose (isolated source diagnosis)"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/full_native/predictions.npz; conditional runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/predictions",
+    "scorer_ref": "Independent source score then conditional local w24_joint_pamf collect after all Full shards are frozen."
+  },
+  "rows": [
+    {
+      "row_id": "clean_mean_native",
+      "method": "Noisy original source witness",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/clean_mean_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "same_action_witness": false,
+        "acted_fraction": 0.5666666666666667,
+        "acted_nominal_snr_db": [
+          -4,
+          24
+        ],
+        "intermediate_loss_weight": 1.0
+      },
+      "seeds": {
+        "model": 2026113027,
+        "split": 392005,
+        "data": 2026113027,
+        "augmentation": 2026113027,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113027 shared source draw and generic augmentation, plus 1 for identical original strong branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "20000 new updates after the fixed raw parent, 8 L_s and 8 U_s per update.",
+      "output_root": "runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/clean_mean_native",
+      "log_path": "runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/clean_mean_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/clean_mean_native/fit-inputs.json clean_mean_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "shared_action_native",
+      "method": "Independent noisy witness with shared generic action",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/shared_action_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "same_action_witness": true,
+        "acted_fraction": 0.5666666666666667,
+        "acted_nominal_snr_db": [
+          -4,
+          24
+        ],
+        "intermediate_loss_weight": 1.0
+      },
+      "seeds": {
+        "model": 2026113027,
+        "split": 392005,
+        "data": 2026113027,
+        "augmentation": 2026113027,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113027 shared source draw and generic augmentation, plus 1 for identical original strong branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "20000 new updates after the fixed raw parent, 8 L_s and 8 U_s per update.",
+      "output_root": "runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/shared_action_native",
+      "log_path": "runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/shared_action_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01/shared_action_native/fit-inputs.json shared_action_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both generate actual channel-applied observation plus independent additive noise and an independent noisy witness. Only whether the witness mean includes the same generic propagation action differs. Both use the same witness noise draw.",
+    "One-third pure noise at -8..4 dB, 10% exact source identity, otherwise generic amplitude/time phase jitter, delay echo/image and independent noise at -4..24 dB; no use of registered practical parameters or outcomes.",
+    "Original native backbone is first stage. It learns from 0.75 center W24 linear MSE + 0.25 raw MSE to the witness and a raw identity MSE for true L_s clean. Stage two uses stopped-gradient stage-one outputs, fixed E104 true/pseudo CE, paired raw waveform/spectral and clean identity/KL.",
+    "Second stage combines dechirped per-chirp time and frequency residuals with observation and estimate, zero initial correction and 35% of observed chirp RMS cap on pointwise correction. Both arms share all architecture.",
+    "300 fixed source V packets then optional 30000-packet 15-receiver Full with frozen E104 and independent truth-last."
+  ],
+  "registered_at": "2026-11-27T14:04:12+00:00"
+}
