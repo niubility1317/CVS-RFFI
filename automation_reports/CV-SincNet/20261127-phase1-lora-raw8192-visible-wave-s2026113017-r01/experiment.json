@@ -1,0 +1,287 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa 原生 8,192 点 W24 可见子空间波形监督（Full）",
+  "description": "Compare raw-spectrum/raw-MSE supervision against the same losses restricted to the exact W24-visible linear subspace.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "raw8192",
+    "w24",
+    "fixed-e104",
+    "full-only",
+    "truth-last",
+    "visible-waveform"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+    "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+    "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa native raw performance goal, frozen E104 training loss and high-confidence source clean U_s pseudo-label authorization.",
+  "code": {
+    "commit": "9377ae7e68b007a888b163758416a29c4f4c403b",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Both G paths observe and output all 8192 native complex samples. Only paired waveform training loss support differs. Original frozen W24 preprocessing follows G.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Source L_s real CE and E104 clean U_s pseudo CE at 0.95, legal same-source waveform pairs, no admission of true U_s labels. Original W24 frontend fixed coefficients. Fit reads no source V, target, exact simulator actions or registered practical views."
+  },
+  "checkpoint": {
+    "initialization": "Both arms strictly load the same source-qualified native E104 G; full waveform architecture unchanged (313796 trainable G parameters). Frozen classifier and default head. Reset AdamW.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+        "role": "Same raw observation contract and pretarget source-qualified initialization. Recursively verify formal archival parent."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+        "role": "Same-contract G initialization and archived Full comparison."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen source training teacher and evaluation default head."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "The native parent passed a declared source rule before deployment. Target results never select fitting, hyperparameters, thresholds or retry.",
+    "selection_rule": "Both freeze at 15000. Only visible_wave_native can promote. Six exceeds matched full_wave_native, native parent, W24 parent, and archived direct/old rows. Low urban exceeds full_wave_native and at least all archived comparisons. Clean at least direct and native parent on the same 300 source V packets."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 [7,2,6,3], ≥12 GiB and <8 contexts per card. Two fit workers or two formal prediction workers, one per physical GPU.",
+    "remote_run_root": "runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --raw-visible-wave --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/release",
+    "stop_rule": "Stop dependent stages on data/parent mismatch, real source smoke failure, inactive allowed gradient, nonfinite objective or wrong frozen predictions. No formal prediction after source miss."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional predictions/{full-shard}/complete.json",
+    "conditional independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "sampled waveform and clean training losses",
+      "strong source branch actual sampled exposures and nominal SNR range",
+      "W24-visible and hidden waveform errors",
+      "observed change of fixed W24 aperture"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/full_native/predictions.npz; conditional runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/predictions",
+    "scorer_ref": "Independent source score then conditional local w24_joint_pamf collect after all Full shards are frozen."
+  },
+  "rows": [
+    {
+      "row_id": "full_wave_native",
+      "method": "Original full raw wave losses",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/full_wave_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "visible_waveform": false
+      },
+      "seeds": {
+        "model": 2026113017,
+        "split": 392005,
+        "data": 2026113017,
+        "augmentation": 2026113017,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113017 shared data and generic augmentation stream; +1 independent original strong branch. No extra envelope branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "15000 updates per arm after the same 18000-step raw LoRa parent, 8 L_s plus 8 U_s draws per update.",
+      "output_root": "runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/full_wave_native",
+      "log_path": "runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/full_wave_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/full_wave_native/fit-inputs.json full_wave_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "visible_wave_native",
+      "method": "Exact W24-visible raw wave losses",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/visible_wave_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "visible_waveform": true
+      },
+      "seeds": {
+        "model": 2026113017,
+        "split": 392005,
+        "data": 2026113017,
+        "augmentation": 2026113017,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113017 shared data and generic augmentation stream; +1 independent original strong branch. No extra envelope branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "15000 updates per arm after the same 18000-step raw LoRa parent, 8 L_s plus 8 U_s draws per update.",
+      "output_root": "runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/visible_wave_native",
+      "log_path": "runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/visible_wave_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/visible_wave_native/fit-inputs.json visible_wave_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Match full native observation/output, data, exact G/F parent, optimization, strong white draw and accepted clean pseudo labels.",
+    "Let P=A^T(AA^T)^-1 A for the exact W24 FIR plus native edge positions. Candidate replaces paired waveform error e by P e and spectral reference clean by P clean, preserving original coefficients .30 spectral and .25 raw MSE. The adjoint is P, applied in float64 before converting to complex64. No optimizer update touches A.",
+    "Native raw clean identity, L_s true classification, original clean posterior and U_s accepted clean-pseudo CE are all unchanged. Projection only used for paired objectives during fit; inference retains original native model and exact W24 frontend.",
+    "An isolated gradient study on 80 L_s, 80 U_s observed 57.86% median hidden wave-gradient energy and roundoff-level hidden E104 energy. This source study did not access source V or any target and did not update weights. No expectation of automatic identification improvement.",
+    "Freeze on budget, then exact same source Full panel and conditional seven-scene official Full with original truth-last guard."
+  ],
+  "registered_at": "2026-11-27T08:23:36+00:00"
+}

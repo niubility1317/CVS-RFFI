@@ -131,3 +131,9 @@ GPU 7（NVIDIA GeForce RTX 3090），源域低城区单包预热 12 次，CUDA �
 
 - [跨 chirp 参考诊断](/E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/peer-reliability.json)
 - [局部位置消融代码](/E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/local_cue_diagnostic.py)
+
+### 后续机制证据
+
+80 个独立选取的源 U_s 隔离诊断中，原生逐 chirp 载频斜率相对无噪参考的低城区误差中位数为 5.40 Hz，超过一个 122.07 Hz FFT 频点的比例为 1.09%。同包中值共享斜率消除了这个尾部，误差中位数却升至 8.47 Hz。 [载频跟踪诊断](/E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/native-tracking.json)
+
+另在 80 个合法带标签源包和 80 个无标签源包上，诊断用原 E104 原生恢复器，并计算对恢复输出的冻结分类梯度。全长波形监督的梯度能量中位有 57.86% 落在 W24 不可见方向，分类梯度的相应比例约为 4×10⁻¹⁵。精确可见投影的波形损失与 E104 梯度余弦中位仍约 0.004。这说明两者的支持空间差异可以修正，识别收益还需独立验证。 [梯度诊断](/E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/native-objective-support.json) · [预登记后续对照](../20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01/experiment.json)
