@@ -19,6 +19,7 @@ from experiments.pamf_uncertainty_restore.models import weighted_map
 
 
 RUN = "20261127-phase1-lora-wisig-packet-dura-s2026113021-r01"
+RETRY_RUN = RUN.removesuffix("r01") + "r02"
 LORA_PARENT = "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01"
 LORA_DURA = "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01"
 WISIG_REFERENCE = "20261125-phase1-wisig-native-fir-source-m4-r01"
@@ -44,10 +45,16 @@ def blend(y, proposal, action, variance):
     return proposal + scale * ratio * change
 
 
-def package_source(name, directory):
-    package = importlib.import_module(name)
-    package.__path__.append(str(directory))
-    return package
+def archive_imports(config, *, extra=()):
+    """Resolve each historical reader against the release that produced it."""
+    from experiments.pamf_lora_main.runner import activate
+    roots = [str(Path(x) / "experiments") for x in (*extra, config["release_root"])]
+    activate(config)
+    package = importlib.import_module("experiments")
+    package.__path__[:0] = roots
+    # The launcher's subpackage is already imported by python -m.
+    lora = importlib.import_module("experiments.pamf_lora_main")
+    lora.__path__[:0] = [str(Path(root) / "pamf_lora_main") for root in roots]
 
 
 def reference(rt, dataset):
@@ -63,22 +70,14 @@ def reference(rt, dataset):
 
 
 def lora_deps(config):
-    from experiments.pamf_lora_main.runner import activate
-    package_source("experiments.pamf_lora_main",
-                   Path(config["w24_release_root"]) / "experiments/pamf_lora_main")
-    activate(config)
+    archive_imports(config, extra=(config["w24_release_root"],))
     from experiments.pamf_lora_main import w24_joint_pamf as joint
     from experiments.pamf_lora_main import w24_native_training as native
     return joint, native
 
 
 def wisig_deps(config):
-    from experiments.pamf_lora_main.runner import activate
-    activate(config)
-    package_source("experiments.pamf_unrolled_restore",
-                   Path(config["release_root"]) / "experiments/pamf_unrolled_restore")
-    package_source("experiments.pamf_repl_view_shuffle",
-                   Path(config["release_root"]) / "experiments/pamf_repl_view_shuffle")
+    archive_imports(config)
     from experiments.pamf_unrolled_restore import wisig_anchored_window_source as original
     return original
 
@@ -354,8 +353,8 @@ def main():
         from experiments.pamf_lora_main.publish import release, release_commit
         project = rt["project"]
         release_root = f"{project}/releases"
-        rt.update(run_id=RUN, code_commit=release_commit(Path.cwd()), runner=__spec__.name,
-                  release_root=f"{release_root}/{RUN}-release", run_root=f"{project}/runs/{RUN}",
+        rt.update(run_id=RETRY_RUN, code_commit=release_commit(Path.cwd()), runner=__spec__.name,
+                  release_root=f"{release_root}/{RETRY_RUN}-release", run_root=f"{project}/runs/{RETRY_RUN}",
                   lora_ref=f"{release_root}/{LORA_PARENT}-release",
                   wisig_ref=f"{release_root}/{WISIG_REFERENCE}-release",
                   allowed_gpus=[7, 2, 0, 6, 3, 5])
