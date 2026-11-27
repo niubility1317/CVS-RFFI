@@ -37,6 +37,8 @@ from experiments.pamf_lora_main.w24_wide_transfer import (
 RUN = '20261125-phase1-lora-w24-formal-both-routes-m3-r01'
 RUN_UNGATED = '20261125-phase1-lora-w24-formal-ungated-s2026092702-r01'
 RUN_OUTER = '20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01'
+RUN_NATIVE_CENTER = '20261127-phase1-lora-w24-formal-native-center-s2026092702-r01'
+NATIVE_CENTER_KIND = 'native-center-direction'
 UNGATED_COMMIT = 'aedf98271cf9473d11ee0d12a48d93e6c03bd24f'
 SEEDS = (2026092701, SEED, 2026092703)
 FULL = 'full_native'
@@ -139,6 +141,23 @@ def blind_reference(rt):
             or read(root / 'state.json') != dict(status='PREDICTIONS_FROZEN', cases=list(cases()), target_truth_read=False)):
         raise ValueError('Expected the matching frozen same-route blind LoRa reference')
     return root / 'predictions'
+
+
+def verify_matched_source(rt):
+    from experiments.pamf_lora_main.w24_third_prior import frozen_source_results, qualified_source, trial
+
+    root, kind = Path(rt['candidate_root']), rt['third_prior']
+    if rt.get('run_id') != RUN_NATIVE_CENTER:
+        qualified_source(root, kind)
+        return
+    spec = trial(NATIVE_CENTER_KIND)
+    runs = Path(rt['project']) / 'runs'
+    if (kind != NATIVE_CENTER_KIND or root != runs / spec.run or Path(rt['run_root']) != runs / RUN_NATIVE_CENTER
+            or spec.routes != (FULL,)
+            or read(root / 'state.json') != dict(status='SOURCE_SCORED', promote=False,
+                                                 arms=list(spec.arms), steps=spec.steps)):
+        raise ValueError('Unexpected frozen parent for the requested native center Full evaluation')
+    frozen_source_results(root, kind)
 
 
 def load_heads(rt, contract, device):
@@ -437,11 +456,9 @@ def dispatch(runtime):
         ungated = rt.get('ungated', False)
         third = rt.get('third_prior', False)
         if third:
-            from experiments.pamf_lora_main.w24_third_prior import qualified_source
-
             if not ungated or outer:
                 raise ValueError('Matched formal prediction requires its own ungated matrix')
-            qualified_source(Path(rt['candidate_root']), third)
+            verify_matched_source(rt)
             blind_reference(rt)
         if outer:
             if not ungated:
@@ -505,7 +522,9 @@ def main():
         cmd.add_argument('runtime', type=Path)
         cmd.add_argument('case')
     publish = actions.add_parser('publish')
-    publish.add_argument('--outer-objective', action='store_true')
+    choice = publish.add_mutually_exclusive_group()
+    choice.add_argument('--outer-objective', action='store_true')
+    choice.add_argument('--native-center-direction', action='store_true')
     for key in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--' + key, type=Path, required=True)
     args = parser.parse_args()
@@ -515,7 +534,7 @@ def main():
         project = PurePosixPath(rt['project'])
         runs, releases = project / 'runs', project / 'releases'
         data = releases / f'{DATA_RUN}-release' / 'data'
-        run = RUN_OUTER if args.outer_objective else RUN_UNGATED
+        run = RUN_NATIVE_CENTER if args.native_center_direction else RUN_OUTER if args.outer_objective else RUN_UNGATED
         rt.update(run_id=run, code_commit=release_commit(args.repo), runner=__spec__.name, ungated=True,
                   outer_objective=args.outer_objective,
                   release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
@@ -525,7 +544,13 @@ def main():
                   allowed_gpus=[0, 5, 3, 4, 2, 7, 1, 6], cpu_workers=8, max_workers=2, max_compute_processes=8)
         rt['external_releases'] = [rt[k] for k in ('source_root', 'native_target_root', 'w24_release_root',
                                                   'training_release_root')]
-        if args.outer_objective:
+        if args.native_center_direction:
+            from experiments.pamf_lora_main.w24_third_prior import trial
+
+            parent = runs / trial(NATIVE_CENTER_KIND).run
+            rt.update(third_prior=NATIVE_CENTER_KIND, candidate_root=str(parent), allowed_gpus=[0, 3, 7, 2, 6, 5])
+            rt['external_releases'] += [str(p) for p in (runs / RUNS[SEED], parent, runs / RUN_UNGATED)]
+        elif args.outer_objective:
             from experiments.pamf_lora_main.w24_outer_objective_source import RUN as SOURCE_RUN
 
             rt['external_releases'] += [str(runs / x) for x in (RUNS[SEED], SOURCE_RUN, RUN_UNGATED)]

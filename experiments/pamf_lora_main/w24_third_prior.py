@@ -324,7 +324,7 @@ def promotion(routes, kind=True):
         for row in routes)
 
 
-def qualified_source(root, kind=True):
+def frozen_source_results(root, kind):
     from experiments.cric_dura_comparison.io import read
     from experiments.pamf_lora_main.w24_native_full import VIEWS
 
@@ -351,7 +351,11 @@ def qualified_source(root, kind=True):
             raise ValueError(f'Invalid source evaluation for {route}')
         physical_ids = ids
         results.append(scores['scores'])
-    if not promotion(results, kind):
+    return results
+
+
+def qualified_source(root, kind=True):
+    if not promotion(frozen_source_results(root, kind), kind):
         raise ValueError('Source comparison did not qualify')
 
 

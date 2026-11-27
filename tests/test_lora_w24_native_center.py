@@ -1,8 +1,11 @@
 import numpy as np
+import pytest
 from scipy.signal import resample_poly
 import torch
 
 from experiments.pamf_lora_main.w24_native_center import NativeCenterProjection, direction_terms
+from experiments.pamf_lora_main import w24_formal, w24_third_prior
+from experiments.cric_dura_comparison.io import write
 from experiments.pamf_lora_main.w24_packet_dura import PACKET, NativePacketDura, native_additive_pair, source_objective
 from experiments.pamf_lora_main.w24_third_prior import NATIVE_CENTER_ARMS, fit_inputs, trial
 
@@ -59,3 +62,25 @@ def test_native_center_pair_changes_only_gradient_and_is_full_only():
     g0 = torch.autograd.grad(control, p)[0]
     g1 = torch.autograd.grad(candidate, p)[0]
     assert torch.isfinite(g1).all() and not torch.allclose(g0, g1)
+
+
+def test_requested_formal_evaluation_is_bound_to_both_frozen_native_center_rows(tmp_path, monkeypatch):
+    kind = w24_formal.NATIVE_CENTER_KIND
+    spec = trial(kind)
+    candidate = tmp_path / 'runs' / spec.run
+    candidate.mkdir(parents=True)
+    write(candidate/'state.json', dict(status='SOURCE_SCORED', promote=False, arms=list(spec.arms), steps=spec.steps))
+    calls = []
+    monkeypatch.setattr(w24_third_prior, 'frozen_source_results', lambda *args: calls.append(args))
+    monkeypatch.setattr(w24_third_prior, 'qualified_source', lambda *args: pytest.fail('Unexpected promotion check'))
+    runtime = dict(project=tmp_path, candidate_root=candidate, third_prior=kind,
+                   run_root=candidate.parent / w24_formal.RUN_NATIVE_CENTER, run_id=w24_formal.RUN_NATIVE_CENTER)
+    w24_formal.verify_matched_source(runtime)
+    assert calls == [(candidate, kind)]
+    assert list(w24_formal.cases(kind)) == [f'full_native-{i}' for i in range(3)]
+    for altered in (dict(third_prior='native-band-risk'), dict(candidate_root=tmp_path), dict(run_root=tmp_path)):
+        with pytest.raises(ValueError, match='Unexpected frozen parent'):
+            w24_formal.verify_matched_source(dict(runtime, **altered))
+    monkeypatch.setattr(w24_third_prior, 'qualified_source', lambda *args: calls.append('normal-policy'))
+    w24_formal.verify_matched_source(dict(runtime, run_id='another-run'))
+    assert calls[-1] == 'normal-policy'
