@@ -1,0 +1,796 @@
+{
+  "status": "ANALYZED",
+  "n_packets": 300,
+  "n_practical": 1800,
+  "source_truth_last": true,
+  "target_reads": 0,
+  "scores": {
+    "direct": {
+      "by_scene": {
+        "clean": 297,
+        "practical_high": 284,
+        "practical_mid": 254,
+        "practical_low_suburban": 237,
+        "practical_high_urban": 265,
+        "practical_mid_urban": 204,
+        "practical_low_urban": 150
+      },
+      "six_correct": 1394,
+      "low_urban_correct": 150,
+      "six_corr": 0,
+      "six_harm": 0,
+      "net_six": 0,
+      "net_low": 0,
+      "CI95_net_six": [
+        0.0,
+        0.0
+      ],
+      "CI95_net_low": [
+        0.0,
+        0.0
+      ],
+      "net_six_by_rx": {
+        "b200_1": 0,
+        "b200_mini_1": 0,
+        "b210_1": 0,
+        "pluto_1": 0,
+        "rtl_1": 0
+      }
+    },
+    "raw_e104_strong": {
+      "by_scene": {
+        "clean": 297,
+        "practical_high": 291,
+        "practical_mid": 266,
+        "practical_low_suburban": 259,
+        "practical_high_urban": 276,
+        "practical_mid_urban": 221,
+        "practical_low_urban": 198
+      },
+      "six_correct": 1511,
+      "low_urban_correct": 198,
+      "six_corr": 178,
+      "six_harm": 61,
+      "net_six": 117,
+      "net_low": 48,
+      "CI95_net_six": [
+        87.975,
+        148.0
+      ],
+      "CI95_net_low": [
+        31.0,
+        65.0
+      ],
+      "net_six_by_rx": {
+        "b200_1": 16,
+        "b200_mini_1": 24,
+        "b210_1": 28,
+        "pluto_1": 18,
+        "rtl_1": 31
+      }
+    },
+    "learned_best_gain": {
+      "by_scene": {
+        "clean": 297,
+        "practical_high": 286,
+        "practical_mid": 266,
+        "practical_low_suburban": 252,
+        "practical_high_urban": 272,
+        "practical_mid_urban": 216,
+        "practical_low_urban": 187
+      },
+      "six_correct": 1479,
+      "low_urban_correct": 187,
+      "six_corr": 146,
+      "six_harm": 61,
+      "net_six": 85,
+      "net_low": 37,
+      "CI95_net_six": [
+        60.0,
+        111.0
+      ],
+      "CI95_net_low": [
+        20.0,
+        54.0
+      ],
+      "net_six_by_rx": {
+        "b200_1": 11,
+        "b200_mini_1": 12,
+        "b210_1": 24,
+        "pluto_1": 15,
+        "rtl_1": 23
+      }
+    },
+    "noise_same_dose": {
+      "by_scene": {
+        "clean": 297,
+        "practical_high": 293,
+        "practical_mid": 286,
+        "practical_low_suburban": 281,
+        "practical_high_urban": 287,
+        "practical_mid_urban": 265,
+        "practical_low_urban": 231
+      },
+      "six_correct": 1643,
+      "low_urban_correct": 231,
+      "six_corr": 281,
+      "six_harm": 32,
+      "net_six": 249,
+      "net_low": 81,
+      "CI95_net_six": [
+        215.0,
+        284.0
+      ],
+      "CI95_net_low": [
+        64.0,
+        98.0
+      ],
+      "net_six_by_rx": {
+        "b200_1": 52,
+        "b200_mini_1": 49,
+        "b210_1": 47,
+        "pluto_1": 48,
+        "rtl_1": 53
+      }
+    },
+    "noise_exact": {
+      "by_scene": {
+        "clean": 297,
+        "practical_high": 295,
+        "practical_mid": 288,
+        "practical_low_suburban": 292,
+        "practical_high_urban": 289,
+        "practical_mid_urban": 280,
+        "practical_low_urban": 270
+      },
+      "six_correct": 1714,
+      "low_urban_correct": 270,
+      "six_corr": 345,
+      "six_harm": 25,
+      "net_six": 320,
+      "net_low": 120,
+      "CI95_net_six": [
+        283.975,
+        359.0
+      ],
+      "CI95_net_low": [
+        101.0,
+        138.0
+      ],
+      "net_six_by_rx": {
+        "b200_1": 68,
+        "b200_mini_1": 62,
+        "b210_1": 66,
+        "pluto_1": 57,
+        "rtl_1": 67
+      }
+    },
+    "noise_exact_keep_orthogonal": {
+      "by_scene": {
+        "clean": 297,
+        "practical_high": 292,
+        "practical_mid": 274,
+        "practical_low_suburban": 267,
+        "practical_high_urban": 281,
+        "practical_mid_urban": 228,
+        "practical_low_urban": 173
+      },
+      "six_correct": 1515,
+      "low_urban_correct": 173,
+      "six_corr": 193,
+      "six_harm": 72,
+      "net_six": 121,
+      "net_low": 23,
+      "CI95_net_six": [
+        87.0,
+        157.0
+      ],
+      "CI95_net_low": [
+        7.0,
+        40.0
+      ],
+      "net_six_by_rx": {
+        "b200_1": 21,
+        "b200_mini_1": 21,
+        "b210_1": 18,
+        "pluto_1": 25,
+        "rtl_1": 36
+      }
+    }
+  },
+  "waveform": {
+    "diagnostics_only": true,
+    "learned_parent": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+    "route": "full_native",
+    "direct_and_parent_parity": true,
+    "dose_by_scene": {
+      "clean": {
+        "learned_dose": {
+          "p10_p50_p90": [
+            0.007819959946733117,
+            0.009843955910731242,
+            0.012024464425449244
+          ],
+          "maximum": 0.03979273562650757
+        },
+        "exact_dose": {
+          "p10_p50_p90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maximum": 0.0
+        },
+        "same_dose_exact_fraction": {
+          "p10_p50_p90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maximum": 0.0
+        },
+        "direction_cosine": {
+          "p10_p50_p90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maximum": 0.0
+        },
+        "learned_best_nonnegative_gain": {
+          "p10_p50_p90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maximum": 0.0
+        },
+        "actual_parallel_fraction": {
+          "p10_p50_p90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maximum": 0.0
+        },
+        "learned_remaining": {
+          "p10_p50_p90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maximum": 0.0
+        },
+        "gain_only_remaining": {
+          "p10_p50_p90": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maximum": 0.0
+        },
+        "dose_match_error": {
+          "p10_p50_p90": [
+            0.00012090632396284602,
+            0.00022914935476105498,
+            0.005135874201058747
+          ],
+          "maximum": 0.010409785109370157
+        },
+        "same_dose_over_exact_count": 0
+      },
+      "practical_high": {
+        "learned_dose": {
+          "p10_p50_p90": [
+            0.013201961407541974,
+            0.018040816274237606,
+            0.02694418506350607
+          ],
+          "maximum": 0.37091542715739373
+        },
+        "exact_dose": {
+          "p10_p50_p90": [
+            0.015979126670063848,
+            0.01983828110948819,
+            0.026236605121905645
+          ],
+          "maximum": 0.4156025386447353
+        },
+        "same_dose_exact_fraction": {
+          "p10_p50_p90": [
+            0.7177704808473799,
+            0.9313162863725164,
+            1.1050575790015198
+          ],
+          "maximum": 2.8705228894200387
+        },
+        "direction_cosine": {
+          "p10_p50_p90": [
+            0.333225196239769,
+            0.41962441959422525,
+            0.5130733728045066
+          ],
+          "maximum": 0.9422207269748303
+        },
+        "learned_best_nonnegative_gain": {
+          "p10_p50_p90": [
+            0.3137960000185033,
+            0.45880589872891486,
+            0.7111412530323482
+          ],
+          "maximum": 1.055737500851538
+        },
+        "actual_parallel_fraction": {
+          "p10_p50_p90": [
+            0.3191366762261864,
+            0.3715020977426928,
+            0.47128101899146413
+          ],
+          "maximum": 0.918757270231642
+        },
+        "learned_remaining": {
+          "p10_p50_p90": [
+            0.8874977821622507,
+            1.028807443783653,
+            1.1971389483931887
+          ],
+          "maximum": 2.855684881122278
+        },
+        "gain_only_remaining": {
+          "p10_p50_p90": [
+            0.8583423386405044,
+            0.9076978205712362,
+            0.9428471553287667
+          ],
+          "maximum": 0.981980175962921
+        },
+        "dose_match_error": {
+          "p10_p50_p90": [
+            2.1937669736349366e-11,
+            1.2230649566041807e-10,
+            3.1298971782389726e-10
+          ],
+          "maximum": 6.552437481488482e-10
+        },
+        "same_dose_over_exact_count": 109
+      },
+      "practical_mid": {
+        "learned_dose": {
+          "p10_p50_p90": [
+            0.018763474029084813,
+            0.02963515648861071,
+            0.1121666936556478
+          ],
+          "maximum": 0.5543647191062941
+        },
+        "exact_dose": {
+          "p10_p50_p90": [
+            0.02321800951365595,
+            0.03147527134840533,
+            0.10804646991716947
+          ],
+          "maximum": 0.8566217329609717
+        },
+        "same_dose_exact_fraction": {
+          "p10_p50_p90": [
+            0.7286611599251608,
+            0.9371297389201538,
+            1.0903506804356293
+          ],
+          "maximum": 2.0078099180013895
+        },
+        "direction_cosine": {
+          "p10_p50_p90": [
+            0.4343227845637582,
+            0.564265437661762,
+            0.8767952155539991
+          ],
+          "maximum": 0.9456894004603008
+        },
+        "learned_best_nonnegative_gain": {
+          "p10_p50_p90": [
+            0.4279768787271789,
+            0.6597693176154498,
+            0.9048576846219236
+          ],
+          "maximum": 1.3978202907920299
+        },
+        "actual_parallel_fraction": {
+          "p10_p50_p90": [
+            0.3894907208703245,
+            0.506434077034468,
+            0.8596417971924712
+          ],
+          "maximum": 0.9611713837060585
+        },
+        "learned_remaining": {
+          "p10_p50_p90": [
+            0.5053364014678049,
+            0.8791335670684268,
+            1.074009557062608
+          ],
+          "maximum": 1.8144203899784133
+        },
+        "gain_only_remaining": {
+          "p10_p50_p90": [
+            0.48086387193176056,
+            0.8255932950590059,
+            0.9007572592369139
+          ],
+          "maximum": 0.9718185760583953
+        },
+        "dose_match_error": {
+          "p10_p50_p90": [
+            3.5929745290097514e-11,
+            1.3542234347796445e-10,
+            2.855798830053713e-10
+          ],
+          "maximum": 6.057856993813004e-10
+        },
+        "same_dose_over_exact_count": 115
+      },
+      "practical_low_suburban": {
+        "learned_dose": {
+          "p10_p50_p90": [
+            0.02728262900290576,
+            0.04428573437201251,
+            0.16864349226614575
+          ],
+          "maximum": 0.5864698454653957
+        },
+        "exact_dose": {
+          "p10_p50_p90": [
+            0.032213046664938606,
+            0.04530185304602655,
+            0.15840480931226675
+          ],
+          "maximum": 0.9444342598809707
+        },
+        "same_dose_exact_fraction": {
+          "p10_p50_p90": [
+            0.7638618445614314,
+            0.9723813496212992,
+            1.105005562126897
+          ],
+          "maximum": 2.7573787971335
+        },
+        "direction_cosine": {
+          "p10_p50_p90": [
+            0.5344550259300845,
+            0.6844021349048657,
+            0.9009243256379794
+          ],
+          "maximum": 0.9442801157267111
+        },
+        "learned_best_nonnegative_gain": {
+          "p10_p50_p90": [
+            0.5191914689592922,
+            0.7506123896339909,
+            0.9241392038710058
+          ],
+          "maximum": 1.4698855114455545
+        },
+        "actual_parallel_fraction": {
+          "p10_p50_p90": [
+            0.49494968873008466,
+            0.6324407885534498,
+            0.8893447728951352
+          ],
+          "maximum": 0.9556736445595534
+        },
+        "learned_remaining": {
+          "p10_p50_p90": [
+            0.4855882440143142,
+            0.7697800834205746,
+            0.9789677186631531
+          ],
+          "maximum": 2.7040980986451224
+        },
+        "gain_only_remaining": {
+          "p10_p50_p90": [
+            0.4339762037732438,
+            0.7291008507396115,
+            0.8451962935297577
+          ],
+          "maximum": 0.9722131102848834
+        },
+        "dose_match_error": {
+          "p10_p50_p90": [
+            2.419742461956531e-11,
+            1.2196817861243048e-10,
+            2.8727107914683365e-10
+          ],
+          "maximum": 6.225696069783737e-10
+        },
+        "same_dose_over_exact_count": 135
+      },
+      "practical_high_urban": {
+        "learned_dose": {
+          "p10_p50_p90": [
+            0.013276431872362899,
+            0.017931100130400363,
+            0.07488250658846855
+          ],
+          "maximum": 0.5013615634933278
+        },
+        "exact_dose": {
+          "p10_p50_p90": [
+            0.015992995744127575,
+            0.01950341776806917,
+            0.07082287377387754
+          ],
+          "maximum": 0.7003172456560631
+        },
+        "same_dose_exact_fraction": {
+          "p10_p50_p90": [
+            0.7205059323855516,
+            0.9373759696917076,
+            1.1161765541867597
+          ],
+          "maximum": 2.9219678389710393
+        },
+        "direction_cosine": {
+          "p10_p50_p90": [
+            0.3308301482730174,
+            0.4225124903075721,
+            0.7715303076104439
+          ],
+          "maximum": 0.9428829127946231
+        },
+        "learned_best_nonnegative_gain": {
+          "p10_p50_p90": [
+            0.3045495730692958,
+            0.4802984738645276,
+            0.8333419437195606
+          ],
+          "maximum": 1.2786261399482246
+        },
+        "actual_parallel_fraction": {
+          "p10_p50_p90": [
+            0.31576013536340636,
+            0.3766398942284733,
+            0.7508107118798986
+          ],
+          "maximum": 0.9590237144771261
+        },
+        "learned_remaining": {
+          "p10_p50_p90": [
+            0.683078185314848,
+            1.0175392408297737,
+            1.212912426137234
+          ],
+          "maximum": 2.9432876904985856
+        },
+        "gain_only_remaining": {
+          "p10_p50_p90": [
+            0.6358722052516672,
+            0.9063569390114712,
+            0.9436903155378848
+          ],
+          "maximum": 0.9887284477888684
+        },
+        "dose_match_error": {
+          "p10_p50_p90": [
+            2.614827798730346e-11,
+            1.197452033363522e-10,
+            3.0798638916973435e-10
+          ],
+          "maximum": 5.104585712456533e-10
+        },
+        "same_dose_over_exact_count": 107
+      },
+      "practical_mid_urban": {
+        "learned_dose": {
+          "p10_p50_p90": [
+            0.01891671504626031,
+            0.041701682756296224,
+            0.4297547241362735
+          ],
+          "maximum": 0.5869070680913374
+        },
+        "exact_dose": {
+          "p10_p50_p90": [
+            0.023273935940419842,
+            0.04096914318689455,
+            0.5195172100815084
+          ],
+          "maximum": 0.9948435563761089
+        },
+        "same_dose_exact_fraction": {
+          "p10_p50_p90": [
+            0.7219549133599725,
+            0.9441241934549898,
+            1.0714959844015681
+          ],
+          "maximum": 2.2626062144043284
+        },
+        "direction_cosine": {
+          "p10_p50_p90": [
+            0.46372259360639345,
+            0.6699458648657417,
+            0.9343853466020136
+          ],
+          "maximum": 0.9469350514507947
+        },
+        "learned_best_nonnegative_gain": {
+          "p10_p50_p90": [
+            0.45322272501712935,
+            0.8143425022844071,
+            1.114236189257899
+          ],
+          "maximum": 1.9200337429196712
+        },
+        "actual_parallel_fraction": {
+          "p10_p50_p90": [
+            0.3945715325176435,
+            0.6008843910573312,
+            0.9354976756014354
+          ],
+          "maximum": 0.9679489891029471
+        },
+        "learned_remaining": {
+          "p10_p50_p90": [
+            0.36273452487370694,
+            0.7743866637654189,
+            1.0457815484654067
+          ],
+          "maximum": 2.2031055169029723
+        },
+        "gain_only_remaining": {
+          "p10_p50_p90": [
+            0.35626392449697525,
+            0.7424026565602855,
+            0.8859802507326586
+          ],
+          "maximum": 0.9600867379775437
+        },
+        "dose_match_error": {
+          "p10_p50_p90": [
+            2.0709468862012415e-11,
+            1.100454588565114e-10,
+            2.7508313509005955e-10
+          ],
+          "maximum": 5.74453151713783e-10
+        },
+        "same_dose_over_exact_count": 108
+      },
+      "practical_low_urban": {
+        "learned_dose": {
+          "p10_p50_p90": [
+            0.030957205101046884,
+            0.29356535689705987,
+            0.48205897947004717
+          ],
+          "maximum": 0.5857097424563884
+        },
+        "exact_dose": {
+          "p10_p50_p90": [
+            0.03456639714567103,
+            0.2918059542092588,
+            0.6431325850522653
+          ],
+          "maximum": 0.9835748290364572
+        },
+        "same_dose_exact_fraction": {
+          "p10_p50_p90": [
+            0.7439862427370345,
+            0.9227142937368515,
+            1.065326636632027
+          ],
+          "maximum": 2.090563818364264
+        },
+        "direction_cosine": {
+          "p10_p50_p90": [
+            0.5767533478308559,
+            0.910789983120134,
+            0.9383952875499832
+          ],
+          "maximum": 0.9518199602733852
+        },
+        "learned_best_nonnegative_gain": {
+          "p10_p50_p90": [
+            0.5979647224817479,
+            0.9348896289072175,
+            1.218758172335924
+          ],
+          "maximum": 1.5423145581543711
+        },
+        "actual_parallel_fraction": {
+          "p10_p50_p90": [
+            0.5285409068412236,
+            0.7651587597774887,
+            0.9337574284956819
+          ],
+          "maximum": 0.9678763899080174
+        },
+        "learned_remaining": {
+          "p10_p50_p90": [
+            0.35026154513211705,
+            0.44211292288640597,
+            0.9051826545286155
+          ],
+          "maximum": 1.913191248854721
+        },
+        "gain_only_remaining": {
+          "p10_p50_p90": [
+            0.3455636803048546,
+            0.41286989812402186,
+            0.8169152843030402
+          ],
+          "maximum": 0.915292140755901
+        },
+        "dose_match_error": {
+          "p10_p50_p90": [
+            1.9008334489756252e-11,
+            9.782281928938374e-11,
+            2.4755799632458777e-10
+          ],
+          "maximum": 5.39989813280739e-10
+        },
+        "same_dose_over_exact_count": 84
+      }
+    }
+  },
+  "paired_contrasts": {
+    "learned_best_gain_vs_raw_e104_strong": {
+      "net_six": -32,
+      "net_low": -11,
+      "CI95_net_six": [
+        -52.0,
+        -13.0
+      ],
+      "CI95_net_low": [
+        -22.0,
+        -1.0
+      ]
+    },
+    "noise_same_dose_vs_raw_e104_strong": {
+      "net_six": 132,
+      "net_low": 33,
+      "CI95_net_six": [
+        102.0,
+        162.0
+      ],
+      "CI95_net_low": [
+        16.975,
+        50.0
+      ]
+    },
+    "noise_exact_vs_noise_same_dose": {
+      "net_six": 71,
+      "net_low": 39,
+      "CI95_net_six": [
+        50.0,
+        92.0
+      ],
+      "CI95_net_low": [
+        25.0,
+        53.0
+      ]
+    },
+    "noise_exact_keep_orthogonal_vs_noise_exact": {
+      "net_six": -199,
+      "net_low": -97,
+      "CI95_net_six": [
+        -231.025,
+        -166.0
+      ],
+      "CI95_net_low": [
+        -114.0,
+        -79.97500000000014
+      ]
+    },
+    "noise_exact_keep_orthogonal_vs_raw_e104_strong": {
+      "net_six": 4,
+      "net_low": -25,
+      "CI95_net_six": [
+        -22.0,
+        29.0
+      ],
+      "CI95_net_low": [
+        -39.0,
+        -12.0
+      ]
+    }
+  }
+}

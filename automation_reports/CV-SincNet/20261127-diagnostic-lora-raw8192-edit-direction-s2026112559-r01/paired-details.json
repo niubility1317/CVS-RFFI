@@ -1,0 +1,1671 @@
+{
+  "paired": {
+    "learned_best_gain_vs_raw_e104_strong": {
+      "clean": {
+        "repairs": 0,
+        "harms": 0,
+        "net": 0
+      },
+      "practical_high": {
+        "repairs": 1,
+        "harms": 6,
+        "net": -5
+      },
+      "practical_mid": {
+        "repairs": 4,
+        "harms": 4,
+        "net": 0
+      },
+      "practical_low_suburban": {
+        "repairs": 5,
+        "harms": 12,
+        "net": -7
+      },
+      "practical_high_urban": {
+        "repairs": 3,
+        "harms": 7,
+        "net": -4
+      },
+      "practical_mid_urban": {
+        "repairs": 9,
+        "harms": 14,
+        "net": -5
+      },
+      "practical_low_urban": {
+        "repairs": 9,
+        "harms": 20,
+        "net": -11
+      },
+      "six": {
+        "repairs": 31,
+        "harms": 63,
+        "net": -32
+      }
+    },
+    "noise_same_dose_vs_raw_e104_strong": {
+      "clean": {
+        "repairs": 0,
+        "harms": 0,
+        "net": 0
+      },
+      "practical_high": {
+        "repairs": 7,
+        "harms": 5,
+        "net": 2
+      },
+      "practical_mid": {
+        "repairs": 23,
+        "harms": 3,
+        "net": 20
+      },
+      "practical_low_suburban": {
+        "repairs": 34,
+        "harms": 12,
+        "net": 22
+      },
+      "practical_high_urban": {
+        "repairs": 15,
+        "harms": 4,
+        "net": 11
+      },
+      "practical_mid_urban": {
+        "repairs": 49,
+        "harms": 5,
+        "net": 44
+      },
+      "practical_low_urban": {
+        "repairs": 54,
+        "harms": 21,
+        "net": 33
+      },
+      "six": {
+        "repairs": 182,
+        "harms": 50,
+        "net": 132
+      }
+    },
+    "noise_exact_vs_noise_same_dose": {
+      "clean": {
+        "repairs": 0,
+        "harms": 0,
+        "net": 0
+      },
+      "practical_high": {
+        "repairs": 3,
+        "harms": 1,
+        "net": 2
+      },
+      "practical_mid": {
+        "repairs": 4,
+        "harms": 2,
+        "net": 2
+      },
+      "practical_low_suburban": {
+        "repairs": 12,
+        "harms": 1,
+        "net": 11
+      },
+      "practical_high_urban": {
+        "repairs": 2,
+        "harms": 0,
+        "net": 2
+      },
+      "practical_mid_urban": {
+        "repairs": 19,
+        "harms": 4,
+        "net": 15
+      },
+      "practical_low_urban": {
+        "repairs": 48,
+        "harms": 9,
+        "net": 39
+      },
+      "six": {
+        "repairs": 88,
+        "harms": 17,
+        "net": 71
+      }
+    },
+    "noise_exact_keep_orthogonal_vs_noise_exact": {
+      "clean": {
+        "repairs": 0,
+        "harms": 0,
+        "net": 0
+      },
+      "practical_high": {
+        "repairs": 3,
+        "harms": 6,
+        "net": -3
+      },
+      "practical_mid": {
+        "repairs": 5,
+        "harms": 19,
+        "net": -14
+      },
+      "practical_low_suburban": {
+        "repairs": 5,
+        "harms": 30,
+        "net": -25
+      },
+      "practical_high_urban": {
+        "repairs": 5,
+        "harms": 13,
+        "net": -8
+      },
+      "practical_mid_urban": {
+        "repairs": 6,
+        "harms": 58,
+        "net": -52
+      },
+      "practical_low_urban": {
+        "repairs": 7,
+        "harms": 104,
+        "net": -97
+      },
+      "six": {
+        "repairs": 31,
+        "harms": 230,
+        "net": -199
+      }
+    },
+    "noise_exact_keep_orthogonal_vs_raw_e104_strong": {
+      "clean": {
+        "repairs": 0,
+        "harms": 0,
+        "net": 0
+      },
+      "practical_high": {
+        "repairs": 3,
+        "harms": 2,
+        "net": 1
+      },
+      "practical_mid": {
+        "repairs": 11,
+        "harms": 3,
+        "net": 8
+      },
+      "practical_low_suburban": {
+        "repairs": 18,
+        "harms": 10,
+        "net": 8
+      },
+      "practical_high_urban": {
+        "repairs": 9,
+        "harms": 4,
+        "net": 5
+      },
+      "practical_mid_urban": {
+        "repairs": 23,
+        "harms": 16,
+        "net": 7
+      },
+      "practical_low_urban": {
+        "repairs": 14,
+        "harms": 39,
+        "net": -25
+      },
+      "six": {
+        "repairs": 78,
+        "harms": 74,
+        "net": 4
+      }
+    }
+  },
+  "groups": {
+    "learned_best_gain_vs_raw_e104_strong": {
+      "rx": [
+        {
+          "group": 0,
+          "n": 60,
+          "six": {
+            "repairs": 8,
+            "harms": 13,
+            "net": -5
+          },
+          "low": {
+            "repairs": 4,
+            "harms": 6,
+            "net": -2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 60,
+          "six": {
+            "repairs": 5,
+            "harms": 17,
+            "net": -12
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 3,
+            "net": -3
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 60,
+          "six": {
+            "repairs": 6,
+            "harms": 10,
+            "net": -4
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 2,
+            "net": -1
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 60,
+          "six": {
+            "repairs": 6,
+            "harms": 9,
+            "net": -3
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 3,
+            "net": -2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 60,
+          "six": {
+            "repairs": 6,
+            "harms": 14,
+            "net": -8
+          },
+          "low": {
+            "repairs": 3,
+            "harms": 6,
+            "net": -3
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ],
+      "tx": [
+        {
+          "group": 0,
+          "n": 32,
+          "six": {
+            "repairs": 4,
+            "harms": 9,
+            "net": -5
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 2,
+            "net": -2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 21,
+          "six": {
+            "repairs": 4,
+            "harms": 4,
+            "net": 0
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 2,
+            "net": -2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 29,
+          "six": {
+            "repairs": 8,
+            "harms": 2,
+            "net": 6
+          },
+          "low": {
+            "repairs": 4,
+            "harms": 0,
+            "net": 4
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 27,
+          "six": {
+            "repairs": 3,
+            "harms": 6,
+            "net": -3
+          },
+          "low": {
+            "repairs": 2,
+            "harms": 1,
+            "net": 1
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 29,
+          "six": {
+            "repairs": 1,
+            "harms": 17,
+            "net": -16
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 1,
+            "net": -1
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 5,
+          "n": 40,
+          "six": {
+            "repairs": 1,
+            "harms": 6,
+            "net": -5
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 4,
+            "net": -4
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 6,
+          "n": 37,
+          "six": {
+            "repairs": 3,
+            "harms": 5,
+            "net": -2
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 4,
+            "net": -4
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 7,
+          "n": 21,
+          "six": {
+            "repairs": 2,
+            "harms": 5,
+            "net": -3
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 2,
+            "net": -1
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 8,
+          "n": 32,
+          "six": {
+            "repairs": 3,
+            "harms": 5,
+            "net": -2
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 3,
+            "net": -2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 9,
+          "n": 32,
+          "six": {
+            "repairs": 2,
+            "harms": 4,
+            "net": -2
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 1,
+            "net": 0
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ]
+    },
+    "noise_same_dose_vs_raw_e104_strong": {
+      "rx": [
+        {
+          "group": 0,
+          "n": 60,
+          "six": {
+            "repairs": 42,
+            "harms": 6,
+            "net": 36
+          },
+          "low": {
+            "repairs": 13,
+            "harms": 3,
+            "net": 10
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 60,
+          "six": {
+            "repairs": 43,
+            "harms": 18,
+            "net": 25
+          },
+          "low": {
+            "repairs": 13,
+            "harms": 5,
+            "net": 8
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 60,
+          "six": {
+            "repairs": 29,
+            "harms": 10,
+            "net": 19
+          },
+          "low": {
+            "repairs": 11,
+            "harms": 3,
+            "net": 8
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 60,
+          "six": {
+            "repairs": 36,
+            "harms": 6,
+            "net": 30
+          },
+          "low": {
+            "repairs": 7,
+            "harms": 3,
+            "net": 4
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 60,
+          "six": {
+            "repairs": 32,
+            "harms": 10,
+            "net": 22
+          },
+          "low": {
+            "repairs": 10,
+            "harms": 7,
+            "net": 3
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ],
+      "tx": [
+        {
+          "group": 0,
+          "n": 32,
+          "six": {
+            "repairs": 27,
+            "harms": 6,
+            "net": 21
+          },
+          "low": {
+            "repairs": 9,
+            "harms": 0,
+            "net": 9
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 21,
+          "six": {
+            "repairs": 24,
+            "harms": 6,
+            "net": 18
+          },
+          "low": {
+            "repairs": 4,
+            "harms": 4,
+            "net": 0
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 29,
+          "six": {
+            "repairs": 24,
+            "harms": 5,
+            "net": 19
+          },
+          "low": {
+            "repairs": 10,
+            "harms": 3,
+            "net": 7
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 27,
+          "six": {
+            "repairs": 23,
+            "harms": 4,
+            "net": 19
+          },
+          "low": {
+            "repairs": 7,
+            "harms": 2,
+            "net": 5
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 29,
+          "six": {
+            "repairs": 27,
+            "harms": 11,
+            "net": 16
+          },
+          "low": {
+            "repairs": 9,
+            "harms": 1,
+            "net": 8
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 5,
+          "n": 40,
+          "six": {
+            "repairs": 11,
+            "harms": 5,
+            "net": 6
+          },
+          "low": {
+            "repairs": 4,
+            "harms": 3,
+            "net": 1
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 6,
+          "n": 37,
+          "six": {
+            "repairs": 17,
+            "harms": 1,
+            "net": 16
+          },
+          "low": {
+            "repairs": 6,
+            "harms": 1,
+            "net": 5
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 7,
+          "n": 21,
+          "six": {
+            "repairs": 11,
+            "harms": 2,
+            "net": 9
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 1,
+            "net": 0
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 8,
+          "n": 32,
+          "six": {
+            "repairs": 11,
+            "harms": 9,
+            "net": 2
+          },
+          "low": {
+            "repairs": 2,
+            "harms": 5,
+            "net": -3
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 9,
+          "n": 32,
+          "six": {
+            "repairs": 7,
+            "harms": 1,
+            "net": 6
+          },
+          "low": {
+            "repairs": 2,
+            "harms": 1,
+            "net": 1
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ]
+    },
+    "noise_exact_vs_noise_same_dose": {
+      "rx": [
+        {
+          "group": 0,
+          "n": 60,
+          "six": {
+            "repairs": 18,
+            "harms": 2,
+            "net": 16
+          },
+          "low": {
+            "repairs": 10,
+            "harms": 1,
+            "net": 9
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 60,
+          "six": {
+            "repairs": 16,
+            "harms": 3,
+            "net": 13
+          },
+          "low": {
+            "repairs": 6,
+            "harms": 2,
+            "net": 4
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 60,
+          "six": {
+            "repairs": 22,
+            "harms": 3,
+            "net": 19
+          },
+          "low": {
+            "repairs": 10,
+            "harms": 3,
+            "net": 7
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 60,
+          "six": {
+            "repairs": 14,
+            "harms": 5,
+            "net": 9
+          },
+          "low": {
+            "repairs": 9,
+            "harms": 1,
+            "net": 8
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 60,
+          "six": {
+            "repairs": 18,
+            "harms": 4,
+            "net": 14
+          },
+          "low": {
+            "repairs": 13,
+            "harms": 2,
+            "net": 11
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ],
+      "tx": [
+        {
+          "group": 0,
+          "n": 32,
+          "six": {
+            "repairs": 14,
+            "harms": 3,
+            "net": 11
+          },
+          "low": {
+            "repairs": 6,
+            "harms": 2,
+            "net": 4
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 21,
+          "six": {
+            "repairs": 9,
+            "harms": 0,
+            "net": 9
+          },
+          "low": {
+            "repairs": 5,
+            "harms": 0,
+            "net": 5
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 29,
+          "six": {
+            "repairs": 12,
+            "harms": 1,
+            "net": 11
+          },
+          "low": {
+            "repairs": 7,
+            "harms": 1,
+            "net": 6
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 27,
+          "six": {
+            "repairs": 12,
+            "harms": 1,
+            "net": 11
+          },
+          "low": {
+            "repairs": 6,
+            "harms": 1,
+            "net": 5
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 29,
+          "six": {
+            "repairs": 14,
+            "harms": 7,
+            "net": 7
+          },
+          "low": {
+            "repairs": 7,
+            "harms": 3,
+            "net": 4
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 5,
+          "n": 40,
+          "six": {
+            "repairs": 4,
+            "harms": 0,
+            "net": 4
+          },
+          "low": {
+            "repairs": 4,
+            "harms": 0,
+            "net": 4
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 6,
+          "n": 37,
+          "six": {
+            "repairs": 4,
+            "harms": 1,
+            "net": 3
+          },
+          "low": {
+            "repairs": 3,
+            "harms": 0,
+            "net": 3
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 7,
+          "n": 21,
+          "six": {
+            "repairs": 6,
+            "harms": 2,
+            "net": 4
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 1,
+            "net": 0
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 8,
+          "n": 32,
+          "six": {
+            "repairs": 6,
+            "harms": 2,
+            "net": 4
+          },
+          "low": {
+            "repairs": 4,
+            "harms": 1,
+            "net": 3
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 9,
+          "n": 32,
+          "six": {
+            "repairs": 7,
+            "harms": 0,
+            "net": 7
+          },
+          "low": {
+            "repairs": 5,
+            "harms": 0,
+            "net": 5
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ]
+    },
+    "noise_exact_keep_orthogonal_vs_noise_exact": {
+      "rx": [
+        {
+          "group": 0,
+          "n": 60,
+          "six": {
+            "repairs": 4,
+            "harms": 51,
+            "net": -47
+          },
+          "low": {
+            "repairs": 2,
+            "harms": 23,
+            "net": -21
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 60,
+          "six": {
+            "repairs": 13,
+            "harms": 54,
+            "net": -41
+          },
+          "low": {
+            "repairs": 2,
+            "harms": 22,
+            "net": -20
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 60,
+          "six": {
+            "repairs": 3,
+            "harms": 51,
+            "net": -48
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 22,
+            "net": -21
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 60,
+          "six": {
+            "repairs": 5,
+            "harms": 37,
+            "net": -32
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 16,
+            "net": -15
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 60,
+          "six": {
+            "repairs": 6,
+            "harms": 37,
+            "net": -31
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 21,
+            "net": -20
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ],
+      "tx": [
+        {
+          "group": 0,
+          "n": 32,
+          "six": {
+            "repairs": 3,
+            "harms": 27,
+            "net": -24
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 10,
+            "net": -10
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 21,
+          "six": {
+            "repairs": 0,
+            "harms": 32,
+            "net": -32
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 12,
+            "net": -12
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 29,
+          "six": {
+            "repairs": 2,
+            "harms": 20,
+            "net": -18
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 10,
+            "net": -9
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 27,
+          "six": {
+            "repairs": 1,
+            "harms": 30,
+            "net": -29
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 12,
+            "net": -12
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 29,
+          "six": {
+            "repairs": 11,
+            "harms": 28,
+            "net": -17
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 14,
+            "net": -14
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 5,
+          "n": 40,
+          "six": {
+            "repairs": 2,
+            "harms": 17,
+            "net": -15
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 10,
+            "net": -10
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 6,
+          "n": 37,
+          "six": {
+            "repairs": 1,
+            "harms": 28,
+            "net": -27
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 14,
+            "net": -13
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 7,
+          "n": 21,
+          "six": {
+            "repairs": 6,
+            "harms": 6,
+            "net": 0
+          },
+          "low": {
+            "repairs": 3,
+            "harms": 1,
+            "net": 2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 8,
+          "n": 32,
+          "six": {
+            "repairs": 4,
+            "harms": 28,
+            "net": -24
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 15,
+            "net": -14
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 9,
+          "n": 32,
+          "six": {
+            "repairs": 1,
+            "harms": 14,
+            "net": -13
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 6,
+            "net": -5
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ]
+    },
+    "noise_exact_keep_orthogonal_vs_raw_e104_strong": {
+      "rx": [
+        {
+          "group": 0,
+          "n": 60,
+          "six": {
+            "repairs": 17,
+            "harms": 12,
+            "net": 5
+          },
+          "low": {
+            "repairs": 4,
+            "harms": 6,
+            "net": -2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 60,
+          "six": {
+            "repairs": 15,
+            "harms": 18,
+            "net": -3
+          },
+          "low": {
+            "repairs": 3,
+            "harms": 11,
+            "net": -8
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 60,
+          "six": {
+            "repairs": 11,
+            "harms": 21,
+            "net": -10
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 7,
+            "net": -6
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 60,
+          "six": {
+            "repairs": 15,
+            "harms": 8,
+            "net": 7
+          },
+          "low": {
+            "repairs": 2,
+            "harms": 5,
+            "net": -3
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 60,
+          "six": {
+            "repairs": 20,
+            "harms": 15,
+            "net": 5
+          },
+          "low": {
+            "repairs": 4,
+            "harms": 10,
+            "net": -6
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ],
+      "tx": [
+        {
+          "group": 0,
+          "n": 32,
+          "six": {
+            "repairs": 12,
+            "harms": 4,
+            "net": 8
+          },
+          "low": {
+            "repairs": 3,
+            "harms": 0,
+            "net": 3
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 1,
+          "n": 21,
+          "six": {
+            "repairs": 6,
+            "harms": 11,
+            "net": -5
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 7,
+            "net": -7
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 2,
+          "n": 29,
+          "six": {
+            "repairs": 14,
+            "harms": 2,
+            "net": 12
+          },
+          "low": {
+            "repairs": 5,
+            "harms": 1,
+            "net": 4
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 3,
+          "n": 27,
+          "six": {
+            "repairs": 7,
+            "harms": 6,
+            "net": 1
+          },
+          "low": {
+            "repairs": 1,
+            "harms": 3,
+            "net": -2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 4,
+          "n": 29,
+          "six": {
+            "repairs": 12,
+            "harms": 6,
+            "net": 6
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 2,
+            "net": -2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 5,
+          "n": 40,
+          "six": {
+            "repairs": 3,
+            "harms": 8,
+            "net": -5
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 5,
+            "net": -5
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 6,
+          "n": 37,
+          "six": {
+            "repairs": 1,
+            "harms": 9,
+            "net": -8
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 5,
+            "net": -5
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 7,
+          "n": 21,
+          "six": {
+            "repairs": 16,
+            "harms": 3,
+            "net": 13
+          },
+          "low": {
+            "repairs": 2,
+            "harms": 0,
+            "net": 2
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 8,
+          "n": 32,
+          "six": {
+            "repairs": 3,
+            "harms": 21,
+            "net": -18
+          },
+          "low": {
+            "repairs": 0,
+            "harms": 14,
+            "net": -14
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        },
+        {
+          "group": 9,
+          "n": 32,
+          "six": {
+            "repairs": 4,
+            "harms": 4,
+            "net": 0
+          },
+          "low": {
+            "repairs": 3,
+            "harms": 2,
+            "net": 1
+          },
+          "clean": {
+            "repairs": 0,
+            "harms": 0,
+            "net": 0
+          }
+        }
+      ]
+    }
+  }
+}
