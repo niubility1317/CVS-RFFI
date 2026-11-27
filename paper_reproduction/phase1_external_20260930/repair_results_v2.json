@@ -1,0 +1,55 @@
+{
+  "data": "synthetic only",
+  "python": "C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\python.exe",
+  "torch": "2.10.0+cu128",
+  "checks": {
+    "asknet": {
+      "finite_loss_and_gradients": true,
+      "optimizer_updated": true,
+      "eval_state_unchanged": true,
+      "logits_shape": [
+        4,
+        6
+      ],
+      "one_epoch_native_loop": true,
+      "state_dict_roundtrip": true,
+      "all_receiver_folds_disjoint": true,
+      "source_split_disjoint": true,
+      "detailed_logs_jsonl_csv": true,
+      "native_train_test_CLI": true,
+      "portable_input_output_logs": true,
+      "resolved_config_complete": true
+    },
+    "wavemlp": {
+      "finite_loss_and_gradients": true,
+      "optimizer_updated": true,
+      "eval_state_unchanged": true,
+      "logits_shape": [
+        4,
+        6
+      ],
+      "one_epoch_native_loop": true,
+      "state_dict_roundtrip": true,
+      "all_receiver_folds_disjoint": true,
+      "source_split_disjoint": true,
+      "detailed_logs_jsonl_csv": true,
+      "native_train_test_CLI": true,
+      "portable_input_output_logs": true,
+      "resolved_config_complete": true
+    },
+    "difl": {
+      "classification_bitwise_equal": true,
+      "parameter_shapes_unchanged": true,
+      "original_loss_formula_preserved": true,
+      "teacher_frozen": true,
+      "sampler_length_correct": true,
+      "IQ_label_pairing_preserved": true,
+      "singleton_batches_passed": true,
+      "safe_and_legacy_checkpoints_passed": true,
+      "two_epoch_teacher_and_student_CLI": true,
+      "test_and_plot_CLI": true,
+      "detailed_logs_jsonl_csv": true
+    }
+  },
+  "status": "PASS"
+}
