@@ -1,0 +1,207 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-w24-formal-native-center-s2026092702-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 整段中心方向 DURA 正式 Full 测试",
+  "description": "One explicit fixed post-source Full evaluation of both frozen raw-capture DURA source rows without using the source promotion threshold. Target never feeds back.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261127-phase1-lora-w24-additive-reference-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-packet-dura-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-additive-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-band-risk-s2026112991-r01",
+    "20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r02",
+    "20261127-phase1-lora-w24-native-center-direction-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User explicitly requested immediate target test despite the already known source non-promotion. Both frozen rows fixed together before any target access. Full only.",
+  "code": {
+    "commit": "663a8cde9152580bf8cdf63b28e563aab06075b6",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "Original frozen W24 inference release for smoke and blind target prediction; independent Windows scorer."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MHz through DURA; untouched W24 front end receives the resulting packet.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "All 15 blind native target receiver archives, 2000 per receiver in frozen direct reference sequence, 30000 physical packets.",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 4,
+      "V": 0
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Fixed actual receiver-IQ deployment readout only. Source real-checkpoint smoke first; independent target truth-last after complete blind predictions. Run requested after source result exposure and is reported as such."
+  },
+  "checkpoint": {
+    "initialization": "No fit. Load both immutable final 24000-update source checkpoints, unchanged native inference .5 blend.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-native-center-direction-s2026112991-r01",
+        "role": "Both verified U_s-only frozen models: ordinary additive reference and center angle objective."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Fixed E104 W24 default head and exact preprocessing."
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+        "role": "Frozen blind baseline predictions in identical physical order."
+      }
+    ],
+    "contract_check_ref": "Registered source U and physical IDs for scratch fitting. All comparison checkpoints and frozen E104 opened only for post-freeze comparison.",
+    "provenance_verdict": "No checkpoint used in fit. Historical DURA, U-Net and W24 checkpoint rows are independent frozen source comparisons.",
+    "selection_rule": "Both original final source checkpoints, primary readout .5 fixed. Neither target nor source results select a subset or change settings."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-a81b-7dd1-9ddf-4e8f397c7a3c",
+    "gpu_policy": "Prefer 0,3; eligible fallback 7,2,6,5. At most 2 concurrent existing scheduler workers, per-card checks.",
+    "remote_run_root": "runs/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_formal publish --native-center-direction --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01/source-context.json --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01/release --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop only for invalid frozen provenance, source smoke, protocol, predictions or scoring failure. Preserve outputs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "logs/full_native-{shard}.log",
+    "predictions/{shard}/{rx}.npz",
+    "predictions/{shard}/activity.json",
+    "predictions/{shard}/complete.json",
+    "local independent scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01/predictions",
+    "scorer_ref": "Independent w24_formal_score --native-center-direction, after all three blind receipts freeze."
+  },
+  "rows": [
+    {
+      "row_id": "matched-full-matrix",
+      "method": "Same frozen native-center control and direction candidate, plus four archived blind baselines",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_formal.py",
+      "resolved_config_ref": "releases/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01-release/runtime.json",
+      "data_overrides": {
+        "fit_U": 0,
+        "source_smoke_U": 4,
+        "target_physical": 30000,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Frozen 24000 step checkpoint. One full seven-view blind evaluation, no updates; raw .5 restoration.",
+      "output_root": "runs/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01/predictions",
+      "log_path": "runs/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01/logs/full_native-*.log",
+      "command": "python -m experiments.pamf_lora_main.w24_formal publish --native-center-direction --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01/source-context.json --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-formal-native-center-s2026092702-r01/release --ssh-config E:/type10-7/tools/n607_ssh_config",
+      "expected_artifacts": [
+        "predictions/full_native-{shard}/{rx}.npz",
+        "independent scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original source promotion failed and remains recorded. User requests this independent fixed evaluation with both preregistered deployed readouts.",
+    "Both models consume the same registered receive IQ only, with no oracle exact noise, nuisance traces, truth, or scene-specific update.",
+    "Seven Full views and fifteen unseen receivers. Same blind direct decisions are reconciled prior to append. Finish all target shards before separate local truth scoring."
+  ],
+  "registered_at": "2026-11-27T05:53:43+00:00"
+}
