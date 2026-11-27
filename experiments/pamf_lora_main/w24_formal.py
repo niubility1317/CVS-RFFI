@@ -236,14 +236,25 @@ def ungated_decisions(heads, g, tracker, original, *, packets=None):
     return np.stack([classify_aperture(f, wide) for f in heads])
 
 
-def native_readouts(model, packets, original, fraction):
+def native_aperture(model, packets, original, fraction):
     if packets.shape != (len(original), 8192) or packets.dtype != np.complex64:
         raise ValueError('Full-packet DURA requires the raw 8,192 complex received samples')
     raw = tensor(packets.view(np.float32), original.device).view(torch.complex64)
     restored = torch.lerp(raw, model.restore_native(raw), fraction)
-    whole = received_aperture(np.from_dlpack(restored.cpu().contiguous()), original.device)
+    return received_aperture(np.from_dlpack(restored.cpu().contiguous()), original.device)
+
+
+def native_readouts(model, packets, original, fraction):
+    whole = native_aperture(model, packets, original, fraction)
     center = torch.cat((whole[..., :384], original[..., 384:]), dim=-1)
     return center, whole
+
+
+def native_alternatives(models, packets, original, fraction):
+    control, candidate = models
+    if control is candidate:
+        return native_readouts(candidate, packets, original, fraction)
+    return tuple(native_aperture(model, packets, original, fraction) for model in models)
 
 
 @torch.no_grad()
@@ -258,9 +269,7 @@ def prior_labels(heads, arms, tracker, packets, device):
     original = received_aperture(packets, device)
     direct = np.stack([classify_aperture(f, original) for f in heads])
     if hasattr(arms[-1], 'restore_native'):
-        if len(arms) != 2 or arms[0] is not arms[1]:
-            raise ValueError('Native readout ablation must share its frozen full-packet weights')
-        alternatives = native_readouts(arms[-1], packets, original, .5)
+        alternatives = native_alternatives(arms, packets, original, .5)
         return np.stack((direct, *(np.stack([classify_aperture(f, view) for f in heads])
                                    for view in alternatives)), axis=1), len(original)
     return np.stack((direct, *(ungated_decisions(heads, arm, tracker, original, packets=packets) for arm in arms)),

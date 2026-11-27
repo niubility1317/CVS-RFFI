@@ -116,16 +116,29 @@ class NativePacketDura(nn.Module):
         return self(raw)[0][-1]
 
 
-def source_objective(model, received, clean, *, with_identity):
+def native_additive_pair(raw, rng, *, with_identity):
+    from .w24_additive_reference import action_pair, additive_noise
+
+    if raw.ndim != 2 or raw.shape[-1] != PACKET or not raw.is_complex():
+        raise ValueError('Native source pairs require full complex captures')
+    original = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
+    after_action, _ = action_pair(original, original, rng)
+    received = after_action + additive_noise(after_action, rng)
+    if with_identity:
+        after_action[-2:] = received[-2:] = original[-2:]
+    return received, (original, after_action)
+
+
+def source_objective(model, received, reference, *, with_identity, audit_references=()):
     stages, frame = model(received)
     actual = torch.lerp(received, stages[-1], .5)
-    error = actual - clean
-    denominator = clean.abs().square().mean(-1).clamp_min(1e-9)
+    error = actual - reference
+    denominator = reference.abs().square().mean(-1).clamp_min(1e-9)
 
     def risk(value):
         return (value.abs().square().mean(-1) / denominator).mean()
 
-    trajectory = tuple(risk(torch.lerp(received, stage, .5) - clean) for stage in stages[:-1])
+    trajectory = tuple(risk(torch.lerp(received, stage, .5) - reference) for stage in stages[:-1])
     detail = error.unflatten(-1, (CHIRPS, CHIRP)) / frame
     detail = torch.fft.fft(detail, norm='ortho')[..., model.detail_band]
     common = detail.mean(-2, keepdim=True)
@@ -135,4 +148,11 @@ def source_objective(model, received, clean, *, with_identity):
                       + boundary[..., -24:].abs().square().mean((-2, -1))) / (2 * denominator)).mean()
     identity = (actual[-2:] - received[-2:]).abs().square().mean() if with_identity else error.real.new_zeros(())
     parts = torch.stack((risk(error), *trajectory, common.abs().square().mean(), private, boundary_cost, identity))
-    return parts @ parts.new_tensor((1., .18, .18, .30, .65, .20, .80)), parts
+    loss = parts @ parts.new_tensor((1., .18, .18, .30, .65, .20, .80))
+    if audit_references:
+        with torch.no_grad():
+            audit = torch.stack([((actual - wave).abs().square().mean(-1)
+                                  / wave.abs().square().mean(-1).clamp_min(1e-9)).mean()
+                                 for wave in audit_references])
+        parts = torch.cat((parts, audit))
+    return loss, parts

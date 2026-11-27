@@ -19,7 +19,7 @@ from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_lora_main.full_packet_views import native, source_contract
 from experiments.pamf_lora_main.runner import activate, available
 from experiments.pamf_lora_main.w24_factor_audit import AUG_RUN, frozen_source_panel, load_classifier, panel, score_source
-from experiments.pamf_lora_main.w24_formal import evaluation_routes, native_readouts, wide_delta
+from experiments.pamf_lora_main.w24_formal import evaluation_routes, native_alternatives, native_aperture, wide_delta
 from experiments.pamf_lora_main.w24_native_full import (
     DATA_RUN, SOURCE, VIEWS, W24_COMMIT, W24_RUN, classify, classify_aperture,
     load_restorers, native_full_view, recover,
@@ -145,16 +145,18 @@ def predict_source(runtime):
     modes = mode_list(rt)
     if third_prior:
         from experiments.pamf_lora_main.w24_third_prior import (
-            NATIVE_PACKET_ARMS, OUTER_BASELINE, UNET_BASELINE, UNET_FIDELITY_ARMS, load_candidate, restore_center, trial,
+            NATIVE_ADDITIVE_ARMS, NATIVE_PACKET_ARMS, OUTER_BASELINE, UNET_BASELINE, UNET_FIDELITY_ARMS, load_candidate,
+            restore_center, trial,
         )
 
         design = trial(third_prior)
         names = design.arms
-        native_model = names == NATIVE_PACKET_ARMS
-        if native_model:
+        native_model = names in (NATIVE_PACKET_ARMS, NATIVE_ADDITIVE_ARMS)
+        if names == NATIVE_PACKET_ARMS:
             arms = [load_candidate(root, contract, device, names[-1])] * 2
         else:
             arms = [load_candidate(root, contract, device, arm) for arm in names]
+        models = [model for model, _ in arms]
         source_intermediate = design.source_intermediate
         intermediate = ([load_candidate(root, contract, device, arm, source_step=source_intermediate)[0]
                          for arm in names] if source_intermediate is not None else [])
@@ -170,9 +172,9 @@ def predict_source(runtime):
             original = received_aperture(packets, device)
             old = restore_center(original, wide_delta(g, track, original), .5)
             if native_model:
-                outputs = [view for alpha in (.5, 1.) for view in native_readouts(arms[-1][0], packets, original, alpha)]
+                outputs = [view for alpha in (.5, 1.) for view in native_alternatives(models, packets, original, alpha)]
             else:
-                edits = [wide_delta(model, track, original, packets=packets) for model, _ in arms]
+                edits = [wide_delta(model, track, original, packets=packets) for model in models]
                 outputs = [restore_center(original, delta, alpha) for alpha in (.5, 1.) for delta in edits]
             if unet_parent is not None:
                 outputs.append(restore_center(original, wide_delta(unet_parent, track, original), .5))
@@ -229,7 +231,7 @@ def predict_source(runtime):
         render = partial(wide_delta, packets=packets[:1])
         if native_model:
             def render(model, _track, aperture):
-                return native_readouts(model, packets[:1], aperture, .5)
+                return native_aperture(model, packets[:1], aperture, .5)
         smoke.update(ungated=True, candidate_steps=arms[0][1]['steps'],
                      candidate_parameters=dict(zip(names, (info['parameters'] for _, info in arms), strict=True)),
                      b1_ungated_g_only={arm: ungated_latency(model, track, observed,

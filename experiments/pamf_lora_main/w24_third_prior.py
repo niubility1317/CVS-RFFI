@@ -78,6 +78,9 @@ ADDITIVE_REFERENCE_RUN = '20261127-phase1-lora-w24-additive-reference-s202611299
 ADDITIVE_REFERENCE_ARMS = ('restore_original', 'remove_additive')
 NATIVE_PACKET_RUN = '20261127-phase1-lora-w24-native-packet-dura-s2026112991-r01'
 NATIVE_PACKET_ARMS = ('native_dura_center', 'native_dura_whole')
+NATIVE_ADDITIVE_RUN = '20261127-phase1-lora-w24-native-additive-s2026112991-r01'
+NATIVE_ADDITIVE_ARMS = ('native_restore_original', 'native_remove_additive')
+NATIVE_MODEL_ARMS = (*NATIVE_PACKET_ARMS, *NATIVE_ADDITIVE_ARMS)
 LONG_UNET_ARMS = (*WEAK_TRANSFER_ARMS, *POLYPHASE_ARMS, *ADDITIVE_REFERENCE_ARMS)
 UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
 UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS,
@@ -118,6 +121,7 @@ VARIANTS = {
     'polyphase': (POLYPHASE_RUN, POLYPHASE_ARMS),
     'additive-reference': (ADDITIVE_REFERENCE_RUN, ADDITIVE_REFERENCE_ARMS),
     'native-packet-dura': (NATIVE_PACKET_RUN, NATIVE_PACKET_ARMS),
+    'native-additive': (NATIVE_ADDITIVE_RUN, NATIVE_ADDITIVE_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -154,9 +158,9 @@ def trial(kind):
         return Trial(run, arms, 48000, (*modes, *baselines, *intermediate),
                      (*contrasts, *((modes[3], base) for base in baselines), *comparisons),
                      ROUTES[:1], WEAK_TRANSFER_INTERMEDIATE)
-    if arms in (POLYPHASE_ARMS, ADDITIVE_REFERENCE_ARMS, NATIVE_PACKET_ARMS):
+    if arms in (POLYPHASE_ARMS, ADDITIVE_REFERENCE_ARMS, NATIVE_PACKET_ARMS, NATIVE_ADDITIVE_ARMS):
         baselines = (UNET_BASELINE, OUTER_BASELINE)
-        return Trial(run, arms, 24000 if arms == NATIVE_PACKET_ARMS else 48000, (*modes, *baselines),
+        return Trial(run, arms, 24000 if arms[0] in NATIVE_MODEL_ARMS else 48000, (*modes, *baselines),
                      (*contrasts, *((modes[3], base) for base in baselines)), ROUTES[:1])
     if arms[0] in OUTER_TUNE_ARMS:
         steps = 1200 if kind == 'band-refine' else 1800
@@ -240,7 +244,7 @@ def restorer(training, arm):
         from experiments.pamf_lora_main.w24_polyphase import NativePolyphaseUNet
 
         return NativePolyphaseUNet(native_context=arm == POLYPHASE_ARMS[1])
-    if arm in NATIVE_PACKET_ARMS:
+    if arm in NATIVE_MODEL_ARMS:
         from experiments.pamf_lora_main.w24_packet_dura import NativePacketDura
 
         return NativePacketDura()
@@ -349,7 +353,7 @@ def source_recipe(training, arm, *, initialize=None):
             trained, key = (model.lower, model.upper, model.prior), 'spectral_prior_gradient_norms'
         elif arm in PROJECTION_ARMS:
             trained, key = (model.encoder, model.context, model.decoder), 'clean_prior_gradient_norms'
-        elif arm in NATIVE_PACKET_ARMS:
+        elif arm in NATIVE_MODEL_ARMS:
             trained, key = (model.coarse, *model.priors), 'native_packet_gradient_norms'
         elif arm in UNET_ARMS:
             trained = (model.stem, model.temporal, model.axis, model.time_edit, model.spectral)
@@ -399,9 +403,10 @@ def source_recipe(training, arm, *, initialize=None):
                         source_intermediate=WEAK_TRANSFER_INTERMEDIATE)
         if arm in POLYPHASE_ARMS:
             info.update(native_polyphase=arm == POLYPHASE_ARMS[1], pre_channel_probe=True)
-        if arm in ADDITIVE_REFERENCE_ARMS:
-            info.update(additive_only=arm == ADDITIVE_REFERENCE_ARMS[1], shared_generic_action=True)
-        if arm in NATIVE_PACKET_ARMS:
+        if arm in (*ADDITIVE_REFERENCE_ARMS, *NATIVE_ADDITIVE_ARMS):
+            info.update(additive_only=arm in (ADDITIVE_REFERENCE_ARMS[1], NATIVE_ADDITIVE_ARMS[1]),
+                        shared_generic_action=True)
+        if arm in NATIVE_MODEL_ARMS:
             info.update(initialization='random', native_capture_samples=8192, observation_steps=2)
         if arm in UNET_COMPONENT_ARMS:
             info.update(separate_chirps=True, separate_loss=arm == UNET_COMPONENT_ARMS[1])
@@ -429,7 +434,7 @@ def source_recipe(training, arm, *, initialize=None):
     name = f'w24_{arm}_prior' if arm in ARMS else f'w24_{arm}'
     milestones = (spec.steps // 3, 2 * spec.steps // 3)
     if arm in (*UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *SCRATCH_PRIOR_ARMS, *LONG_UNET_ARMS,
-               *NATIVE_PACKET_ARMS):
+               *NATIVE_MODEL_ARMS):
         milestones = (2000, 6000, 12000, 18000)
     if arm in (*PROJECTION_ARMS, *LONG_UNET_ARMS):
         milestones = (*milestones, 24000, 36000, 42000)
@@ -440,7 +445,7 @@ def source_recipe(training, arm, *, initialize=None):
                    model=partial(restorer, training, arm), finalize_calibration=finalize,
                    initialize=initialize, coarse_first=training.RECIPE.coarse_first
                    and arm not in (*OUTER_TUNE_ARMS, *UNET_ARMS, *EXPERT_ARMS, *SCRATCH_PRIOR_ARMS,
-                                   *NATIVE_PACKET_ARMS))
+                                   *NATIVE_MODEL_ARMS))
 
 
 def snapshot_objective(calculate, archived, contract, snapshot, checkpoint_step):
@@ -498,6 +503,14 @@ def fit(config, arm, *, smoke):
             if with_identity:
                 received[-2:] = clean[-2:]
             return source_objective(model, received, clean, with_identity=with_identity)
+    if arm in NATIVE_ADDITIVE_ARMS:
+        from experiments.pamf_lora_main.w24_packet_dura import native_additive_pair, source_objective
+
+        def calculate(model, _tracker, raw, rng, *, with_identity, recipe, step):
+            received, references = native_additive_pair(raw, rng, with_identity=with_identity)
+            reference = references[arm == NATIVE_ADDITIVE_ARMS[1]]
+            return source_objective(model, received, reference, with_identity=with_identity,
+                                    audit_references=references)
     if arm in ('direction_first', 'coherent_error'):
         from experiments.pamf_lora_main.w24_first_direction import objective_for
 
@@ -635,10 +648,12 @@ def read_candidate_weights(root, contract, device, arm, training, archived, *, s
     if arm in POLYPHASE_ARMS and (summary.get('native_polyphase') is not (arm == POLYPHASE_ARMS[1])
                                   or summary.get('pre_channel_probe') is not True):
         raise ValueError(f'Unverified polyphase input path for {arm}')
-    if arm in ADDITIVE_REFERENCE_ARMS and (summary.get('additive_only') is not (arm == ADDITIVE_REFERENCE_ARMS[1])
-                                           or summary.get('shared_generic_action') is not True):
+    additive_arms = (*ADDITIVE_REFERENCE_ARMS, *NATIVE_ADDITIVE_ARMS)
+    additive_only = arm in (ADDITIVE_REFERENCE_ARMS[1], NATIVE_ADDITIVE_ARMS[1])
+    if arm in additive_arms and (summary.get('additive_only') is not additive_only
+                                 or summary.get('shared_generic_action') is not True):
         raise ValueError(f'Unverified additive reference for {arm}')
-    if arm in NATIVE_PACKET_ARMS and (summary.get('initialization') != 'random'
+    if arm in NATIVE_MODEL_ARMS and (summary.get('initialization') != 'random'
                                       or summary.get('native_capture_samples') != 8192
                                       or summary.get('observation_steps') != 2):
         raise ValueError('Unverified native full-packet checkpoint')
@@ -788,7 +803,7 @@ def publish(args):
              'common-refine': [0, 3, 2, 7], 'spectral-posterior': [0, 3, 2, 7],
              'clean-projection': [0, 2, 3, 5], 'weak-transfer': [0, 3, 2, 5],
              'polyphase': [0, 2, 3, 5], 'additive-reference': [0, 7, 2, 3],
-             'native-packet-dura': [3, 5, 6]}
+             'native-packet-dura': [3, 5, 6], 'native-additive': [0, 3, 5, 6]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
