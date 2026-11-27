@@ -1,0 +1,291 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa 原生 8,192 点 W24 不可见分量的局部可靠性（Full）",
+  "description": "Test whether temporal localization of the receive-only W24-invisible disturbance helps a native restorer.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "raw8192",
+    "w24",
+    "fixed-e104",
+    "full-only",
+    "truth-last",
+    "local-reliability"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+    "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+    "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa native raw performance goal, frozen E104 training loss and high-confidence source clean U_s pseudo-label authorization.",
+  "code": {
+    "commit": "b90a7c90bddeab70c5a9407a335ea936e1c1ea7a",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Restore all 8192 native complex points before original W24. Estimate local distortion cue from the null component of the unchanged linear W24 capture-to-aperture map.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Source L_s true CE and E104 clean U_s pseudo labels at 0.95. All other inputs are lawful source synthetic pairs and fixed frontend coefficients. Original E104 frozen. Receive IQ alone generates the reliability cue. Fit reads no source V, actual U_s labels, target, registered practical, exact simulator action or target statistics."
+  },
+  "checkpoint": {
+    "initialization": "Two exact copies of prior source-qualified native E104 G at 18,000 native steps. A new 448-weight conditioning convolution starts at zero, with bitwise unchanged source IQ in real smoke. Both models train all G weights.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+        "role": "Same raw observation contract and pretarget source-qualified initialization. Recursively verify formal archival parent."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+        "role": "Same-contract G initialization and archived Full comparison."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen source training teacher and evaluation default head."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "The native parent passed a declared source rule before deployment. Target results never select fitting, hyperparameters, thresholds or retry.",
+    "selection_rule": "Freeze both after 15000 native updates. On the existing 300-packet Full source panel, only local_reliability may promote. Six exceeds matched chirp cue, native parent, strong W24 and archived direct/old comparisons; low urban strictly exceeds chirp cue and at least the other comparisons; clean at least direct and native parent."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 priority [7,6,2,0], at least 12 GiB and fewer than eight resident compute contexts per card. Two train workers or two formal prediction workers, at most one on each physical GPU.",
+    "remote_run_root": "runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --raw-reliability --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/release",
+    "stop_rule": "Stop dependent stages on bad source contract or parent, loss of initial identity, unobservable-projection residual at W24 exceeding the smoke tolerance, missing same-packet weak-label gradient, nonfinite objective, or invalid predictions. Source miss leaves formal tests unopened."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional predictions/{full-shard}/complete.json",
+    "conditional independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "sampled waveform and clean training losses",
+      "strong source branch actual sampled exposures and nominal SNR range",
+      "W24 projection error and location contrast of the reliability cue",
+      "Strong envelope source nominal rate per selected mix"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/full_native/predictions.npz; conditional runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/predictions",
+    "scorer_ref": "Independent source score then conditional local w24_joint_pamf collect after all Full shards are frozen."
+  },
+  "rows": [
+    {
+      "row_id": "chirp_reliability",
+      "method": "Chirp-level W24-null reliability broadcast",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/chirp_reliability/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "localized_reliability": false,
+        "cue_block": 64,
+        "source_envelope_probability_conditional": 0.5
+      },
+      "seeds": {
+        "model": 2026113015,
+        "split": 392005,
+        "data": 2026113015,
+        "augmentation": 2026113015,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113015 shared source samples and generic augmentation, +1 strong replacement, +2 noise envelope. Same matched draws.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "15000 updates each after the same pretarget native parent, 8 L_s plus 8 U_s exposures per step.",
+      "output_root": "runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/chirp_reliability",
+      "log_path": "runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/chirp_reliability-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/chirp_reliability/fit-inputs.json chirp_reliability",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "local_reliability",
+      "method": "Within-chirp reliability from 64-point native blocks",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/local_reliability/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "localized_reliability": true,
+        "cue_block": 64,
+        "source_envelope_probability_conditional": 0.5
+      },
+      "seeds": {
+        "model": 2026113015,
+        "split": 392005,
+        "data": 2026113015,
+        "augmentation": 2026113015,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113015 shared source samples and generic augmentation, +1 strong replacement, +2 noise envelope. Same matched draws.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "15000 updates each after the same pretarget native parent, 8 L_s plus 8 U_s exposures per step.",
+      "output_root": "runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/local_reliability",
+      "log_path": "runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/local_reliability-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01/local_reliability/fit-inputs.json local_reliability",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Let A be the exact linear original W24 FIR and native-edge extraction before gain normalization, P=A^T(AA^T)^-1 A, q=(I-P)y. Both arms compute q from observed 8192 IQ and normalized chirp RMS and continue to see full observed IQ.",
+    "Train the same 448-weight stem convolution along with the same native parent. Control broadcasts each chirp averaged q power. Candidate interpolates matched native q power in nonoverlapping 64-sample bins. Same logarithm, clamps and original reader front end; only within-chirp localization is changed.",
+    "Both use original native recipe and original 1/3 strong nominal [-8,+4] dB source mixture. For half of the strong branch draws, independent generic log-amplitude knots at capture rate produce a continuous nonstationary noise envelope. Original packet noise RMS is restored after the envelope; no names, target or practical channel features.",
+    "Fixed E104 true L_s classification and clean U_s pseudo CE, raw waveform and clean identity terms use the exact preceding native task weights. Native outputs are ordinary complex IQ for the original W24, not hand-built classifier features. Independent truth-last after all predictions.",
+    "Projection coefficients and application use FP64 for numerical accuracy at native W24 edge functionals. Learned model and native IQ output remain complex64/FP32."
+  ],
+  "registered_at": "2026-11-27T03:00:04+00:00"
+}
