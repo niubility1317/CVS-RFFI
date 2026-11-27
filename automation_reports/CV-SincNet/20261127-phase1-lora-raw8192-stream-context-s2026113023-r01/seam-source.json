@@ -1,0 +1,140 @@
+{
+  "n_packets": 300,
+  "source_truth_after_prediction": true,
+  "target_reads": 0,
+  "views": {
+    "clean": {
+      "registered_match": true,
+      "continuous_correct": 296,
+      "bounded_correct": 296,
+      "paired": {
+        "repairs": 0,
+        "harms": 0,
+        "net": 0
+      },
+      "net_by_receiver": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "center_relative_rms_p50": 0.0016965543618425727,
+      "edge_relative_rms_p50": 0.005423173774033785
+    },
+    "practical_high": {
+      "registered_match": true,
+      "continuous_correct": 285,
+      "bounded_correct": 285,
+      "paired": {
+        "repairs": 0,
+        "harms": 0,
+        "net": 0
+      },
+      "net_by_receiver": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "center_relative_rms_p50": 0.0017067877342924476,
+      "edge_relative_rms_p50": 0.005465755006298423
+    },
+    "practical_mid": {
+      "registered_match": true,
+      "continuous_correct": 271,
+      "bounded_correct": 270,
+      "paired": {
+        "repairs": 1,
+        "harms": 0,
+        "net": 1
+      },
+      "net_by_receiver": [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "center_relative_rms_p50": 0.001709241303615272,
+      "edge_relative_rms_p50": 0.005563189508393407
+    },
+    "practical_low_suburban": {
+      "registered_match": true,
+      "continuous_correct": 256,
+      "bounded_correct": 258,
+      "paired": {
+        "repairs": 0,
+        "harms": 2,
+        "net": -2
+      },
+      "net_by_receiver": [
+        0,
+        0,
+        0,
+        -1,
+        -1
+      ],
+      "center_relative_rms_p50": 0.001714718877337873,
+      "edge_relative_rms_p50": 0.005630511324852705
+    },
+    "practical_high_urban": {
+      "registered_match": true,
+      "continuous_correct": 275,
+      "bounded_correct": 275,
+      "paired": {
+        "repairs": 0,
+        "harms": 0,
+        "net": 0
+      },
+      "net_by_receiver": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "center_relative_rms_p50": 0.00171028939075768,
+      "edge_relative_rms_p50": 0.005518397316336632
+    },
+    "practical_mid_urban": {
+      "registered_match": true,
+      "continuous_correct": 225,
+      "bounded_correct": 224,
+      "paired": {
+        "repairs": 1,
+        "harms": 0,
+        "net": 1
+      },
+      "net_by_receiver": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "center_relative_rms_p50": 0.001731738680973649,
+      "edge_relative_rms_p50": 0.005869563668966293
+    },
+    "practical_low_urban": {
+      "registered_match": true,
+      "continuous_correct": 194,
+      "bounded_correct": 194,
+      "paired": {
+        "repairs": 0,
+        "harms": 0,
+        "net": 0
+      },
+      "net_by_receiver": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "center_relative_rms_p50": 0.0019320656429044902,
+      "edge_relative_rms_p50": 0.007431126898154616
+    }
+  }
+}
