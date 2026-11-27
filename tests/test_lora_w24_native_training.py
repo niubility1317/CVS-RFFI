@@ -6,6 +6,7 @@ from experiments.pamf_lora_main import w24_native_training as train
 from experiments.pamf_lora_main.w24_clean_geometry import clean_geometry_risk
 from experiments.pamf_lora_main.w24_native_dura import NativeDura, iq_error, source_pair
 from experiments.pamf_lora_main.w24_native_edit_alignment import edit_parts
+from experiments.pamf_lora_main.w24_native_spectral_innovation import SpectralInnovation
 from experiments.pamf_lora_main.w24_strong_source import StrongSourceMix
 from experiments.pamf_lora_main.w24_native_stream import NativeStreamRefiner
 from experiments.pamf_lora_main.w24_native_noise_pair import NoisePairRefiner, PairedNoiseViews
@@ -126,7 +127,8 @@ def test_raw_formal_receipt_preserves_w24_parent_and_source_control():
         assert not joint.qualifies(scores,mode)
 
 
-def test_fixed_native_arms_enter_formal_without_reading_source_scores(monkeypatch, tmp_path):
+@pytest.mark.parametrize('run',(train.ALIGN_RUN,train.INNOVATION_RUN))
+def test_fixed_native_arms_enter_formal_without_reading_source_scores(monkeypatch, tmp_path, run):
     def unexpected_read(*args):
         pytest.fail('Formal prediction tried to open a source score before the baseline')
 
@@ -135,7 +137,7 @@ def test_fixed_native_arms_enter_formal_without_reading_source_scores(monkeypatc
 
     monkeypatch.setattr(joint,'read',unexpected_read)
     monkeypatch.setattr(joint,'formal_reference',baseline_reached)
-    runtime=dict(run_root=tmp_path,run_id=train.ALIGN_RUN)
+    runtime=dict(run_root=tmp_path,run_id=run)
     with pytest.raises(RuntimeError,match='fixed formal baseline reached'):
         joint.predict_formal(runtime,joint.FULL_CASES[0])
 
@@ -162,6 +164,25 @@ def test_strong_source_selection_preserves_mixing_and_identifies_additive_pairs(
     torch.testing.assert_close(marked,original,rtol=0,atol=0)
     assert 0<selected.sum()<len(clean)
     assert torch.equal(selected,(marked!=2*clean).any(dim=(1,2)))
+
+
+def test_spectral_innovation_starts_at_parent_and_retains_chirp_complex_phase():
+    observed=torch.randn(2,8,1024,dtype=torch.complex64,generator=torch.Generator().manual_seed(17))
+    coarse=(.7*observed).requires_grad_()
+    model=SpectralInnovation()
+    edit=model(observed,coarse)
+    torch.testing.assert_close(edit,torch.zeros_like(observed),rtol=0,atol=0)
+    loss=(coarse+edit-observed).abs().square().mean()
+    gain_gradient,coarse_gradient=torch.autograd.grad(loss,(model.gain[-1].weight,coarse))
+    assert gain_gradient.abs().sum()>0 and coarse_gradient.abs().sum()>0
+
+    with torch.no_grad():
+        model.gain[-1].bias.fill_(.7)
+    phase=torch.exp(1j*torch.arange(8))[None,:,None]
+    update=model(observed,coarse)
+    torch.testing.assert_close(model(observed*phase,coarse*phase),update*phase,rtol=2e-5,atol=2e-6)
+    torch.testing.assert_close(update.mean(-1),torch.zeros_like(update[...,0]),rtol=0,atol=2e-7)
+    torch.testing.assert_close(model(observed,observed),torch.zeros_like(observed),rtol=0,atol=0)
 
 
 def test_native_aperture_projection_annihilates_the_exact_visible_functionals():

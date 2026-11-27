@@ -102,7 +102,8 @@ CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
 FORMAL_ARMS = {RUN: CANDIDATE, RUN_FIXED_PL: FIXED_PL,
                **{run: candidate for run, (_, candidate) in PARENT_TRIALS.items()},
                **{run: arms[-1] for run, arms in raw_train.RUNS.items()}}
-FIXED_FULL_ARMS = {raw_train.ALIGN_RUN:raw_train.ALIGN_ARMS}
+FIXED_FULL_ARMS = {raw_train.ALIGN_RUN:raw_train.ALIGN_ARMS,
+                   raw_train.INNOVATION_RUN:raw_train.INNOVATION_ARMS}
 
 
 def formal_arms(run):
@@ -892,6 +893,8 @@ def main():
     pseudo_options.add_argument('--raw-stream-context',dest='run_id',action='store_const',const=raw_train.STREAM_RUN)
     pseudo_options.add_argument('--raw-paired-denoise',dest='run_id',action='store_const',const=raw_train.PAIR_RUN)
     pseudo_options.add_argument('--raw-edit-aligned',dest='run_id',action='store_const',const=raw_train.ALIGN_RUN)
+    pseudo_options.add_argument('--raw-spectral-innovation',dest='run_id',action='store_const',
+                                const=raw_train.INNOVATION_RUN)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -956,7 +959,8 @@ def main():
                            raw_train.DURA_RUN: [6,5], raw_train.TASK_RUN: [2,3],
                            raw_train.REL_RUN: [7,6,2,0], raw_train.VISIBLE_RUN: [7,2,6,3],
                            raw_train.GEOMETRY_RUN: [7,2,0,6], raw_train.STREAM_RUN: [6,5,7,2,0],
-                           raw_train.PAIR_RUN: [6,7,2,0,3], raw_train.ALIGN_RUN: [0,7,2,6,3]}
+                           raw_train.PAIR_RUN: [6,7,2,0,3], raw_train.ALIGN_RUN: [0,7,2,6,3],
+                           raw_train.INNOVATION_RUN: [0,7,2,6,3]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
