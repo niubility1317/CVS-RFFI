@@ -1,0 +1,292 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 同包双扰动难例风险（Full）",
+  "description": "Match mean and smooth worst-view classification losses over two independent perturbations of the same physical source packet.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "full-only",
+    "truth-last",
+    "fixed-e104",
+    "clean-pl",
+    "paired-view-risk"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+    "20261127-phase1-lora-w24-strong-source-s2026112997-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "8dfdc1fdc5a33520229131fe3a6708b9c7f4cdce",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Both arms reuse frozen E104 and clean U_s pseudo labels at confidence >= .95. Same source L_s true labels on two independent disturbed views. Infer from one received IQ with fixed E104. Fit reads no hidden U_s TX, source V, registered practical, exact simulation traces or target."
+  },
+  "checkpoint": {
+    "initialization": "Exact shared strong-source G at 40000 cumulative updates, original E104 frozen throughout. Two independent AdamW resets, update all existing recovery weights. No parameter or inference graph change.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+        "role": "New G common source freeze and archival Full comparator."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+        "role": "Frozen first recovery and formal Full historical comparator."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Original E104 PAMF and fixed clean anchor; remains fixed in G-only CE row."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Fixed-step original loss U-Net common initialization."
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Matched archived source baseline only."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "The E104 and strong-source parents were selected on source prior to target. Target outcomes do not affect configuration, eligibility or replay.",
+    "selection_rule": "Freeze both at +12000. On the same 300 Full source V packets, only hard_view_risk may promote. Six must exceed every registered comparison, low urban exceeds mean_view_risk and is at least as high as all archived comparisons, clean reaches both direct and strong parent."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 preferred 7,0,2,6,3,5. At least 12 GiB free and fewer than eight existing contexts. Up to two training or three formal prediction workers, one new worker per card.",
+    "remote_run_root": "runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --paired-view-risk --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/release",
+    "stop_rule": "Stop dependent stages on invalid role, incompatible source checkpoint, inactive L_s or accepted clean U_s gradient in the real smoke, update of E104, nonfinite objective, or incomplete prediction. A missed source gate ends the experiment at source."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional predictions/{full-shard}/complete.json",
+    "conditional independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "sampled waveform and clean training losses",
+      "strong source branch actual sampled exposures and nominal SNR range",
+      "same-packet labeled CE absolute gap",
+      "observed difficult-view CE gradient weights"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/full_native/predictions.npz; conditional runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/predictions",
+    "scorer_ref": "Independent source score then conditional local w24_joint_pamf collect after all Full shards are frozen."
+  },
+  "rows": [
+    {
+      "row_id": "mean_view_risk",
+      "method": "Mean two-view identity risk",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_joint_pamf.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/mean_view_risk/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "strong_draw_probability": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8.0,
+          4.0
+        ],
+        "clean_pseudo_threshold": 0.95,
+        "views_per_packet": 2,
+        "view_tilt": 0.0,
+        "view_temperature": 0.25
+      },
+      "seeds": {
+        "model": 2026113007,
+        "split": 392005,
+        "data": 2026113007,
+        "augmentation": 2026113007,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113007 fixed physical draw and original generic perturbation RNG; 2026113008 independent strong replacement stream. Shared both arms.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW G LR 4e-5, cosine to 2e-6, weight decay 1e-4, clip 1.",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "12000 updates per arm after 40000-step parent. Per update 8 L_s and 8 U_s physical packet exposures, each paired with two independent disturbance draws. Total 96000 exposures per role and 384000 disturbed views per arm.",
+      "output_root": "runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/mean_view_risk",
+      "log_path": "runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/mean_view_risk-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/mean_view_risk/fit-inputs.json mean_view_risk",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "hard_view_risk",
+      "method": "Smoothed hardest two-view identity risk",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_joint_pamf.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/hard_view_risk/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "strong_draw_probability": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8.0,
+          4.0
+        ],
+        "clean_pseudo_threshold": 0.95,
+        "views_per_packet": 2,
+        "view_tilt": 0.75,
+        "view_temperature": 0.25
+      },
+      "seeds": {
+        "model": 2026113007,
+        "split": 392005,
+        "data": 2026113007,
+        "augmentation": 2026113007,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113007 fixed physical draw and original generic perturbation RNG; 2026113008 independent strong replacement stream. Shared both arms.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW G LR 4e-5, cosine to 2e-6, weight decay 1e-4, clip 1.",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "12000 updates per arm after 40000-step parent. Per update 8 L_s and 8 U_s physical packet exposures, each paired with two independent disturbance draws. Total 96000 exposures per role and 384000 disturbed views per arm.",
+      "output_root": "runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/hard_view_risk",
+      "log_path": "runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/hard_view_risk-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-w24-paired-view-risk-s2026113007-r01/hard_view_risk/fit-inputs.json hard_view_risk",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Only pairing reduction changes. Each physical training packet has two independent generic mixture draws. For per-packet losses v1 and v2, m=mean(v), candidate risk m + .75*.25*(logsumexp((v-m)/.25)-log(2)); control risk m. Applied to L_s true CE and accepted clean U_s pseudo CE only. An accepted packet uses the same clean pseudo label for both views. All other losses average matching data; EQ 0.95 and original objective weights remain unchanged.",
+    "Both rows use the same original W24 native path, legal source 2800 labeled and 25200 hidden-label IQ, the same full strong 308676-param base and same augmentation including one-third -8 to +4 dB nominal strong white drops. Both infer single received aperture and preserve native edges.",
+    "Freeze both before 300-packet Full source scoring. If the candidate passes the preregistered source gate, auto-predict all seven formal Full views and only after all freeze execute independent truth-last."
+  ],
+  "registered_at": "2026-11-26T23:26:35+00:00"
+}

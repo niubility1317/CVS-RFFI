@@ -1,0 +1,220 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa 原生 8,192 点 冻结 E104 强扰动恢复（Full）",
+  "description": "Restore all 8192 contiguous complex points before the original W24 frontend.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "raw8192",
+    "w24",
+    "fixed-e104",
+    "full-only",
+    "truth-last",
+    "raw-e104"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+    "20261127-phase1-lora-w24-strong-source-s2026112997-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requested native 8192 Full DURA and native 8192 best E104 loss + pseudo-label runs.",
+  "code": {
+    "commit": "39be84764f9c1340823f4e9d94df958911307056",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MS/s in and out of G. The original 8 x 2 x 432 W24 preprocessing runs on restored full raw IQ.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "L_s true TX CE; high-confidence >=0.95 E104 clean U_s pseudo CE; same-packet generic IQ pairs. E104 frozen. No V/target/hidden U_s TX or practical traces in training."
+  },
+  "checkpoint": {
+    "initialization": "Verified same-source strong W24 PacketUNet inherited. Preserve common tensors and interpolate only 48 to 128 time-position tokens; reset optimizer. Original classifier frozen.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+        "role": "Same-contract G initialization and archived Full comparison."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen source training teacher and evaluation default head."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "Native raw data and source physical roles match LoRa archived contract. Formal historical results stay out of training and thresholds.",
+    "selection_rule": "Source-fixed 18000-step final checkpoint only. Require more six-scene correct than listed matched controls, at least their best low urban and at least direct/strong parent clean on preregistered 300 Full V packets; conditional 30000-packet Full."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 priority [2,3]. At least 12 GiB free and fewer than eight compute contexts. One train worker; up to two formal workers across distinct GPUs.",
+    "remote_run_root": "runs/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --raw-e104 --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01/release",
+    "stop_rule": "Stop dependent on invalid contract/source parent, failed native checkpoint smoke, nonfinite update, wrong raw support, unauthorized data role or incomplete predictions. Source miss leaves formal unopened."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional predictions/{full-shard}/complete.json",
+    "conditional independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "sampled waveform and clean training losses",
+      "strong source branch actual sampled exposures and nominal SNR range"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01/full_native/predictions.npz; conditional runs/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01/predictions",
+    "scorer_ref": "Independent source score then conditional local w24_joint_pamf collect after all Full shards are frozen."
+  },
+  "rows": [
+    {
+      "row_id": "raw_e104_strong",
+      "method": "All native PacketUNet recovery weights, fixed E104 CE + clean pseudo labels",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01/raw_e104_strong/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ]
+      },
+      "seeds": {
+        "model": 2026113011,
+        "split": 392005,
+        "data": 2026113011,
+        "augmentation": 2026113011,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113011 physical draws and capture simulation; fixed source-only selection without target.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW lr 4e-05, cosine, weight decay 1e-4, gradient clip 1.",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "18000 updates of this stage; 144000 source packet exposures in each L_s and U_s role.",
+      "output_root": "runs/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01/raw_e104_strong",
+      "log_path": "runs/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01/raw_e104_strong-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01/raw_e104_strong/fit-inputs.json raw_e104_strong",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Native PacketUNet with 8 x 1024 sample support, raw-band tracking from public chirp, no W24 crop or sampling before G. Restore all native samples; apply W24 original aperture after G. Same source roles, E104 teacher and nominal strong-noise recipe. Geometric weights of original W24 parent retained except time embeddings resized.",
+    "The restored waveform still goes to a single original frozen classification head. Target stays blind before all predictions are fixed."
+  ],
+  "registered_at": "2026-11-27T00:33:50+00:00"
+}
