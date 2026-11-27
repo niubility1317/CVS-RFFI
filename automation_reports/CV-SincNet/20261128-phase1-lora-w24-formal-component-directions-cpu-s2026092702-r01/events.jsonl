@@ -1,1 +1,2 @@
 {"at": "2026-11-27T17:16:27+00:00", "status": "PLANNED", "note": "固定训练预算及评测矩阵。", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-27T17:19:44+00:00", "status": "RUNNING", "note": "N607 正式控制器及本地独立评分器 **VERIFIED**。归档比对与编译通过。控制器已读回 CPU 等待合法末版权重，未打开目标，预测目录为空；本地评分器读回同一状态。待真实权重无目标冒烟通过后自动开展三个正式分片。", "evidence": ["runs/20261128-phase1-lora-w24-formal-component-directions-cpu-s2026092702-r01/state.json", "release/submit.json", "collector.log"], "row_id": null}
