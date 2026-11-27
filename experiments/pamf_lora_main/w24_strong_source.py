@@ -39,9 +39,11 @@ class StrongSourceMix:
         self.noise_shape = noise_shape
         self.selected = torch.zeros((), dtype=torch.int64, device=device)
 
-    def __call__(self, clean, generic_rng):
+    def __call__(self, clean, generic_rng, *, return_selection=False):
         observed = self.generic(clean, generic_rng)
         if not self.enabled:
+            if return_selection:
+                return observed, torch.zeros(len(clean),device=clean.device,dtype=torch.bool)
             return observed
         options = dict(device=clean.device, dtype=clean.real.dtype, generator=self.rng)
         shape = (len(clean), 1, 1)
@@ -56,4 +58,5 @@ class StrongSourceMix:
         if self.noise_shape is not None:
             noise = self.noise_shape(noise)
         self.selected += strong.sum()
-        return torch.where(strong, clean + noise, observed)
+        mixed = torch.where(strong, clean + noise, observed)
+        return (mixed,strong.flatten()) if return_selection else mixed

@@ -22,6 +22,7 @@ from experiments.pamf_lora_main.w24_native_stream import NativeStreamRefiner
 from experiments.pamf_lora_main.w24_native_noise_pair import (
     NoisePairRefiner, PairedNoiseViews, PAIR_WEIGHT, intermediate_loss,
 )
+from experiments.pamf_lora_main.w24_native_edit_alignment import ALIGNMENT_WEIGHT, ORTHOGONAL_WEIGHT, edit_parts
 from experiments.pamf_restoration.models import complex_iq, pair
 
 
@@ -39,16 +40,18 @@ STREAM_RUN = '20261127-phase1-lora-raw8192-stream-context-s2026113023-r01'
 STREAM_ARMS = ('chirp_context_native', 'stream_context_native')
 PAIR_RUN = '20261127-phase1-lora-raw8192-paired-denoise-s2026113027-r01'
 PAIR_ARMS = ('clean_mean_native', 'shared_action_native')
+ALIGN_RUN = '20261128-phase1-lora-raw8192-edit-aligned-s2026113031-r01'
+ALIGN_ARMS = ('equal_edit_native', 'orthogonal_edit_native')
 CONTINUATIONS = {REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS, GEOMETRY_RUN: GEOMETRY_ARMS,
-                 STREAM_RUN: STREAM_ARMS, PAIR_RUN: PAIR_ARMS}
+                 STREAM_RUN: STREAM_ARMS, PAIR_RUN: PAIR_ARMS, ALIGN_RUN: ALIGN_ARMS}
 TASK_STAGES = (TASK, *(arm for modes in CONTINUATIONS.values() for arm in modes))
 RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), **CONTINUATIONS}
 STAGE_RUN = {stage:run for run,stages in RUNS.items() for stage in stages}
 SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015,VISIBLE_RUN: 2026113017,
-         GEOMETRY_RUN: 2026113021, STREAM_RUN: 2026113023, PAIR_RUN: 2026113027}
+         GEOMETRY_RUN: 2026113021, STREAM_RUN: 2026113023, PAIR_RUN: 2026113027, ALIGN_RUN: 2026113031}
 STEPS = {**dict(zip(STAGES,(10000,10000,12000),strict=True)), TASK:18000,
          **dict.fromkeys((*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS),15000), **dict.fromkeys(STREAM_ARMS,18000),
-         **dict.fromkeys(PAIR_ARMS,20000)}
+         **dict.fromkeys((*PAIR_ARMS,*ALIGN_ARMS),20000)}
 BATCH_ROLE = 8
 DURA_LR = 2e-4
 TASK_LR = 4e-5
@@ -132,6 +135,9 @@ def _proof(stage,contract,model_proof):
     if stage in PAIR_ARMS and (model_proof['F_trainable'] or model_proof['initialization']!=TASK_RUN
                                or model_proof['same_action_witness']!=(stage==PAIR_ARMS[-1])):
         raise ValueError('Unexpected paired-noise context or parent')
+    if stage in ALIGN_ARMS and (model_proof['F_trainable'] or model_proof['initialization']!=TASK_RUN
+            or model_proof['orthogonal_multiplier']!=(ORTHOGONAL_WEIGHT if stage==ALIGN_ARMS[-1] else 1.)):
+        raise ValueError('Unexpected native alignment branch or parent')
 
 
 def load_stage(root, stage, contract, module, device):
@@ -155,7 +161,8 @@ def dura_model(root, contract, device, stage=STAGES[-1], *, parents_only=False):
     return model
 
 
-def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *, waveform_projector=None, geometry=None):
+def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *, waveform_projector=None,
+                        geometry=None, alignment=False):
     n=len(label)
     raw=raw/capture_scale(raw)
     paired=isinstance(mix,PairedNoiseViews)
@@ -164,11 +171,18 @@ def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *,
         coarse,restored=model(observed,return_intermediate=True)
         coarse_clean,clean_out=model(raw[:n],return_intermediate=True)
     else:
-        observed=mix(raw.unflatten(-1,(8,1024)),rng).flatten(-2)
+        native_iq=raw.unflatten(-1,(8,1024))
+        if alignment:
+            observed,selected=mix(native_iq,rng,return_selection=True)
+        else:
+            observed=mix(native_iq,rng)
+        observed=observed.flatten(-2)
         restored=model(observed)
         clean_out=model(raw[:n])
-    clean_ap, _=joint.normalize_aperture(frontend.aperture(raw))
-    repaired_ap, _=joint.normalize_aperture(frontend.aperture(restored))
+    clean_linear = frontend.aperture(raw)
+    restored_linear = frontend.aperture(restored)
+    clean_ap, _=joint.normalize_aperture(clean_linear)
+    repaired_ap, _=joint.normalize_aperture(restored_linear)
     clean_end, _=joint.normalize_aperture(frontend.aperture(clean_out))
     logits, feature=reader(torch.cat((repaired_ap[:n],clean_ap[:n],clean_end)))
     predict, clean_logits, clean_prediction=logits.split(n)
@@ -194,6 +208,11 @@ def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *,
         parts+=(clean_geometry_risk(estimated_feature,clean_feature,label,prototypes,relative=relative),)
     if paired:
         parts+=(intermediate_loss(frontend,coarse,witness,coarse_clean,raw[:n]),)
+    if alignment:
+        received_center=frontend.aperture(observed)[..., :384]
+        para,orth=edit_parts(restored_linear[..., :384]-received_center,
+                             clean_linear[..., :384]-received_center,selected)
+        parts+=(para,orth)
     return torch.stack(parts)
 
 
@@ -208,7 +227,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     is_task=stage in TASK_STAGES
     seed=SEEDS[run]+(STAGES.index(stage) if stage in STAGES else 0)
     torch.manual_seed(seed)
-    count=2 if smoke and stage not in (*GEOMETRY_ARMS,*STREAM_ARMS,*PAIR_ARMS) else BATCH_ROLE
+    count=2 if smoke and stage not in (*GEOMETRY_ARMS,*STREAM_ARMS,*PAIR_ARMS,*ALIGN_ARMS) else BATCH_ROLE
     steps=1 if smoke else STEPS[stage]
     order=np.random.default_rng(seed)
     rng=torch.Generator(device=device).manual_seed(seed)
@@ -264,10 +283,14 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     schedule=torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,steps,eta_min=2e-6 if is_task else 2e-5)
     accepted=torch.zeros((),device=device)
     extra=(GEOMETRY_WEIGHT,) if geometry is not None else (PAIR_WEIGHT,) if stage in PAIR_ARMS else ()
+    orthogonal_multiplier=ORTHOGONAL_WEIGHT if stage==ALIGN_ARMS[-1] else 1.
+    if stage in ALIGN_ARMS:
+        extra=(ALIGNMENT_WEIGHT,ALIGNMENT_WEIGHT*orthogonal_multiplier)
     weights=torch.tensor((1.,.65,.3,.30,.25,1.5,1.,0.)+extra,device=device)
     started=monotonic()
     fit_gradient = supervised = pseudo_gradient = geometry_gradient = stream_gradient = None
     intermediate_gradient = None
+    orthogonal_gradient = None
     for step in range(1,steps+1):
         l=order.choice(len(l_iq),count,replace=False)
         u=order.choice(len(u_iq),count,replace=False)
@@ -287,7 +310,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                 with torch.no_grad():
                     torch.testing.assert_close(model.core.stream(raw, raw),raw,rtol=0.,atol=0.)
             parts=training_task_parts(joint,model,reader,frontend,mix,raw,label,rng,
-                                      waveform_projector=waveform_projector,geometry=geometry)
+                                      waveform_projector=waveform_projector,geometry=geometry,alignment=stage in ALIGN_ARMS)
             accepted+=parts[7].detach()
             loss=parts@weights
             if smoke:
@@ -314,6 +337,11 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                     intermediate_gradient=joint.norm_gradient(torch.autograd.grad(parts[8],first,retain_graph=True))
                     if not 0<intermediate_gradient<float('inf'):
                         raise ValueError('Paired-view loss must update the first stage')
+                if stage in ALIGN_ARMS:
+                    orthogonal_gradient=joint.norm_gradient(torch.autograd.grad(
+                        parts[9],trained.parameters(),retain_graph=True))
+                    if not 0<orthogonal_gradient<float('inf'):
+                        raise ValueError('Selected source additive edit must have a finite orthogonal gradient')
         else:
             clean,observed,exact,variance=source_pair(raw,rng)
             incoming=pair(observed)
@@ -361,6 +389,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     if stage in PAIR_ARMS:
         proof.update(initialization=TASK_RUN,same_action_witness=stage==PAIR_ARMS[-1],
                      generic_action_exposures=int(mix.acted))
+    if stage in ALIGN_ARMS:
+        proof.update(initialization=TASK_RUN,orthogonal_multiplier=orthogonal_multiplier)
     summary=dict(**proof,status='PASS' if smoke else 'SOURCE_FROZEN',
                  gradient=fit_gradient,CE_to_G=supervised,pseudo_CE_to_G=pseudo_gradient,geometry_to_G=geometry_gradient,
                  worker_seconds=monotonic()-started,parameters=sum(x.numel() for x in trained.parameters()),
@@ -369,6 +399,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
         summary['CE_to_stream']=stream_gradient
     if stage in PAIR_ARMS:
         summary['pair_to_coarse']=intermediate_gradient
+    if stage in ALIGN_ARMS:
+        summary['orthogonal_to_G']=orthogonal_gradient
     if not smoke:
         with (folder/'model.pt').open('xb') as out:
             torch.save(dict(contract=contract,proof=proof,model=trained.state_dict()),out)

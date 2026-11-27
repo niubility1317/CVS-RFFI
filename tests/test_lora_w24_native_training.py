@@ -1,9 +1,12 @@
+import pytest
 import torch
 
 from experiments.pamf_lora_main import w24_joint_pamf as joint
 from experiments.pamf_lora_main import w24_native_training as train
 from experiments.pamf_lora_main.w24_clean_geometry import clean_geometry_risk
 from experiments.pamf_lora_main.w24_native_dura import NativeDura, iq_error, source_pair
+from experiments.pamf_lora_main.w24_native_edit_alignment import edit_parts
+from experiments.pamf_lora_main.w24_strong_source import StrongSourceMix
 from experiments.pamf_lora_main.w24_native_stream import NativeStreamRefiner
 from experiments.pamf_lora_main.w24_native_noise_pair import NoisePairRefiner, PairedNoiseViews
 from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, VisibleIQ, reliability
@@ -112,7 +115,8 @@ def test_raw_formal_receipt_preserves_w24_parent_and_source_control():
         for case in cases:
             proof=joint.formal_receipt(case,run)
             assert proof['reference_run']==parent
-            assert proof['modes'][-2:]==[joint.FORMAL_ARMS[parent],mode]
+            expected=[joint.FORMAL_ARMS[parent],*joint.formal_arms(run)]
+            assert proof['modes'][-len(expected):]==expected
         scores={name:dict(six_correct=1487,low_urban_correct=187,by_scene={'clean':297})
                 for name in (*joint.parent_modes(parent),*stages)}
         assert not joint.qualifies(scores,mode)
@@ -120,6 +124,44 @@ def test_raw_formal_receipt_preserves_w24_parent_and_source_control():
         assert joint.qualifies(scores,mode)
         scores[mode]['by_scene']['clean']=296
         assert not joint.qualifies(scores,mode)
+
+
+def test_fixed_native_arms_enter_formal_without_reading_source_scores(monkeypatch, tmp_path):
+    def unexpected_read(*args):
+        pytest.fail('Formal prediction tried to open a source score before the baseline')
+
+    def baseline_reached(*args):
+        raise RuntimeError('fixed formal baseline reached')
+
+    monkeypatch.setattr(joint,'read',unexpected_read)
+    monkeypatch.setattr(joint,'formal_reference',baseline_reached)
+    runtime=dict(run_root=tmp_path,run_id=train.ALIGN_RUN)
+    with pytest.raises(RuntimeError,match='fixed formal baseline reached'):
+        joint.predict_formal(runtime,joint.FULL_CASES[0])
+
+
+def test_alignment_separates_reversed_and_orthogonal_iq_with_selection():
+    desired=torch.ones(3,2,4,dtype=torch.complex64)
+    edit=torch.stack((-desired[0],desired[1]*(1+2j),desired[2]*(3+4j))).requires_grad_()
+    selection=torch.tensor([True,True,False])
+    scale=1.001
+    torch.testing.assert_close(edit_parts(edit,desired,selection),torch.tensor([2.,2.])/scale)
+    total=edit_parts(edit,desired,selection).sum()
+    torch.testing.assert_close(total,(edit[:2]-desired[:2]).abs().square().mean()/scale)
+    total.backward()
+    assert torch.count_nonzero(edit.grad[2])==0
+    torch.testing.assert_close(edit_parts(edit,desired,torch.zeros_like(selection)),torch.zeros(2))
+
+
+def test_strong_source_selection_preserves_mixing_and_identifies_additive_pairs():
+    clean=torch.ones(32,8,16,dtype=torch.complex64)
+    mixes=[StrongSourceMix(lambda signal, rng: 2*signal,torch.Generator().manual_seed(19),
+                         'cpu',enabled=True) for _ in range(2)]
+    original=mixes[0](clean,torch.Generator().manual_seed(7))
+    marked,selected=mixes[1](clean,torch.Generator().manual_seed(7),return_selection=True)
+    torch.testing.assert_close(marked,original,rtol=0,atol=0)
+    assert 0<selected.sum()<len(clean)
+    assert torch.equal(selected,(marked!=2*clean).any(dim=(1,2)))
 
 
 def test_native_aperture_projection_annihilates_the_exact_visible_functionals():

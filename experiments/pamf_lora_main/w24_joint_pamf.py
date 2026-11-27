@@ -102,6 +102,11 @@ CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
 FORMAL_ARMS = {RUN: CANDIDATE, RUN_FIXED_PL: FIXED_PL,
                **{run: candidate for run, (_, candidate) in PARENT_TRIALS.items()},
                **{run: arms[-1] for run, arms in raw_train.RUNS.items()}}
+FIXED_FULL_ARMS = {raw_train.ALIGN_RUN:raw_train.ALIGN_ARMS}
+
+
+def formal_arms(run):
+    return FIXED_FULL_ARMS.get(run) or (FORMAL_ARMS[run],)
 MODES = ('direct', 'outer_half', 'unet_parent', *ARMS, 'joint_g_fixed_e104', 'joint_f_parent_g')
 CONTRASTS = (('joint','pamf_only'), ('joint','frozen_pamf_ce'), ('joint','unet_parent'),
              ('joint','joint_g_fixed_e104'), ('joint','joint_f_parent_g'),
@@ -653,7 +658,7 @@ def formal_receipt(case, run=RUN):
         old = formal_receipt(case,parent)
     else:
         old, parent = receipt(case,True,True), RUN_OUTER
-    return dict(old,modes=[*old['modes'],FORMAL_ARMS[run]],candidate_run=run,reference_run=parent)
+    return dict(old,modes=[*old['modes'],*formal_arms(run)],candidate_run=run,reference_run=parent)
 
 
 def formal_reference(rt, case):
@@ -678,11 +683,14 @@ def formal_reference(rt, case):
 @torch.no_grad()
 def predict_formal(rt,case):
     root, device = Path(rt['run_root']), 'cuda:0'
-    candidate = FORMAL_ARMS[rt['run_id']]
-    proof = read(root/FULL/'source-scores.json')
-    if (proof['status'] != 'ANALYZED' or not proof['source_truth_last'] or proof['target_reads']
-            or proof['n_packets'] != 300 or proof['n_practical'] != 1800 or not qualifies(proof['scores'],candidate)):
-        raise ValueError('Frozen E104 source qualification required')
+    run = rt['run_id']
+    arms = formal_arms(run)
+    candidate = arms[-1]
+    if run not in FIXED_FULL_ARMS:
+        proof = read(root/FULL/'source-scores.json')
+        if (proof['status'] != 'ANALYZED' or not proof['source_truth_last'] or proof['target_reads']
+                or proof['n_packets'] != 300 or proof['n_practical'] != 1800 or not qualifies(proof['scores'],candidate)):
+            raise ValueError('Frozen E104 source qualification required')
     expected = formal_receipt(case,rt['run_id'])
     baseline = formal_reference(rt,case)
     activity = read(baseline/'activity.json')
@@ -711,9 +719,10 @@ def predict_formal(rt,case):
                     for i in range(0,LIMIT,batch):
                         packets = np.stack([next(stream) for _ in range(min(batch,LIMIT-i))])
                         observed = received_aperture(packets,device)
-                        decision = (raw_train.render(sys.modules[__name__],f0,model,candidate,packets,device)
-                                    if native_run else classify_aperture(f0,recovered(model,tracker,observed)))
-                        pieces.append(np.stack((classify_aperture(f0,observed),decision)))
+                        decisions_batch = ([raw_train.render(sys.modules[__name__],f0,model,arm,packets,device)
+                                            for arm in arms] if native_run else
+                                           [classify_aperture(f0,recovered(model,tracker,observed))])
+                        pieces.append(np.stack((classify_aperture(f0,observed),*decisions_batch)))
                     key = f'{rx}/{view}'
                     decisions[view],counts[key] = append_blind_prediction(
                         old[view],np.concatenate(pieces,axis=1)[None],activity[key],LIMIT)
@@ -773,18 +782,28 @@ def dispatch(runtime):
                 if read(comparison/'state.json')['status']=='FAILED' or monotonic()>=deadline:
                     raise RuntimeError('Matched true-label source predictions are unavailable')
                 sleep(30)
-        deadline=monotonic()+600
-        while not (cards := available(rt['allowed_gpus'],rt['max_compute_processes'])):
-            if monotonic()>=deadline:
-                raise RuntimeError('No GPU free for frozen source predictions')
-            sleep(15)
-        for action,gpu in (('predict-source',cards[0]),('score-source',None)):
-            job=launch(action,action,gpu,runtime)
-            status(status='RUNNING',phase=action,pid=job.pid,gpu=gpu)
-            if job.wait():
-                raise RuntimeError(f'{action} failed')
-        promote = run in FORMAL_ARMS and qualifies(read(root/FULL/'source-scores.json')['scores'],FORMAL_ARMS[run])
-        status(status='SOURCE_SCORED',promote=promote)
+        fixed = run in FIXED_FULL_ARMS
+        try:
+            deadline=monotonic()+600
+            while not (cards := available(rt['allowed_gpus'],rt['max_compute_processes'])):
+                if monotonic()>=deadline:
+                    raise RuntimeError('No GPU free for frozen source predictions')
+                sleep(15)
+            for action,gpu in (('predict-source',cards[0]),('score-source',None)):
+                job=launch(action,action,gpu,runtime)
+                status(status='RUNNING',phase=action,pid=job.pid,gpu=gpu)
+                if job.wait():
+                    raise RuntimeError(f'{action} failed')
+        except RuntimeError as error:
+            if not fixed:
+                raise
+            write(root/'source-reference-status.json',dict(status='FAILED',error=str(error)))
+        else:
+            if fixed:
+                write(root/'source-reference-status.json',dict(status='ANALYZED'))
+        promote = fixed or (run in FORMAL_ARMS and qualifies(read(root/FULL/'source-scores.json')['scores'],FORMAL_ARMS[run]))
+        if not fixed:
+            status(status='SOURCE_SCORED',promote=promote)
         if promote:
             status(status='FORMAL_PREDICTING',route=FULL)
             formal_runtime = dict(rt,max_workers=2) if run in raw_train.RUNS else rt
@@ -832,8 +851,14 @@ def collect(args):
     plans={case:formal_receipt(case,root.name) for case in FULL_CASES}
     matrices,activity=load_frozen(args.output/'predictions',ungated=True,observed_plans=plans)
     spec=plans[FULL_CASES[0]]
-    score_matrix(matrices,activity,{FULL:spec['modes']},args.dataset,args.output/'scores',tuple(spec['seeds']),
-                 lambda result:full_target_acceptance(result[FULL][FORMAL_ARMS[root.name]]['pooled']))
+    if root.name in FIXED_FULL_ARMS:
+        arms = formal_arms(root.name)
+        score_matrix(matrices,activity,{FULL:spec['modes']},args.dataset,args.output/'scores',tuple(spec['seeds']),
+                     lambda result:{arm:full_target_acceptance(result[FULL][arm]['pooled']) for arm in arms},
+                     additional_pairings=tuple((arms[0],ref) for ref in ('direct','complex_response_half',raw_train.TASK)))
+    else:
+        score_matrix(matrices,activity,{FULL:spec['modes']},args.dataset,args.output/'scores',tuple(spec['seeds']),
+                     lambda result:full_target_acceptance(result[FULL][FORMAL_ARMS[root.name]]['pooled']))
 
 
 def main():
@@ -866,6 +891,7 @@ def main():
     pseudo_options.add_argument('--raw-clean-margin',dest='run_id',action='store_const',const=raw_train.GEOMETRY_RUN)
     pseudo_options.add_argument('--raw-stream-context',dest='run_id',action='store_const',const=raw_train.STREAM_RUN)
     pseudo_options.add_argument('--raw-paired-denoise',dest='run_id',action='store_const',const=raw_train.PAIR_RUN)
+    pseudo_options.add_argument('--raw-edit-aligned',dest='run_id',action='store_const',const=raw_train.ALIGN_RUN)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -930,7 +956,7 @@ def main():
                            raw_train.DURA_RUN: [6,5], raw_train.TASK_RUN: [2,3],
                            raw_train.REL_RUN: [7,6,2,0], raw_train.VISIBLE_RUN: [7,2,6,3],
                            raw_train.GEOMETRY_RUN: [7,2,0,6], raw_train.STREAM_RUN: [6,5,7,2,0],
-                           raw_train.PAIR_RUN: [6,7,2,0,3]}
+                           raw_train.PAIR_RUN: [6,7,2,0,3], raw_train.ALIGN_RUN: [0,7,2,6,3]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
