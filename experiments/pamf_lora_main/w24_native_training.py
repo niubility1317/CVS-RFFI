@@ -11,6 +11,7 @@ from torch.nn import functional as F
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main.data import BANDWIDTH_HZ
+from experiments.pamf_lora_main.w24_clean_geometry import clean_geometry_risk, clean_prototypes
 from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, VisibleIQ, reliability
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.w24_native_dura import (
@@ -27,11 +28,14 @@ REL_RUN = '20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01'
 REL_ARMS = ('chirp_reliability','local_reliability')
 VISIBLE_RUN = '20261127-phase1-lora-raw8192-visible-wave-s2026113017-r01'
 WAVE_ARMS = ('full_wave_native','visible_wave_native')
-TASK_STAGES = (TASK,*REL_ARMS,*WAVE_ARMS)
-RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS}
+GEOMETRY_RUN = '20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01'
+GEOMETRY_ARMS = ('clean_anchor_native','rival_margin_native')
+GEOMETRY_WEIGHT = .35
+TASK_STAGES = (TASK,*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS)
+RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS, GEOMETRY_RUN: GEOMETRY_ARMS}
 STAGE_RUN = {stage:run for run,stages in RUNS.items() for stage in stages}
-SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015,VISIBLE_RUN: 2026113017}
-STEPS = dict(zip((*STAGES,*TASK_STAGES),(10000,10000,12000,18000,15000,15000,15000,15000),strict=True))
+SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015,VISIBLE_RUN: 2026113017,GEOMETRY_RUN: 2026113021}
+STEPS = dict(zip((*STAGES,*TASK_STAGES),(10000,10000,12000,18000,15000,15000,15000,15000,15000,15000),strict=True))
 BATCH_ROLE = 8
 DURA_LR = 2e-4
 TASK_LR = 4e-5
@@ -94,6 +98,11 @@ def _proof(stage,contract,model_proof):
             or model_proof['initialization']!=TASK_RUN
             or model_proof['visible_waveform']!=(stage==WAVE_ARMS[-1])):
         raise ValueError('Unexpected native waveform objective or parent')
+    if stage in GEOMETRY_ARMS and (model_proof['F_trainable']
+            or model_proof['initialization']!=TASK_RUN
+            or model_proof['relative_clean_geometry']!=(stage==GEOMETRY_ARMS[-1])
+            or model_proof['clean_prototype_source_count']!=contract['counts']['L_s']):
+        raise ValueError('Unexpected native clean geometry objective or parent')
 
 
 def load_stage(root, stage, contract, module, device):
@@ -117,7 +126,7 @@ def dura_model(root, contract, device, stage=STAGES[-1], *, parents_only=False):
     return model
 
 
-def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *, waveform_projector=None):
+def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *, waveform_projector=None, geometry=None):
     n=len(label)
     raw=raw/capture_scale(raw)
     observed=mix(raw.unflatten(-1,(8,1024)),rng).flatten(-2)
@@ -126,7 +135,8 @@ def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *,
     clean_ap, _=joint.normalize_aperture(frontend.aperture(raw))
     repaired_ap, _=joint.normalize_aperture(frontend.aperture(restored))
     clean_end, _=joint.normalize_aperture(frontend.aperture(clean_out))
-    predict, clean_logits, clean_prediction=reader(torch.cat((repaired_ap[:n],clean_ap[:n],clean_end)))[0].split(n)
+    logits, feature=reader(torch.cat((repaired_ap[:n],clean_ap[:n],clean_end)))
+    predict, clean_logits, clean_prediction=logits.split(n)
     lx=F.cross_entropy(predict,label)
     lc=.5*(F.cross_entropy(clean_logits,label)+F.cross_entropy(clean_prediction,label))
     teacher=clean_logits.detach().softmax(-1)
@@ -142,7 +152,12 @@ def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *,
     mse=error.abs().square().mean()
     fidelity=(clean_out-raw[:n]).abs().square().mean()
     pseudo, accepted=joint.clean_pseudo_loss(reader,reader,clean_ap[n:],repaired_ap[n:])
-    return torch.stack((lx,lc,kl,spectral,mse,fidelity,pseudo,accepted))
+    parts=(lx,lc,kl,spectral,mse,fidelity,pseudo,accepted)
+    if geometry is not None:
+        prototypes, relative=geometry
+        estimated_feature,clean_feature,_=feature.split(n)
+        parts+=(clean_geometry_risk(estimated_feature,clean_feature,label,prototypes,relative=relative),)
+    return torch.stack(parts)
 
 
 def fit(joint, config, stage, *, smoke, device='cuda:0'):
@@ -156,7 +171,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     is_task=stage in TASK_STAGES
     seed=SEEDS[run]+(STAGES.index(stage) if stage in STAGES else 0)
     torch.manual_seed(seed)
-    count=2 if smoke else BATCH_ROLE
+    count=2 if smoke and stage not in GEOMETRY_ARMS else BATCH_ROLE
     steps=1 if smoke else STEPS[stage]
     order=np.random.default_rng(seed)
     rng=torch.Generator(device=device).manual_seed(seed)
@@ -197,13 +212,17 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
         trained.requires_grad_(True).train()
     l_iq=source_role(source,contract,'L_s')[0]
     u_iq=source_role(source,contract,'U_s')[0]
+    geometry=None
+    if stage in GEOMETRY_ARMS:
+        geometry=(clean_prototypes(joint,reader,frontend,l_iq,labels,device),stage==GEOMETRY_ARMS[-1])
 
     optimizer=torch.optim.AdamW(trained.parameters(),lr=TASK_LR if is_task else DURA_LR,weight_decay=1e-4)
     schedule=torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,steps,eta_min=2e-6 if is_task else 2e-5)
     accepted=torch.zeros((),device=device)
-    weights=torch.tensor((1.,.65,.3,.30,.25,1.5,1.,0.),device=device)
+    weights=torch.tensor((1.,.65,.3,.30,.25,1.5,1.,0.) + ((GEOMETRY_WEIGHT,) if geometry is not None else ()),
+                         device=device)
     started=monotonic()
-    fit_gradient = supervised = pseudo_gradient = None
+    fit_gradient = supervised = pseudo_gradient = geometry_gradient = None
     for step in range(1,steps+1):
         l=order.choice(len(l_iq),count,replace=False)
         u=order.choice(len(u_iq),count,replace=False)
@@ -220,7 +239,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                     if not residue < 3e-6:
                         raise ValueError('Unstable W24-invisible native component')
             parts=training_task_parts(joint,model,reader,frontend,mix,raw,label,rng,
-                                      waveform_projector=waveform_projector)
+                                      waveform_projector=waveform_projector,geometry=geometry)
             accepted+=parts[7].detach()
             loss=parts@weights
             if smoke:
@@ -228,6 +247,11 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                 pseudo_gradient=joint.norm_gradient(torch.autograd.grad(parts[6],trained.parameters(),retain_graph=True))
                 if not (0<supervised<float('inf') and 0<pseudo_gradient<float('inf')):
                     raise ValueError('Actual E104 L_s and accepted clean U_s must train native IQ')
+                if geometry is not None:
+                    geometry_gradient=joint.norm_gradient(torch.autograd.grad(
+                        parts[8],trained.parameters(),retain_graph=True))
+                    if not 0<geometry_gradient<float('inf'):
+                        raise ValueError('Clean geometry loss has no finite restoration gradient')
         else:
             clean,observed,exact,variance=source_pair(raw,rng)
             incoming=pair(observed)
@@ -267,8 +291,11 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                      source_envelope_fraction=.5)
     if stage in WAVE_ARMS:
         proof.update(initialization=TASK_RUN,visible_waveform=stage==WAVE_ARMS[-1])
+    if stage in GEOMETRY_ARMS:
+        proof.update(initialization=TASK_RUN,relative_clean_geometry=stage==GEOMETRY_ARMS[-1],
+                     clean_prototype_source_count=len(l_iq))
     summary=dict(**proof,status='PASS' if smoke else 'SOURCE_FROZEN',
-                 gradient=fit_gradient,CE_to_G=supervised,pseudo_CE_to_G=pseudo_gradient,
+                 gradient=fit_gradient,CE_to_G=supervised,pseudo_CE_to_G=pseudo_gradient,geometry_to_G=geometry_gradient,
                  worker_seconds=monotonic()-started,parameters=sum(x.numel() for x in trained.parameters()),
                  peak_cuda_bytes=torch.cuda.max_memory_allocated() if device.startswith('cuda') else 0)
     if not smoke:
@@ -300,7 +327,7 @@ def load_readers(joint, rt, device):
 
 def restored_raw(model, raw, mode, device):
     iq=tensor(raw.view(np.float32),device).view(torch.complex64)
-    if mode in (*REL_ARMS,*WAVE_ARMS):
+    if mode in (*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS):
         out=model[mode](iq)
     else:
         out=model(iq) if mode==TASK else model(iq,stage=mode)

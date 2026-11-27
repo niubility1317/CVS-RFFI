@@ -228,7 +228,7 @@ def norm_gradient(values):
 
 
 def source_parent(run):
-    if run in (raw_train.REL_RUN,raw_train.VISIBLE_RUN):
+    if run in (raw_train.REL_RUN,raw_train.VISIBLE_RUN,raw_train.GEOMETRY_RUN):
         return raw_train.TASK_RUN
     return RUN_STRONG if run in (RUN_COLOR,RUN_GAIN,RUN_COV,RUN_VIEW,*raw_train.RUNS) else RUN_FIXED_PL
 
@@ -606,7 +606,7 @@ def predict_raw_source(rt):
     with np.load(comparison/'predictions.npz',allow_pickle=False) as archived:
         predictions = {view: np.concatenate((archived[view],matrix[view][1:])) for view in VIEWS}
     write_source_predictions(root,ids,predictions,(*baseline_modes,*stages),
-                             steps=raw_train.STEPS[stages[-1]] if run in (raw_train.REL_RUN,raw_train.VISIBLE_RUN) else sum(raw_train.STEPS[a] for a in stages),
+                             steps=raw_train.STEPS[stages[-1]] if run in (raw_train.REL_RUN,raw_train.VISIBLE_RUN,raw_train.GEOMETRY_RUN) else sum(raw_train.STEPS[a] for a in stages),
                              matched_run=ancestor,
                              model_input_length=8192,preprocess_after_restoration=True)
 
@@ -634,9 +634,9 @@ def qualifies(scores, candidate=CANDIDATE):
             return False
         if candidate == raw_train.STAGES[-1]:
             controls.extend(scores[stage] for stage in raw_train.STAGES[:-1])
-    if candidate in (raw_train.REL_ARMS[-1],raw_train.WAVE_ARMS[-1]):
-        matched = raw_train.REL_ARMS[0] if candidate == raw_train.REL_ARMS[-1] else raw_train.WAVE_ARMS[0]
-        control,parent = scores[matched],scores[raw_train.TASK]
+    native_controls = {arms[-1]:arms[0] for arms in (raw_train.REL_ARMS,raw_train.WAVE_ARMS,raw_train.GEOMETRY_ARMS)}
+    if candidate in native_controls:
+        control,parent = scores[native_controls[candidate]],scores[raw_train.TASK]
         if test['low_urban_correct'] <= control['low_urban_correct'] or test['by_scene']['clean'] < parent['by_scene']['clean']:
             return False
         controls.extend((control,parent,scores[STRONG]))
@@ -863,6 +863,7 @@ def main():
     pseudo_options.add_argument('--raw-e104',dest='run_id',action='store_const',const=raw_train.TASK_RUN)
     pseudo_options.add_argument('--raw-reliability',dest='run_id',action='store_const',const=raw_train.REL_RUN)
     pseudo_options.add_argument('--raw-visible-wave',dest='run_id',action='store_const',const=raw_train.VISIBLE_RUN)
+    pseudo_options.add_argument('--raw-clean-margin',dest='run_id',action='store_const',const=raw_train.GEOMETRY_RUN)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -925,14 +926,15 @@ def main():
                            RUN_STRONG: [7,0,3,2,6,5], RUN_COLOR: [0,3,7,2,6,5], RUN_GAIN: [7,2,0,3,6,5],
                            RUN_COV: [7,6,0,3,2,5], RUN_VIEW: [7,0,2,6,3,5],
                            raw_train.DURA_RUN: [6,5], raw_train.TASK_RUN: [2,3],
-                           raw_train.REL_RUN: [7,6,2,0], raw_train.VISIBLE_RUN: [7,2,6,3]}
+                           raw_train.REL_RUN: [7,6,2,0], raw_train.VISIBLE_RUN: [7,2,6,3],
+                           raw_train.GEOMETRY_RUN: [7,2,0,6]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),training_release_root=str(releases/f'{TRAIN_RUN}-release'),
                   classifier_root=str(runs/AUG_RUN),unet_parent=str(runs/UNET_FIDELITY_RUN),
                   allowed_gpus=gpu_preferences[run],
-                  max_workers=(2 if run in (raw_train.REL_RUN,raw_train.VISIBLE_RUN) else 1 if run in (RUN_PL,*raw_train.RUNS) else 3),
+                  max_workers=(2 if run in (raw_train.REL_RUN,raw_train.VISIBLE_RUN,raw_train.GEOMETRY_RUN) else 1 if run in (RUN_PL,*raw_train.RUNS) else 3),
                   max_compute_processes=8,cpu_workers=6)
         rt['external_releases']=[rt[k] for k in ('source_root','w24_release_root',
                                                 'training_release_root','classifier_root','unet_parent')]
@@ -943,7 +945,7 @@ def main():
             rt['external_releases'] += [str(runs/RUN_FIXED_PL),str(releases/f'{RUN_FIXED_PL}-release')]
         if run in raw_train.RUNS or (run in PARENT_TRIALS and source_parent(run) == RUN_STRONG):
             rt['external_releases'] += [str(runs/RUN_STRONG),str(releases/f'{RUN_STRONG}-release')]
-        if run in (raw_train.REL_RUN,raw_train.VISIBLE_RUN):
+        if run in (raw_train.REL_RUN,raw_train.VISIBLE_RUN,raw_train.GEOMETRY_RUN):
             rt['external_releases'] += [str(runs/raw_train.TASK_RUN),str(releases/f'{raw_train.TASK_RUN}-release')]
         if run in FORMAL_ARMS:
             rt['native_target_root']=str(releases/f'{DATA_RUN}-release'/'data/target')

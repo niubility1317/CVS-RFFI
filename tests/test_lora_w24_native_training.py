@@ -2,6 +2,7 @@ import torch
 
 from experiments.pamf_lora_main import w24_joint_pamf as joint
 from experiments.pamf_lora_main import w24_native_training as train
+from experiments.pamf_lora_main.w24_clean_geometry import clean_geometry_risk
 from experiments.pamf_lora_main.w24_native_dura import NativeDura, iq_error, source_pair
 from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, VisibleIQ, reliability
 from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
@@ -115,3 +116,28 @@ def test_visible_wave_objective_projects_the_error_and_its_gradient():
     torch.testing.assert_close(g,weight-operator(weight))
     assert g[0,-1]==0
     torch.testing.assert_close(operator(g),torch.zeros_like(g))
+
+
+def test_same_anchor_distance_distinguishes_motion_towards_a_false_rival():
+    target = torch.tensor([0])
+    anchor = torch.tensor([[1.,0.]],requires_grad=True)
+    table = torch.tensor([[1.,0.],[.95,.3122499],[-1.,0.]],requires_grad=True)
+    toward = torch.tensor([[.99,.14106736]],requires_grad=True)
+    away = torch.tensor([[.99,-.14106736]],requires_grad=True)
+    positive = [clean_geometry_risk(z,anchor,target,table,relative=False) for z in (toward,away)]
+    relative = [clean_geometry_risk(z,anchor,target,table,relative=True) for z in (toward,away)]
+    torch.testing.assert_close(*positive)
+    assert relative[0]>positive[0] and relative[1]==0
+    relative[0].backward()
+    assert toward.grad.abs().sum()>0
+    assert anchor.grad is None and table.grad is None
+
+
+def test_empty_negative_does_not_enter_when_clean_prototype_matches_true_label():
+    labels=torch.tensor([1])
+    clean=torch.tensor([[1.,0.]],requires_grad=True)
+    table=torch.tensor([[.9,.4358899],[1.,0.],[-1.,0.]])
+    identical=clean.detach().clone().requires_grad_()
+    risk=clean_geometry_risk(identical,clean,labels,table,relative=True)
+    risk.backward()
+    assert risk==0 and torch.count_nonzero(identical.grad)==0
