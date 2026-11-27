@@ -11,6 +11,7 @@ from torch.nn import functional as F
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main.data import BANDWIDTH_HZ
+from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, reliability
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.w24_native_dura import (
     NativeDura, NATIVE_LENGTH, STAGES, action_loss, capture_scale, coarse_loss, iq_error, source_pair,
@@ -22,9 +23,13 @@ from experiments.pamf_restoration.models import complex_iq, pair
 DURA_RUN = '20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01'
 TASK_RUN = '20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01'
 TASK = 'raw_e104_strong'
-RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,)}
-SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011}
-STEPS = dict(zip((*STAGES, TASK), (10000, 10000, 12000, 18000), strict=True))
+REL_RUN = '20261127-phase1-lora-raw8192-local-reliability-s2026113015-r01'
+REL_ARMS = ('chirp_reliability','local_reliability')
+TASK_STAGES = (TASK,*REL_ARMS)
+RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), REL_RUN: REL_ARMS}
+STAGE_RUN = {stage:run for run,stages in RUNS.items() for stage in stages}
+SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015}
+STEPS = dict(zip((*STAGES,*TASK_STAGES),(10000,10000,12000,18000,15000,15000),strict=True))
 BATCH_ROLE = 8
 DURA_LR = 2e-4
 TASK_LR = 4e-5
@@ -32,10 +37,11 @@ ISOLATION = ('U_TX_reads','V_reads','target_reads','practical_reads','trace_read
 
 
 class NativeTaskRestorer(nn.Module):
-    def __init__(self, tracker, parent=None):
+    def __init__(self, tracker, parent=None, *, projector=None, localized=False):
         super().__init__()
         self.tracker = tracker
-        self.core = PacketUNet(across_chirps=True, center=1024)
+        self.projector, self.localized = projector, localized
+        self.core = PacketUNet(across_chirps=True,center=1024,with_reliability=projector is not None)
         if parent is not None:
             state = parent.state_dict()
             pos = state['temporal_position'].T.unsqueeze(0)
@@ -49,16 +55,22 @@ class NativeTaskRestorer(nn.Module):
             rms = framed.abs().square().mean(-1,keepdim=True).clamp_min(1e-8).sqrt()
             observed = framed / rms
             edges = torch.cat((packets[..., :24],packets[..., -24:]),dim=-1)
-        corrected = self.core(observed,coherence.unsqueeze(-1),rms,edges)[-1]
+            cue = (None if self.projector is None else
+                   reliability(self.projector(raw),rms,localized=self.localized))
+        corrected = self.core(observed,coherence.unsqueeze(-1),rms,edges,reliability=cue)[-1]
         return raw + .5 * ((corrected-observed) * rotation * rms).flatten(-2)
 
 
-def task_model(parent, device):
+def task_model(parent, device, **kwargs):
     archive=importlib.import_module('lora_wide_dura_archive.dura_w24_model')
     tracker=archive.PacketRestorer('consensus',samples=1024).to(device).eval().requires_grad_(False)
     t=torch.arange(1024,dtype=torch.float64,device=device)/1e6
     tracker.reference.chirp = torch.exp(2j*torch.pi*BANDWIDTH_HZ*(t.square()/.002048-t/2)).to(torch.complex64)
-    return NativeTaskRestorer(tracker,parent).to(device)
+    return NativeTaskRestorer(tracker,parent,**kwargs).to(device)
+
+
+def build_projector(frontend,device):
+    return InvisibleIQ(frontend.indices,frontend.taps,frontend.edges,width=NATIVE_LENGTH).to(device)
 
 
 def _proof(stage,contract,model_proof):
@@ -67,10 +79,15 @@ def _proof(stage,contract,model_proof):
         raise ValueError('Unexpected native frozen training record')
     if any(model_proof[k] for k in ISOLATION):
         raise ValueError('Unexpected data access in native recovery training')
-    if model_proof['F_reads'] != (stage == TASK):
+    if model_proof['F_reads'] != (stage in TASK_STAGES):
         raise ValueError('Unexpected native recovery teacher')
     if stage == TASK and (model_proof['F_trainable'] or model_proof['initialization'] != 'same_source_w24_length_adapted'):
         raise ValueError('Unexpected E104 trainable state or parent')
+    if stage in REL_ARMS and (model_proof['F_trainable']
+            or model_proof['initialization']!=TASK_RUN
+            or model_proof['localized_reliability']!=(stage==REL_ARMS[-1])
+            or model_proof['source_envelope_fraction']!=.5):
+        raise ValueError('Unexpected native reliability parent or branch')
 
 
 def load_stage(root, stage, contract, module, device):
@@ -123,10 +140,10 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     if set(rt)!=set(joint.FIT_FIELDS):
         raise ValueError('Unexpected native train runtime role')
     folder,source=Path(rt['run_root']),Path(rt['source_root'])
-    run=DURA_RUN if stage in STAGES else TASK_RUN
+    run=STAGE_RUN[stage]
     if folder.parent.name!=run or folder.name!=stage or stage not in RUNS[run]:
         raise ValueError('Unexpected isolated native stage root')
-    is_task=stage==TASK
+    is_task=stage in TASK_STAGES
     seed=SEEDS[run]+(STAGES.index(stage) if stage in STAGES else 0)
     torch.manual_seed(seed)
     count=2 if smoke else BATCH_ROLE
@@ -136,12 +153,26 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     probes=torch.Generator(device=device).manual_seed(seed+11)
     if is_task:
         contract,reader,g0,frontend=joint.boot(rt,device)
-        parent=joint.continuation_parent(rt,contract,reader,g0,device,joint.RUN_STRONG)
-        model=task_model(parent,device)
+        if stage==TASK:
+            parent=joint.continuation_parent(rt,contract,reader,g0,device,joint.RUN_STRONG)
+            model=task_model(parent,device)
+        else:
+            projector=build_projector(frontend,device)
+            base=task_model(None,device)
+            load_stage(Path(rt['project'])/'runs'/TASK_RUN,TASK,contract,base.core,device)
+            model=task_model(None,device,projector=projector,localized=stage==REL_ARMS[-1])
+            state=base.core.state_dict()
+            state['reliability_stem.weight']=model.core.reliability_stem.weight.detach().clone()
+            model.core.load_state_dict(state,strict=True)
+            if not smoke:
+                del base
         trained=model.core
         reader.requires_grad_(False).eval()
         original=importlib.import_module('lora_wide_dura_archive.dura_w24_model').condition_waveforms
-        mix=joint.StrongSourceMix(original,torch.Generator(device=device).manual_seed(seed+1),device,enabled=True)
+        shape = (LocalizedWhite(torch.Generator(device=device).manual_seed(seed+2))
+                 if stage in REL_ARMS else None)
+        mix=joint.StrongSourceMix(original,torch.Generator(device=device).manual_seed(seed+1),
+                                  device,enabled=True,noise_shape=shape)
         labels=joint.training_labels(source,contract)
     else:
         contract=source_contract(source)
@@ -165,6 +196,14 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
         optimizer.zero_grad(set_to_none=True)
         if is_task:
             label=tensor(labels[l],device).long()
+            if smoke and stage in REL_ARMS:
+                with torch.no_grad():
+                    torch.testing.assert_close(model(raw),base(raw),rtol=0.,atol=0.)
+                    missing=projector(raw)
+                    scale=raw.abs().square().mean(-1,keepdim=True).sqrt()
+                    residue=frontend.aperture(missing/scale).abs().max()
+                    if not residue < 3e-6:
+                        raise ValueError('Unstable W24-invisible native component')
             parts=training_task_parts(joint,model,reader,frontend,mix,raw,label,rng)
             accepted+=parts[7].detach()
             loss=parts@weights
@@ -207,6 +246,9 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
         proof.update(initialization='same_source_w24_length_adapted',U_PL_teacher=joint.AUG_RUN,
                      U_PL_threshold=joint.PL_THRESHOLD,U_PL_accepted=int(accepted),
                      strong_exposures=int(mix.selected))
+    if stage in REL_ARMS:
+        proof.update(initialization=TASK_RUN,localized_reliability=stage==REL_ARMS[-1],
+                     source_envelope_fraction=.5)
     summary=dict(**proof,status='PASS' if smoke else 'SOURCE_FROZEN',
                  gradient=fit_gradient,CE_to_G=supervised,pseudo_CE_to_G=pseudo_gradient,
                  worker_seconds=monotonic()-started,parameters=sum(x.numel() for x in trained.parameters()),
@@ -224,16 +266,26 @@ def load_readers(joint, rt, device):
     contract,f,g0,tracker=joint.boot(rt,device)
     if run==DURA_RUN:
         model=dura_model(root,contract,device).eval().requires_grad_(False)
-    else:
+    elif run==TASK_RUN:
         model=task_model(None,device)
         load_stage(root,TASK,contract,model.core,device)
         model.eval().requires_grad_(False)
+    else:
+        projector=build_projector(tracker,device)
+        model={}
+        for stage in REL_ARMS:
+            restorer=task_model(None,device,projector=projector,localized=stage==REL_ARMS[-1])
+            load_stage(root,stage,contract,restorer.core,device)
+            model[stage]=restorer.eval().requires_grad_(False)
     return f,model,tracker,contract
 
 
 def restored_raw(model, raw, mode, device):
     iq=tensor(raw.view(np.float32),device).view(torch.complex64)
-    out=model(iq) if mode==TASK else model(iq,stage=mode)
+    if mode in REL_ARMS:
+        out=model[mode](iq)
+    else:
+        out=model(iq) if mode==TASK else model(iq,stage=mode)
     if out.shape!=iq.shape or not out.is_complex():
         raise ValueError('Expected one complete physical native IQ packet per input')
     return np.asarray(out.detach().cpu().view(torch.float32).tolist(),dtype=np.float32).view(np.complex64)

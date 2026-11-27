@@ -97,6 +97,7 @@ VIEW_SEED, VIEW_STEPS, VIEW_BATCH = 2026113007, 12000, 8
 VIEW_TILT, VIEW_TEMPERATURE = .75, .25
 FIXED_PL_COMMIT = '37215dd615d0f651ffebe87d6aaba6af0ab7a847'
 STRONG_COMMIT = '76385bf9174440cc4e437a47bfc2fd7aff1b1fcb'
+RAW_TASK_COMMIT = '39be84764f9c1340823f4e9d94df958911307056'
 CENTER, CANDIDATE = 384, 'frozen_pamf_ce'
 FORMAL_ARMS = {RUN: CANDIDATE, RUN_FIXED_PL: FIXED_PL,
                **{run: candidate for run, (_, candidate) in PARENT_TRIALS.items()},
@@ -227,11 +228,15 @@ def norm_gradient(values):
 
 
 def source_parent(run):
+    if run == raw_train.REL_RUN:
+        return raw_train.TASK_RUN
     return RUN_STRONG if run in (RUN_COLOR,RUN_GAIN,RUN_COV,RUN_VIEW,*raw_train.RUNS) else RUN_FIXED_PL
 
 
 def parent_modes(parent):
     modes = (*MODES,FIXED_PL)
+    if parent == raw_train.TASK_RUN:
+        return (*modes,*STRONG_ARMS,raw_train.TASK)
     return (*modes,*STRONG_ARMS) if parent == RUN_STRONG else modes
 
 
@@ -576,7 +581,8 @@ def predict_raw_source(rt):
     f,model,tracker,contract = raw_train.load_readers(joint,rt,device)
     run = rt['run_id']
     stages = raw_train.RUNS[run]
-    baseline_modes = parent_modes(RUN_STRONG)
+    ancestor = source_parent(run)
+    baseline_modes = parent_modes(ancestor)
 
     def render(raw):
         return np.stack([classify_aperture(f,received_aperture(raw,device)),
@@ -591,7 +597,7 @@ def predict_raw_source(rt):
     if render(sample).shape != (1+len(stages),2):
         raise ValueError('Expected frozen native IQ source smoke')
     ids,matrix = source_predictions(rt,source,contract,render)
-    comparison = root.parent/RUN_STRONG/FULL
+    comparison = root.parent/ancestor/FULL
     reference = read(comparison/'source-predictions.json')
     if (reference['modes'] != list(baseline_modes) or reference['views'] != list(VIEWS)
             or reference['source_truth_reads'] or reference['target_reads']):
@@ -600,7 +606,8 @@ def predict_raw_source(rt):
     with np.load(comparison/'predictions.npz',allow_pickle=False) as archived:
         predictions = {view: np.concatenate((archived[view],matrix[view][1:])) for view in VIEWS}
     write_source_predictions(root,ids,predictions,(*baseline_modes,*stages),
-                             steps=sum(raw_train.STEPS[a] for a in stages),matched_run=RUN_STRONG,
+                             steps=raw_train.STEPS[stages[-1]] if run == raw_train.REL_RUN else sum(raw_train.STEPS[a] for a in stages),
+                             matched_run=ancestor,
                              model_input_length=8192,preprocess_after_restoration=True)
 
 
@@ -627,6 +634,11 @@ def qualifies(scores, candidate=CANDIDATE):
             return False
         if candidate == raw_train.STAGES[-1]:
             controls.extend(scores[stage] for stage in raw_train.STAGES[:-1])
+    if candidate == raw_train.REL_ARMS[-1]:
+        control,parent = scores[raw_train.REL_ARMS[0]],scores[raw_train.TASK]
+        if test['low_urban_correct'] <= control['low_urban_correct'] or test['by_scene']['clean'] < parent['by_scene']['clean']:
+            return False
+        controls.extend((control,parent,scores[STRONG]))
     return (test['six_correct'] > max(x['six_correct'] for x in controls)
             and test['low_urban_correct'] >= max(x['low_urban_correct'] for x in controls)
             and test['by_scene']['clean'] >= scores['direct']['by_scene']['clean'])
@@ -651,7 +663,7 @@ def formal_reference(rt, case):
     parent = project/'runs'/run
     release = read(project/'releases'/f'{run}-release'/'runtime.json')
     state = read(parent/'state.json')
-    expected_commit = STRONG_COMMIT if run == RUN_STRONG else FIXED_PL_COMMIT
+    expected_commit = {RUN_STRONG:STRONG_COMMIT,RUN_FIXED_PL:FIXED_PL_COMMIT,raw_train.TASK_RUN:RAW_TASK_COMMIT}[run]
     if (release['code_commit'] != expected_commit or Path(release['run_root']) != parent
             or any(release[k] != rt[k] for k in ('source_root','native_target_root','w24_release_root'))
             or state != dict(status='PREDICTIONS_FROZEN',cases=list(FULL_CASES),target_truth_read=False)):
@@ -848,6 +860,7 @@ def main():
     pseudo_options.add_argument('--paired-view-risk',dest='run_id',action='store_const',const=RUN_VIEW)
     pseudo_options.add_argument('--raw-dura',dest='run_id',action='store_const',const=raw_train.DURA_RUN)
     pseudo_options.add_argument('--raw-e104',dest='run_id',action='store_const',const=raw_train.TASK_RUN)
+    pseudo_options.add_argument('--raw-reliability',dest='run_id',action='store_const',const=raw_train.REL_RUN)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -887,9 +900,13 @@ def main():
                          (control,parent))
         if runtime['run_id'] in raw_train.RUNS:
             stages = raw_train.RUNS[runtime['run_id']]
-            modes = (*parent_modes(RUN_STRONG),*stages)
+            ancestor = source_parent(runtime['run_id'])
+            modes = (*parent_modes(ancestor),*stages)
+            refs = ('direct','outer_half',STRONG)
+            if ancestor==raw_train.TASK_RUN:
+                refs += (raw_train.TASK,)
             contrasts = tuple((stage,prior) for i,stage in enumerate(stages)
-                              for prior in ('direct','outer_half',STRONG,*stages[:i]))
+                              for prior in (*refs,*stages[:i]))
         score_source(args.runtime,modes=modes,output=Path(runtime['run_root'])/FULL,contrasts=contrasts)
     elif args.action=='predict-formal':
         predict_formal(read(args.runtime),args.case)
@@ -905,14 +922,16 @@ def main():
                            RUN_FEATURE: [0,3,7,2,6,5], RUN_REFINE: [7,3,0,2,6,5],
                            RUN_STRONG: [7,0,3,2,6,5], RUN_COLOR: [0,3,7,2,6,5], RUN_GAIN: [7,2,0,3,6,5],
                            RUN_COV: [7,6,0,3,2,5], RUN_VIEW: [7,0,2,6,3,5],
-                           raw_train.DURA_RUN: [6,5], raw_train.TASK_RUN: [2,3]}
+                           raw_train.DURA_RUN: [6,5], raw_train.TASK_RUN: [2,3],
+                           raw_train.REL_RUN: [7,6,2,0]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),training_release_root=str(releases/f'{TRAIN_RUN}-release'),
                   classifier_root=str(runs/AUG_RUN),unet_parent=str(runs/UNET_FIDELITY_RUN),
                   allowed_gpus=gpu_preferences[run],
-                  max_workers=1 if run in (RUN_PL,*raw_train.RUNS) else 3,max_compute_processes=8,cpu_workers=6)
+                  max_workers=(2 if run==raw_train.REL_RUN else 1 if run in (RUN_PL,*raw_train.RUNS) else 3),
+                  max_compute_processes=8,cpu_workers=6)
         rt['external_releases']=[rt[k] for k in ('source_root','w24_release_root',
                                                 'training_release_root','classifier_root','unet_parent')]
         rt['external_releases'] += [str(runs/r) for r in (DURA_RUN,TRAIN_RUN)]
@@ -922,6 +941,8 @@ def main():
             rt['external_releases'] += [str(runs/RUN_FIXED_PL),str(releases/f'{RUN_FIXED_PL}-release')]
         if run in raw_train.RUNS or (run in PARENT_TRIALS and source_parent(run) == RUN_STRONG):
             rt['external_releases'] += [str(runs/RUN_STRONG),str(releases/f'{RUN_STRONG}-release')]
+        if run==raw_train.REL_RUN:
+            rt['external_releases'] += [str(runs/raw_train.TASK_RUN),str(releases/f'{raw_train.TASK_RUN}-release')]
         if run in FORMAL_ARMS:
             rt['native_target_root']=str(releases/f'{DATA_RUN}-release'/'data/target')
             rt['external_releases'] += [rt['native_target_root'],str(runs/RUN_OUTER)]

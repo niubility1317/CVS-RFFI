@@ -3,6 +3,7 @@ import torch
 from experiments.pamf_lora_main import w24_joint_pamf as joint
 from experiments.pamf_lora_main import w24_native_training as train
 from experiments.pamf_lora_main.w24_native_dura import NativeDura, iq_error, source_pair
+from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, reliability
 from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 from experiments.pamf_restoration.models import complex_iq, pair
 
@@ -41,15 +42,61 @@ def test_native_length_transfer_changes_only_positional_grid():
 def test_raw_formal_receipt_preserves_w24_parent_and_source_control():
     for run,stages in train.RUNS.items():
         mode=stages[-1]
+        parent=joint.source_parent(run)
         cases=joint.FULL_CASES
         for case in cases:
             proof=joint.formal_receipt(case,run)
-            assert proof['reference_run']==joint.RUN_STRONG
-            assert proof['modes'][-2:]==[joint.STRONG,mode]
+            assert proof['reference_run']==parent
+            assert proof['modes'][-2:]==[joint.FORMAL_ARMS[parent],mode]
         scores={name:dict(six_correct=1487,low_urban_correct=187,by_scene={'clean':297})
-                for name in (*joint.parent_modes(joint.RUN_STRONG),*stages)}
+                for name in (*joint.parent_modes(parent),*stages)}
         assert not joint.qualifies(scores,mode)
         scores[mode].update(six_correct=1492,low_urban_correct=189)
         assert joint.qualifies(scores,mode)
         scores[mode]['by_scene']['clean']=296
         assert not joint.qualifies(scores,mode)
+
+
+def test_native_aperture_projection_annihilates_the_exact_visible_functionals():
+    idx=torch.tensor([[[0,1],[2,3]]])
+    taps=torch.tensor([[.5,.5],[.5,.5]])
+    edges=torch.tensor([[4]])
+    subtract=InvisibleIQ(idx,taps,edges,width=6)
+    raw=torch.tensor([[1j,2j,3j,4j,5j,6j],[0j,2j,2j,2j,1j,0j]])
+    invisible=subtract(raw)
+    torch.testing.assert_close(invisible[:,[0,2]]+invisible[:,[1,3]],torch.zeros(2,2,dtype=raw.dtype))
+    torch.testing.assert_close(invisible[:,4],torch.zeros(2,dtype=raw.dtype))
+    torch.testing.assert_close(invisible[:,5],raw[:,5])
+    torch.testing.assert_close(subtract(invisible),invisible)
+    assert not subtract.state_dict()
+
+
+def test_local_reliability_changes_position_only_and_starts_at_identical_parent():
+    raw=torch.ones(1,8192,dtype=torch.complex64)
+    raw[:,192:256]*=3
+    rms=torch.ones(1,8,1)
+    local,pooled=(reliability(raw,rms,localized=flag) for flag in (True,False))
+    assert local.shape==pooled.shape==(1,8,1,1024)
+    assert local[0,0,0,224]>pooled[0,0,0,224]
+    assert torch.count_nonzero(pooled-pooled[...,:1])==0
+    torch.testing.assert_close(local[:,1:],pooled[:,1:])
+    parent=PacketUNet(across_chirps=True,center=1024)
+    model=PacketUNet(across_chirps=True,center=1024,with_reliability=True)
+    merged=parent.state_dict()
+    merged['reliability_stem.weight']=model.reliability_stem.weight.detach()
+    model.load_state_dict(merged,strict=True)
+    iq=raw.unflatten(-1,(8,1024))
+    observation=(iq,rms,rms,iq[...,:48])
+    expected=parent(*observation)[-1]
+    actual=model(*observation,reliability=local)[-1]
+    torch.testing.assert_close(actual,expected,rtol=0,atol=0)
+    actual.real.square().mean().backward()
+    assert model.reliability_stem.weight.grad.abs().sum()>0
+
+
+def test_nonstationary_source_shape_preserves_energy_and_is_reproducible():
+    noise=torch.randn(8,8,1024,dtype=torch.complex64,generator=torch.Generator().manual_seed(1))
+    a,b=(LocalizedWhite(torch.Generator().manual_seed(3))(noise) for _ in (0,1))
+    torch.testing.assert_close(a,b,rtol=0,atol=0)
+    torch.testing.assert_close(a.abs().square().sum((1,2)),noise.abs().square().sum((1,2)))
+    assert not torch.equal(a,noise)
