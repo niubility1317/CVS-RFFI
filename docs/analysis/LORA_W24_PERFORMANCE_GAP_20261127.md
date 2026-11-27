@@ -49,3 +49,11 @@
 1. 机制先验证到真实回写。用合法源 U 的同包录波和独立通用扰动，检查公共与逐 chirp 噪声的方向误差、弱复数信号泄漏、实际修正 RMS 和 clean 恒等。优先能够改变修正内容且可证伪的方案。把短预算用作机制筛查，再为通过者提供 24,000 至 48,000 步的匹配预算，避免对相同代理反复长训。
 2. 用预先划定、与既有 300 包面板物理互斥的更大源 V 检验。按接收机分组比较同包改对、改错、最差 RX、低城区及中城区，保留固定 clean 护栏。仅在权重和预测冻结后用 E104 独立评分，保留原正式 Full 标准。
 3. 优先检验监督参考和受扰分布。已有源证据让「区分加性噪声与无噪信道作用」比单纯叠层或增大增益更值得优先验证。训练更关注强扰动已有正向旁证，E104 指导的增益还涉及独立训练权限。维持两种条件的可比性。正在执行的首个参考分离对照 `20261127-phase1-lora-w24-additive-reference-s2026112991-r01` 在本分析核对时仍在拟合，识别结果待冻结后独立评分。 [参考分离预登记](../../automation_reports/CV-SincNet/20261127-phase1-lora-w24-additive-reference-s2026112991-r01/report.md)
+
+## Adaptive 能提供的观测
+
+历史 WiSig Adaptive 直接转换算子使用同一物理包的原始 IQ 和受扰 IQ。其 WiSig 源域 Residual 随机探针误差为六景均值 2.0780%、低城区均值 5.9071%、低城区 P90 为 14.1085%。这三项来自 `20261125-phase1-wisig-original-dura-adaptive-m1-r01/matched_operator_comparison_results.json` 中的 `adaptive_structure`。同包原始 IQ 在 LoRa 部署时通常不可得，这个结果适用于隔离算子诊断。
+
+只看当前实收 IQ 的 WiSig 版本，在同一 R07 参考的 128 个源 V 包上，交叉拟合主径和回波权重使六景探针误差从 4.245% 降到 3.259%，低城区从 8.483% 降到 7.271%，P95 从 29.721% 降到 24.045%。两组采用相同的冻结噪声方差估计。此实验度量的是 WiSig Residual 算子误差，未评估 LoRa Full 的识别准确率。 [仅用实收 IQ 的校准报告](https://github.com/niubility1317/CVS-RFFI/blob/23750e559782077f467a2d899ab99c4301a31763/automation_reports/CV-SincNet/20261126-diagnostic-wisig-practical-probe-s2026112601-r09/report.md)
+
+对 LoRa 可以重用的机制是利用公开前导和包内重复结构分别估计时标、相位、主径、回波及观测方差，再检查均衡是否保住弱复谱和 chirp 间差异。即使算子完全已知，只观测受扰包时，扣掉估计信号后的残差仍混合了信号估计误差与本包噪声。原始 LoRa 源模拟器将独立随机复噪声经过主项和镜像项叠加；同一源 IQ、同一算子重抽后仍得到不同的逐点噪声。精确扣噪诊断所用的噪声实现因此需要继续与接收端估计分开。 [噪声重抽与原轨迹核对](../../automation_reports/CV-SincNet/20261128-data-lora-w24-online-additive-source-s2026112991-r01/report.md)
