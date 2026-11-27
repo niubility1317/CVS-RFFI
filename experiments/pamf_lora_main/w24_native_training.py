@@ -18,6 +18,7 @@ from experiments.pamf_lora_main.w24_native_dura import (
     NativeDura, NATIVE_LENGTH, STAGES, action_loss, capture_scale, coarse_loss, iq_error, source_pair,
 )
 from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
+from experiments.pamf_lora_main.w24_native_stream import NativeStreamRefiner
 from experiments.pamf_restoration.models import complex_iq, pair
 
 
@@ -31,11 +32,16 @@ WAVE_ARMS = ('full_wave_native','visible_wave_native')
 GEOMETRY_RUN = '20261127-phase1-lora-raw8192-clean-margin-s2026113021-r01'
 GEOMETRY_ARMS = ('clean_anchor_native','rival_margin_native')
 GEOMETRY_WEIGHT = .35
-TASK_STAGES = (TASK,*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS)
-RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS, GEOMETRY_RUN: GEOMETRY_ARMS}
+STREAM_RUN = '20261127-phase1-lora-raw8192-stream-context-s2026113023-r01'
+STREAM_ARMS = ('chirp_context_native', 'stream_context_native')
+CONTINUATIONS = {REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS, GEOMETRY_RUN: GEOMETRY_ARMS, STREAM_RUN: STREAM_ARMS}
+TASK_STAGES = (TASK, *(arm for modes in CONTINUATIONS.values() for arm in modes))
+RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), **CONTINUATIONS}
 STAGE_RUN = {stage:run for run,stages in RUNS.items() for stage in stages}
-SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015,VISIBLE_RUN: 2026113017,GEOMETRY_RUN: 2026113021}
-STEPS = dict(zip((*STAGES,*TASK_STAGES),(10000,10000,12000,18000,15000,15000,15000,15000,15000,15000),strict=True))
+SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015,VISIBLE_RUN: 2026113017,
+         GEOMETRY_RUN: 2026113021, STREAM_RUN: 2026113023}
+STEPS = {**dict(zip(STAGES,(10000,10000,12000),strict=True)), TASK:18000,
+         **dict.fromkeys((*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS),15000), **dict.fromkeys(STREAM_ARMS,18000)}
 BATCH_ROLE = 8
 DURA_LR = 2e-4
 TASK_LR = 4e-5
@@ -48,6 +54,7 @@ class NativeTaskRestorer(nn.Module):
         self.tracker = tracker
         self.projector, self.localized = projector, localized
         self.core = PacketUNet(across_chirps=True,center=1024,with_reliability=projector is not None)
+        self.core.stream = None
         if parent is not None:
             state = parent.state_dict()
             pos = state['temporal_position'].T.unsqueeze(0)
@@ -64,7 +71,8 @@ class NativeTaskRestorer(nn.Module):
             cue = (None if self.projector is None else
                    reliability(self.projector(raw),rms,localized=self.localized))
         corrected = self.core(observed,coherence.unsqueeze(-1),rms,edges,reliability=cue)[-1]
-        return raw + .5 * ((corrected-observed) * rotation * rms).flatten(-2)
+        coarse = raw + .5 * ((corrected-observed) * rotation * rms).flatten(-2)
+        return coarse if self.core.stream is None else self.core.stream(raw, coarse)
 
 
 def task_model(parent, device, **kwargs):
@@ -103,6 +111,9 @@ def _proof(stage,contract,model_proof):
             or model_proof['relative_clean_geometry']!=(stage==GEOMETRY_ARMS[-1])
             or model_proof['clean_prototype_source_count']!=contract['counts']['L_s']):
         raise ValueError('Unexpected native clean geometry objective or parent')
+    if stage in STREAM_ARMS and (model_proof['F_trainable'] or model_proof['initialization']!=TASK_RUN
+                                 or model_proof['continuous_stream']!=(stage==STREAM_ARMS[-1])):
+        raise ValueError('Unexpected native stream context or parent')
 
 
 def load_stage(root, stage, contract, module, device):
@@ -171,7 +182,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     is_task=stage in TASK_STAGES
     seed=SEEDS[run]+(STAGES.index(stage) if stage in STAGES else 0)
     torch.manual_seed(seed)
-    count=2 if smoke and stage not in GEOMETRY_ARMS else BATCH_ROLE
+    count=2 if smoke and stage not in (*GEOMETRY_ARMS,*STREAM_ARMS) else BATCH_ROLE
     steps=1 if smoke else STEPS[stage]
     order=np.random.default_rng(seed)
     rng=torch.Generator(device=device).manual_seed(seed)
@@ -196,6 +207,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                     del base
             if stage==WAVE_ARMS[-1]:
                 waveform_projector=build_projector(frontend,device)
+            if stage in STREAM_ARMS:
+                model.core.stream=NativeStreamRefiner(continuous=stage==STREAM_ARMS[-1]).to(device)
         trained=model.core
         reader.requires_grad_(False).eval()
         original=importlib.import_module('lora_wide_dura_archive.dura_w24_model').condition_waveforms
@@ -222,7 +235,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     weights=torch.tensor((1.,.65,.3,.30,.25,1.5,1.,0.) + ((GEOMETRY_WEIGHT,) if geometry is not None else ()),
                          device=device)
     started=monotonic()
-    fit_gradient = supervised = pseudo_gradient = geometry_gradient = None
+    fit_gradient = supervised = pseudo_gradient = geometry_gradient = stream_gradient = None
     for step in range(1,steps+1):
         l=order.choice(len(l_iq),count,replace=False)
         u=order.choice(len(u_iq),count,replace=False)
@@ -238,6 +251,9 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                     residue=frontend.aperture(missing/scale).abs().max()
                     if not residue < 3e-6:
                         raise ValueError('Unstable W24-invisible native component')
+            if smoke and stage in STREAM_ARMS:
+                with torch.no_grad():
+                    torch.testing.assert_close(model.core.stream(raw, raw),raw,rtol=0.,atol=0.)
             parts=training_task_parts(joint,model,reader,frontend,mix,raw,label,rng,
                                       waveform_projector=waveform_projector,geometry=geometry)
             accepted+=parts[7].detach()
@@ -252,6 +268,11 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                         parts[8],trained.parameters(),retain_graph=True))
                     if not 0<geometry_gradient<float('inf'):
                         raise ValueError('Clean geometry loss has no finite restoration gradient')
+                if stage in STREAM_ARMS:
+                    stream_gradient=joint.norm_gradient(torch.autograd.grad(
+                        parts[0],trained.stream.edit.parameters(),retain_graph=True))
+                    if not 0<stream_gradient<float('inf'):
+                        raise ValueError('E104 classification loss has no finite native stream gradient')
         else:
             clean,observed,exact,variance=source_pair(raw,rng)
             incoming=pair(observed)
@@ -294,10 +315,14 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     if stage in GEOMETRY_ARMS:
         proof.update(initialization=TASK_RUN,relative_clean_geometry=stage==GEOMETRY_ARMS[-1],
                      clean_prototype_source_count=len(l_iq))
+    if stage in STREAM_ARMS:
+        proof.update(initialization=TASK_RUN,continuous_stream=stage==STREAM_ARMS[-1])
     summary=dict(**proof,status='PASS' if smoke else 'SOURCE_FROZEN',
                  gradient=fit_gradient,CE_to_G=supervised,pseudo_CE_to_G=pseudo_gradient,geometry_to_G=geometry_gradient,
                  worker_seconds=monotonic()-started,parameters=sum(x.numel() for x in trained.parameters()),
                  peak_cuda_bytes=torch.cuda.max_memory_allocated() if device.startswith('cuda') else 0)
+    if stage in STREAM_ARMS:
+        summary['CE_to_stream']=stream_gradient
     if not smoke:
         with (folder/'model.pt').open('xb') as out:
             torch.save(dict(contract=contract,proof=proof,model=trained.state_dict()),out)
@@ -320,6 +345,8 @@ def load_readers(joint, rt, device):
         model={}
         for stage in RUNS[run]:
             restorer=task_model(None,device,projector=projector,localized=stage==REL_ARMS[-1])
+            if stage in STREAM_ARMS:
+                restorer.core.stream=NativeStreamRefiner(continuous=stage==STREAM_ARMS[-1]).to(device)
             load_stage(root,stage,contract,restorer.core,device)
             model[stage]=restorer.eval().requires_grad_(False)
     return f,model,tracker,contract
@@ -327,7 +354,7 @@ def load_readers(joint, rt, device):
 
 def restored_raw(model, raw, mode, device):
     iq=tensor(raw.view(np.float32),device).view(torch.complex64)
-    if mode in (*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS):
+    if mode in TASK_STAGES[1:]:
         out=model[mode](iq)
     else:
         out=model(iq) if mode==TASK else model(iq,stage=mode)

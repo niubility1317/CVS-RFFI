@@ -4,6 +4,7 @@ from experiments.pamf_lora_main import w24_joint_pamf as joint
 from experiments.pamf_lora_main import w24_native_training as train
 from experiments.pamf_lora_main.w24_clean_geometry import clean_geometry_risk
 from experiments.pamf_lora_main.w24_native_dura import NativeDura, iq_error, source_pair
+from experiments.pamf_lora_main.w24_native_stream import NativeStreamRefiner
 from experiments.pamf_lora_main.w24_aperture_reliability import InvisibleIQ, LocalizedWhite, VisibleIQ, reliability
 from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
 from experiments.pamf_restoration.models import complex_iq, pair
@@ -38,6 +39,27 @@ def test_native_length_transfer_changes_only_positional_grid():
     assert parent.keys() == resized.keys()
     assert all(torch.equal(value,resized[name]) for name,value in parent.items()
                if name != 'temporal_position')
+
+
+def test_native_stream_only_crosses_real_chirp_seams_in_continuous_arm():
+    raw = torch.zeros(1,8192,dtype=torch.complex64)
+    raw[0,1024] = 1
+    coarse = raw * (1+.1j)
+    isolated = NativeStreamRefiner(continuous=False)
+    continuous = NativeStreamRefiner(continuous=True)
+    for model in (isolated, continuous):
+        torch.testing.assert_close(model(raw,coarse),coarse,rtol=0.,atol=0.)
+        with torch.no_grad():
+            for parameter in model.parameters():
+                parameter.zero_()
+            model.input.weight[0,0,4] = 1
+            model.edit.weight[0,0,2] = 1
+    independent = isolated(raw,coarse)
+    adjacent = continuous(raw,coarse)
+    assert independent[0,1023] == 0 and adjacent[0,1023].real > 0
+    torch.testing.assert_close(independent[...,1024:],adjacent[...,1024:],rtol=0.,atol=0.)
+    assert torch.count_nonzero(adjacent[0,:1023]) == 0
+    assert (adjacent-coarse).abs().max() <= .25*raw.abs().square().mean().sqrt()
 
 
 def test_raw_formal_receipt_preserves_w24_parent_and_source_control():
