@@ -31,9 +31,12 @@ class InvisibleIQ(nn.Module):
             axis = np.arange(count)
             basis[offset+axis,axis] = 1.
             dual[offset:offset+count] = (aperture.T @ gram.solve(basis)).T
-        self.register_buffer('observe',torch.tensor(aperture.toarray(),dtype=torch.float32).T.contiguous(),
+        observe = np.ascontiguousarray(aperture.toarray().T,dtype=np.float32)
+        # The archived CUDA runtime predates the NumPy 2 tensor bridge.
+        self.register_buffer('observe',torch.frombuffer(memoryview(observe),dtype=torch.float32).view(observe.shape),
                              persistent=False)
-        self.register_buffer('lift',torch.from_numpy(dual),persistent=False)
+        self.register_buffer('lift',torch.frombuffer(memoryview(dual),dtype=torch.float32).view(dual.shape),
+                             persistent=False)
 
     @torch.no_grad()
     def forward(self, raw):
