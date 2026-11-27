@@ -3,8 +3,12 @@ import pytest
 import torch
 
 from experiments.pamf_lora_main import w24_formal
-from experiments.pamf_lora_main.w24_packet_dura import PACKET, NativePacketDura, native_additive_pair, source_objective
-from experiments.pamf_lora_main.w24_third_prior import NATIVE_ADDITIVE_ARMS, NATIVE_PACKET_ARMS, fit_inputs, trial
+from experiments.pamf_lora_main.w24_packet_dura import (
+    PACKET, NativePacketDura, native_additive_pair, native_band_risks, source_objective,
+)
+from experiments.pamf_lora_main.w24_third_prior import (
+    NATIVE_ADDITIVE_ARMS, NATIVE_PACKET_ARMS, NATIVE_SPECTRAL_ARMS, fit_inputs, trial,
+)
 
 
 def test_native_dura_restores_and_trains_over_the_entire_capture():
@@ -107,3 +111,34 @@ def test_native_additive_predicts_two_whole_packet_models(monkeypatch):
     assert count == 2
     np.testing.assert_array_equal(labels[0], [[0, 0], [1, 1], [2, 2]])
     np.testing.assert_array_equal(np.stack(seen)[:, 0, :], np.broadcast_to(np.arange(3)[:, None], (3, PACKET)))
+
+
+def test_band_risk_separates_common_and_private_near_carrier_noise():
+    grid = torch.arange(1024, dtype=torch.float32)
+    common = torch.exp(2j * torch.pi * (5 / 1024) * grid)
+    private = torch.exp(-2j * torch.pi * (18 / 1024) * grid)
+    signs = torch.tensor([1, -1] * 4, dtype=torch.float32)[:, None]
+    edit = ((common + signs * private) / 32.).flatten()[None]
+    frame = torch.ones((1, 8, 1024), dtype=torch.complex64)
+    powers = native_band_risks(edit, torch.zeros_like(edit), frame)
+    assert powers[0] > 0.1 and powers[3] > 0.1
+    assert (powers[[1, 2, 4, 5]] < 1e-8).all()
+
+
+def test_spectral_pair_logs_the_same_terms_and_changes_optimizer_gradient():
+    spec = trial('native-band-risk')
+    assert spec.arms == spec.fit_arms == NATIVE_SPECTRAL_ARMS
+    assert spec.steps == 24000 and spec.routes == (w24_formal.FULL,)
+    model = NativePacketDura()
+    raw = torch.randn(2, PACKET, dtype=torch.complex64)
+    received, references = native_additive_pair(raw, torch.Generator().manual_seed(21), with_identity=False)
+    results = [source_objective(model, received, references[1], with_identity=False,
+                                audit_references=references, spectral_weight=w) for w in (None, 0., .50)]
+    (legacy, _), (control, parts0), (candidate, parts1) = results
+    assert torch.equal(legacy, control) and candidate > control
+    assert parts0.shape == (15,)
+    torch.testing.assert_close(parts0, parts1)
+    param = model.priors[-1].read[-1].weight
+    g0 = torch.autograd.grad(control, param)[0]
+    g1 = torch.autograd.grad(candidate, param)[0]
+    assert torch.isfinite(g1).all() and not torch.allclose(g0, g1)

@@ -129,7 +129,29 @@ def native_additive_pair(raw, rng, *, with_identity):
     return received, (original, after_action)
 
 
-def source_objective(model, received, reference, *, with_identity, audit_references=()):
+def native_band_risks(error, reference, frame):
+    """Dimensionless complex error for the common and private near-carrier bands."""
+    def spectrum(wave):
+        return torch.fft.fft(wave.unflatten(-1, (CHIRPS, CHIRP)) / frame, norm='ortho')
+
+    def powers(z):
+        common = z.mean(-2, keepdim=True)
+        return common[:, 0].abs().square(), (z - common).abs().square().mean(-2)
+
+    err, signal = powers(spectrum(error)), powers(spectrum(reference))
+    bins = (torch.fft.fftfreq(CHIRP, device=error.device) * CHIRP).abs()
+    band_errors = []
+    for low, high in ((1, 8), (9, 32), (33, 64)):
+        mask = (bins >= low) & (bins <= high)
+        for e, s in zip(err, signal, strict=True):
+            band_power = e[:, mask].mean(-1)
+            reference_power = s[:, mask].mean(-1)
+            band_errors.append((band_power / (.02 + reference_power)).log1p().mean())
+    return torch.stack(band_errors)
+
+
+def source_objective(model, received, reference, *, with_identity, audit_references=(),
+                     spectral_weight=None):
     stages, frame = model(received)
     actual = torch.lerp(received, stages[-1], .5)
     error = actual - reference
@@ -149,6 +171,13 @@ def source_objective(model, received, reference, *, with_identity, audit_referen
     identity = (actual[-2:] - received[-2:]).abs().square().mean() if with_identity else error.real.new_zeros(())
     parts = torch.stack((risk(error), *trajectory, common.abs().square().mean(), private, boundary_cost, identity))
     loss = parts @ parts.new_tensor((1., .18, .18, .30, .65, .20, .80))
+    if spectral_weight is not None:
+        # Both arms log the same subspace risks. Only the spectral arm backpropagates them.
+        with torch.set_grad_enabled(torch.is_grad_enabled() and bool(spectral_weight)):
+            bands = native_band_risks(error, reference, frame)
+        spectral_risk = bands.reshape(3, 2).mean(0) @ bands.new_tensor((.30, .70))
+        loss = loss + spectral_weight * spectral_risk
+        parts = torch.cat((parts, bands.detach()))
     if audit_references:
         with torch.no_grad():
             audit = torch.stack([((actual - wave).abs().square().mean(-1)

@@ -232,4 +232,5 @@ if __name__ == '__main__':
     matched.add_argument('--additive-reference', dest='third_prior', action='store_const', const='additive-reference')
     matched.add_argument('--native-packet-dura', dest='third_prior', action='store_const', const='native-packet-dura')
     matched.add_argument('--native-additive', dest='third_prior', action='store_const', const='native-additive')
+    matched.add_argument('--native-band-risk', dest='third_prior', action='store_const', const='native-band-risk')
     score(**vars(parser.parse_args()))

@@ -80,7 +80,11 @@ NATIVE_PACKET_RUN = '20261127-phase1-lora-w24-native-packet-dura-s2026112991-r01
 NATIVE_PACKET_ARMS = ('native_dura_center', 'native_dura_whole')
 NATIVE_ADDITIVE_RUN = '20261127-phase1-lora-w24-native-additive-s2026112991-r01'
 NATIVE_ADDITIVE_ARMS = ('native_restore_original', 'native_remove_additive')
-NATIVE_MODEL_ARMS = (*NATIVE_PACKET_ARMS, *NATIVE_ADDITIVE_ARMS)
+NATIVE_SPECTRAL_RUN = '20261127-phase1-lora-w24-native-band-risk-s2026112991-r01'
+NATIVE_SPECTRAL_ARMS = ('native_band_control', 'native_band_risk')
+NATIVE_PAIRED_ARMS = (*NATIVE_ADDITIVE_ARMS, *NATIVE_SPECTRAL_ARMS)
+NATIVE_MODEL_ARMS = (*NATIVE_PACKET_ARMS, *NATIVE_PAIRED_ARMS)
+NATIVE_ADD_ONLY = (NATIVE_ADDITIVE_ARMS[1], *NATIVE_SPECTRAL_ARMS)
 LONG_UNET_ARMS = (*WEAK_TRANSFER_ARMS, *POLYPHASE_ARMS, *ADDITIVE_REFERENCE_ARMS)
 UNET_WARM_ARMS = (*UNET_TRANSPORT_ARMS, *UNET_NOISE_COLOR_ARMS, *UNET_COMMON_ARMS)
 UNET_ARMS = (*PACKET_UNET_ARMS, *UNET_FIDELITY_ARMS, *UNET_COMPONENT_ARMS, *UNET_WARM_ARMS,
@@ -122,6 +126,7 @@ VARIANTS = {
     'additive-reference': (ADDITIVE_REFERENCE_RUN, ADDITIVE_REFERENCE_ARMS),
     'native-packet-dura': (NATIVE_PACKET_RUN, NATIVE_PACKET_ARMS),
     'native-additive': (NATIVE_ADDITIVE_RUN, NATIVE_ADDITIVE_ARMS),
+    'native-band-risk': (NATIVE_SPECTRAL_RUN, NATIVE_SPECTRAL_ARMS),
     'spectral-experts': (EXPERT_RUN, EXPERT_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
@@ -158,7 +163,8 @@ def trial(kind):
         return Trial(run, arms, 48000, (*modes, *baselines, *intermediate),
                      (*contrasts, *((modes[3], base) for base in baselines), *comparisons),
                      ROUTES[:1], WEAK_TRANSFER_INTERMEDIATE)
-    if arms in (POLYPHASE_ARMS, ADDITIVE_REFERENCE_ARMS, NATIVE_PACKET_ARMS, NATIVE_ADDITIVE_ARMS):
+    if arms in (POLYPHASE_ARMS, ADDITIVE_REFERENCE_ARMS, NATIVE_PACKET_ARMS, NATIVE_ADDITIVE_ARMS,
+                NATIVE_SPECTRAL_ARMS):
         baselines = (UNET_BASELINE, OUTER_BASELINE)
         return Trial(run, arms, 24000 if arms[0] in NATIVE_MODEL_ARMS else 48000, (*modes, *baselines),
                      (*contrasts, *((modes[3], base) for base in baselines)), ROUTES[:1])
@@ -294,6 +300,10 @@ def restore_center(original, delta, fraction):
     return restored
 
 
+def native_spectral_weight(arm):
+    return .50 if arm == NATIVE_SPECTRAL_ARMS[1] else 0.
+
+
 def promotion(routes, kind=True):
     spec = trial(kind)
     direct, mature, control, candidate = spec.source_modes[:4]
@@ -403,9 +413,11 @@ def source_recipe(training, arm, *, initialize=None):
                         source_intermediate=WEAK_TRANSFER_INTERMEDIATE)
         if arm in POLYPHASE_ARMS:
             info.update(native_polyphase=arm == POLYPHASE_ARMS[1], pre_channel_probe=True)
-        if arm in (*ADDITIVE_REFERENCE_ARMS, *NATIVE_ADDITIVE_ARMS):
-            info.update(additive_only=arm in (ADDITIVE_REFERENCE_ARMS[1], NATIVE_ADDITIVE_ARMS[1]),
+        if arm in (*ADDITIVE_REFERENCE_ARMS, *NATIVE_PAIRED_ARMS):
+            info.update(additive_only=arm in (ADDITIVE_REFERENCE_ARMS[1], *NATIVE_ADD_ONLY),
                         shared_generic_action=True)
+        if arm in NATIVE_SPECTRAL_ARMS:
+            info['native_spectral_weight'] = native_spectral_weight(arm)
         if arm in NATIVE_MODEL_ARMS:
             info.update(initialization='random', native_capture_samples=8192, observation_steps=2)
         if arm in UNET_COMPONENT_ARMS:
@@ -503,14 +515,16 @@ def fit(config, arm, *, smoke):
             if with_identity:
                 received[-2:] = clean[-2:]
             return source_objective(model, received, clean, with_identity=with_identity)
-    if arm in NATIVE_ADDITIVE_ARMS:
+    if arm in NATIVE_PAIRED_ARMS:
         from experiments.pamf_lora_main.w24_packet_dura import native_additive_pair, source_objective
+
+        spectral_weight = native_spectral_weight(arm) if arm in NATIVE_SPECTRAL_ARMS else None
 
         def calculate(model, _tracker, raw, rng, *, with_identity, recipe, step):
             received, references = native_additive_pair(raw, rng, with_identity=with_identity)
-            reference = references[arm == NATIVE_ADDITIVE_ARMS[1]]
+            reference = references[arm in NATIVE_ADD_ONLY]
             return source_objective(model, received, reference, with_identity=with_identity,
-                                    audit_references=references)
+                                    audit_references=references, spectral_weight=spectral_weight)
     if arm in ('direction_first', 'coherent_error'):
         from experiments.pamf_lora_main.w24_first_direction import objective_for
 
@@ -648,11 +662,13 @@ def read_candidate_weights(root, contract, device, arm, training, archived, *, s
     if arm in POLYPHASE_ARMS and (summary.get('native_polyphase') is not (arm == POLYPHASE_ARMS[1])
                                   or summary.get('pre_channel_probe') is not True):
         raise ValueError(f'Unverified polyphase input path for {arm}')
-    additive_arms = (*ADDITIVE_REFERENCE_ARMS, *NATIVE_ADDITIVE_ARMS)
-    additive_only = arm in (ADDITIVE_REFERENCE_ARMS[1], NATIVE_ADDITIVE_ARMS[1])
+    additive_arms = (*ADDITIVE_REFERENCE_ARMS, *NATIVE_PAIRED_ARMS)
+    additive_only = arm in (ADDITIVE_REFERENCE_ARMS[1], *NATIVE_ADD_ONLY)
     if arm in additive_arms and (summary.get('additive_only') is not additive_only
                                  or summary.get('shared_generic_action') is not True):
         raise ValueError(f'Unverified additive reference for {arm}')
+    if arm in NATIVE_SPECTRAL_ARMS and summary.get('native_spectral_weight') != native_spectral_weight(arm):
+        raise ValueError(f'Unverified native spectral supervision for {arm}')
     if arm in NATIVE_MODEL_ARMS and (summary.get('initialization') != 'random'
                                       or summary.get('native_capture_samples') != 8192
                                       or summary.get('observation_steps') != 2):
@@ -803,7 +819,7 @@ def publish(args):
              'common-refine': [0, 3, 2, 7], 'spectral-posterior': [0, 3, 2, 7],
              'clean-projection': [0, 2, 3, 5], 'weak-transfer': [0, 3, 2, 5],
              'polyphase': [0, 2, 3, 5], 'additive-reference': [0, 7, 2, 3],
-             'native-packet-dura': [3, 5, 6], 'native-additive': [0, 3, 5, 6]}
+             'native-packet-dura': [3, 5, 6], 'native-additive': [0, 3, 5, 6], 'native-band-risk': [0, 3, 5, 6]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),

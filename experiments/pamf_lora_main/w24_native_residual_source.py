@@ -145,13 +145,13 @@ def predict_source(runtime):
     modes = mode_list(rt)
     if third_prior:
         from experiments.pamf_lora_main.w24_third_prior import (
-            NATIVE_ADDITIVE_ARMS, NATIVE_PACKET_ARMS, OUTER_BASELINE, UNET_BASELINE, UNET_FIDELITY_ARMS, load_candidate,
+            NATIVE_MODEL_ARMS, NATIVE_PACKET_ARMS, OUTER_BASELINE, UNET_BASELINE, UNET_FIDELITY_ARMS, load_candidate,
             restore_center, trial,
         )
 
         design = trial(third_prior)
         names = design.arms
-        native_model = names in (NATIVE_PACKET_ARMS, NATIVE_ADDITIVE_ARMS)
+        native_model = names[0] in NATIVE_MODEL_ARMS
         if names == NATIVE_PACKET_ARMS:
             arms = [load_candidate(root, contract, device, names[-1])] * 2
         else:
