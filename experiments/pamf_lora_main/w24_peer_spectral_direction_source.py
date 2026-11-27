@@ -31,6 +31,7 @@ from experiments.pamf_lora_main.w24_fixed_dose_direction_model import (
     ApertureDirection, direction_objective, matched_aperture_edit,
 )
 from experiments.pamf_lora_main.w24_native_full import DATA_RUN, SOURCE, VIEWS, W24_COMMIT, W24_RUN, classify_aperture
+from experiments.pamf_lora_main.w24_online_additive_source import RUN as ONLINE_BANK_RUN, training_sampler
 from experiments.pamf_lora_main.w24_peer_spectral_direction import PeerSpectralDirection
 from experiments.pamf_lora_main.w24_post_peer_refinement_source import (
     CONTRASTS as REFINEMENT_CONTRASTS, MODES as REFINEMENT_MODES, RUN as REFINEMENT_RUN,
@@ -43,12 +44,16 @@ from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN
 
 RUN = '20261127-phase1-lora-w24-peer-spectral-direction-s2026112991-r01'
 COMPONENT_RUN = '20261128-phase1-lora-w24-component-directions-s2026112991-r01'
+ONLINE_RUN = '20261128-phase1-lora-w24-online-redraw-directions-s2026112991-r01'
 STEPS = 48000
 MODES = ('direct', 'frozen_half', 'fixed_dose_direction', 'within_chirp', 'cross_chirp')
 CONTRASTS = ((MODES[3], MODES[2]), (MODES[4], MODES[2]), (MODES[4], MODES[3]))
 COMPONENT_MODES = ('direct', 'frozen_half', 'peer_grouped', 'trained_grouped')
 COMPONENT_CONTRASTS = (('peer_grouped', 'frozen_half'), ('trained_grouped', 'frozen_half'),
                        ('trained_grouped', 'peer_grouped'))
+ONLINE_MODES = ('direct', 'frozen_half', 'fixed_noise_grouped', 'online_noise_grouped')
+ONLINE_CONTRASTS = (('online_noise_grouped', 'fixed_noise_grouped'), ('online_noise_grouped', 'frozen_half'))
+DRAW_SEED = 2026113891
 COMPONENT_WEIGHT = .50
 COMPONENTS = ('common_near', 'common_far', 'private_near', 'private_far')
 BRANCH_WEIGHTS = (.35, .65)
@@ -56,19 +61,32 @@ BRANCH_WEIGHTS = (.35, .65)
 
 def fit_config(rt):
     project = Path(rt['project'])
-    roots = {project/'runs'/name for name in (RUN, COMPONENT_RUN, REFINEMENT_RUN)}
-    if (set(rt) != set(FIT_FIELDS) or Path(rt['run_root']) not in roots
+    root = Path(rt['run_root'])
+    roots = {project/'runs'/name for name in (RUN, COMPONENT_RUN, REFINEMENT_RUN, ONLINE_RUN)}
+    fields = (*FIT_FIELDS, 'online_operator_bank') if root.name == ONLINE_RUN else FIT_FIELDS
+    if (set(rt) != set(fields) or root not in roots
             or Path(rt['source_root']) != project/'releases'/f'{DATA_RUN}-release'/'data'/'source'
             or Path(rt['practical_cache']) != project/'runs'/PRACTICAL_CACHE_RUN/'source_practical'
             or Path(rt['training_release_root']) != project/'releases'/f'{TRAIN_RUN}-release'):
         raise ValueError('Fit must receive registered source-only handles')
+    if root.name == ONLINE_RUN and Path(rt['online_operator_bank']) != project/'runs'/ONLINE_BANK_RUN:
+        raise ValueError('Online fitting requires its immutable source U operator bank')
+
+
+def redraw_batch(train, selection, sampler):
+    original = train[tensor(selection, train.device)]
+    if sampler is None:
+        return original
+    y, s = sampler(selection)
+    return torch.stack((original[:, 0], y, s), dim=1)
 
 
 def fit_source(rt):
     fit_config(rt)
     root, device = Path(rt['run_root']), 'cuda:0'
     dtype_policy()
-    grouped = root.name == COMPONENT_RUN
+    online = root.name == ONLINE_RUN
+    grouped = root.name in (COMPONENT_RUN, ONLINE_RUN)
     parent, tracker = source_parent_and_tracker(rt, device)
     torch.manual_seed(SEED)
     head = PeerSpectralDirection().to(device)
@@ -98,25 +116,28 @@ def fit_source(rt):
         return loss, tuple(row[1] for row in parts)
 
     (smoke, _, _), _ = training_sets(rt, device, smoke=True, fit_per_rx=FIT_PER_RX, bank_per_rx=0)
-    first, _ = evaluate(smoke[:BATCH], clean_identity=True)
+    startup_sampler = (training_sampler(rt, device, seed=DRAW_SEED+1, smoke=True, fit_per_rx=FIT_PER_RX)
+                       if online else None)
+    first, _ = evaluate(redraw_batch(smoke, np.arange(BATCH), startup_sampler), clean_identity=True)
     if not torch.isfinite(first):
         raise ValueError('Real source U startup loss is nonfinite')
     first.backward()
     torch.nn.utils.clip_grad_norm_(head.parameters(), 1., error_if_nonfinite=True)
     optim.zero_grad(set_to_none=True)
     write(root/'fit-smoke.json', dict(status='PASS', source_role='U_s', model='peer_spectral', **ISOLATION))
-    del first, smoke
+    del first, smoke, startup_sampler
 
     (train, _, held), _ = training_sets(rt, device, smoke=False, fit_per_rx=FIT_PER_RX, bank_per_rx=0)
     if (len(train), len(held)) != (20000, 500):
         raise ValueError('Unexpected source fit and held physical counts')
     rng = np.random.default_rng(SEED+1)
+    sampler = training_sampler(rt, device, seed=DRAW_SEED, smoke=False, fit_per_rx=FIT_PER_RX) if online else None
     started = perf_counter()
     trajectory = {}
     for step in range(1, STEPS+1):
-        indices = tensor(rng.choice(len(train), BATCH, replace=False), device)
+        selection = rng.choice(len(train), BATCH, replace=False)
         optim.zero_grad(set_to_none=True)
-        loss, phases = evaluate(train[indices], clean_identity=True)
+        loss, phases = evaluate(redraw_batch(train, selection, sampler), clean_identity=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(head.parameters(), 1., error_if_nonfinite=True)
         optim.step()
@@ -139,6 +160,8 @@ def fit_source(rt):
                     peak_cuda=torch.cuda.max_memory_allocated(), held_trajectory=trajectory, **ISOLATION)
     if grouped:
         metadata.update(component_angle_weight=COMPONENT_WEIGHT, component_groups=list(COMPONENTS))
+    if online:
+        metadata.update(online_operator_bank=ONLINE_BANK_RUN, draw_seed=DRAW_SEED)
     with (root/'direction.pt').open('xb') as out:
         torch.save(dict(weights=head.state_dict(), metadata=metadata), out)
     write(root/'fit-complete.json', metadata)
@@ -147,11 +170,14 @@ def fit_source(rt):
 def load_trained(root):
     metadata = read(root/'fit-complete.json')
     state = torch.load(root/'direction.pt', map_location='cpu', weights_only=True)
+    grouped = root.name in (COMPONENT_RUN, ONLINE_RUN)
     if (state['metadata'] != metadata or metadata['status'] != 'SOURCE_FROZEN'
             or metadata['steps'] != STEPS or metadata['base'] != PRACTICAL_RUN
             or metadata['fit'] != 20000 or metadata['held'] != 500
-            or metadata.get('component_angle_weight') != (COMPONENT_WEIGHT if root.name == COMPONENT_RUN else None)
-            or metadata.get('component_groups') != (list(COMPONENTS) if root.name == COMPONENT_RUN else None)
+            or metadata.get('component_angle_weight') != (COMPONENT_WEIGHT if grouped else None)
+            or metadata.get('component_groups') != (list(COMPONENTS) if grouped else None)
+            or metadata.get('online_operator_bank') != (ONLINE_BANK_RUN if root.name == ONLINE_RUN else None)
+            or metadata.get('draw_seed') != (DRAW_SEED if root.name == ONLINE_RUN else None)
             or any(metadata[k] for k in ISOLATION)):
         raise ValueError('Expected the terminal source-only checkpoint')
     head = PeerSpectralDirection().eval().requires_grad_(False)
@@ -197,6 +223,7 @@ def predict_source(rt):
     torch.set_num_threads(2)
     root, source, project = (Path(rt[k]) for k in ('run_root', 'source_root', 'project'))
     grouped = root.name == COMPONENT_RUN
+    online = root.name == ONLINE_RUN
     refined = root.name == REFINEMENT_RUN
     old, _ = load_head(project/'runs'/PRIOR)
     if refined:
@@ -209,10 +236,12 @@ def predict_source(rt):
     else:
         new = load_trained(root)
         parent, tracker = source_parent_and_tracker(rt, 'cpu')
-        if grouped:
-            peer = load_trained(project/'runs'/RUN)
+        if grouped or online:
+            control = COMPONENT_RUN if online else RUN
+            peer = load_trained(project/'runs'/control)
             render = partial(receive_grouped_readouts, parent, tracker, peer, new)
-            modes, reference, reference_modes, controls = COMPONENT_MODES, RUN, MODES, 2
+            modes = ONLINE_MODES if online else COMPONENT_MODES
+            reference, reference_modes, controls = control, COMPONENT_MODES if online else MODES, 2
         else:
             render = partial(receive_readouts, parent, old, new)
             modes, reference, reference_modes, controls = MODES, REFERENCE, MODES[:3], 3
@@ -262,7 +291,7 @@ def predict_source(rt):
     write(root/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', views=list(VIEWS),
         physical_ids=ids, modes=list(modes), target_reads=0, source_truth_reads=0,
         waveform=dict(variant=root.name, base=PRACTICAL_RUN, received_only=True, matched_center_edge_energy=True,
-                      **(dict(matched_component_energy=True, frozen_native_edges=True) if grouped or refined else {}))))
+                      **(dict(matched_component_energy=True, frozen_native_edges=True) if grouped or refined or online else {}))))
 
 
 def eligible(scores):
@@ -296,7 +325,8 @@ def dispatch(runtime):
 
     try:
         config = root/'fit-inputs.json'
-        write(config, {key: rt[key] for key in FIT_FIELDS})
+        fields = (*FIT_FIELDS, 'online_operator_bank') if root.name == ONLINE_RUN else FIT_FIELDS
+        write(config, {key: rt[key] for key in fields})
         write(state, dict(status='WAIT_GPU_TRAINING'))
         while not (cards := available(rt['allowed_gpus'], 2, training_cap=True)):
             sleep(20)
@@ -318,7 +348,8 @@ def publish(args):
     rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
     releases, runs = project/'releases', project/'runs'
-    run = (REFINEMENT_RUN if args.post_peer_refinement else COMPONENT_RUN if args.component_directions else RUN)
+    run = (ONLINE_RUN if args.online_additive_redraw else REFINEMENT_RUN if args.post_peer_refinement
+           else COMPONENT_RUN if args.component_directions else RUN)
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases/f'{run}-release'), run_root=str(runs/run),
               source_root=str(releases/f'{DATA_RUN}-release'/'data'/'source'),
@@ -333,6 +364,9 @@ def publish(args):
         rt['external_releases'].append(str(runs/RUN))
     if args.post_peer_refinement:
         rt['external_releases'].append(str(runs/COMPONENT_RUN))
+    if args.online_additive_redraw:
+        rt['online_operator_bank'] = str(runs/ONLINE_BANK_RUN)
+        rt['external_releases'] += [rt['online_operator_bank'], str(runs/COMPONENT_RUN)]
     release(args.repo, args.output, rt, args.ssh_config)
 
 
@@ -345,6 +379,7 @@ def main():
     variants = pub.add_mutually_exclusive_group()
     variants.add_argument('--component-directions', action='store_true')
     variants.add_argument('--post-peer-refinement', action='store_true')
+    variants.add_argument('--online-additive-redraw', action='store_true')
     for name in ('repo', 'output', 'context', 'ssh-config'):
         pub.add_argument('--'+name, required=True, type=Path)
     args = parser.parse_args()
@@ -365,6 +400,7 @@ def main():
     else:
         run = read(args.runtime)['run_id']
         matrices = {COMPONENT_RUN: (COMPONENT_MODES, COMPONENT_CONTRASTS),
+                    ONLINE_RUN: (ONLINE_MODES, ONLINE_CONTRASTS),
                     REFINEMENT_RUN: (REFINEMENT_MODES, REFINEMENT_CONTRASTS)}
         modes, contrasts = matrices.get(run, (MODES, CONTRASTS))
         score_source(args.runtime, modes=modes, contrasts=contrasts)

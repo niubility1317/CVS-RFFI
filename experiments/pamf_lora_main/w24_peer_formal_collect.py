@@ -8,8 +8,9 @@ import subprocess
 from time import monotonic, sleep
 
 from .w24_formal import (
-    COMPONENT_DIRECTIONS_KIND, LIMIT, PEER_CPU_RUNS, PEER_SPECTRAL_KIND, POST_PEER_KIND, RUN_COMPONENT_DIRECTIONS_CPU,
-    RUN_PEER_SPECTRAL_CPU, RUN_PEER_SPECTRAL_FULL, RUN_POST_PEER_CPU, VIEWS, cases, receipt,
+    COMPONENT_DIRECTIONS_KIND, LIMIT, ONLINE_DIRECTIONS_KIND, PEER_CPU_RUNS, PEER_SPECTRAL_KIND,
+    POST_PEER_KIND, RUN_COMPONENT_DIRECTIONS_CPU, RUN_ONLINE_DIRECTIONS_CPU, RUN_PEER_SPECTRAL_CPU,
+    RUN_PEER_SPECTRAL_FULL, RUN_POST_PEER_CPU, VIEWS, cases, receipt,
 )
 from .w24_formal_score import score
 
@@ -17,7 +18,7 @@ from .w24_formal_score import score
 def collect(submit, dataset, output, ssh_config):
     remote = PurePosixPath(json.loads(submit.read_text(encoding='utf-8-sig'))['run_root'])
     kinds = {**dict.fromkeys(PEER_CPU_RUNS, PEER_SPECTRAL_KIND), RUN_COMPONENT_DIRECTIONS_CPU: COMPONENT_DIRECTIONS_KIND,
-             RUN_POST_PEER_CPU: POST_PEER_KIND}
+             RUN_ONLINE_DIRECTIONS_CPU: ONLINE_DIRECTIONS_KIND, RUN_POST_PEER_CPU: POST_PEER_KIND}
     if remote.name not in kinds or not re.fullmatch(r'/[a-zA-Z0-9_./-]+', str(remote)):
         raise ValueError('Expected this immutable peer spectral Full run')
     flags = ['-F', str(ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']

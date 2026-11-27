@@ -111,6 +111,38 @@ def cache_row(args):
     return np.stack(operator).astype(np.complex64, copy=False), delay, limit
 
 
+def training_sampler(rt, device, *, seed, smoke, fit_per_rx):
+    """Use the original per-receiver fit order and redraw only from the sealed bank."""
+    from experiments.pamf_lora_main.channel_blind_source import partition
+
+    root, source = (Path(rt[k]) for k in ('online_operator_bank', 'source_root'))
+    if root != Path(rt['project'])/'runs'/RUN:
+        raise ValueError('Expected the registered source-only additive bank path')
+    iq, receivers, _, _ = source_role(source, source_contract(source), 'U_s')
+    stamp = read(root/'complete.json')
+    expected = dict(status='SOURCE_OPERATOR_BANK_FROZEN', data_role='U_s', count=len(iq), source_root=str(source),
+                    source_namespace=NAMESPACE, source_seed=BANK_SEED,
+                    operator_roles=['signal_pre_agc', 'noise_main', 'noise_image'], **ISOLATION)
+    if any(stamp.get(k) != v for k,v in expected.items()) or type(stamp.get('padding')) is not int or stamp['padding'] < 0:
+        raise ValueError('Expected complete legal source additive operators')
+    delay = stamp['padding']
+    operators = np.load(root/'operators.npy', allow_pickle=False, mmap_mode='r')
+    limits = np.load(root/'agc-limits.npy', allow_pickle=False, mmap_mode='r')
+    if (operators.shape != (len(iq),3,PACKET_LEN+delay) or operators.dtype != np.complex64
+            or limits.shape != (len(iq),) or limits.dtype != np.float32):
+        raise ValueError('Unexpected source training bank dimensions')
+    indices, _, _ = partition(receivers, fit=5, cal=4, held=3) if smoke else partition(receivers, fit=fit_per_rx)
+    generator = torch.Generator(device=device).manual_seed(seed)
+
+    def sample(selection):
+        rows = indices[selection]
+        values = tensor(operators[rows].view(np.float32), device).view(torch.complex64).unbind(1)
+        limit = tensor(limits[rows], device)
+        return sample_additive(*values, delay, limit, generator=generator)
+
+    return sample
+
+
 def build(runtime):
     from experiments.pamf_lora_main.physical_inverse_source import source_trace_implementation
 
