@@ -162,23 +162,29 @@ def analyze(root, *, main_only=False):
     return final
 
 
-def dispatch(runtime):
+def dispatch(runtime, *, resume_state=None, adopted=None, max_workers=GPU_WORKERS):
     from .runner import resources
 
     root = Path(ROOT)
-    root.mkdir(exist_ok=False)
-    (root / "logs").mkdir()
     target = root / "pipeline_state.json"
-    base = dict(controller_pid=os.getpid(), code_commit=runtime["code_commit"])
-    atomic(target, dict(base, status="SOURCE_SMOKE"))
+    base = dict(controller_pid=os.getpid(), code_commit=runtime["code_commit"], gpu_workers=max_workers)
     active, failed, stages = {}, {}, {}
     snapshot_attempted = False
     snapshot_error = None
     next_stage = {"train": "predict", "predict": "score", "score": "SCORED"}
     order = {"score": 0, "predict": 1, "train": 2, "SCORED": 3, "FAILED": 3, "BLOCKED": 3}
     try:
-        smoke(root)
-        stages = prepare(runtime["code_commit"], root)
+        if resume_state is None:
+            root.mkdir(exist_ok=False)
+            (root / "logs").mkdir()
+            atomic(target, dict(base, status="SOURCE_SMOKE"))
+            smoke(root)
+            stages = prepare(runtime["code_commit"], root)
+        else:
+            base["scheduler_commit"] = runtime["scheduler_commit"]
+            active, failed, stages = adopted, resume_state["failed"], resume_state["stages"]
+            snapshot_error = resume_state.get("snapshot_error")
+            snapshot_attempted = bool(snapshot_error) or (root / "main_snapshot").exists()
         while active or any(s in next_stage for s in stages.values()):
             for row, (proc, info) in list(active.items()):
                 code = proc.poll()
@@ -209,7 +215,7 @@ def dispatch(runtime):
                         continue
                     gpu = None
                 else:
-                    if len(busy - {None}) >= GPU_WORKERS:
+                    if len(busy - {None}) >= max_workers:
                         continue
                     floor = MIN_FREE_MIB if stage == "train" else 7000
                     gpu = next((g for g in GPUS if g not in busy and free.get(g, 0) >= floor), None)
@@ -228,7 +234,10 @@ def dispatch(runtime):
         atomic(target, dict(base, status=result["status"], stages=stages, failed=failed,
                             snapshot_error=snapshot_error, summary=result))
     except Exception as exc:
-        atomic(target, dict(base, status="FAILED", error=str(exc), stages=stages, failed=failed))
+        if resume_state is not None or stages or (
+                target.is_file() and read(target).get("controller_pid") == os.getpid()):
+            atomic(target, dict(base, status="FAILED", error=str(exc), stages=stages, failed=failed,
+                                active={k: v[1] for k, v in active.items()}))
         raise
 
 
