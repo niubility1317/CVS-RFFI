@@ -1,0 +1,173 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01",
+  "group_id": "lora-w24-performance-mechanism",
+  "display_name": "LoRa W24 冻结精确扣噪组的方向与幅度析因",
+  "description": "With the same 300 frozen Source V packets and Full perturbations, independently replace the direction and magnitude of actual half edits in the original W24 center and edges. Quantify same-packet net corrections over both factors.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "source-only",
+    "frozen-counterfactual"
+  ],
+  "comparison_group_id": "lora-w24-E104-source",
+  "parent_run_ids": [
+    "20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r02",
+    "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA goal directs isolated source-only mechanism diagnosis.",
+  "code": {
+    "commit": "1f6f752991b45beaefd4cf24c5aa2a5ce98fd7b8",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 archived W24 evaluator CPU FP32; two Torch threads, two channel replay workers.",
+    "cwd": "Exact W24 evaluator release for both prediction and independent CPU scoring."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192 complex samples; class scores use W24 8×2×432.",
+    "contract_ref": "Pinned LoRa full packet native IQ contract",
+    "physical_ids_ref": "20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r02 same 300 balanced source V packets, 60 per source receiver.",
+    "label_map_ref": "Registered W24 10-class E104 native mapping",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "LoRa registered source class mapping",
+    "roles": {
+      "L_s": 0,
+      "U_s": 1,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Existing V IDs and Full source-only realization, direct and complete oracle historical GPU parity reported.",
+    "support_query_ref": null,
+    "leo_config_ref": "Full native practical and clean. Prediction uses generated receive IQ."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only oracle mechanism factorial and receive-only frozen baseline. No target IQ, target statistics, updates or model selection."
+  },
+  "checkpoint": {
+    "initialization": "No training. Freeze existing exact-additive r02 terminal 24000 step source-only model and W24 E104/default head.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+        "role": "fixed exact additive arm, physical half edit"
+      },
+      {
+        "ref": "W24 E104 2026092702",
+        "role": "frozen evaluation only"
+      }
+    ],
+    "contract_check_ref": "Exact source V panel binding, frozen E104 and true-both/direct endpoint comparisons.",
+    "provenance_verdict": "The single 24000-step exact-additive checkpoint is frozen in the registered r02 source run. No new training.",
+    "selection_rule": "Every prespecified source readout is measured, no thresholds or candidate rankings derived from target."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current active Codex LoRa DURA goal",
+    "gpu_policy": "No GPU. Two CPU inference threads, up to two replay workers.",
+    "remote_run_root": "runs/20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01",
+    "remote_log_root": "runs/20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01",
+    "launch_command": "python -u -m experiments.pamf_lora_main.w24_practical_direction_factor publish --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01/release",
+    "stop_rule": "Stop on real source-checkpoint smoke, IQ realization, source contract, paired physical ID, numerical, or prediction/scoring closure failure."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "predictions.npz",
+    "source-predictions.json",
+    "source-scores.json",
+    "predict-source.log",
+    "score-source.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source correct counts by seven views",
+      "paired net corrections and 95% receiver-stratified intervals",
+      "CPU/archive direct and oracle parity"
+    ],
+    "dimensions": [
+      "Full route",
+      "clean plus six practical views",
+      "five source RX",
+      "frozen readout"
+    ],
+    "prediction_ref": "runs/20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01/predictions.npz",
+    "scorer_ref": "w24_factor_audit.score_source in separate source-only process"
+  },
+  "rows": [
+    {
+      "row_id": "paired-source-factorial",
+      "method": "Fixed exact-additive DURA vs region-wise known magnitude, direction, both, and projected magnitude",
+      "purpose": "mechanism_diagnostic",
+      "config_ref": "experiments/pamf_lora_main/w24_practical_direction_factor.py",
+      "resolved_config_ref": "releases/20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01-release/runtime.json",
+      "data_overrides": {
+        "source_only": true,
+        "zero_target": true,
+        "source_eval": 300,
+        "U_s_fit": 0,
+        "U_s_holdout": 0
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "No training/model seed or support. The 300 source V panel and waveform namespace are reused. Evaluation seed identifies W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "300 packets, seven views, six fixed readouts, no fit.",
+      "output_root": "runs/20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01",
+      "log_path": "runs/20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01/predict-source.log",
+      "command": "python -u -m experiments.pamf_lora_main.w24_practical_direction_factor publish --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01/release",
+      "expected_artifacts": [
+        "state.json",
+        "smoke.json",
+        "predictions.npz",
+        "source-predictions.json",
+        "source-scores.json",
+        "predict-source.log",
+        "score-source.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Change only the requested factor for center and edges independently, with true-both and projected-amplitude auxiliary rows.",
+    "For each edited readout use its own deployed W24 center RMS. Clean variants preserve the frozen learned output.",
+    "The two true-noise quantities are offline source diagnostic inputs only. No candidate promotion or formal test originates from this run."
+  ],
+  "registered_at": "2026-11-27T11:57:09+00:00"
+}
