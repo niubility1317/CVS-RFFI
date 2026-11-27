@@ -32,6 +32,9 @@ from experiments.pamf_lora_main.w24_fixed_dose_direction_model import (
 )
 from experiments.pamf_lora_main.w24_native_full import DATA_RUN, SOURCE, VIEWS, W24_COMMIT, W24_RUN, classify_aperture
 from experiments.pamf_lora_main.w24_peer_spectral_direction import PeerSpectralDirection
+from experiments.pamf_lora_main.w24_post_peer_refinement_source import (
+    CONTRASTS as REFINEMENT_CONTRASTS, MODES as REFINEMENT_MODES, RUN as REFINEMENT_RUN,
+)
 from experiments.pamf_lora_main.w24_practical_supervision import training_sets
 from experiments.pamf_lora_main.w24_regional_dose_source import complex_tensor
 from experiments.pamf_lora_main.w24_third_prior import PRACTICAL_CACHE_RUN, PRACTICAL_RUN
@@ -53,7 +56,8 @@ BRANCH_WEIGHTS = (.35, .65)
 
 def fit_config(rt):
     project = Path(rt['project'])
-    if (set(rt) != set(FIT_FIELDS) or Path(rt['run_root']) not in {project/'runs'/RUN, project/'runs'/COMPONENT_RUN}
+    roots = {project/'runs'/name for name in (RUN, COMPONENT_RUN, REFINEMENT_RUN)}
+    if (set(rt) != set(FIT_FIELDS) or Path(rt['run_root']) not in roots
             or Path(rt['source_root']) != project/'releases'/f'{DATA_RUN}-release'/'data'/'source'
             or Path(rt['practical_cache']) != project/'runs'/PRACTICAL_CACHE_RUN/'source_practical'
             or Path(rt['training_release_root']) != project/'releases'/f'{TRAIN_RUN}-release'):
@@ -193,16 +197,25 @@ def predict_source(rt):
     torch.set_num_threads(2)
     root, source, project = (Path(rt[k]) for k in ('run_root', 'source_root', 'project'))
     grouped = root.name == COMPONENT_RUN
-    new = load_trained(root)
+    refined = root.name == REFINEMENT_RUN
     old, _ = load_head(project/'runs'/PRIOR)
-    parent, tracker = source_parent_and_tracker(rt, 'cpu')
-    if grouped:
-        peer = load_trained(project/'runs'/RUN)
-        render = partial(receive_grouped_readouts, parent, tracker, peer, new)
-        modes, reference, reference_modes, controls = COMPONENT_MODES, RUN, MODES, 2
+    if refined:
+        from experiments.pamf_lora_main.w24_post_peer_refinement_source import frozen_refiner_inputs, load_arms, receive
+
+        inputs = frozen_refiner_inputs(rt, 'cpu')
+        parent = inputs[1]
+        render = partial(receive, inputs, load_arms(root))
+        modes, reference, reference_modes, controls = REFINEMENT_MODES, COMPONENT_RUN, COMPONENT_MODES, 2
     else:
-        render = partial(receive_readouts, parent, old, new)
-        modes, reference, reference_modes, controls = MODES, REFERENCE, MODES[:3], 3
+        new = load_trained(root)
+        parent, tracker = source_parent_and_tracker(rt, 'cpu')
+        if grouped:
+            peer = load_trained(project/'runs'/RUN)
+            render = partial(receive_grouped_readouts, parent, tracker, peer, new)
+            modes, reference, reference_modes, controls = COMPONENT_MODES, RUN, MODES, 2
+        else:
+            render = partial(receive_readouts, parent, old, new)
+            modes, reference, reference_modes, controls = MODES, REFERENCE, MODES[:3], 3
     contract = source_contract(source)
     f = load_classifier(rt, contract, 'cpu')
     u = native(source, 'U_s', contract['counts']['U_s'])[0]
@@ -249,7 +262,7 @@ def predict_source(rt):
     write(root/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', views=list(VIEWS),
         physical_ids=ids, modes=list(modes), target_reads=0, source_truth_reads=0,
         waveform=dict(variant=root.name, base=PRACTICAL_RUN, received_only=True, matched_center_edge_energy=True,
-                      **(dict(matched_component_energy=True, frozen_native_edges=True) if grouped else {}))))
+                      **(dict(matched_component_energy=True, frozen_native_edges=True) if grouped or refined else {}))))
 
 
 def eligible(scores):
@@ -291,7 +304,7 @@ def dispatch(runtime):
         stage('fit-source', config, script.parents[2], gpu)
         stage('predict-source', runtime, archive)
         stage('score-source', runtime, archive)
-        fields = {} if root.name == COMPONENT_RUN else dict(promote=eligible(read(root/'source-scores.json')))
+        fields = dict(promote=eligible(read(root/'source-scores.json'))) if root.name == RUN else {}
         write(state, dict(status='SOURCE_SCORED', target_reads=0, **fields), exclusive=False)
     except Exception as exc:
         write(state, dict(status='FAILED', error=str(exc)), exclusive=False)
@@ -305,7 +318,7 @@ def publish(args):
     rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
     releases, runs = project/'releases', project/'runs'
-    run = COMPONENT_RUN if args.component_directions else RUN
+    run = (REFINEMENT_RUN if args.post_peer_refinement else COMPONENT_RUN if args.component_directions else RUN)
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases/f'{run}-release'), run_root=str(runs/run),
               source_root=str(releases/f'{DATA_RUN}-release'/'data'/'source'),
@@ -318,6 +331,8 @@ def publish(args):
     rt['external_releases'] += [str(runs/key) for key in (PRIOR, PRACTICAL_RUN, REFERENCE)]
     if args.component_directions:
         rt['external_releases'].append(str(runs/RUN))
+    if args.post_peer_refinement:
+        rt['external_releases'].append(str(runs/COMPONENT_RUN))
     release(args.repo, args.output, rt, args.ssh_config)
 
 
@@ -327,7 +342,9 @@ def main():
     for action in ('dispatch', 'fit-source', 'predict-source', 'score-source'):
         subs.add_parser(action).add_argument('runtime', type=Path)
     pub = subs.add_parser('publish')
-    pub.add_argument('--component-directions', action='store_true')
+    variants = pub.add_mutually_exclusive_group()
+    variants.add_argument('--component-directions', action='store_true')
+    variants.add_argument('--post-peer-refinement', action='store_true')
     for name in ('repo', 'output', 'context', 'ssh-config'):
         pub.add_argument('--'+name, required=True, type=Path)
     args = parser.parse_args()
@@ -336,13 +353,21 @@ def main():
     elif args.action == 'dispatch':
         dispatch(args.runtime)
     elif args.action == 'fit-source':
-        fit_source(read(args.runtime))
+        config = read(args.runtime)
+        if Path(config['run_root']).name == REFINEMENT_RUN:
+            from experiments.pamf_lora_main.w24_post_peer_refinement_source import fit
+
+            fit(config)
+        else:
+            fit_source(config)
     elif args.action == 'predict-source':
         predict_source(read(args.runtime))
     else:
-        grouped = read(args.runtime)['run_id'] == COMPONENT_RUN
-        score_source(args.runtime, modes=COMPONENT_MODES if grouped else MODES,
-                     contrasts=COMPONENT_CONTRASTS if grouped else CONTRASTS)
+        run = read(args.runtime)['run_id']
+        matrices = {COMPONENT_RUN: (COMPONENT_MODES, COMPONENT_CONTRASTS),
+                    REFINEMENT_RUN: (REFINEMENT_MODES, REFINEMENT_CONTRASTS)}
+        modes, contrasts = matrices.get(run, (MODES, CONTRASTS))
+        score_source(args.runtime, modes=modes, contrasts=contrasts)
 
 
 if __name__ == '__main__':

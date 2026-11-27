@@ -8,18 +8,20 @@ import subprocess
 from time import monotonic, sleep
 
 from .w24_formal import (
-    COMPONENT_DIRECTIONS_KIND, LIMIT, PEER_CPU_RUNS, PEER_SPECTRAL_KIND, RUN_COMPONENT_DIRECTIONS_CPU,
-    RUN_PEER_SPECTRAL_CPU, RUN_PEER_SPECTRAL_FULL, VIEWS, cases, receipt,
+    COMPONENT_DIRECTIONS_KIND, LIMIT, PEER_CPU_RUNS, PEER_SPECTRAL_KIND, POST_PEER_KIND, RUN_COMPONENT_DIRECTIONS_CPU,
+    RUN_PEER_SPECTRAL_CPU, RUN_PEER_SPECTRAL_FULL, RUN_POST_PEER_CPU, VIEWS, cases, receipt,
 )
 from .w24_formal_score import score
 
 
 def collect(submit, dataset, output, ssh_config):
     remote = PurePosixPath(json.loads(submit.read_text(encoding='utf-8-sig'))['run_root'])
-    if remote.name not in (*PEER_CPU_RUNS, RUN_COMPONENT_DIRECTIONS_CPU) or not re.fullmatch(r'/[a-zA-Z0-9_./-]+', str(remote)):
+    kinds = {**dict.fromkeys(PEER_CPU_RUNS, PEER_SPECTRAL_KIND), RUN_COMPONENT_DIRECTIONS_CPU: COMPONENT_DIRECTIONS_KIND,
+             RUN_POST_PEER_CPU: POST_PEER_KIND}
+    if remote.name not in kinds or not re.fullmatch(r'/[a-zA-Z0-9_./-]+', str(remote)):
         raise ValueError('Expected this immutable peer spectral Full run')
     flags = ['-F', str(ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
-    kind = COMPONENT_DIRECTIONS_KIND if remote.name == RUN_COMPONENT_DIRECTIONS_CPU else PEER_SPECTRAL_KIND
+    kind = kinds[remote.name]
     matrix = cases(kind)
     expected = dict(status='PREDICTIONS_FROZEN', cases=list(matrix), target_truth_read=False)
     prior = None
