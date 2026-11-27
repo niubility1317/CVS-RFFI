@@ -175,7 +175,7 @@ def score(predictions, dataset, output, ungated=False, outer_objective=False, th
                  lambda results: acceptance(results, ungated, outer_objective, third_prior))
 
 
-def score_matrix(matrices, activity, modes_by_route, dataset, output, seeds, verdict):
+def score_matrix(matrices, activity, modes_by_route, dataset, output, seeds, verdict, *, additional_pairings=()):
     output.mkdir(parents=True, exist_ok=False)
     truth = []
     with zipfile.ZipFile(dataset / 'multiple_receiver_test.zip') as archive:
@@ -183,18 +183,25 @@ def score_matrix(matrices, activity, modes_by_route, dataset, output, seeds, ver
             with recording(archive, f'{rx}_test.h5', output) as capture:
                 truth.append(label_ids(capture, LIMIT)[packet_indices(LIMIT, i)])
     labels = np.asarray(truth)[:, None, None, None, :]
-    result, contrasts = {}, {}
+    result, contrasts, extra = {}, {}, {}
     for route in matrices:
         modes = modes_by_route[route]
         hit = matrices[route] == labels
         result[route] = {m:readout(hit[:, :, :, i], seeds) for i,m in enumerate(modes)}
         candidate = hit[:, :, :, -1].astype(np.int16)
         contrasts[route] = {m:paired(candidate - hit[:, :, :, i], seeds) for i,m in enumerate(modes[:-1])}
-    write(output / 'scores.json', dict(status='ANALYZED', truth_last=True, seeds=list(seeds),
+        if additional_pairings:
+            extra[route] = {f'{method}_vs_{reference}': paired(
+                hit[:, :, :, modes.index(method)].astype(np.int16) - hit[:, :, :, modes.index(reference)], seeds
+            ) for method,reference in additional_pairings}
+    result_file = dict(status='ANALYZED', truth_last=True, seeds=list(seeds),
         n_physical=len(TARGET)*LIMIT, n_six=len(TARGET)*LIMIT*len(seeds)*6, bootstrap_seed=BOOTSTRAP_SEED,
         bootstrap_draws=DRAWS, direct_clean_parity='exact' if len(matrices) == 2 else 'archive-verified',
         readouts=result, paired=contrasts,
-        acceptance=verdict(result), activity=activity))
+        acceptance=verdict(result), activity=activity)
+    if extra:
+        result_file['additional_paired'] = extra
+    write(output / 'scores.json', result_file)
 
 
 if __name__ == '__main__':
