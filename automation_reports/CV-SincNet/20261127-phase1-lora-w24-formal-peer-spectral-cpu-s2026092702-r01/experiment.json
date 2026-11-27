@@ -1,0 +1,215 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 跨 chirp 方向的条件式正式 Full 测试",
+  "description": "Fixed 30,000 physical-packet Full evaluation automatically gated by independently scored frozen source qualification.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "truth-last",
+    "conditional-full",
+    "peer-spectral-direction"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261127-phase1-lora-w24-peer-spectral-direction-s2026112991-r01",
+    "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and Full-only CPU-ready truth-last evaluation.",
+  "code": {
+    "commit": "f9f332e97fa856a47d05c75980cf0559e9673a8a",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 CPU FP32 W24 archive, at most one prediction shard worker with two intraop threads and two replay workers; local independent CPU scorer.",
+    "cwd": "Immutable formal release controller then original W24 archive for prediction workers."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MHz through DURA; untouched W24 front end receives the resulting packet.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Frozen matched 15 target receivers x 2000 physical IDs in the registered native Full test order; 300 source V only for independent qualification.",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "U_s_no_query_smoke": 4,
+      "V_qualified": 300,
+      "target_phys_if_qualified": 30000
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Registered LoRa source/target contract with independent source seed, namespace and packets.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Source qualification before any target IQ open, fixed E104 receiver-only inputs, independent local target truth-last joining after all 3 prediction shards close."
+  },
+  "checkpoint": {
+    "initialization": "No adjustment. Use terminal Peer Spectral trained at 48,000 source updates, frozen Practical half and prior 24,000-step direction; E104 unchanged.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-peer-spectral-direction-s2026112991-r01",
+        "role": "Independent source qualification and terminal 48000-step shared within/cross-chirp direction checkpoint."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r01",
+        "role": "Frozen original fixed-dose direction, matched actual comparison."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+        "role": "Frozen source-only native Practical exact-additive base for all three new readouts."
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+        "role": "Immutable blind direct, old DURA half, complex-response half and wide all-packet half controls, same physical packets."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 default classifier."
+      }
+    ],
+    "contract_check_ref": "Registered source U and physical IDs for scratch fitting. All comparison checkpoints and frozen E104 opened only for post-freeze comparison.",
+    "provenance_verdict": "Reuse matching source contract and source-eligible terminal freeze. No target or W24 fitting.",
+    "selection_rule": "Same parent registered source promotion with independent truth-last; early F/IQ target evaluation forbidden."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current Codex Full WiSig/LoRa task",
+    "gpu_policy": "CPU-only. Wait only for independent source qualification. Then sequentially execute three fixed native Full shards without GPU wait.",
+    "remote_run_root": "runs/20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01",
+    "launch_command": "python -u -m experiments.pamf_lora_main.w24_formal publish --peer-spectral-cpu --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01/release",
+    "stop_rule": "Negative source qualification terminates this conditional run before target access. For qualified runs stop for contract/real source smoke/artifact/scoring technical failure; preserve results and unrelated tasks."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json if qualified",
+    "logs/source-smoke.log",
+    "logs/full_native-{shard}.log",
+    "predictions/{shard}/complete.json",
+    "predictions/{shard}/activity.json",
+    "predictions/{shard}/cpu-direct-parity.json",
+    "predictions/{shard}/{rx}.npz",
+    "independent scores/scores.json if all shards frozen"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "registered Full",
+      "seven views",
+      "15 target receivers",
+      "seven paired readouts"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01/predictions",
+    "scorer_ref": "w24_peer_formal_collect; independent local truth-last after all 3 frozen receipts."
+  },
+  "rows": [
+    {
+      "row_id": "peer-cross-chirp-formal-full",
+      "method": "Conditional Full with frozen E104 and fixed learned within and cross chirp ablations",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_practical_supervision.py",
+      "resolved_config_ref": "releases/20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01-release/runtime.json",
+      "data_overrides": {
+        "native_full_if_qualified": 30000,
+        "source_u_smoke": 4,
+        "seed": 2026092702
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "3 independent 10,000 packet prediction shards. Same E104 and seven scenes; no fit.",
+      "output_root": "runs/20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01",
+      "log_path": "runs/20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01/logs",
+      "command": "python -u -m experiments.pamf_lora_main.w24_formal publish --peer-spectral-cpu --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-formal-peer-spectral-cpu-s2026092702-r01/release",
+      "expected_artifacts": [
+        "state.json",
+        "smoke.json if qualified",
+        "logs/source-smoke.log",
+        "logs/full_native-{shard}.log",
+        "predictions/{shard}/complete.json",
+        "predictions/{shard}/activity.json",
+        "predictions/{shard}/cpu-direct-parity.json",
+        "predictions/{shard}/{rx}.npz",
+        "independent scores/scores.json if all shards frozen"
+      ]
+    }
+  ],
+  "notes": [
+    "Formal acceptance is >=162000/180000 six practical, >=25500/30000 low urban and >=28566/30000 clean.",
+    "Original running fixed Practical CPU test remains separate. Report archived-vs-CPU direct decision disagreement; never substitute direct comparator.",
+    "No Residual or weak route is included in this run."
+  ],
+  "registered_at": "2026-11-27T14:05:26+00:00"
+}
