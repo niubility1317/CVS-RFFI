@@ -332,10 +332,12 @@ def dispatch(runtime, rt):
         if worker.wait():
             raise RuntimeError("LoRa source worker failed")
         wisig_root = folder.parent / WISIG_RUN
+        marker = wisig_root / "wisig/frozen.json"
         write(state, dict(status="WAITING_FOR_WISIG", wisig_reused=WISIG_RUN), exclusive=False)
         deadline = monotonic() + 1800
-        while not (wisig_root / "wisig/frozen.json").is_file():
-            if read(wisig_root / "state.json")["status"] == "FAILED" or monotonic() >= deadline:
+        while not marker.is_file():
+            done = read(wisig_root / "state.json")["status"] == "FAILED" or monotonic() >= deadline
+            if done and not marker.is_file():
                 raise RuntimeError("WiSig worker did not freeze its source predictions")
             sleep(10)
         if launch("score", None).wait():
