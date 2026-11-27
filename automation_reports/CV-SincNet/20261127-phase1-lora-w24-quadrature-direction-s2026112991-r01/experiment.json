@@ -1,0 +1,190 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 正交相位对称的固定幅度修正",
+  "description": "Evaluate C2 and C4 pull-back means of one frozen native direction head at exactly the original center/edge edit norms.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02",
+    "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA performance research goal.",
+  "code": {
+    "commit": "fe167d6e040802b84b9d7a71b327338abb1e1b7c",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 CPU, two inference threads, two replay subprocesses. Original frozen W24 CPU archive.",
+    "cwd": "Immutable release controller; archived E104 evaluator directory for predict and score."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MHz through DURA; untouched W24 front end receives the resulting packet.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "One real source U smoke package and the same ordered 300 source V physical packets recorded in the original fixed-dose comparison.",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "U_s_no_query_smoke": 1,
+      "V_blind_prediction": 300,
+      "V_truth_after_freeze": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Reuse VALIDATED_ONCE lora_full_packets_v1 registered V order and true E104.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only. Cohort phases are generated from fixed, globally rotating the receive IQ and edit; no model training. Source pose simulator truth only measures post-output geometry; only independent scorer reads V TX."
+  },
+  "checkpoint": {
+    "initialization": "Read same archived 24,000 step exact-additive base and frozen 24,000 step direction head without modification.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r01",
+        "role": "Exact terminal frozen 24,000 update direction head and original optimizer budget."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+        "role": "Fixed source-only Practical exact-additive 24000 update checkpoint for both readouts."
+      },
+      {
+        "ref": "W24 E104 2026092702",
+        "role": "Independent source evaluation after direction checkpoint freeze."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02",
+        "role": "Independent, immutable source predictions for exact endpoint parity."
+      }
+    ],
+    "contract_check_ref": "Exact r01 current terminal checkpoint, original parent, E104 readout, 300 source V IDs and endpoint parity.",
+    "provenance_verdict": "Frozen parent of the same LoRa source contract; original source-only checkpoint",
+    "selection_rule": "One C4 candidate fixed before scoring. Against original direction six correct >= +18, six CI lower >0, low urban >= +6, clean at least source direct. C2 ablation ineligible."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current LoRa DURA direction-training goal",
+    "gpu_policy": "CPU only, two inference threads with two replay workers.",
+    "remote_run_root": "runs/20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01",
+    "remote_log_root": "runs/20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01",
+    "launch_command": "python -u -m experiments.pamf_lora_main.w24_quadrature_direction_source publish --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01/release",
+    "stop_rule": "Stop on binding, real checkpoint, original control parity, fixed regional norm, prediction completeness or score failure. Retain output and preserve other runs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "source-b1.json",
+    "source-predictions.json",
+    "predictions.npz",
+    "direction-geometry.npz",
+    "source-scores.json",
+    "predict-source.log",
+    "score-source.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean correct",
+      "six practical accuracy",
+      "low urban",
+      "paired corrections",
+      "center and edge norm parity and complex angle"
+    ],
+    "dimensions": [
+      "300 source V physical packages",
+      "7 Full views",
+      "five fixed readouts",
+      "five source receiver groups"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01/predictions.npz",
+    "scorer_ref": "w24_factor_audit.score_source, independent CPU"
+  },
+  "rows": [
+    {
+      "row_id": "frozen-c4-vs-c2",
+      "method": "One full-packet phase and IQ direction head with separate hard pre-RMS center and edge norms",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_fixed_dose_direction.py",
+      "resolved_config_ref": "releases/20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01-release/runtime.json",
+      "data_overrides": {
+        "U_s_smoke": 1,
+        "V": 300,
+        "route": "full_native",
+        "target": 0
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "New source fit seed 2026112991; registered V panel and Full draw; independent E104 seed 2026092702.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No parameter updates. 300 source V x seven views x five readouts. Four fixed phase evaluations of one frozen direction head.",
+      "output_root": "runs/20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01",
+      "log_path": "runs/20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01/predict-source.log",
+      "command": "python -u -m experiments.pamf_lora_main.w24_quadrature_direction_source publish --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-quadrature-direction-s2026112991-r01/release",
+      "expected_artifacts": [
+        "state.json",
+        "smoke.json",
+        "source-b1.json",
+        "source-predictions.json",
+        "predictions.npz",
+        "direction-geometry.npz",
+        "source-scores.json",
+        "predict-source.log",
+        "score-source.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Use the unchanged native 8192 capture. Undo phase before taking mean and before projecting to original W24.",
+    "Preserve center and edge edit L2 norms independently, then apply native W24 normalization. Direction head only is symmetrized; base DURA is unchanged.",
+    "Known noise is used for post-prediction source geometry only and does not choose any transformation."
+  ],
+  "registered_at": "2026-11-27T13:29:41+00:00"
+}
