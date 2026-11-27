@@ -2,6 +2,7 @@
 import argparse
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
+from json import JSONDecodeError
 import os
 from pathlib import Path, PurePosixPath
 import subprocess
@@ -33,6 +34,7 @@ from experiments.pamf_lora_main.w24_wide_transfer import TRAIN_RUN, load_restore
 
 
 RUN = '20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r01'
+EVAL_RUN = '20261127-phase1-lora-w24-fixed-dose-direction-s2026112991-r02'
 COMPARATOR = '20261127-diagnostic-lora-w24-practical-direction-factor-s2026112559-r01'
 ARM = PRACTICAL_ARMS[1]
 SEED, STEPS, BATCH, FIT_PER_RX = 2026112991, 24000, 16, 4000
@@ -163,7 +165,7 @@ def readouts(parent, model, y):
     frozen = torch.lerp(wave,parent.restore_native(wave),.5)
     proposal = wave + model(wave, frozen-wave)
     a, b, d = (native_aperture(np.from_dlpack(z.contiguous())) for z in (wave, frozen, proposal))
-    base, proposed = (tensor(np.ascontiguousarray(z).view(np.float32),'cpu').view(torch.complex64)
+    base, proposed = (tensor(np.ascontiguousarray(z,dtype=np.complex64).view(np.float32),'cpu').view(torch.complex64)
                       for z in (b-a,d-a))
     edit = matched_aperture_edit(base,proposed)
     candidate = a + np.from_dlpack(edit.contiguous())
@@ -176,12 +178,45 @@ def source_observation(scene, item):
     return native_full_view(packet, scene, receiver, row, WAVEFORM_NAMESPACE)
 
 
+def checkpoint_root(rt):
+    root = Path(rt['run_root'])
+    runs = Path(rt['project'])/'runs'
+    if rt['run_id'] == RUN and root == runs/RUN:
+        return root
+    if rt['run_id'] == EVAL_RUN and root == runs/EVAL_RUN:
+        checkpoint = Path(rt['fixed_checkpoint_root'])
+        if checkpoint == runs/RUN:
+            return checkpoint
+    raise ValueError('Unexpected fixed-dose source checkpoint binding')
+
+
+def wait_for_checkpoint(root):
+    while True:
+        if (root/'direction.pt').is_file():
+            try:
+                proof = read(root/'fit-complete.json')
+            except (FileNotFoundError, JSONDecodeError):
+                pass
+            else:
+                if proof.get('status') != 'SOURCE_FROZEN' or proof.get('steps') != STEPS:
+                    raise ValueError('Expected a complete terminal source checkpoint')
+                return
+        try:
+            failed = read(root/'state.json')['status'] == 'FAILED'
+        except (FileNotFoundError, JSONDecodeError):
+            failed = False
+        if failed:
+            raise RuntimeError('Original source fit exited before checkpoint freeze')
+        sleep(20)
+
+
 def predict_source(rt):
     activate(rt)
     torch.set_num_threads(2)
     root, source = (Path(rt[k]) for k in ('run_root','source_root'))
     parent = source_parent(rt,'cpu')
-    model, info = load_head(root)
+    fit = checkpoint_root(rt)
+    model, info = load_head(fit)
     contract = source_contract(source)
     f = load_classifier(rt,contract,'cpu')
     legal_u = native(source,'U_s',contract['counts']['U_s'])[:1]
@@ -221,7 +256,7 @@ def predict_source(rt):
         np.savez(f,**output)
     write(root/'source-predictions.json',dict(status='PREDICTIONS_FROZEN', views=list(VIEWS), modes=list(MODES),
           physical_ids=ids, target_reads=0, source_truth_reads=0, waveform=dict(parent=PRACTICAL_RUN,
-               dose_rule='fixed_center_edge_norm_before_w24_rms', device='cpu', received_only=True)))
+               fit_run=fit.name, dose_rule='fixed_center_edge_norm_before_w24_rms', device='cpu', received_only=True)))
 
 
 def eligible_from_source(scores):
@@ -241,8 +276,6 @@ def dispatch(runtime):
     state = root/'state.json'
     if read(reference/'submit.json')['code_commit'] != W24_COMMIT:
         raise ValueError('Expected pinned W24 evaluator archive')
-    body = root/'fit-inputs.json'
-    write(body,{k:rt[k] for k in FIT_FIELDS})
     script = str(Path(__file__).resolve())
     own = Path(script).parents[2]
 
@@ -258,12 +291,19 @@ def dispatch(runtime):
             raise RuntimeError(f'{phase} failed')
 
     try:
-        stage('smoke-source',body,own)
-        write(state,dict(status='WAIT_GPU_TRAINING'),exclusive=False)
-        while not (cards := available(rt['allowed_gpus'],2,training_cap=True)):
-            sleep(20)
-        gpu = next(g for g in rt['allowed_gpus'] if g in cards)
-        stage('fit-source',body,own,gpu)
+        fit = checkpoint_root(rt)
+        if fit == root:
+            body = root/'fit-inputs.json'
+            write(body,{k:rt[k] for k in FIT_FIELDS})
+            stage('smoke-source',body,own)
+            write(state,dict(status='WAIT_GPU_TRAINING'),exclusive=False)
+            while not (cards := available(rt['allowed_gpus'],2,training_cap=True)):
+                sleep(20)
+            gpu = next(g for g in rt['allowed_gpus'] if g in cards)
+            stage('fit-source',body,own,gpu)
+        else:
+            write(state,dict(status='WAIT_SOURCE_FREEZE',fit_run=fit.name))
+            wait_for_checkpoint(fit)
         stage('predict-source',runtime,reference)
         stage('score-source',runtime,reference)
         promote = eligible_from_source(read(root/'source-scores.json'))
@@ -281,6 +321,7 @@ def main():
     for phase in ('dispatch','smoke-source','fit-source','predict-source','score-source'):
         sub.add_parser(phase).add_argument('runtime',type=Path)
     pub = sub.add_parser('publish')
+    pub.add_argument('--frozen-source-eval',action='store_true')
     for name in ('repo','context','output','ssh-config'):
         pub.add_argument('--'+name,type=Path,required=True)
     args = parser.parse_args()
@@ -289,8 +330,9 @@ def main():
         rt = {k:ctx[k] for k in ('project','python','frozen_sources')}
         project = PurePosixPath(rt['project'])
         releases,runs = project/'releases',project/'runs'
-        rt.update(run_id=RUN,runner=__spec__.name,code_commit=release_commit(args.repo),
-                  release_root=str(releases/f'{RUN}-release'),run_root=str(runs/RUN),
+        run = EVAL_RUN if args.frozen_source_eval else RUN
+        rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
+                  release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),classifier_root=str(runs/AUG_RUN),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),
                   training_release_root=str(releases/f'{TRAIN_RUN}-release'),
@@ -298,6 +340,9 @@ def main():
                   allowed_gpus=[0,7,2,3,6,5,1,4])
         rt['external_releases']=[rt[k] for k in ('source_root','classifier_root','w24_release_root',
              'training_release_root','practical_cache')]+[str(runs/r) for r in (PRACTICAL_RUN,COMPARATOR)]
+        if args.frozen_source_eval:
+            rt['fixed_checkpoint_root'] = str(runs/RUN)
+            rt['external_releases'].append(rt['fixed_checkpoint_root'])
         release(args.repo,args.output,rt,args.ssh_config)
     elif args.action == 'dispatch':
         dispatch(args.runtime)
