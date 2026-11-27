@@ -29,7 +29,8 @@ def pooled(confusion):
     return dict(accuracy=float(cm.trace() / cm.sum()), macro_f1=float(f1.mean()), count=int(cm.sum()))
 
 
-def summarize(root, *, main_only=False, main_raw_only=False):
+def summarize(root, *, main_only=False, main_raw_only=False, methods=METHODS,
+              resolve_scores=published_scores, columns_file="seven_method_columns.csv"):
     root = Path(root)
     output = root / ("main_existing_raw" if main_raw_only else "main_snapshot" if main_only else "tables")
     settings_by_id = settings()
@@ -59,13 +60,13 @@ def summarize(root, *, main_only=False, main_raw_only=False):
         if (main_only or main_raw_only) and setting != "F0":
             continue
         for seed in info["seeds"]:
-            for method in METHODS:
-                source = published_scores(setting, info, method, seed)
+            for method in methods:
+                source = resolve_scores(setting, info, method, seed)
                 if main_raw_only and method == "shen":
                     source = PROJECT / "runs" / SHEN / f"s{seed}"
                 path = Path(source) / "scores" / "scores.json"
                 if not path.is_file():
-                    missing.append(dict(setting=setting, method=METHODS[method], seed=seed))
+                    missing.append(dict(setting=setting, method=methods[method], seed=seed))
                     continue
                 data = read(path)
                 if not data["truth_last"] or data["model_seed"] != seed:
@@ -104,35 +105,35 @@ def summarize(root, *, main_only=False, main_raw_only=False):
     stats = []
     for (setting, population, route, view, method), rs in agg.items():
         row = dict(setting=setting, population=population, route=route, view=view,
-                   method=METHODS[method], n=len(rs), count=rs[0]["count"])
+                   method=methods[method], n=len(rs), count=rs[0]["count"])
         cell = wide.setdefault((setting, population, route, view),
                         dict(setting=setting, population=population, route=route, view=view,
-                             **{label: "" for label in METHODS.values()}))
+                             **{label: "" for label in methods.values()}))
         for metric in ("accuracy", "macro_f1"):
             values = [r[metric] for r in rs]
             row[metric + "_mean"] = statistics.mean(values)
             row[metric + "_sd"] = statistics.stdev(values) if len(values) > 1 else ""
-        cell[METHODS[method]] = f"{row['accuracy_mean']:.4f}"
+        cell[methods[method]] = f"{row['accuracy_mean']:.4f}"
         stats.append(row)
 
     group_means = []
     for n in NATURAL:
         groups = {s for s, d in settings_by_id.items() if d.get("family") == "receiver_count"
                   and d.get("n_source_rx") == n}
-        for method in METHODS:
+        for method in methods:
             for task in V:
                 for view in ("clean", "six_practical_mean"):
                     selected = [r for r in rows if r["setting"] in groups and
                                 (r["method"], r["population"], r["view"]) == (method, task, view)]
                     if groups and len(selected) == len(groups):
                         group_means.append(dict(source_rx_count=n, receiver_combinations=len(groups),
-                            population=task, view=view, method=METHODS[method],
+                            population=task, view=view, method=methods[method],
                             accuracy=statistics.mean(r["accuracy"] for r in selected),
                             macro_f1=statistics.mean(r["macro_f1"] for r in selected)))
     output.mkdir(parents=True, exist_ok=True)
-    table(output / "per_seed.csv", [dict(r, method=METHODS[r["method"]]) for r in rows])
+    table(output / "per_seed.csv", [dict(r, method=methods[r["method"]]) for r in rows])
     table(output / "summary.csv", stats)
-    table(output / "seven_method_columns.csv", list(wide.values()))
+    table(output / columns_file, list(wide.values()))
     table(output / "equal_size_receiver_groups.csv", group_means)
     table(output / "missing.csv", missing)
     result = dict(status="ANALYZED" if not missing else "PARTIAL", missing_rows=len(missing),

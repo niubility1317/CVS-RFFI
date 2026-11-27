@@ -168,19 +168,19 @@ def worker(stage, method, c):
     return evaluation.predict(c, classify_view=classify, task_names=tasks, reuse_raw=c["reuse_raw"])
 
 
-def spawn(root, job, gpu):
+def spawn(root, job, gpu, *, release=RELEASE, module=MODULE):
     log = root / "logs" / (job["key"] + ".log")
-    cmd = [PYTHON, "-u", "-m", MODULE, job["stage"], "--method", job["method"], "--config", job["config"]]
+    cmd = [PYTHON, "-u", "-m", module, job["stage"], "--method", job["method"], "--config", job["config"]]
     env = dict(os.environ, CUDA_DEVICE_ORDER="PCI_BUS_ID",
                CUDA_VISIBLE_DEVICES="" if gpu is None else str(gpu),
-               PYTHONPATH=f"{RELEASE}:{RELEASE / 'code'}", OMP_NUM_THREADS="2", MKL_NUM_THREADS="2",
+               PYTHONPATH=f"{release}:{release / 'code'}", OMP_NUM_THREADS="2", MKL_NUM_THREADS="2",
                OPENBLAS_NUM_THREADS="2")
     with log.open("x") as out:
-        p = subprocess.Popen(cmd, cwd=RELEASE, env=env, stdout=out, stderr=subprocess.STDOUT,
+        p = subprocess.Popen(cmd, cwd=release, env=env, stdout=out, stderr=subprocess.STDOUT,
                              stdin=subprocess.DEVNULL)
     print("MATRIX_LAUNCH", job["key"], p.pid, gpu, flush=True)
     return p, dict(stage=job["stage"], method=job["method"], pid=p.pid, gpu=gpu, argv=cmd,
-                   cwd=str(RELEASE), log=str(log))
+                   cwd=str(release), log=str(log))
 
 
 def dispatch(runtime):
