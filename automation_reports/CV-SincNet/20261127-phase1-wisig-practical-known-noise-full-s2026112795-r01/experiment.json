@@ -1,0 +1,202 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01",
+  "group_id": "phase1-wisig-observable-recovery",
+  "display_name": "WiSig 已知模拟噪声监督的 Full 星地正式测试",
+  "description": "Fit two independently frozen estimators on the same WiSig source U_s Practical Full pairs and formally evaluate both plus matched archived raw/R69 controls on the complete clean and six-view Full matrix. Match regional edit norms to the source-only FIR teacher in one arm, and learn the full additive noise reference in the other.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only_fit",
+    "formal_full",
+    "truth_last",
+    "matched_physical_packets"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-phase1-wisig-native-fir-source-m4-r01",
+    "20261125-phase1-wisig-dura-force-main-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requested real frozen Full satellite benchmark results for both matched models on both datasets.",
+  "code": {
+    "commit": "e6824557c2acc3259c028c8268ff31541c96e9b1",
+    "checkout": "E:/codex/home/worktrees/lora-w24-chirp-components/standard_ce_baselines_20261010",
+    "environment": "N607 existing WiSig release Python and frozen reader precision",
+    "cwd": "releases/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig",
+    "version": "Main 25 MS/s post_sync/noeq, native 256 complex samples",
+    "representation": "256 complex points, frozen reader canonical input",
+    "contract_ref": "Exact source-U and Full manifests, registered cross_rx / cross_both; no simultaneous-source/test physical IDs",
+    "physical_ids_ref": "U_s 20512 legal source rows; Full 126000 cross_rx and 42000 cross_both physical IDs in frozen readers' order",
+    "label_map_ref": "Archive Main classifier mapping; truth opened by separate CPU scorer only after both Full prediction files freeze",
+    "roles": {
+      "L_s": 0,
+      "U_s": 20512,
+      "fit": 20000,
+      "source_holdout": 512,
+      "target": 168000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "WiSig Phase1 Main",
+    "validation_ref": "Prior validation and exact parent cache manifests",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered Practical Full PHY"
+  },
+  "permissions": {
+    "regime": "source_only_fit_then_frozen_target",
+    "query_use": "Prediction only, packet IQ, no target truth or target simulator components, independently scored afterward",
+    "external_method_exception": null,
+    "claim_scope": "Full simulated satellite-terrestrial recognition with exact additive supervision on legal independent source simulation only."
+  },
+  "checkpoint": {
+    "initialization": "Two random initializations from same seed, no pretrained restorer initialization",
+    "sources": [
+      {
+        "ref": "20261125-phase1-wisig-native-fir-source-m4-r01 centered E40000",
+        "role": "Frozen source-only teacher supplies regional edit L2 norms for direction_only fit"
+      },
+      {
+        "ref": "Archived Main Tri-SIG-TIME 2026092701/02/03",
+        "role": "Three frozen default recognition heads used only after fit"
+      },
+      {
+        "ref": "DURA v1.0 R69",
+        "role": "Archived matched Full predictions for formal comparison only"
+      }
+    ],
+    "contract_check_ref": "Native source 25 MS/s PostSync noEQ and original exposure; exact archive replay receipts for target controls",
+    "provenance_verdict": "Source teacher and target readers use matching native 256 contract",
+    "selection_rule": "Freeze terminal step 24000 for both arms independently of source holdout and target results; evaluate both."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current Codex Full WiSig/LoRa task",
+    "gpu_policy": "Two workers at most across the preregistered eligible GPUs, at most one worker from this run per card; count incumbent training processes under the current per-card limit",
+    "remote_run_root": "runs/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01",
+    "remote_log_root": "runs/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01",
+    "launch_command": "python -u -m experiments.pamf_unrolled_restore.wisig_practical_supervised publish --repo . --context E:/type10-7/local_artifacts/20261125-diagnostic-wisig-waveform-source-s2026112501-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01/release",
+    "stop_rule": "Systemic permission/split/physical-ID/count/frozen receipt mismatch, nonfinite values, owner output collision or same pre-prediction worker failure. Preserve intermediates and both negative results."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "source-bank/complete.json",
+    "{direction_only,exact_denoise}.pt and paired metadata",
+    "smoke.json",
+    "predictions/{cross_rx,cross_both}/{decisions.npz,complete.json}",
+    "scores.json",
+    "logs/*"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct counts and accuracy by seven views",
+      "six-scene equal mean",
+      "low urban",
+      "paired corrections/regressions",
+      "per receiver and split",
+      "source fit statistics"
+    ],
+    "dimensions": [
+      "arm",
+      "seed",
+      "view",
+      "split",
+      "receiver"
+    ],
+    "prediction_ref": "runs/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01/predictions/{cross_rx,cross_both}/decisions.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_practical_supervised.score"
+  },
+  "notes": [
+    "The two Full target splits use same physical input order and frozen direct/R69 control outputs.",
+    "The source simulator creates receive pairs and the source target only. The formal recovery forward takes received 256-point IQ; formal target generator actions/noise and clean references are unavailable to it.",
+    "Every model is scored across both splits, all three frozen readers and all seven views."
+  ],
+  "rows": [
+    {
+      "row_id": "direction_only",
+      "method": "Matched center/edge dose, known noise direction supervision",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_practical_supervised.py",
+      "resolved_config_ref": "releases/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112795,
+        "split": null,
+        "data": 2026112795,
+        "augmentation": 2026112795,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "WiSig fixed Main split and frozen Full draw inherited from matched controls. Recognition seeds 2026092701 through 03. No support draws.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "24000 steps, batch 32, 8 additional clean identity examples per batch; fixed terminal checkpoint; 168000 physical packets per seed through seven views",
+      "output_root": "runs/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01/direction_only.pt",
+      "log_path": "runs/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01/logs/fit-direction_only.log",
+      "command": "python -u -m experiments.pamf_unrolled_restore.wisig_practical_supervised publish --repo . --context E:/type10-7/local_artifacts/20261125-diagnostic-wisig-waveform-source-s2026112501-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01/release",
+      "expected_artifacts": [
+        "direction_only.pt",
+        "shared simultaneous Full predictions",
+        "scores.json"
+      ]
+    },
+    {
+      "row_id": "exact_denoise",
+      "method": "Exact center/edge additive noise supervision",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_practical_supervised.py",
+      "resolved_config_ref": "releases/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112795,
+        "split": null,
+        "data": 2026112795,
+        "augmentation": 2026112795,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "WiSig fixed Main split and frozen Full draw inherited from matched controls. Recognition seeds 2026092701 through 03. No support draws.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "24000 steps, batch 32, 8 additional clean identity examples per batch; fixed terminal checkpoint; 168000 physical packets per seed through seven views",
+      "output_root": "runs/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01/exact_denoise.pt",
+      "log_path": "runs/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01/logs/fit-exact_denoise.log",
+      "command": "python -u -m experiments.pamf_unrolled_restore.wisig_practical_supervised publish --repo . --context E:/type10-7/local_artifacts/20261125-diagnostic-wisig-waveform-source-s2026112501-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-wisig-practical-known-noise-full-s2026112795-r01/release",
+      "expected_artifacts": [
+        "exact_denoise.pt",
+        "shared simultaneous Full predictions",
+        "scores.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-11-27T07:36:28+00:00"
+}

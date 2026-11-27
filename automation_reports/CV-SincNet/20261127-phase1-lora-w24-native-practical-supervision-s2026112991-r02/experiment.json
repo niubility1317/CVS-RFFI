@@ -1,0 +1,275 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 整段 DURA Practical 源真值监督与 Full 正式测试",
+  "description": "Matched raw native DURA from scratch. Regional baseline-norm exact direction vs full exact additive source targets. Both fixed Full target after freeze.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261127-phase1-lora-w24-additive-reference-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-packet-dura-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-additive-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-band-risk-s2026112991-r01",
+    "20261127-diagnostic-lora-w24-native-aperture-factor-s2026112559-r02",
+    "20261127-phase1-lora-w24-native-center-direction-s2026112991-r01",
+    "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r01"
+  ],
+  "replaces_run_id": "20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r01",
+  "authorization": "User asks for formally assessed deployable LoRa Practical-supervised training comparison; both rows after freeze.",
+  "code": {
+    "commit": "720cacb70c9937de528f1de084a8e51038b6eb95",
+    "checkout": "codex/lora-w24-chirp-components-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "r02 release dispatcher; archived reference CWD for real W24 smoke and prediction; immutable original DURA trainer CWD for fit."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Continuous 8192 complex samples at 1 MHz through DURA; untouched W24 front end receives the resulting packet.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Closed r01 Practical source U_s bank (25200), ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver.",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 0,
+      "U_s": 20500,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Registered LoRa source/target contract with independent source seed, namespace and packets.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Known Practical source traces for supervised target only. Frozen recognizer and target unavailable during fit. Fixed Full test after freeze."
+  },
+  "checkpoint": {
+    "initialization": "Same random seed 2026112991, 111698 parameters per arm, no imported checkpoint or optimizer.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Archived code and frozen external comparator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 evaluator only"
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Previously frozen source comparator only in independent evaluation. No fitting or freezing access."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Unchanged original-loss 24,000-step U-Net for frozen evaluation comparison only, no fitting access"
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-native-center-direction-s2026112991-r01",
+        "role": "Frozen generic F-free center-direction model supplies edit norm only for source paired supervision."
+      }
+    ],
+    "contract_check_ref": "Registered source U and physical IDs for scratch fitting. All comparison checkpoints and frozen E104 opened only for post-freeze comparison.",
+    "provenance_verdict": "Scratch arms. Only the frozen native-center source teacher supplies source scale targets for the equal-dose arm. W24 and historical models are frozen evaluation comparators.",
+    "selection_rule": "Both final 24000 updates, fit seed and .5 deployment blend fixed; both always get formal Full predictions after valid source freeze."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current Codex Full WiSig/LoRa task",
+    "gpu_policy": "GPU preference 0,7,2,3,6,5,1,4, 12 GiB free at each launch, max two total training/unknown compute contexts including incumbent jobs; one own worker per GPU; known validation-only contexts excluded; queue remaining arms without modifying other owners.",
+    "remote_run_root": "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+    "remote_log_root": "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior publish --native-practical-supervision --repo . --context E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/release",
+    "stop_rule": "Stop on systemic technical/protocol failure, incompatible source or frozen comparator, collision, or prediction/scoring failure; preserve outputs. Both arms go to Full regardless of V accuracy. No stop for lack of GPU slots."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "practical_matched_dose-fit.log",
+    "practical_exact_additive-fit.log",
+    "smoke.json",
+    "*/smoke-w24_*.json",
+    "*/w24_*-complete.json",
+    "*/w24_*-model.pt",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "formal/predictions/{shard}/{rx}.npz",
+    "independent scores.json",
+    "formal/state.json",
+    "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r01/source_practical/complete.json (reused input)"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/full_native/predictions.npz; runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/formal/predictions",
+    "scorer_ref": "Independent source scorer; E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_third_prior collect-score --native-practical-supervision after the three formal Full shards freeze."
+  },
+  "rows": [
+    {
+      "row_id": "practical_matched_dose",
+      "method": "Exact source direction at frozen teacher regional dose",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_practical_supervision.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/practical_matched_dose/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "source_practical": 25200,
+        "Full_target": 30000
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "24000 scratch updates, batch 16, AdamW; held steps 2000, 6000, 12000, 18000 and final 24000.",
+      "output_root": "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/practical_matched_dose",
+      "log_path": "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/practical_matched_dose-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/practical_matched_dose/fit-inputs.json practical_matched_dose",
+      "expected_artifacts": [
+        "w24_practical_matched_dose-model.pt",
+        "w24_practical_matched_dose-complete.json",
+        "smoke-w24_practical_matched_dose.json",
+        "formal Full predictions shared by fixed matrix"
+      ]
+    },
+    {
+      "row_id": "practical_exact_additive",
+      "method": "Exact source additive-noise direction and amplitude",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_practical_supervision.py",
+      "resolved_config_ref": "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/practical_exact_additive/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "source_practical": 25200,
+        "Full_target": 30000
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4, clip 1.",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "24000 scratch updates, batch 16, AdamW; held steps 2000, 6000, 12000, 18000 and final 24000.",
+      "output_root": "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/practical_exact_additive",
+      "log_path": "runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/practical_exact_additive-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_third_prior.py fit-arm runs/20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/practical_exact_additive/fit-inputs.json practical_exact_additive",
+      "expected_artifacts": [
+        "w24_practical_exact_additive-model.pt",
+        "w24_practical_exact_additive-complete.json",
+        "smoke-w24_practical_exact_additive.json",
+        "formal Full predictions shared by fixed matrix"
+      ]
+    }
+  ],
+  "notes": [
+    "r01 produced the complete source bank; only own processes stopped to fix overly permissive GPU admission, before any frozen model. r02 uses the same source bank, budget, seeds and Full matrix."
+  ],
+  "registered_at": "2026-11-27T07:39:21+00:00"
+}

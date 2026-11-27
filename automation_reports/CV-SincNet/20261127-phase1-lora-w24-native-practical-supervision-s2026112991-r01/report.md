@@ -13,3 +13,5 @@ Run 20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r01。 [�
 N607 先用 8 个 CPU worker 构建不可覆盖的源配对库，随后 GPU 0、3 各训练一组。实际资源和协议检查通过才启动所分配阶段。系统性数值、数据或完整矩阵故障停止本 run 并保留产物。18 项定向检查通过。
 
 N607 发布和校验 **VERIFIED**，实际控制器 PID 2091116，配对生成 worker 2091243，独立审查通过。配对 worker 使用固定 W24 归档环境，仅接收源数据根、生成配置和自己的输出。前 1,000 对后仍正常推进。归档训练器旧 checkpoint proof 中保留的 practical_reads/trace_reads 是旧字段，本次实际允许且使用源侧 Practical 的精确分量，由独立 source_practical/complete.json 和冻结摘要 legal_source_practical_traces 说明。
+
+r01 已提前结束。单卡并发调度配置不符时，仅停止本 run 的控制器和两个训练进程树，独立读取确认已退出。配对源库完整保留，两个训练均未冻结、未访问目标。相同矩阵由 [r02](../20261127-phase1-lora-w24-native-practical-supervision-s2026112991-r02/report.md) 接替。
