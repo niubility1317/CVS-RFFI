@@ -47,7 +47,7 @@ def wait_for_smoke(root):
 
 
 @torch.no_grad()
-def measure(formal, heads, models, inputs):
+def measure(formal, heads, models, inputs, arm_names=('peer_grouped', 'trained_grouped')):
     from experiments.pamf_lora_main.w24_peer_spectral_direction_source import (
         CENTER, center_rms, complex_tensor, coordinates, matched_component_edit, model_iq, native_aperture, tensor,
     )
@@ -73,8 +73,8 @@ def measure(formal, heads, models, inputs):
         adjusted[..., :CENTER] = center + np.from_dlpack(edit.contiguous())
         return formal.classify_aperture(classifier, tensor(model_iq(adjusted, center_rms(adjusted)), 'cpu'))[0]
 
-    paths = {'direct': direct, 'peer_grouped': lambda packet: one_head(peer, packet),
-             'trained_grouped': lambda packet: one_head(trained, packet),
+    paths = {'direct': direct, arm_names[0]: lambda packet: one_head(peer, packet),
+             arm_names[1]: lambda packet: one_head(trained, packet),
              'formal_three_readouts': lambda packet: formal.component_direction_labels(heads, models, packet)[0][0, :, 0]}
     names = tuple(paths)
     measurement = {}
@@ -100,8 +100,13 @@ def measure(formal, heads, models, inputs):
 def profile(runtime):
     rt = json.loads(runtime.read_text(encoding='utf-8'))
     formal = load_formal(runtime, rt)
-    if (rt.get('run_id') != formal.RUN_COMPONENT_DIRECTIONS_CPU or rt.get('ungated') is not True
-            or rt.get('third_prior') != formal.COMPONENT_DIRECTIONS_KIND):
+    matrices = {formal.RUN_COMPONENT_DIRECTIONS_CPU: (formal.COMPONENT_DIRECTIONS_KIND,
+                                                     ('peer_grouped', 'trained_grouped'))}
+    if hasattr(formal, 'RUN_ONLINE_DIRECTIONS_CPU'):
+        matrices[formal.RUN_ONLINE_DIRECTIONS_CPU] = (formal.ONLINE_DIRECTIONS_KIND,
+                                                    ('fixed_noise_grouped', 'online_noise_grouped'))
+    kind, names = matrices.get(rt.get('run_id'), (None, None))
+    if kind is None or rt.get('third_prior') != kind or rt.get('ungated') is not True:
         raise ValueError('Expected the registered frozen component-directions CPU runtime')
     wait_for_smoke(Path(rt['run_root']))
     rt.pop('native_target_root')
@@ -114,7 +119,7 @@ def profile(runtime):
     scene = formal.VIEWS[-1]
     low = [native_full_view(packet, scene, formal.SOURCE[0], i, 'source-U-component-latency')
            for i, packet in enumerate(clean)]
-    result = measure(formal, heads, models, {'clean': clean, scene: low})
+    result = measure(formal, heads, models, {'clean': clean, scene: low}, names)
     return dict(status='MEASURED', source_role='U_s', target_reads=0, label_reads=0, formal_decision_parity=True,
                 runtime_commit=rt['code_commit'], torch=torch.__version__, threads=torch.get_num_threads(),
                 initialization_included=False, simulation_included=False, measurement=result, **provenance)

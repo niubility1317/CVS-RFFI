@@ -7,3 +7,9 @@ Full post-sync/no-EQ 路线的模拟器可返回加性噪声作用的直通和�
 首步用五台源接收机、六种 Practical 视图各一包，共 30 个 U_s 样本。按旧噪声流从算子重建新增噪声并核对相对误差，在原生裁剪处和旧配对库逐样点比对。此外重抽两份独立噪声，报告复相关幅度，验证支持范围和 AGC 一致性。初始化和复现失败时停止并保留输出。之后只构建该源 U_s 库，记录 `source-smoke.json`、`operators.npy`、`agc-limits.npy`、完成标记与日志。W24、TX、源 V 和目标读取均为零。
 
 N607 使用普通项目账号、原源上下文 Python 和模拟器环境，在独占发布目录执行。CPU 四个低优先级重放进程，检查本次实际磁盘空间和源 U 角色。命令为 `python -m experiments.pamf_lora_main.w24_online_additive_source publish --repo . --context <原 Practical 源上下文> --ssh-config <N607 配置> --output <独占本地发布目录>`。执行代码以本次登记提交为准。输出 `runs/20261128-data-lora-w24-online-additive-source-s2026112991-r01`。训练和正式测试队列各自独立运行。该源库不产生识别分数。 [生成入口](../../../experiments/pamf_lora_main/w24_online_additive_source.py)
+
+## 冻结结果
+
+执行提交 `d8fa6d46563b43ca38d49b4349623b3c373fa81f`。发布归档一次比对、远端编译及限定范围独立审查通过。N607 的 25,200 包源 U_s 数据已完成并独立读回 `SOURCE_OPERATOR_BANK_FROZEN`。算子文件约 4.63 GiB，原 Full 延迟为 24 个采样点。W24、TX、源 V 和目标读取均为零。
+
+30 个源包的原固定观测与旧配对库逐样点一致。由算子重建原新增噪声的最大相对误差为 3.52×10⁻¹⁶。两次重抽的复相关幅度在所测样本中的中位数为 0.01149、最大值 0.02881。冒烟、完成标记、状态和原日志已归档到本地 `source-bank-proof`。 [后续匹配训练](../20261128-phase1-lora-w24-online-redraw-directions-s2026112991-r01/report.md)
