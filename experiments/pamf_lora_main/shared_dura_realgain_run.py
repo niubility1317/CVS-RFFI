@@ -167,7 +167,7 @@ def score(rt, dataset):
     root, project = Path(rt['run_root']) / dataset, Path(rt['project'])
     frozen = read(root / 'screen-frozen.json')
     count = 60 if dataset == 'lora' else 360
-    modes = (['direct', 'lora_native_r17', 'real_gain', 'fusion'] if dataset == 'lora' else
+    modes = (['direct', 'lora_native_r17', 'real_gain', 'lora_r69_adapt', 'fusion'] if dataset == 'lora' else
              ['direct', 'wisig_r17', 'real_gain', 'dura_v1', 'fusion'])
     if (frozen['status'], frozen['views'], frozen['modes'], frozen['count'],
             frozen['source_truth_reads'], frozen['target_reads']) != (
@@ -199,8 +199,8 @@ def score(rt, dataset):
                    for i, name in enumerate(modes[:-1])}
     clean_net = {name: int(((clean[-1] == labels).astype(np.int16) -
                             (clean[i] == labels).astype(np.int16)).sum()) for i, name in enumerate(modes[:-1])}
-    missing = ['same-contract LoRa DURA v1'] if dataset == 'lora' else []
-    promote = (not missing and all(x['passes'] for x in comparisons.values()) and
+    missing = []
+    promote = (all(x['passes'] for x in comparisons.values()) and
                min(clean_net.values()) >= -clean_limit)
     write(root / 'screen-score.json', dict(status='SOURCE_SCREEN_SCORED', truth_last=True, count=count,
           modes=modes, correct={v: (x == labels).sum(1).tolist() for v, x in outputs.items()},

@@ -126,7 +126,24 @@ def predict(rt, dataset):
         ids, values = (screen.predict_lora if dataset == 'lora' else screen.predict_wisig)(rt, root)
     finally:
         screen.load_gain = old_load
-    if dataset == 'wisig':
+    if dataset == 'lora':
+        old = project / 'runs' / '20261128-diagnostic-lora-r69-full-w24-s2026112895-r01'
+        mark = read(old / 'screen-frozen.json')
+        if (mark['status'], mark['modes'], mark['views'], mark['count'],
+                mark['source_truth_reads'], mark['target_reads']) != (
+                'PREDICTIONS_FROZEN', ['direct', 'real_gain', 'lora_r69_half'], list(VIEWS), 60, 0, 0):
+            raise ValueError('Matched LoRa R69 adaptation predictions must be frozen')
+        with np.load(old / 'screen.npz', allow_pickle=False) as archive:
+            if not np.array_equal(ids, archive['ids']):
+                raise ValueError('Matched LoRa R69 physical IDs differ')
+            for view in VIEWS:
+                history = archive[view]
+                if (not np.array_equal(history[0], values[view][0]) or
+                        not np.array_equal(history[1], values[view][2])):
+                    raise ValueError('Matched LoRa direct or real-gain predictions differ')
+                values[view] = np.concatenate((values[view][:-1], history[2][None],
+                                               values[view][-1:]), axis=0)
+    else:
         old = project / 'runs' / WISIG_PACKET / 'wisig'
         mark = read(old / 'frozen.json')
         if mark['status'] != 'PREDICTIONS_FROZEN' or mark['source_truth_reads'] or mark['target_reads']:
@@ -144,8 +161,7 @@ def predict(rt, dataset):
                 values[view] = np.concatenate((values[view][:-1], history[1, indices][None],
                                                values[view][-1:]), axis=0)
     modes = list(screen.MODES[dataset])
-    if dataset == 'wisig':
-        modes.insert(-1, 'dura_v1')
+    modes.insert(-1, 'lora_r69_adapt' if dataset == 'lora' else 'dura_v1')
     folder = root / dataset
     with (folder / 'screen.npz').open('xb') as stream:
         np.savez(stream, ids=ids, **values)
@@ -174,7 +190,8 @@ def publish(repo, output, context, ssh_config):
               release_root=str(releases / f'{RUN}-release'), run_root=str(runs / RUN),
               lora_frozen_root=str(runs / PARENT),
               external_releases=[str(runs / n) for n in (LORA_ACTION, LORA_GAIN, WISIG_CACHE,
-                                                          WISIG_PACKET, WISIG_PARENT, PARENT)] +
+                                                          WISIG_PACKET, WISIG_PARENT, PARENT,
+                                                          '20261128-diagnostic-lora-r69-full-w24-s2026112895-r01')] +
                                 [str(releases / REFERENCE)])
     release(repo, output, rt, ssh_config, archive_extras=('tools/r17_activation_factorization.py',))
 
