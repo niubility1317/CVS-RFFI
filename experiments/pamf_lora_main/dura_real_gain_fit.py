@@ -50,6 +50,7 @@ def lora_models(project):
         _, action, _ = action_model.estimate(pair(y))
         return p, action
 
+    base.model = prior
     return source, np.arange(len(source)), base
 
 

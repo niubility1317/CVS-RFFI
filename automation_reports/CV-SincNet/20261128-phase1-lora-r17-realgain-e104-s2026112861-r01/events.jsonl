@@ -1,2 +1,3 @@
 {"at": "2026-11-28T04:37:58+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-28T04:44:31+00:00", "status": "RUNNING", "note": "R17 and E104-guided LoRa source fit running on GPU5; first actual checkpoint and both-branch supervised gradient smoke passed.", "evidence": ["N607:runs/20261128-phase1-lora-r17-realgain-e104-s2026112861-r01/state.json"], "row_id": null}
+{"at": "2026-11-28T05:09:12+00:00", "status": "ANALYZED", "note": "Source screen rejected; formal target testing not started.", "evidence": ["local_artifacts/20261128-phase1-lora-r17-realgain-e104-s2026112861-r01/readback/screen-score.json"], "row_id": null}
