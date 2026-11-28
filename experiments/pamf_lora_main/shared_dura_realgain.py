@@ -133,3 +133,11 @@ class SharedPacketSelector(nn.Module):
     def forward(self, received, real_gain, r17, action):
         take_r17 = self.logits(received, real_gain, r17, action) >= 0
         return torch.where(take_r17[:, None], r17, real_gain)
+
+
+class SharedPacketMixture(SharedPacketSelector):
+    """Mix both expert waveforms with one bounded, learned real gain per packet."""
+
+    def forward(self, received, real_gain, r17, action):
+        weight = self.logits(received, real_gain, r17, action).sigmoid()[:, None]
+        return r17 + weight * (real_gain-r17)
