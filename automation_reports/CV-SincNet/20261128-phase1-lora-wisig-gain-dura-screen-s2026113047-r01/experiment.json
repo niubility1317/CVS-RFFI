@@ -1,0 +1,227 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01",
+  "group_id": "phase1-lora-wisig-gain-dura",
+  "display_name": "LoRa 与 WiSig DURA／实增益融合首筛",
+  "description": "Shared projection-constrained two-step MAP with data-specific anchor and a companion prior, evaluated on one fixed source validation receiver and two views per dataset.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "wisig",
+    "real-gain",
+    "dura",
+    "screen",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+    "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+    "20261123-phase1-wisig-r69-paired-main-m6-r01",
+    "20261125-phase1-wisig-native-fir-source-m4-r01",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Current user LoRa and WiSig fusion objective and small screening before any complete target release.",
+  "code": {
+    "commit": "9d8aa934be2f3dcac6981b41aa5543d93eabef57",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI PyTorch CUDA FP32, separate CPU scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort multi-receiver LoRa and WiSig/ManySig Main split",
+    "version": "lora_full_packets_v1; WiSig registered R17/WiSig Main source cache",
+    "representation": "LoRa complex 8192 at 1 MS/s -> original W24. WiSig complex 256 -> original Tri-SIG-TIME SSL.",
+    "contract_ref": "LoRa parent frozen source contract.json; WiSig 20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "192 blind held-out V packets per dataset at one fixed source receiver; LoRa excludes original 300 source panel; WiSig precomputed 1800 Full V may contain already exposed benchmark IDs. Freeze selected IDs in predictions.npz.",
+    "label_map_ref": "Original frozen E104 (10) and WiSig Main seed 2026092701 (6); independent scorer only.",
+    "source_receivers": [
+      "LoRa b200_1",
+      "WiSig Main receiver 1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 52604,
+      "V": 384
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005; WiSig Main split",
+    "validation_ref": "Reuse registered validates-once source handles and fixed physical panels.",
+    "support_query_ref": null,
+    "leo_config_ref": "Only clean and the previously registered source Full practical_low_urban. Targets and other five views are outside this release."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Training only WiSig legal TX-hidden same-contract U_s with generic echo and AWGN. No target or W24/Tri-SIG access in optimization (the real-reader prior smoke and fixed source V predictions are separate from fit). No target access anywhere in this screen. LoRa only frozen readers and weights."
+  },
+  "checkpoint": {
+    "initialization": "LoRa frozen real gain phase arm from 38c7b18d7 and source-only native DURA R02/R07/R17. WiSig exact frozen two-stage R69 Graph-RR and new phase-aware real-gain baseline from zero on its legal U_s.",
+    "sources": [
+      {
+        "ref": "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+        "role": "LoRa real-gain control with legal earlier E104 source authorization, zero new training."
+      },
+      {
+        "ref": "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+        "role": "LoRa dataset-native DURA structural control and physical estimate; separate from R69."
+      },
+      {
+        "ref": "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+        "role": "Exact WiSig Main R69 existing contractual reference, original weights and inference."
+      },
+      {
+        "ref": "20261125-phase1-wisig-native-fir-source-m4-r01",
+        "role": "WiSig legal source fit selection (52604 training, 4096 reserved U_s), immutable E50 seed2026092701 default head for frozen scoring only."
+      }
+    ],
+    "contract_check_ref": "Pinned historical releases, runtime contracts, strict weight loads and fixed-panel comparator check.",
+    "provenance_verdict": "No weight crosses dataset boundaries. LoRa exact R69 weight is unavailable under this source contract; native R17 is the current matched DURA family comparator in the screen. A like-for-like two-stage LoRa DURA adaptation is still needed before final acceptance.",
+    "selection_rule": "Per dataset, on the fixed RX and 192 matched pairs, the candidate must net at least 8 extra correct in low urban versus every control, and each 95% paired bootstrap lower bound must exceed zero. Clean correct must meet or exceed maximum control. Two views and all four paths frozen before independent scorer. Proceed to separately preregistered official evaluation only for a passing dataset."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current LoRa performance chat, dual dataset objective",
+    "gpu_policy": "Read actual N607 slots. [5,2,6,3,0,7], at least 12288 MiB and fewer than eight contexts. One worker per card, at most two; serialize if one.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -m experiments.pamf_lora_main.gain_dura_screen publish E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --output E:/type10-7/local_artifacts/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01/release --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Failed real no-query smoke, illegal/missing parent, nonfinite/freeze mismatch or insufficient fixed blind receiver coverage halts dependent stages. Failed screen records result and no full expansion."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "lora/smoke.json",
+    "wisig/smoke.json",
+    "wisig/fit-smoke.json",
+    "wisig/fit.json",
+    "wisig/real_gain.pt",
+    "wisig/frozen-smoke.json",
+    "lora/predictions.npz",
+    "wisig/predictions.npz",
+    "lora/complete.json",
+    "wisig/complete.json",
+    "scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct_count",
+      "accuracy",
+      "paired repair/harm/net",
+      "shot-level paired 95% percentile intervals",
+      "screen qualification"
+    ],
+    "dimensions": [
+      "dataset",
+      "source V",
+      "Full low urban and clean",
+      "one physical receiver",
+      "same physical ID"
+    ],
+    "prediction_ref": "runs/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01/{lora,wisig}/predictions.npz",
+    "scorer_ref": "runs/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01/scores.json after both datasets freeze; CPU truth-last, no target."
+  },
+  "rows": [
+    {
+      "row_id": "lora",
+      "method": "Direct, original DURA, real gain, and fusion on fixed same-packet panel",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/gain_dura_screen.py",
+      "resolved_config_ref": "releases/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01-release/runtime.json",
+      "data_overrides": {
+        "V": 192,
+        "contract_U_s": 25200,
+        "receiver": "b200_1",
+        "training_steps": 0
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026113047,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Panel sampling is fixed with 2026113047 after blind receiver filtering. Existing observer and frozen classifier keep archived seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 new updates; four frozen inference paths.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01/lora",
+      "log_path": "runs/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01/lora.log",
+      "command": "python -u -m experiments.pamf_lora_main.gain_dura_screen lora releases/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "predictions.npz",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "wisig",
+      "method": "Direct, original DURA, real gain, and fusion on fixed same-packet panel",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/gain_dura_screen.py",
+      "resolved_config_ref": "releases/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01-release/runtime.json",
+      "data_overrides": {
+        "V": 192,
+        "contract_U_s": 56700,
+        "receiver": 1,
+        "training_steps": 8000
+      },
+      "seeds": {
+        "model": 2026113047,
+        "split": 392005,
+        "data": 2026113047,
+        "augmentation": 2026113048,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Panel sampling is fixed with 2026113047 after blind receiver filtering. Existing observer and frozen classifier keep archived seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 2e-4 -> 2e-5 cosine, WD 1e-4, gradient limit 1",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "8000 source U_s updates, batch 24, no teacher; no fusion fitting.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261127-phase1-lora-wisig-packet-dura-s2026113021-r02/wisig",
+      "log_path": "runs/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01/wisig.log",
+      "command": "python -u -m experiments.pamf_lora_main.gain_dura_screen wisig releases/20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "predictions.npz",
+        "complete.json",
+        "fit-smoke.json",
+        "fit.json",
+        "real_gain.pt",
+        "frozen-smoke.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Hypothesis: combine the real-gain and DURA native IQ recoveries by solving a DURA MAP residual problem in the complement of the anchor edit, using half the companion-minus-anchor as the prior. The two CG updates and 25% raw edit norm cap are fixed. Estimated A and v come from the original DURA module on current received IQ, no test-based fitting.",
+    "Shared solver on both. LoRa anchor is the documented real-gain waveform, companion native R17, front end E104. WiSig anchor is frozen R69, companion dataset-trained phase-aware signed-real spectral gain. WiSig adapter uses 20-point STF correlation over the fixed 80–199 interval and width 32 versus LoRa width 1024; both share packet U-Net and spectral innovation code. The new WiSig weights are from scratch.",
+    "LoRa source V b200_1 and WiSig source V receiver 1 selected by fixed lowest registered index and 192 draws, without scoring. LoRa excludes the earlier 300-panel IDs. WiSig established source panel previously exposed. Original complete targets are sequestered from this release; already exposed historical benchmark results remain documented.",
+    "Formal references still pending: same-condition LoRa DURA v1 mechanism counterpart and WiSig real gain exact Full testing. New architecture will not start complete tests until the screen rule is met and formal matrix locked."
+  ],
+  "registered_at": "2026-11-28T04:32:39+00:00"
+}
