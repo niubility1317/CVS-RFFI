@@ -1,0 +1,195 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01",
+  "group_id": "phase1-lora-r17-amplitude-gain",
+  "display_name": "LoRa R17 三方向实频谱幅度融合",
+  "description": "冻结 LoRa 实增益、R02/R07/R17 与 E104，增加先验频谱实幅度方向，与伴随残差和 R17 差异方向共同训练。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "raw8192",
+    "r02",
+    "r07",
+    "r17",
+    "real-gain",
+    "frozen-E104",
+    "source-screen",
+    "truth-last",
+    "recognition-retention"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+    "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+    "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261128-phase1-lora-joint-r17-realgain-s2026112873-r01",
+    "20261128-phase1-lora-r17-recognition-retain-s2026112885-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "当前聊天 01a2204f-647a-7903-ba29-81cfe8f8749b 的融合研发目标及 N607 有显存即启动要求。",
+  "code": {
+    "commit": "6e5e76531c68b96add83736f6dc0abfcfb8dbfcb",
+    "checkout": "E:/codex/home/worktrees/dura-real-gain-fusion/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI PyTorch CUDA FP32 TF32off, independent CPU scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa",
+    "version": "lora_full_packets_v1",
+    "representation": "8192 complex points in 8 x 1024 chirps; frozen W24 E104/default head",
+    "contract_ref": "lora_rx5_main_v1:392005",
+    "physical_ids_ref": "V RX b200_1: seed 2026112899 choose 300 IDs excluding all previous source screens (60+300+300+300 IDs)",
+    "label_map_ref": "TX31-40 mapped 0-9; L_s labels only in training, U_s true TX hidden; source V truth only in independent scorer",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "15 registered held-out LoRa RX remain unopened by this run"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original ten-class source contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": "300 selected on b200_1"
+    },
+    "train_ratio": "original 7/63/30",
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Existing VALIDATED_ONCE source contract and physical ID ordering",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered source Full clean and practical_low_urban views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "LoRa L_s true CE and frozen E104 clean U_s pseudo CE >=0.95 explicitly allowed by same-contract native E104 predecessor. U_s true TX hidden; V and target excluded from updates. V truth read separately only after clean and low-urban predictions freeze."
+  },
+  "checkpoint": {
+    "initialization": "Same-contract LoRa realgain, R02/R07/R17 and E104 frozen; new three-direction real-gain head zero initialized. Previous candidates used only to exclude exposed screening IDs.",
+    "sources": [
+      {
+        "ref": "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+        "role": "frozen same-contract LoRa realgain prior; inherited E104 supervised and U pseudo-label history"
+      },
+      {
+        "ref": "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+        "role": "same-contract R02/R07 context and R17 three-prior unrolled reference"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "frozen E104 source teacher and original default head, source-V selected E104"
+      }
+    ],
+    "contract_check_ref": "Prior frozen checkpoints and same lora_rx5_main_v1:392005 role/receiver/ten-class identities; strict loads",
+    "provenance_verdict": "No cross-dataset checkpoint. LoRa source-only pretarget fixed weights; historic target results have been exposed and source V used by E104 selection.",
+    "selection_rule": "Final 1500-step checkpoint; low urban same-packet net >=2 in each deterministic half of 300 vs direct, native LoRa R17 and realgain; clean net >=-2 against each; 2000 paired bootstrap 95% interval."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "current Codex chat 01a2204f-647a-7903-ba29-81cfe8f8749b",
+    "gpu_policy": "One worker; first GPU with >=8192 MiB free in order 5,7,2,3,6,1,4,0; concurrent WiSig worker preserved.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.dura_real_gain_lora_amplitude publish --repo E:/codex/home/worktrees/dura-real-gain-fusion/CVS-RFFI-repo --output E:/type10-7/local_artifacts/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01/release --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop on illegal source/checkpoint, output collision, nonfinite update, absent finite nonzero first-step gradients for all three directions, incomplete predictions or scorer failure. Preserve other owners and outputs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "fit.log",
+    "fit.json",
+    "gain.pt",
+    "predict.log",
+    "screen.npz",
+    "screen-frozen.json",
+    "score.log",
+    "screen-score.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "same-packet accuracy",
+      "repaired/harmed/net",
+      "two half nets",
+      "2000 bootstrap 95% interval",
+      "pseudo accepted/exposed",
+      "source fit seconds",
+      "peak CUDA memory"
+    ],
+    "dimensions": [
+      "b200_1",
+      "300 fresh source V physical IDs excluding prior 60+300+300+300",
+      "clean",
+      "practical_low_urban"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01/screen.npz",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01/screen-score.json"
+  },
+  "rows": [
+    {
+      "row_id": "lora_r17_amplitude_gain",
+      "method": "Frozen LoRa realgain plus real-valued amplitude of prior spectrum, R07 adjoint residual and R17 difference, supervised by frozen E104.",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/dura_real_gain_lora_amplitude.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01-release/runtime.json",
+      "data_overrides": {
+        "L_batch": 8,
+        "U_batch": 8,
+        "pseudo_threshold": 0.95,
+        "V": 300,
+        "screen_RX": "b200_1",
+        "previous_screen_overlap": 0
+      },
+      "seeds": {
+        "model": 2026112897,
+        "split": 392005,
+        "data": 2026112897,
+        "augmentation": 2026112898,
+        "support": null,
+        "evaluation": 2026112899
+      },
+      "seed_notes": "Selection seed +2 chooses RX V IDs without labels, +3 assigns halves. No support.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight_decay 1e-4 cosine 1e-4 to 1e-5, gradient clip 1",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "1500 updates, each 8 L_s + 8 U_s; 12000 exposures per role; inherited training cost separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01/fit.log",
+      "command": "python -u -m experiments.pamf_lora_main.dura_real_gain_lora_amplitude fit /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01-release/runtime.json",
+      "expected_artifacts": [
+        "state.json",
+        "fit.log",
+        "fit.json",
+        "gain.pt",
+        "predict.log",
+        "screen.npz",
+        "screen-frozen.json",
+        "score.log",
+        "screen-score.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Excludes 60+300+300+300 prior source screening IDs; E104 source V selected historically and target benchmark previously exposed.",
+    "LoRa source-contract parent checkpoints only; no cross-dataset weight transfer.",
+    "Three-direction gain coefficients: 0.1 prior spectrum and 0.25 each physical residual and R17-minus-prior. Same 1500-step recognition-retention loss as prior candidate.",
+    "U true TX hidden; E104 frozen teacher for U pseudolabels and source supervision; no V/target training.",
+    "Full target seven-view evaluation and matching DURA v1 LoRa control remain outstanding."
+  ],
+  "registered_at": "2026-11-28T07:00:12+00:00"
+}
