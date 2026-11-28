@@ -1,0 +1,3 @@
+{"at": "2026-11-28T09:29:46+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-28T09:34:20+00:00", "status": "PARTIAL", "note": "LoRa failed before training due NamespacePath; WiSig row continues; LoRa separate technical retry started", "evidence": ["N607:runs/20261128-phase1-shared-confidence-router-s2026112957-r01/lora-worker.log"], "row_id": null}
+{"at": "2026-11-28T09:35:58+00:00", "status": "FAILED", "note": "LoRa failed before training, WiSig source screen completed and did not pass; LoRa separately retried", "evidence": ["N607:runs/20261128-phase1-shared-confidence-router-s2026112957-r01/state.json"], "row_id": null}

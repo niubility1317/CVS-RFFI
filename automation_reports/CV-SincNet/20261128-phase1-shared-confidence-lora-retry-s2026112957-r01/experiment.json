@@ -1,0 +1,179 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-shared-confidence-lora-retry-s2026112957-r01",
+  "group_id": "phase1-crossdata-shared-dura-realgain",
+  "display_name": "共享置信度路由 LoRa 技术补跑",
+  "description": "LoRa 首步因历史模块 NamespacePath 初始化失败；先加载合法专家再加载冻结教师，仅补 LoRa，WiSig 原行继续。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "authorization": "用户于 2026-11-28 明确授权两数据集源域教师指导训练；只用各自合法源 U 模拟 clean/受扰配对，隐藏 U 的 TX 真值，禁止源 V 和目标参与训练。",
+  "parent_run_ids": [
+    "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+    "20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+    "20261128-phase1-shared-twoprior-realgain-s2026112901-r01",
+    "20261128-phase1-shared-convex-realgain-s2026112905-r01",
+    "20261128-phase1-shared-selector-realgain-s2026112909-r01",
+    "20261128-phase1-shared-consistency-selector-s2026112913-r01",
+    "20261128-phase1-shared-physics-route-s2026112933-r01",
+    "20261128-phase1-shared-confidence-route-s2026112925-r01",
+    "20261128-phase1-shared-teacher-selector-s2026112937-r01",
+    "20261128-phase1-shared-matched-mse-s2026112937-r01",
+    "20261128-phase1-shared-teacher-mixture-s2026112941-r01",
+    "20261128-phase1-shared-matched-mixture-s2026112941-r01",
+    "20261128-phase1-shared-teacher-direct-s2026112945-r01",
+    "20261128-phase1-shared-matched-direct-s2026112945-r01",
+    "20261128-phase1-shared-r17-teacher-direct-s2026112949-r01",
+    "20261128-diagnostic-shared-r17-scale-s2026112953-r01",
+    "20261128-phase1-shared-bounded-teacher-s2026112957-r01",
+    "20261128-phase1-shared-bounded2-teacher-s2026112957-r01",
+    "20261128-phase1-shared-anchor5-consistency-s2026112957-r01",
+    "20261128-phase1-shared-risk8-router-s2026112957-r01",
+    "20261128-phase1-shared-confidence-router-s2026112957-r01"
+  ],
+  "code": {
+    "commit": "26d14407d12f5cc9ba896fe012383d405aaaa09a",
+    "checkout": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI CUDA FP32 / TF32 off, CPU independent scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa native 8192",
+    "contract_ref": "lora_rx5_main_v1:392005; ManySig Main original 7/63/30 F0 seed392005; VALIDATED_ONCE source caches",
+    "representation": "one SharedConfidenceRouter with seven class-count-independent teacher confidence features plus physical score, separate dataset-specific source-selected anchors and weights",
+    "source_receivers": [
+      "LoRa b200_1"
+    ],
+    "target_receivers": [],
+    "roles": {
+      "train": "U_s only",
+      "validation": "LoRa 60 source V"
+    },
+    "physical_ids_ref": "existing first cross-data screen physical IDs, same paired channel observations",
+    "views": [
+      "clean",
+      "practical_low_urban"
+    ],
+    "exposure": "same source V RX panels and historical comparisons repeatedly exposed by prior development; no target input or truth"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "User-authorized source U clean teacher pseudo-labels; inference explicitly uses the same dataset frozen default classifier on both current-packet expert outputs for routing, then the default head scores the selected output. No true U TX, source V or target used for training or threshold fitting."
+  },
+  "checkpoint": {
+    "initialization": "Router head weights zero and bias -2; fixed source-selected anchor LoRa real-gain or WiSig R17. Source V results informed anchors, no target data.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+        "role": "LoRa native R02/R07/R17"
+      },
+      {
+        "ref": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "role": "WiSig original full R17 and action"
+      },
+      {
+        "ref": "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+        "role": "LoRa E104 real-gain screen comparison only"
+      },
+      {
+        "ref": "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+        "role": "WiSig independently source-trained real-gain control"
+      },
+      {
+        "ref": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+        "role": "WiSig frozen DURA v1 same-packet screen predictions"
+      },
+      {
+        "ref": "20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+        "role": "frozen same-ID LoRa-trained R69 architecture adaptation; distinct from original WiSig DURA v1 weights"
+      }
+    ],
+    "selection_rule": "Fixed source final step 1000. LoRa hard-scene net >=1 in each fixed half and clean >=-1 versus every available same-packet control including LoRa R69 adaptation. WiSig each half net >=2 and clean >=-2 against each control including fixed DURA v1. Original fixed WiSig DURA v1 checkpoint has no lawful matched LoRa transfer; disclose as unavailable."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex chat 01a2204f-bfeb-7fa1-bda9-d8961e4ee178",
+    "gpu_policy": "One GPU from [7,4,6,3] with >=8192 MiB free; preserve WiSig original worker on GPU 1 and other owners.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.shared_confidence_lora_retry_run publish --repo E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo --output E:/type10-7/local_artifacts/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01/release --context E:/type10-7/local_artifacts/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01/context.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop affected run on provenance/data-contract mismatch, occupied immutable output, no source-only checkpoint smoke, nonfinite loss/gradient, prediction matrix mismatch, query or truth-boundary violation; preserve partial artifacts and all other processes."
+  },
+  "expected_artifacts": [
+    "lora/gain.pt",
+    "lora/screen-score.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "paired repaired/harmed/net",
+      "95% paired bootstrap",
+      "fixed two-half net",
+      "training seconds",
+      "peak GPU bytes",
+      "parameters"
+    ],
+    "dimensions": [
+      "dataset",
+      "single source receiver",
+      "physical ID",
+      "clean",
+      "practical_low_urban"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01/lora/screen.npz",
+    "scorer_ref": "experiments/pamf_lora_main/shared_confidence_lora_retry_run.py"
+  },
+  "rows": [
+    {
+      "row_id": "lora",
+      "method": "Shared source-pseudolabel confidence-assisted router; frozen dataset classifier is also used twice per current packet at inference; independent weights and fixed dataset anchor",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/shared_confidence_lora_retry_run.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01-release/runtime.json",
+      "data_overrides": {
+        "training": "source U simulated received/clean; frozen original default-head teacher, no TX labels, V or target",
+        "source_screen_receiver": "b200_1",
+        "screen_physical_packets": 60
+      },
+      "seeds": {
+        "model": 2026112957,
+        "split": 392005,
+        "data": 2026112957,
+        "augmentation": 2026112958,
+        "support": null,
+        "evaluation": 2026112852
+      },
+      "seed_notes": "Support inapplicable; preregistered existing source V observations and fixed paired half permutation.",
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW lr=0.0003, weight_decay=0.0001, cosine to 0.00003",
+      "budget_ref": "1000 source U updates x batch 4; five teacher forwards per sample plus two initial smoke forwards; teacher gradient disabled",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01/lora",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01/lora-worker.log",
+      "command": "python -u -m experiments.pamf_lora_main.shared_confidence_lora_retry_run worker /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01-release/runtime.json lora",
+      "expected_artifacts": [
+        "gain.pt",
+        "fit.json",
+        "screen.npz",
+        "screen-frozen.json",
+        "screen-score.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Technical retry of only failed LoRa row, not a new scientific candidate: original failed before source training due NamespacePath insert in source_teacher. Original WiSig row remains in its own run. Experts load first using the prior verified path; network, source U, seed, optimizer, thresholds, teacher, loss and observations unchanged. Preserve original failure and do not repeat its healthy WiSig row.",
+    "Hypothesis: frozen default-head confidence on the two current-packet experts can help distinguish useful from harmful switching when physical-only routes collapse. Previous conservative route equalled its anchor on both datasets; source-pseudo-positive weight 8 made WiSig collapse to the weak expert, 190/360 vs R17 332/360.",
+    "Shared router inputs: physical score plus each expert max probability, top-two probability margin, entropy, and whether predicted classes agree. Class dimensions do not enter the common core. The train and inference teacher both consume the same per-packet normalized expert signals.",
+    "Source U normalized clean teacher argmax is pseudo-label; switch=1 only if other expert matches and anchor fails, switch=0 if anchor matches, ignore both wrong. Positive weight 1, negative 2, plus 0.5 clean no-switch BCE. Fixed threshold logit >=0, initialized bias -2.",
+    "LoRa W24 E104 and WiSig Tri-SIG-TIME SSL F0 are frozen during training and inference; inference pays two additional F forwards per packet plus final default-head F. Training teacher samples LoRa/WiSig 20008/120048 including initial smoke. LoRa exact scipy forward, no teacher gradient; parents and actual end-to-end latency must be disclosed.",
+    "LoRa real-gain and WiSig R17 default anchors selected from repeatedly exposed source V, separate dataset weights; no U TX truth, source V or target in training. Same source V is repeatedly exposed and informed design; require separate preregistered source replication before formal target testing."
+  ],
+  "registered_at": "2026-11-28T09:32:43+00:00"
+}

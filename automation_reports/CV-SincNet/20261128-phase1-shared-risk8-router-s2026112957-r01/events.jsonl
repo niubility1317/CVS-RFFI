@@ -1,2 +1,3 @@
 {"at": "2026-11-28T09:21:01+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-28T09:22:15+00:00", "status": "RUNNING", "note": "Source training workers launched; real checkpoint first step passed", "evidence": ["N607:runs/20261128-phase1-shared-risk8-router-s2026112957-r01/state.json"], "row_id": null}
+{"at": "2026-11-28T09:34:56+00:00", "status": "ANALYZED", "note": "Both source screens failed; WiSig severe regression retained and paired against conservative router", "evidence": ["N607:runs/20261128-phase1-shared-risk8-router-s2026112957-r01/state.json"], "row_id": null}
