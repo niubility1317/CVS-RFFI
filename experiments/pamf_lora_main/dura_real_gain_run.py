@@ -11,8 +11,8 @@ from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_lora_main.dura_real_gain_fit import LORA_ACTION, LORA_GAIN, WISIG_CACHE, WISIG_PACKET, WISIG_PARENT
 
 
-RUN = '20261128-phase1-dura-realgain-crossdata-s2026112845-r01'
-ROWS = ('lora', 'wisig', 'wisig_real_gain')
+RUN = '20261128-phase1-dura-realgain-crossdata-s2026112845-r02'
+ROWS = ('wisig', 'wisig_real_gain')
 
 
 def free_gpus():
@@ -26,7 +26,9 @@ def dispatch(runtime):
     rt = read(runtime)
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
-    for row in ROWS:
+    reusable_lora = bool(rt.get('lora_frozen_root')) and 'lora' not in ROWS
+    all_roles = (*ROWS, 'lora') if reusable_lora else ROWS
+    for row in all_roles:
         (root / row).mkdir()
     state = {'status': 'STARTING', 'workers': {}, 'screens': {}, 'failures': {}}
 
@@ -48,9 +50,9 @@ def dispatch(runtime):
 
     try:
         gpus = free_gpus()
-        if len(gpus) < len(ROWS):
-            raise RuntimeError('Fewer than three distinct GPUs have 8 GiB free at preflight')
-        assigned = dict(zip(ROWS, gpus[:len(ROWS)], strict=True))
+        if len(gpus) < len(all_roles):
+            raise RuntimeError('Too few distinct GPUs have 8 GiB free at preflight')
+        assigned = dict(zip(all_roles, gpus[:len(all_roles)], strict=True))
         jobs = {}
         for row in ROWS:
             try:
@@ -59,8 +61,16 @@ def dispatch(runtime):
                 state['failures'][row] = f'fit start failed: {error}'
         state.update(status='TRAINING', gpu=assigned, workers={k: v.pid for k, v in jobs.items()})
         save()
-        pending = {'lora': {'lora'}, 'wisig': {'wisig', 'wisig_real_gain'}}
+        pending = {dataset: needs for dataset, needs in
+                   (('lora', {'lora'}), ('wisig', {'wisig', 'wisig_real_gain'}))
+                   if needs.issubset(ROWS)}
         predictions = {}
+        if reusable_lora:
+            try:
+                predictions['lora'] = start('experiments.pamf_lora_main.dura_real_gain_screen',
+                                            'predict', 'lora', assigned['lora'])
+            except OSError as error:
+                state['failures']['lora_screen'] = f'prediction start failed: {error}'
         while jobs or pending or predictions:
             for row, proc in list(jobs.items()):
                 code = proc.poll()
@@ -119,8 +129,10 @@ def publish(repo, output, context, ssh_config):
     runs, releases = project / 'runs', project / 'releases'
     rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
               release_root=str(releases / f'{RUN}-release'), run_root=str(runs / RUN),
+              lora_frozen_root=str(runs / '20261128-phase1-dura-realgain-crossdata-s2026112845-r01'),
               external_releases=[str(runs / n) for n in (LORA_ACTION, LORA_GAIN, WISIG_CACHE,
-                                                          WISIG_PACKET, WISIG_PARENT)]
+                                                          WISIG_PACKET, WISIG_PARENT,
+                                                          '20261128-phase1-dura-realgain-crossdata-s2026112845-r01')]
               + [str(releases / '20261125-phase1-wisig-native-fir-source-m4-r01-release')])
     release(repo, output, rt, ssh_config, archive_extras=('tools/r17_activation_factorization.py',))
 

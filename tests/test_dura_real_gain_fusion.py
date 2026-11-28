@@ -1,4 +1,6 @@
 import pytest
+import importlib
+import sys
 import numpy as np
 import torch
 
@@ -6,6 +8,7 @@ from experiments.pamf_action_restore.operators import Action
 from experiments.pamf_lora_main.dura_real_gain_fusion import PhysicsGain, RealSpectralGain
 from experiments.pamf_lora_main.w24_native_spectral_innovation import SpectralInnovation
 from experiments.pamf_lora_main.dura_real_gain_screen import paired
+from experiments.pamf_lora_main.dura_real_gain_fit import activate_wisig_archive
 from experiments.pamf_lora_main import dura_real_gain_run as run
 from experiments.cric_dura_comparison.io import read, write
 
@@ -72,6 +75,7 @@ def test_failed_fit_does_not_abandon_other_dataset(monkeypatch, tmp_path):
     root = tmp_path / 'run'
     runtime = tmp_path / 'runtime.json'
     write(runtime, {'run_root': str(root)})
+    monkeypatch.setattr(run, 'ROWS', ('lora', 'wisig', 'wisig_real_gain'))
     monkeypatch.setattr(run, 'free_gpus', lambda: [0, 1, 2])
     monkeypatch.setattr(run, 'sleep', lambda _: None)
     started = []
@@ -101,3 +105,58 @@ def test_failed_fit_does_not_abandon_other_dataset(monkeypatch, tmp_path):
     assert 'lora' in state['failures'] and 'lora_screen' in state['failures']
     assert ('predict', 'wisig') in started and ('score', 'wisig') in started
     assert ('predict', 'lora') not in started
+
+
+def test_archived_wisig_dependencies_take_precedence(monkeypatch, tmp_path):
+    import experiments
+    import experiments.pamf_lora_main as package
+    import experiments.cric_dura_comparison as common
+
+    archived = tmp_path / 'experiments' / 'pamf_lora_main'
+    archived.mkdir(parents=True)
+    (archived / 'refine_runner.py').write_text('def select_gpu(): return 17\n', encoding='utf-8')
+    current = tmp_path / 'current'
+    current.mkdir()
+    (current / 'refine_runner.py').write_text('unrelated = True\n', encoding='utf-8')
+    monkeypatch.setattr(package, '__path__', [str(current)])
+    monkeypatch.setattr(common, '__path__', list(common.__path__))
+    monkeypatch.setattr(experiments, '__path__', list(experiments.__path__))
+    monkeypatch.delitem(sys.modules, 'experiments.pamf_lora_main.refine_runner', raising=False)
+    try:
+        activate_wisig_archive(tmp_path)
+        loaded = importlib.import_module('experiments.pamf_lora_main.refine_runner')
+        assert loaded.select_gpu() == 17
+    finally:
+        sys.modules.pop('experiments.pamf_lora_main.refine_runner', None)
+
+
+def test_frozen_lora_is_screened_without_retraining(monkeypatch, tmp_path):
+    root = tmp_path / 'run'
+    runtime = tmp_path / 'runtime.json'
+    write(runtime, {'run_root': str(root), 'lora_frozen_root': str(tmp_path / 'old')})
+    monkeypatch.setattr(run, 'ROWS', ('wisig', 'wisig_real_gain'))
+    monkeypatch.setattr(run, 'free_gpus', lambda: [0, 1, 2])
+    monkeypatch.setattr(run, 'sleep', lambda _: None)
+    started = []
+
+    class Child:
+        pid = 43
+
+        def __init__(self, args, **kwargs):
+            action = args[-3] if 'dura_real_gain_screen' in args[3] else 'fit'
+            row = args[-1] if action != 'fit' else args[-2]
+            started.append((action, row))
+            if action == 'score':
+                write(root / row / 'screen-score.json', {'promote': False})
+
+        def poll(self):
+            return 0
+
+        def wait(self):
+            return 0
+
+    monkeypatch.setattr(run.subprocess, 'Popen', Child)
+    run.dispatch(runtime)
+    assert ('fit', 'lora') not in started
+    assert ('predict', 'lora') in started and ('score', 'lora') in started
+    assert read(root / 'state.json')['status'] == 'SOURCE_SCREEN_SCORED'

@@ -53,21 +53,36 @@ def lora_models(project):
     return source, np.arange(len(source)), base
 
 
+def activate_wisig_archive(reference):
+    """Resolve historical helper modules from the release that supplied them."""
+    experiments = importlib.import_module('experiments')
+    root = str(Path(reference) / 'experiments')
+    if root not in experiments.__path__:
+        experiments.__path__.insert(0, root)
+    for name in ('pamf_lora_main', 'cric_dura_comparison', 'pamf_unrolled_restore'):
+        package = importlib.import_module('experiments.' + name)
+        path = str(Path(reference) / 'experiments' / name)
+        if path not in package.__path__:
+            package.__path__.insert(0, path)
+
+
 def wisig_models(project, frozen_sources):
     from experiments.cric_dura_comparison.bootstrap import activate
     activate({'frozen_sources': frozen_sources})
-    package = importlib.import_module('experiments.pamf_unrolled_restore')
     reference = project / 'releases' / '20261125-phase1-wisig-native-fir-source-m4-r01-release'
-    package.__path__.insert(0, str(reference / 'experiments' / 'pamf_unrolled_restore'))
+    activate_wisig_archive(reference)
     original = importlib.import_module('experiments.pamf_unrolled_restore.wisig_anchored_window_source')
     cache = project / 'runs' / WISIG_CACHE / 'cache'
     source, indices, _ = original.core.source_iq(cache)
-    engine = original.core.baseline.original_r69(project / 'runs' / WISIG_PARENT)
-    model = engine.pipeline.model
+    from experiments.pamf_unrolled_restore.runtime import load_checkpoint
+    path = project / 'runs' / WISIG_PARENT / 'unroll_unshared' / 'native_map_prior' / 'final.pt'
+    model, evidence = load_checkpoint(path, DEVICE)
+    if (evidence['candidate'], evidence['epoch'], evidence['updates']) != ('unroll_unshared', 20, 4940):
+        raise ValueError('Expected the source-selected original R17 final checkpoint')
+    model.eval().requires_grad_(False)
 
     def base(y):
-        (p,) = engine(pair(y))
-        _, action, _ = model.estimate_context(pair(y))
+        p, _, action, _ = model.training_outputs(pair(y))
         return complex_iq(p), action
 
     return source, indices, base

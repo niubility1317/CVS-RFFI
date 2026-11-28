@@ -10,7 +10,7 @@ import torch
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main.dura_real_gain_fit import (
-    DEVICE, LORA_ACTION, SEED, WIDTH, as_complex, lora_models, wisig_models, wisig_real_prior,
+    DEVICE, LORA_ACTION, LORA_GAIN, SEED, WIDTH, activate_wisig_archive, as_complex, lora_models, wisig_models, wisig_real_prior,
 )
 from experiments.pamf_lora_main.dura_real_gain_fusion import PhysicsGain, RealSpectralGain
 from experiments.pamf_restoration.models import complex_iq, pair
@@ -18,7 +18,7 @@ from experiments.pamf_restoration.models import complex_iq, pair
 
 VIEWS = ('clean', 'practical_low_urban')
 MODES = {'lora': ('direct', 'lora_native_r17', 'real_gain', 'fusion'),
-         'wisig': ('direct', 'dura_v1', 'real_gain', 'fusion')}
+         'wisig': ('direct', 'wisig_r17', 'real_gain', 'fusion')}
 LORA_RX, WISIG_RX = 0, 1
 
 
@@ -26,7 +26,9 @@ def load_gain(folder, dataset, *, real=False):
     name = 'wisig_real_gain' if real else dataset
     checkpoint = torch.load(folder / name / 'gain.pt', map_location=DEVICE, weights_only=True)
     proof = read(folder / name / 'fit.json')
-    if checkpoint['proof'] != proof or proof['status'] != 'SOURCE_FROZEN' or proof['dataset'] != name:
+    if (checkpoint['proof'] != proof or proof['status'] != 'SOURCE_FROZEN' or proof['dataset'] != name
+            or proof['seed'] != SEED or proof['updates'] != 2000
+            or any(proof[k] != 0 for k in ('V_reads', 'target_reads', 'newly_read_TX_labels'))):
         raise ValueError('Expected the fixed source-only gain checkpoint')
     model = (RealSpectralGain(32) if real else PhysicsGain(WIDTH[dataset])).to(DEVICE).eval()
     model.load_state_dict(checkpoint['weights'], strict=True)
@@ -40,6 +42,14 @@ def packet_scale(y):
 @torch.no_grad()
 def predict_lora(rt, root):
     project = Path(rt['project'])
+    from experiments.cric_dura_comparison.bootstrap import activate
+    activate(rt)
+    parent_release = read(project / 'releases' / f'{LORA_GAIN}-release' / 'runtime.json')
+    if parent_release['run_id'] != LORA_GAIN:
+        raise ValueError('Expected registered LoRa phase-aware parent release')
+    # Import the reader's whole dependency tree from its original W24 release.
+    activate_wisig_archive(project / 'releases' / f'{LORA_GAIN}-release')
+    activate_wisig_archive(Path(parent_release['w24_release_root']))
     _, _, base = lora_models(project)
     from experiments.pamf_lora_main import w24_joint_pamf as joint
     from experiments.pamf_lora_main import w24_native_training as native
@@ -52,7 +62,7 @@ def predict_lora(rt, root):
     native.load_stage(project / 'runs' / native.PHASE_RUN, 'frequency_inphase_native', contract, prior.core, DEVICE)
     prior.eval().requires_grad_(False)
     dura = native.dura_model(project / 'runs' / LORA_ACTION, contract, DEVICE).eval().requires_grad_(False)
-    gain = load_gain(root, 'lora')
+    gain = load_gain(Path(rt['lora_frozen_root']), 'lora')
     def classify(z):
         cpu = np.asarray(z.contiguous().view(torch.float32).tolist(), dtype=np.float32).view(np.complex64)
         return joint.classify_aperture(reader, joint.received_aperture(cpu, DEVICE))
@@ -175,9 +185,8 @@ def score(rt, dataset):
     else:
         from experiments.cric_dura_comparison.bootstrap import activate
         activate(rt)
-        package = importlib.import_module('experiments.pamf_unrolled_restore')
         release = project / 'releases' / '20261125-phase1-wisig-native-fir-source-m4-r01-release'
-        package.__path__.insert(0, str(release / 'experiments' / 'pamf_unrolled_restore'))
+        activate_wisig_archive(release)
         original = importlib.import_module('experiments.pamf_unrolled_restore.wisig_anchored_window_source')
         config = read(release / 'runtime.json')
         _, _, source, _, all_ids, _, positions = original.core.baseline.handles(config)
@@ -196,7 +205,8 @@ def score(rt, dataset):
     write(folder / 'screen-score.json', dict(status='SOURCE_SCREEN_SCORED', truth_last=True,
           count=expected, modes=list(modes), correct={v: (x == labels).sum(1).tolist()
           for v, x in predictions.items()}, low_urban_pairs=comparisons, clean_net=clean_deltas,
-          promote=promote, missing_controls=(['same-contract LoRa DURA v1'] if dataset == 'lora' else []),
+          promote=promote, missing_controls=(['same-contract LoRa DURA v1'] if dataset == 'lora'
+                                             else ['DURA v1 comparison deferred to formal evaluation']),
           formal_acceptance_complete=False,
           caveat='source V receiver and historical benchmark already exposed'))
 
