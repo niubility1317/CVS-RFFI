@@ -30,7 +30,7 @@ def fused_unroll(r17, gain, received, real_prior, *, train_action=False, return_
     return (output, action) if return_action else output
 
 
-def fused_anchor_unroll(r17, gain, received, anchor):
+def fused_anchor_unroll(r17, gain, received, anchor, *, train_action=False, return_action=False):
     if received.ndim != 2 or received.shape != anchor.shape or received.shape[-1] != 8 * gain.width:
         raise ValueError('Expected matching complete packets for the gain width')
     scale = received.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
@@ -38,7 +38,7 @@ def fused_anchor_unroll(r17, gain, received, anchor):
     received_pair = pair(observed)
     initial_anchor = anchor / scale
     current_anchor = initial_anchor
-    with torch.no_grad():
+    with nullcontext() if train_action else torch.no_grad():
         base, action, native = r17.estimate(received_pair)
     variance = native[:, None].expand_as(observed.real)
     logvar = native.log().clamp(-16, 4)[:, None, None].expand(-1, 1, observed.shape[-1]) / 8
@@ -51,4 +51,5 @@ def fused_anchor_unroll(r17, gain, received, anchor):
         current = pair(weighted_map(action, observed, complex_iq(proposal), variance, steps=2,
                                     initial=complex_iq(current)))
         current_anchor = gain(observed, current_anchor, complex_iq(current), action)
-    return current_anchor * scale
+    output = current_anchor * scale
+    return (output, action) if return_action else output

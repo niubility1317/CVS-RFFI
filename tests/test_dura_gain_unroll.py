@@ -71,3 +71,27 @@ def test_solver_can_propagate_into_source_trainable_action_estimator():
     (output.abs().square().mean() + (action(.7 * y) - y).abs().square().mean()).backward()
     gradient = r17.frozen.coefficient.grad
     assert gradient is not None and torch.isfinite(gradient) and gradient.abs() > 0
+
+
+def test_anchor_solver_can_train_action_without_updating_prior():
+    class Native(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.coefficient = nn.Parameter(torch.tensor(.9))
+            self.priors = nn.ModuleList([nn.Conv1d(9, 2, 1) for _ in range(3)])
+
+        def estimate(self, received):
+            y = complex_iq(received)
+            action = Action(torch.ones(len(y), 1, dtype=y.dtype),
+                            self.coefficient * torch.ones_like(y), torch.zeros_like(y))
+            return .8 * received, action, torch.full((len(y),), .1)
+
+    torch.manual_seed(16)
+    native = Native().eval().requires_grad_(False)
+    native.coefficient.requires_grad_(True)
+    gain = R17AmplitudeGain(32)
+    y = torch.randn(1, 256, dtype=torch.complex64)
+    output, action = fused_anchor_unroll(native, gain, y, .6 * y, train_action=True, return_action=True)
+    (output.abs().square().mean() + (action(.7 * y) - y).abs().square().mean()).backward()
+    assert native.coefficient.grad is not None and native.coefficient.grad.abs() > 0
+    assert all(p.grad is None for p in native.priors.parameters())
