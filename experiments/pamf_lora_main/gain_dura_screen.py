@@ -6,6 +6,7 @@ from functools import partial
 import importlib
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 from time import monotonic, perf_counter, sleep
@@ -27,6 +28,7 @@ RUN = '20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01'
 SCORE_RUN = RUN.removesuffix('r01') + 'r02'
 FACTOR_RUN = '20261128-phase1-lora-wisig-gain-dura-factor-s2026113051-r01'
 FREQUENCY_RUN = '20261128-phase1-lora-wisig-dura-real-update-s2026113061-r01'
+FREQUENCY_RETRY = FREQUENCY_RUN.removesuffix('r01') + 'r02'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
@@ -541,6 +543,20 @@ def dispatch(runtime, rt):
             if monotonic()>=deadline:
                 raise RuntimeError('No registered GPU slot')
             sleep(10)
+        if rt.get('reuse_wisig'):
+            prior = Path(rt['reuse_wisig'])
+            if (prior != root.parent / FREQUENCY_RUN or read(prior/'state.json')['status'] != 'FAILED'
+                    or read(prior/'wisig'/'complete.json') != panel_receipt('wisig', FACTOR_COUNT, FREQUENCY_MODES)):
+                raise ValueError('Expected complete WiSig predictions from the failed paired run')
+            shutil.copytree(prior/'wisig', root/'wisig')
+            card = cards[0]
+            job = launch('lora', card)
+            write(state, dict(status='RUNNING', workers={'lora':job.pid}, gpu=card,
+                              reused_wisig=str(prior)), exclusive=False)
+            if job.wait() or launch('score', None).wait():
+                raise RuntimeError('Frozen LoRa/WiSig evaluation recovery failed')
+            write(state, dict(status='ANALYZED', target_reads=0, reused_wisig=str(prior)), exclusive=False)
+            return
         jobs={}
         for i,dataset in enumerate(('wisig','lora')):
             card=cards[min(i,len(cards)-1)]
@@ -585,13 +601,17 @@ def main():
     modes.add_argument('--retry-score',action='store_true')
     modes.add_argument('--factor-screen',action='store_true')
     modes.add_argument('--frequency-screen',action='store_true')
+    modes.add_argument('--retry-frequency',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
         from experiments.pamf_lora_main.publish import release,release_commit
         project=rt['project']
         releases=f'{project}/releases'
-        run = SCORE_RUN if args.retry_score else FREQUENCY_RUN if args.frequency_screen else FACTOR_RUN if args.factor_screen else RUN
+        if args.retry_frequency:
+            run = FREQUENCY_RETRY
+        else:
+            run = SCORE_RUN if args.retry_score else FREQUENCY_RUN if args.frequency_screen else FACTOR_RUN if args.factor_screen else RUN
         rt={k:rt[k] for k in ('project','python','frozen_sources')}
         rt.update(run_id=run,code_commit=release_commit(Path.cwd()),runner=__spec__.name,
                   release_root=f'{releases}/{run}-release',run_root=f'{project}/runs/{run}',
@@ -601,15 +621,18 @@ def main():
         if args.retry_score:
             rt['score_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['score_from'])
-        if args.factor_screen or args.frequency_screen:
+        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
-        if args.frequency_screen:
+        if run in (FREQUENCY_RUN, FREQUENCY_RETRY):
             from experiments.pamf_lora_main.lora_dura_stage2_reference import RUN as LORA_STAGE2
             rt['frequency_from']=f'{project}/runs/{FACTOR_RUN}'
             rt['lora_stage2']=f'{project}/runs/{LORA_STAGE2}'
             rt['external_releases'].extend((rt['frequency_from'], rt['lora_stage2']))
             rt['allowed_gpus'] = [2, 3, 5, 7]
+        if args.retry_frequency:
+            rt['reuse_wisig'] = f'{project}/runs/{FREQUENCY_RUN}'
+            rt['external_releases'].append(rt['reuse_wisig'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)

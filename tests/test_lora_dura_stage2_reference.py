@@ -1,8 +1,20 @@
+import subprocess
+import sys
+
 import pytest
 import torch
 
 from experiments.pamf_lora_main.lora_dura_stage2_reference import LoRaStage2
 from experiments.pamf_r65_four_route.stage_polyphase import StageDistilled
+
+
+def test_loading_stage2_does_not_preload_historical_recognizer_dependencies():
+    recovery_import = (
+        'import sys; '
+        'from experiments.pamf_lora_main.lora_dura_stage2_reference import load_frozen_stage2; '
+        'assert "experiments.pamf_lora_main.physical" not in sys.modules'
+    )
+    subprocess.run([sys.executable, '-c', recovery_import], check=True)
 
 
 def test_lora_reference_keeps_the_two_stage_r69_parameterization():

@@ -14,7 +14,6 @@ import torch
 from experiments.cric_dura_comparison.bootstrap import numerical_policy
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main import gain_dura_screen as screen
-from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.w24_native_dura import (
     NATIVE_LENGTH, action_loss, capture_scale, coarse_loss, iq_error, source_pair,
 )
@@ -25,6 +24,7 @@ from experiments.pamf_uncertainty_restore.models import weighted_map
 
 SEED, BATCH, DEVICE = 2026113057, 6, 'cuda:0'
 RUN = '20261128-phase1-lora-dura-stage2-reference-s2026113057-r01'
+PREDICT_RETRY = RUN.removesuffix('r01') + 'r02'
 PHASES = (('coarse', 3000, 2e-4), ('action', 3000, 2e-4), ('joint', 12000, 1.5e-4))
 MODES = (*screen.MODES[:3], 'dura_stage2')
 COUNT, VIEWS = screen.FACTOR_COUNT, screen.SCREEN_VIEWS
@@ -56,6 +56,8 @@ def lora_config(rt):
 
 
 def fit(rt):
+    from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
+
     root = Path(rt['run_root'])
     source = Path(lora_config(rt)['source_root'])
     contract = source_contract(source)
@@ -137,7 +139,7 @@ def load_frozen_stage2(root, device):
 @torch.no_grad()
 def predict(rt):
     root = Path(rt['run_root'])
-    g = load_frozen_stage2(root, DEVICE)
+    g = load_frozen_stage2(Path(rt.get('fit_from', root)), DEVICE)
     config = lora_config(rt)
     w24 = Path(config['w24_release_root'])
     sys.path.insert(0, str(w24))
@@ -153,7 +155,7 @@ def predict(rt):
     def classify(z):
         return screen.classify_lora(joint, reader, z)
 
-    sample = source_role(source, contract, 'U_s')[0][:2]
+    sample = joint.source_role(source, contract, 'U_s')[0][:2]
     raw = raw_tensor(sample)
     result = g.recover(raw)
     if result.shape != raw.shape or not bool(torch.isfinite(result).all()) or classify(result).shape != (2,):
@@ -193,6 +195,8 @@ def predict(rt):
 
 
 def independent_score(rt):
+    from experiments.pamf_lora_main.full_packet_views import source_contract
+
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Independent CPU scorer required')
     root = Path(rt['run_root'])
@@ -239,7 +243,8 @@ def dispatch(runtime, rt):
         card = next((idx for idx in rt['allowed_gpus'] if idx in cards), None)
         if card is None:
             raise RuntimeError('No preregistered GPU slot with 12 GiB free')
-        for action in ('fit', 'predict', 'score'):
+        actions = ('predict', 'score') if rt.get('fit_from') else ('fit', 'predict', 'score')
+        for action in actions:
             gpu = '' if action == 'score' else str(card)
             env = dict(os.environ, CUDA_VISIBLE_DEVICES=gpu, OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1')
             with (root / f'{action}.log').open('x') as log:
@@ -260,6 +265,7 @@ def main():
     parser.add_argument('runtime', type=Path)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--ssh-config', type=Path)
+    parser.add_argument('--reuse-frozen', action='store_true')
     arg = parser.parse_args()
     rt = read(arg.runtime)
     if arg.action == 'publish':
@@ -269,13 +275,17 @@ def main():
         project = Path(rt['project'])
         releases = project / 'releases'
         runs = project / 'runs'
-        rt.update(run_id=RUN, code_commit=release_commit(Path.cwd()), runner=__spec__.name,
-                  run_root=f'{runs.as_posix()}/{RUN}', release_root=f'{releases.as_posix()}/{RUN}-release',
+        run = PREDICT_RETRY if arg.reuse_frozen else RUN
+        rt.update(run_id=run, code_commit=release_commit(Path.cwd()), runner=__spec__.name,
+                  run_root=f'{runs.as_posix()}/{run}', release_root=f'{releases.as_posix()}/{run}-release',
                   lora_ref=f'{releases.as_posix()}/{screen.LO_RA}-release',
                   archive_root=f'{releases.as_posix()}/{screen.ARCHIVE}-release',
                   first_panel=f'{runs.as_posix()}/{screen.RUN}', factor_panel=f'{runs.as_posix()}/{screen.FACTOR_RUN}',
                   allowed_gpus=[0, 7, 2, 5, 6, 3])
         rt['external_releases'] = [rt[k] for k in ('lora_ref', 'archive_root', 'first_panel', 'factor_panel')]
+        if arg.reuse_frozen:
+            rt['fit_from'] = f'{runs.as_posix()}/{RUN}'
+            rt['external_releases'].append(rt['fit_from'])
         release(Path.cwd(), arg.output, rt, arg.ssh_config)
     elif arg.action == 'dispatch':
         dispatch(arg.runtime, rt)
