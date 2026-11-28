@@ -89,11 +89,15 @@ class WiSigRealGain(nn.Module):
         return first,final
 
 
-def wifi_context(rt):
+def archive_replay(rt):
     package = importlib.import_module('experiments.pamf_lora_main')
     archived = Path(rt['archive_root'])/'experiments'/'pamf_lora_main'
     package.__path__.append(str(archived))
-    replay = importlib.import_module('experiments.pamf_lora_main.packet_dura_crossdata')
+    return importlib.import_module('experiments.pamf_lora_main.packet_dura_crossdata')
+
+
+def wifi_context(rt):
+    replay = archive_replay(rt)
     config = replay.reference(rt,'wisig')
     return replay.wisig_deps(config),config
 
@@ -183,8 +187,7 @@ def predict_lora(rt, folder):
         raise ValueError('Wrong frozen LoRa 8192-point real gain version')
     w24 = Path(config['w24_release_root'])
     sys.path.insert(0,str(w24))
-    package = importlib.import_module('experiments.pamf_lora_main')
-    package.__path__.append(str(w24/'experiments'/'pamf_lora_main'))
+    archive_replay(rt).archive_imports(config,extra=(w24,))
     from experiments.pamf_lora_main import w24_joint_pamf as joint, w24_native_training as native
 
     source = Path(config['source_root'])
