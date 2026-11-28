@@ -3,7 +3,7 @@
 - run_id：`20261128-phase1-wisig-r17-consistency-gain-s2026112881-r01`
 - group_id：`phase1-wisig-r17-consistency-gain`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前状态：RUNNING；源训练在 N607 GPU 7 执行。
+- 当前状态：SOURCE_SCREEN_SCORED；未达到预登记晋级条件。
 
 ## 目的与对照
 
@@ -21,8 +21,12 @@
 
 ## 结果与覆盖
 
-训练后自动固定 RX8 的 360 包 clean／low urban 预测，再独立评分；此前 RX1、RX3、RX4、RX6 已用于筛查。历史源 V 和目标成绩已曝光。固定 DURA v1 对照与目标七景待完成，当前无本候选筛查结果。
+训练完成 2000 步，源 U 曝光 48000 次，耗时 323.00 秒，峰值 CUDA 分配 57982976 字节，新增实增益头 11233 参数；训练未读取 F、TX 标签、V 或目标数据。
+
+固定 RX8 的 360 包 clean 和 low urban 预测后独立评分。直通、R17、WiSig 实增益、第一版融合和本候选在 low urban 的正确数分别为 236、318、205、311、282；clean 依次为 357、355、354、355、355。相对 R17 改对 10 包、改错 46 包，净减 36 包，两个半区各净减 18 包，配对 bootstrap 95% 区间 [−50, −22] 包；clean 与 R17 持平。相对第一版融合净减 29 包，未达到晋级门槛。
+
+此前 RX1、RX3、RX4、RX6 已用于筛查，RX8 与其物理记录互斥。历史源 V 和目标成绩已曝光；固定 DURA v1 对照与目标七景仍待完成。
 
 ## 交接
 
-恢复先核实本 run 的 `state.json`、PID 和日志，避免重复启动。
+保留本候选和负结果；继续研究时须重新说明源域样本曝光与选择范围。
