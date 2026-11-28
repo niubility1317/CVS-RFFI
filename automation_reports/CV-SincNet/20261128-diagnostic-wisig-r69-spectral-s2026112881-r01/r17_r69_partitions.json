@@ -1,0 +1,100 @@
+{
+  "status": "POSTHOC_SOURCE_V_DESCRIPTION",
+  "run": "20261128-phase1-wisig-r17-spectral-gain-s2026112877-r01",
+  "receiver": 6,
+  "observation": "practical_low_urban",
+  "groups": {
+    "r17_r69_same_label": {
+      "n": 316,
+      "r17_correct": 296,
+      "r69_correct": 296,
+      "fusion_correct": 283,
+      "repaired_vs_r17": 3,
+      "harmed_vs_r17": 16
+    },
+    "r17_r69_different_label": {
+      "n": 44,
+      "r17_correct": 24,
+      "r69_correct": 13,
+      "fusion_correct": 25,
+      "repaired_vs_r17": 6,
+      "harmed_vs_r17": 5
+    },
+    "r17_correct_r69_wrong": {
+      "n": 24,
+      "r17_correct": 24,
+      "r69_correct": 0,
+      "fusion_correct": 19,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 5
+    },
+    "r17_wrong_r69_correct": {
+      "n": 13,
+      "r17_correct": 0,
+      "r69_correct": 13,
+      "fusion_correct": 3,
+      "repaired_vs_r17": 3,
+      "harmed_vs_r17": 0
+    },
+    "both_wrong": {
+      "n": 27,
+      "r17_correct": 0,
+      "r69_correct": 0,
+      "fusion_correct": 6,
+      "repaired_vs_r17": 6,
+      "harmed_vs_r17": 0
+    }
+  },
+  "classes": {
+    "0": {
+      "n": 51,
+      "r17_correct": 40,
+      "r69_correct": 39,
+      "fusion_correct": 40,
+      "repaired_vs_r17": 3,
+      "harmed_vs_r17": 3
+    },
+    "1": {
+      "n": 61,
+      "r17_correct": 46,
+      "r69_correct": 42,
+      "fusion_correct": 44,
+      "repaired_vs_r17": 3,
+      "harmed_vs_r17": 5
+    },
+    "2": {
+      "n": 45,
+      "r17_correct": 43,
+      "r69_correct": 42,
+      "fusion_correct": 44,
+      "repaired_vs_r17": 1,
+      "harmed_vs_r17": 0
+    },
+    "3": {
+      "n": 67,
+      "r17_correct": 57,
+      "r69_correct": 51,
+      "fusion_correct": 47,
+      "repaired_vs_r17": 2,
+      "harmed_vs_r17": 12
+    },
+    "4": {
+      "n": 64,
+      "r17_correct": 62,
+      "r69_correct": 63,
+      "fusion_correct": 62,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 0
+    },
+    "5": {
+      "n": 72,
+      "r17_correct": 72,
+      "r69_correct": 72,
+      "fusion_correct": 71,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 1
+    }
+  },
+  "target_reads": 0,
+  "use": "diagnostic_only_no_deployment_gate"
+}
