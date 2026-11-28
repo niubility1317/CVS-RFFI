@@ -3,7 +3,7 @@
 - run_id：`20261128-phase1-lora-r17-amplitude-gain-s2026112897-r01`
 - group_id：`phase1-lora-r17-amplitude-gain`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前状态：RUNNING；源训练在 N607 GPU 5 执行。
+- 当前状态：SOURCE_SCREEN_SCORED；未达到预登记晋级条件。
 
 ## 目的与对照
 
@@ -21,8 +21,12 @@
 
 ## 结果与覆盖
 
-训练后固定 RX b200_1 排除前 960 包后的 300 包 clean／low urban 预测，再独立评分。E104 历史选模使用源 V，目标基准已有曝光。当前尚无本候选筛查结果；DURA v1 的 LoRa 匹配对照及目标七景待完成。
+训练完成 1500 步，源 L／U 各曝光 12000 次，接受 11058 次 U 伪标签；耗时 991.91 秒，峰值 CUDA 分配 766224384 字节，新增头 11555 参数。未读取 U 真值、V 或目标数据参与训练。
+
+固定 RX b200_1 排除前 960 包后的 300 包 clean／low urban 预测后独立评分。low urban 直通、LoRa R17、实增益和候选正确数分别为 138、86、182、182；clean 分别为 299、295、299、299。相对实增益改对 0、改错 0，两个半区净变化均为 0，配对 bootstrap 区间 [0, 0] 包，clean 也与实增益相同。未达到逐半区净增 2 包的预登记门槛。
+
+E104 历史选模使用源 V，目标基准已有曝光；DURA v1 的 LoRa 匹配对照及目标七景待完成。
 
 ## 交接
 
-恢复先检查原 run 的 `state.json`、PID 与日志，避免重复启动。
+保留此版本及筛查结果；后续候选另行固定训练和源样本。
