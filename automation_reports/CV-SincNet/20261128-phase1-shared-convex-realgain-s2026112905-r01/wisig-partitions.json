@@ -1,0 +1,188 @@
+{
+  "status": "POSTHOC_SOURCE_V_DESCRIPTION",
+  "run": "20261128-phase1-shared-convex-realgain-s2026112905-r01",
+  "dataset": "wisig",
+  "modes": [
+    "direct",
+    "wisig_r17",
+    "real_gain",
+    "dura_v1",
+    "fusion"
+  ],
+  "observation": "practical_low_urban",
+  "groups": {
+    "r17_same_real_gain": {
+      "n": 183,
+      "correct": [
+        164,
+        181,
+        181,
+        178,
+        116
+      ],
+      "changed_from_r17": 66,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 65
+    },
+    "r17_differs_real_gain": {
+      "n": 177,
+      "correct": [
+        36,
+        151,
+        9,
+        135,
+        29
+      ],
+      "changed_from_r17": 154,
+      "repaired_vs_r17": 7,
+      "harmed_vs_r17": 129
+    },
+    "candidate_differs_both": {
+      "n": 131,
+      "correct": [
+        68,
+        118,
+        69,
+        107,
+        2
+      ],
+      "changed_from_r17": 131,
+      "repaired_vs_r17": 2,
+      "harmed_vs_r17": 118
+    },
+    "r17_correct": {
+      "n": 332,
+      "correct": [
+        197,
+        332,
+        181,
+        304,
+        138
+      ],
+      "changed_from_r17": 194,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 194
+    },
+    "r17_wrong": {
+      "n": 28,
+      "correct": [
+        3,
+        0,
+        9,
+        9,
+        7
+      ],
+      "changed_from_r17": 26,
+      "repaired_vs_r17": 7,
+      "harmed_vs_r17": 0
+    },
+    "candidate_same_r17": {
+      "n": 140,
+      "correct": [
+        113,
+        138,
+        116,
+        135,
+        138
+      ],
+      "changed_from_r17": 0,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 0
+    },
+    "candidate_changed_r17": {
+      "n": 220,
+      "correct": [
+        87,
+        194,
+        74,
+        178,
+        7
+      ],
+      "changed_from_r17": 220,
+      "repaired_vs_r17": 7,
+      "harmed_vs_r17": 194
+    }
+  },
+  "classes": {
+    "0": {
+      "n": 68,
+      "correct": [
+        37,
+        62,
+        34,
+        59,
+        38
+      ],
+      "changed_from_r17": 30,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 24
+    },
+    "1": {
+      "n": 54,
+      "correct": [
+        23,
+        43,
+        26,
+        37,
+        16
+      ],
+      "changed_from_r17": 38,
+      "repaired_vs_r17": 2,
+      "harmed_vs_r17": 29
+    },
+    "2": {
+      "n": 65,
+      "correct": [
+        34,
+        65,
+        35,
+        64,
+        10
+      ],
+      "changed_from_r17": 55,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 55
+    },
+    "3": {
+      "n": 55,
+      "correct": [
+        25,
+        46,
+        27,
+        36,
+        7
+      ],
+      "changed_from_r17": 52,
+      "repaired_vs_r17": 4,
+      "harmed_vs_r17": 43
+    },
+    "4": {
+      "n": 60,
+      "correct": [
+        35,
+        60,
+        30,
+        60,
+        31
+      ],
+      "changed_from_r17": 29,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 29
+    },
+    "5": {
+      "n": 58,
+      "correct": [
+        46,
+        56,
+        38,
+        57,
+        43
+      ],
+      "changed_from_r17": 16,
+      "repaired_vs_r17": 1,
+      "harmed_vs_r17": 14
+    }
+  },
+  "target_reads": 0,
+  "use": "diagnostic_only_no_deployment_gate"
+}
