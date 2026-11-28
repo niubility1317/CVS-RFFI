@@ -1,0 +1,205 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-shared-matched-mse-s2026112937-r01",
+  "group_id": "phase1-crossdata-shared-dura-realgain",
+  "display_name": "LoRa 与 WiSig 教师指导同 seed 同预算无教师对照",
+  "description": "与教师版同结构、seed、源 U 配对和预算，使用两专家源 clean IQ MSE 偏好生成二元目标；训练不读取识别器。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "authorization": "用户要求共同方法及全部匹配对照；对照仅使用合法源 U 模拟配对，隐藏 U TX，不读训练 F、V 或目标。",
+  "parent_run_ids": [
+    "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+    "20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+    "20261128-phase1-shared-twoprior-realgain-s2026112901-r01",
+    "20261128-phase1-shared-convex-realgain-s2026112905-r01",
+    "20261128-phase1-shared-selector-realgain-s2026112909-r01",
+    "20261128-phase1-shared-consistency-selector-s2026112913-r01",
+    "20261128-phase1-shared-physics-route-s2026112933-r01",
+    "20261128-phase1-shared-confidence-route-s2026112925-r01",
+    "20261128-phase1-shared-teacher-selector-s2026112937-r01"
+  ],
+  "code": {
+    "commit": "f2f9186460a62e43a2004904cbf10cf5b638132f",
+    "checkout": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI CUDA FP32 / TF32 off, CPU independent scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-matched-mse-s2026112937-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa and WiSig/ManySig Main",
+    "contract_ref": "lora_rx5_main_v1:392005; ManySig Main original 7/63/30 F0 seed392005; VALIDATED_ONCE source caches",
+    "representation": "same SharedPacketSelector, physical residual features, source batches and optimizer/seed as teacher run; MSE preference rather than teacher KL, separate dataset weights",
+    "source_receivers": [
+      "LoRa b200_1",
+      "WiSig RX1"
+    ],
+    "target_receivers": [],
+    "roles": {
+      "train": "U_s only",
+      "validation": "LoRa 60, WiSig 360 source V"
+    },
+    "physical_ids_ref": "existing first cross-data screen physical IDs, same paired channel observations",
+    "views": [
+      "clean",
+      "practical_low_urban"
+    ],
+    "exposure": "same source V RX panels and historical comparisons repeatedly exposed by prior development; no target input or truth"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "New selector F-free and TX-free: source U IQ plus simulated clean/received only. Original LoRa real-gain expert inherited authorized E104 guidance and U pseudo-labels; WiSig gain expert is F-free. Classifiers only used after freeze for source prediction; no V or target in training."
+  },
+  "checkpoint": {
+    "initialization": "Identical zero-logit SharedPacketSelector, seed 2026112937, same frozen experts as teacher run; tie R17.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+        "role": "LoRa native R02/R07/R17"
+      },
+      {
+        "ref": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "role": "WiSig original full R17 and action"
+      },
+      {
+        "ref": "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+        "role": "LoRa E104 real-gain screen comparison only"
+      },
+      {
+        "ref": "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+        "role": "WiSig independently source-trained real-gain control"
+      },
+      {
+        "ref": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+        "role": "WiSig frozen DURA v1 same-packet screen predictions"
+      },
+      {
+        "ref": "20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+        "role": "frozen same-ID LoRa-trained R69 architecture adaptation; distinct from original WiSig DURA v1 weights"
+      }
+    ],
+    "selection_rule": "Fixed source final step 1000. LoRa hard-scene net >=1 in each fixed half and clean >=-1 versus every available same-packet control including LoRa R69 adaptation. WiSig each half net >=2 and clean >=-2 against each control including fixed DURA v1. Original fixed WiSig DURA v1 checkpoint has no lawful matched LoRa transfer; disclose as unavailable."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex chat 01a2204f-bfeb-7fa1-bda9-d8961e4ee178",
+    "gpu_policy": "Two distinct GPUs from [7,1,3,6,4], each >=8192 MiB free; excludes teacher GPU0/5; preserve other owners.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-matched-mse-s2026112937-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-matched-mse-s2026112937-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-shared-matched-mse-s2026112937-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.shared_matched_mse_selector_run publish --repo E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo --output E:/type10-7/local_artifacts/20261128-phase1-shared-matched-mse-s2026112937-r01/release --context E:/type10-7/local_artifacts/20261128-phase1-shared-matched-mse-s2026112937-r01/context.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop affected run on provenance/data-contract mismatch, occupied immutable output, no source-only checkpoint smoke, nonfinite loss/gradient, prediction matrix mismatch, query or truth-boundary violation; preserve partial artifacts and all other processes."
+  },
+  "expected_artifacts": [
+    "lora/gain.pt",
+    "wisig/gain.pt",
+    "lora/screen-score.json",
+    "wisig/screen-score.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "paired repaired/harmed/net",
+      "95% paired bootstrap",
+      "fixed two-half net",
+      "training seconds",
+      "peak GPU bytes",
+      "parameters"
+    ],
+    "dimensions": [
+      "dataset",
+      "single source receiver",
+      "physical ID",
+      "clean",
+      "practical_low_urban"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-matched-mse-s2026112937-r01/{lora,wisig}/screen.npz",
+    "scorer_ref": "experiments/pamf_lora_main/shared_matched_mse_selector_run.py"
+  },
+  "rows": [
+    {
+      "row_id": "lora",
+      "method": "same source-U trained SharedPacketSelector with clean IQ MSE expert preference, matched teacher seed and budget",
+      "purpose": "matched F-free source-training control",
+      "config_ref": "experiments/pamf_lora_main/shared_matched_mse_selector_run.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-matched-mse-s2026112937-r01-release/runtime.json",
+      "data_overrides": {
+        "training": "source U simulated received/clean; no F weights, TX labels, V or target",
+        "source_screen_receiver": "b200_1",
+        "screen_physical_packets": 60
+      },
+      "seeds": {
+        "model": 2026112937,
+        "split": 392005,
+        "data": 2026112937,
+        "augmentation": 2026112938,
+        "support": null,
+        "evaluation": 2026112852
+      },
+      "seed_notes": "Support inapplicable; preregistered existing source V observations and fixed paired half permutation.",
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW lr=0.0003, weight_decay=0.0001, cosine to 0.00003",
+      "budget_ref": "1000 updates x batch 4; same seed and source augmentation as teacher run; no teacher forward",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-matched-mse-s2026112937-r01/lora",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-matched-mse-s2026112937-r01/lora-worker.log",
+      "command": "python -u -m experiments.pamf_lora_main.shared_matched_mse_selector_run worker /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-matched-mse-s2026112937-r01-release/runtime.json lora",
+      "expected_artifacts": [
+        "gain.pt",
+        "fit.json",
+        "screen.npz",
+        "screen-frozen.json",
+        "screen-score.json"
+      ]
+    },
+    {
+      "row_id": "wisig",
+      "method": "same source-U trained SharedPacketSelector with clean IQ MSE expert preference, matched teacher seed and budget",
+      "purpose": "matched F-free source-training control",
+      "config_ref": "experiments/pamf_lora_main/shared_matched_mse_selector_run.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-matched-mse-s2026112937-r01-release/runtime.json",
+      "data_overrides": {
+        "training": "source U simulated received/clean; no F weights, TX labels, V or target",
+        "source_screen_receiver": "RX1",
+        "screen_physical_packets": 360
+      },
+      "seeds": {
+        "model": 2026112937,
+        "split": 392005,
+        "data": 2026112937,
+        "augmentation": 2026112938,
+        "support": null,
+        "evaluation": 2026112852
+      },
+      "seed_notes": "Support inapplicable; preregistered existing source V observations and fixed paired half permutation.",
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW lr=0.0003, weight_decay=0.0001, cosine to 0.00003",
+      "budget_ref": "1000 updates x batch 24; same seed and source augmentation as teacher run; no teacher forward",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-matched-mse-s2026112937-r01/wisig",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-matched-mse-s2026112937-r01/wisig-worker.log",
+      "command": "python -u -m experiments.pamf_lora_main.shared_matched_mse_selector_run worker /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-matched-mse-s2026112937-r01-release/runtime.json wisig",
+      "expected_artifacts": [
+        "gain.pt",
+        "fit.json",
+        "screen.npz",
+        "screen-frozen.json",
+        "screen-score.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Matched teacher run architecture, optimizer, 1000 steps, data RNG, simulated observation seed and batch sizes; distinct GPUs may cause numerical variation. Same R17 and real-gain parents.",
+    "For each simulated source U received/clean pair, select the expert whose recovered waveform has lower clean IQ MSE; train disturbed gate BCE + 0.5 clean gate BCE. New selector reads no pretrained classifier, U TX, source V or target.",
+    "LoRa real-gain expert has prior authorized E104 guidance and U pseudo-labels; WiSig gain expert is independently source-trained F-free. Source-only status applies to new selector, not all ancestors.",
+    "Source V panels are repeatedly exposed; same fixed matched physical packets, controls, per-half thresholds and clean tolerances. This is a source-only mechanism comparison with complete cost disclosures, not formal target acceptance."
+  ],
+  "registered_at": "2026-11-28T07:44:48+00:00"
+}
