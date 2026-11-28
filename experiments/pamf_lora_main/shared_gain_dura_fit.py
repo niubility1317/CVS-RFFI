@@ -11,7 +11,9 @@ from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main import gain_dura_screen as screen
 from experiments.pamf_lora_main.gain_dura_nuisance import add_packet_nuisance
 from experiments.pamf_lora_main.gain_dura_stage_fit import paired_detail_loss, source_training_pair
+from experiments.pamf_lora_main.preamble_noise import repeat_dispersion
 from experiments.pamf_lora_main.received_quality import capture_features, fit_clean_geometry
+from experiments.pamf_lora_main.repeated_edit import PREAMBLE
 from experiments.pamf_lora_main.shared_gain_dura import SharedGainDura
 from experiments.pamf_lora_main.w24_native_dura import capture_scale, iq_error
 from experiments.pamf_restoration.models import complex_iq
@@ -31,7 +33,7 @@ def source_data(rt, dataset, device):
         data = joint.source_role(source, contract, 'U_s')[0]
         if len(data) != 25200:
             raise ValueError('Expected the registered LoRa source U_s')
-        seed = screen.ANCHOR_SEED if rt.get('observed_anchor') else screen.SHARED_SEED
+        seed = fitting_plan(rt)[0]
         reserved = np.random.default_rng(seed + 3).choice(len(data), reserved_count, replace=False)
         ids = np.setdiff1d(np.arange(len(data)), reserved)
 
@@ -76,6 +78,10 @@ def objective(model, clean, observed, *, align_phase=False):
 
 
 def fitting_plan(rt):
+    if rt.get('preamble_noise'):
+        return screen.PREAMBLE_NOISE_SEED, screen.PREAMBLE_NOISE_MODES[3:], (
+            dict(retain_received=True), dict(retain_received=True),
+        )
     if rt.get('observed_anchor'):
         return screen.ANCHOR_SEED, screen.ANCHOR_MODES[3:], (
             dict(retain_received=True), dict(retain_received=False),
@@ -92,6 +98,16 @@ def fit(rt, dataset, device):
     torch.manual_seed(seed)
     models = [SharedGainDura(**options).to(device) for options in model_options]
     models[1].load_state_dict(models[0].state_dict(), strict=True)
+    extra = {}
+    if rt.get('preamble_noise'):
+        with torch.no_grad():
+            clean_dispersion = torch.cat([repeat_dispersion(sample(rows))
+                                          for rows in np.array_split(calibration[:CALIBRATION_COUNT], 64)])
+            floor = clean_dispersion.median(dim=0).values
+        if not torch.isfinite(floor).all():
+            raise ValueError('Expected finite clean repeated-preamble variation')
+        models[0].clean_noise_floor = floor
+        extra['preamble_clean_floor'] = floor.tolist()
     optimizers = [torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=1e-4) for model in models]
     schedules = [torch.optim.lr_scheduler.CosineAnnealingLR(opt, STEPS, eta_min=3e-5) for opt in optimizers]
     draws = np.random.default_rng(seed)
@@ -146,7 +162,7 @@ def fit(rt, dataset, device):
           seed=seed, steps=STEPS, batch=BATCH, views_per_source_packet=2, source_training_ids=len(ids),
           clean_calibration_ids=len(calibration), clean_cuts=clean_cuts, seconds=perf_counter()-start,
           peak_cuda_bytes=torch.cuda.max_memory_allocated(), parameters=sum(p.numel() for p in models[0].parameters()),
-          **dict.fromkeys(ISOLATION, 0)))
+          **dict.fromkeys(ISOLATION, 0), **extra))
 
 
 def frozen(rt, dataset, device):
@@ -159,6 +175,12 @@ def frozen(rt, dataset, device):
             or any(proof[key] for key in ISOLATION)):
         raise ValueError('Expected both lawful source-frozen arms')
     weights = torch.load(folder/'model.pt', map_location=device, weights_only=True)
+    if rt.get('preamble_noise'):
+        length = {'lora':8192, 'wisig':256}[dataset]
+        floor = np.asarray(proof['preamble_clean_floor'])
+        if floor.shape != (PREAMBLE[length][2],) or not np.isfinite(floor).all() or (floor < 0).any():
+            raise ValueError('Invalid frozen clean preamble-dispersion reference')
+        model_options[0]['clean_noise_floor'] = torch.as_tensor(floor, dtype=torch.float32, device=device)
     result = []
     for name, options in zip(modes, model_options, strict=True):
         model = SharedGainDura(**options).to(device).eval().requires_grad_(False)

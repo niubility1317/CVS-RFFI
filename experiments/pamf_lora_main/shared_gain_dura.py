@@ -5,6 +5,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from experiments.pamf_action_restore.operators import Action
+from experiments.pamf_lora_main.preamble_noise import WhitenedAction, preamble_weights
 from experiments.pamf_lora_main.received_quality import clean_geometry_weight
 from experiments.pamf_lora_main.w24_native_dura import capture_scale
 from experiments.pamf_restoration.models import complex_iq, pair
@@ -37,10 +38,11 @@ def retain_observed_component(observed, estimate):
 class SharedGainDura(nn.Module):
     """Estimate degradation, then incorporate a real gain in each DURA prior."""
 
-    def __init__(self, *, packet_gain=False, retain_received=False):
+    def __init__(self, *, packet_gain=False, retain_received=False, clean_noise_floor=None):
         super().__init__()
         self.packet_gain = packet_gain
         self.retain_received = retain_received
+        self.register_buffer('clean_noise_floor', clean_noise_floor, persistent=False)
         self.coarse = residual_network(2, 2)
         self.context_features = residual_network(6, 16, zero_output=False)
         self.channel = nn.Linear(16, 64 + 4)
@@ -91,15 +93,19 @@ class SharedGainDura(nn.Module):
         observed = raw / scale
         coarse = observed + .35 * complex_iq(self.coarse(pair(observed)))
         action, variance, quality = self.estimate(observed, coarse)
+        likelihood, measurement = action, observed
+        if self.clean_noise_floor is not None:
+            likelihood = WhitenedAction(action, preamble_weights(observed, self.clean_noise_floor))
+            measurement = likelihood.whiten(observed)
         log_variance = (variance.log() / 8)[:, None, None].expand(-1, 1, observed.shape[-1])
         current = coarse
         stages = []
         for network in self.priors:
-            innovation = action.adjoint(observed - action(current))
+            innovation = likelihood.adjoint(measurement - likelihood(current))
             fitted = current + self.spectral_update(observed, current, innovation, variance)
             features = torch.cat((pair(observed), pair(coarse), pair(fitted), pair(innovation), log_variance), dim=1)
             prior = fitted + .35 * complex_iq(network(features))
-            current = weighted_map(action, observed, prior, variance, prior_variance=.20,
+            current = weighted_map(likelihood, measurement, prior, variance, prior_variance=.20,
                                    steps=2, initial=current)
             if self.retain_received:
                 current = retain_observed_component(observed, current)

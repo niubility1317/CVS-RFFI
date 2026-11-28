@@ -39,6 +39,7 @@ DRIFT_RUN = '20261128-phase1-lora-wisig-dura-source-drift-s2026113113-r01'
 SHARED_RUN = '20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01'
 ANCHOR_RUN = '20261128-phase1-lora-wisig-observed-anchor-s2026113131-r01'
 REPEAT_RUN = '20261128-phase1-lora-wisig-repeated-edit-s2026113137-r01'
+PREAMBLE_NOISE_RUN = '20261128-phase1-lora-wisig-preamble-noise-s2026113147-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
@@ -52,6 +53,7 @@ DRIFT_SEED = 2026113113
 SHARED_SEED = 2026113121
 ANCHOR_SEED = 2026113131
 REPEAT_SEED = 2026113137
+PREAMBLE_NOISE_SEED = 2026113147
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
@@ -70,6 +72,7 @@ DRIFT_MODES = (*MODES[:3], 'structured_nuisance', 'generic_nuisance')
 SHARED_MODES = (*MODES[:3], 'shared_frequency_gain', 'shared_packet_gain')
 ANCHOR_MODES = (*MODES[:3], 'retained_observation', 'unconstrained_observation')
 REPEAT_MODES = (*MODES[:3], 'preamble_common_edit', 'energy_matched_edit')
+PREAMBLE_NOISE_MODES = (*MODES[:3], 'preamble_noise_map', 'uniform_noise_map')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
@@ -164,6 +167,8 @@ def score_stage_panel(predictions, labels, *, modes=STAGE_MODES, seed=STAGE_SEED
 
 
 def panel_dimensions(rt):
+    if rt.get('preamble_noise'):
+        return FACTOR_COUNT, PREAMBLE_NOISE_MODES
     if rt.get('repeat_edit_from'):
         return FACTOR_COUNT, REPEAT_MODES
     if rt.get('observed_anchor'):
@@ -190,7 +195,7 @@ def panel_dimensions(rt):
 
 
 def receiver_index(dataset, modes):
-    if modes in (SHARED_MODES, ANCHOR_MODES, REPEAT_MODES):
+    if modes in (SHARED_MODES, ANCHOR_MODES, REPEAT_MODES, PREAMBLE_NOISE_MODES):
         return {'lora': 1, 'wisig': 3}[dataset]
     if dataset == 'wisig' and modes in (SPECTRAL_MODES, DRIFT_MODES):
         return 8
@@ -204,10 +209,14 @@ def receiver_index(dataset, modes):
 def panel_rows(rt, dataset, ids, rx, *, excluded=()):
     ids, rx = np.asarray(ids), np.asarray(rx)
     count, modes = panel_dimensions(rt)
-    if modes in (ANCHOR_MODES, REPEAT_MODES):
-        repeat_edit = modes == REPEAT_MODES
-        parent = Path(rt['repeat_edit_from'] if repeat_edit else rt['shared_panel_from'])
-        parent_run, parent_modes = (ANCHOR_RUN, ANCHOR_MODES) if repeat_edit else (SHARED_RUN, SHARED_MODES)
+    previous_panels = {
+        ANCHOR_MODES: ('shared_panel_from', SHARED_RUN, SHARED_MODES),
+        REPEAT_MODES: ('repeat_edit_from', ANCHOR_RUN, ANCHOR_MODES),
+        PREAMBLE_NOISE_MODES: ('noise_panel_from', ANCHOR_RUN, ANCHOR_MODES),
+    }
+    if modes in previous_panels:
+        key, parent_run, parent_modes = previous_panels[modes]
+        parent = Path(rt[key])
         folder = parent / dataset
         if (parent != Path(rt['run_root']).parent / parent_run
                 or read(folder/'complete.json') != panel_receipt(dataset, count, parent_modes)):
@@ -772,7 +781,7 @@ def independent_score(rt):
         seed = {STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED,
                 COMPLEX_MODES: COMPLEX_SEED, VARIANCE_MODES: VARIANCE_SEED, TRAIN_BOUND_MODES: TRAIN_BOUND_SEED,
                 SPECTRAL_MODES: SPECTRAL_SEED, DRIFT_MODES: DRIFT_SEED, SHARED_MODES: SHARED_SEED,
-                ANCHOR_MODES: ANCHOR_SEED, REPEAT_MODES: REPEAT_SEED}[modes]
+                ANCHOR_MODES: ANCHOR_SEED, REPEAT_MODES: REPEAT_SEED, PREAMBLE_NOISE_MODES: PREAMBLE_NOISE_SEED}[modes]
         calculate = partial(score_stage_panel, modes=modes, seed=seed)
     else:
         calculate = score_frequency_panel if rt.get('frequency_from') else score_factor_panel if rt.get('factor_from') else score_panel
@@ -895,6 +904,7 @@ def main():
     modes.add_argument('--shared-gain-screen',action='store_true')
     modes.add_argument('--received-anchor-screen',action='store_true')
     modes.add_argument('--repeated-edit-screen',action='store_true')
+    modes.add_argument('--preamble-noise-screen',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
@@ -903,6 +913,8 @@ def main():
         releases=f'{project}/releases'
         if args.retry_frequency:
             run = FREQUENCY_RETRY
+        elif args.preamble_noise_screen:
+            run = PREAMBLE_NOISE_RUN
         elif args.repeated_edit_screen:
             run = REPEAT_RUN
         elif args.received_anchor_screen:
@@ -935,10 +947,12 @@ def main():
             rt['score_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['score_from'])
         staged = (STAGE_RUN, PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN, DRIFT_RUN)
-        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN, REPEAT_RUN, *staged):
+        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN,
+                                         REPEAT_RUN, PREAMBLE_NOISE_RUN, *staged):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
-        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN, REPEAT_RUN, *staged):
+        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN,
+                   REPEAT_RUN, PREAMBLE_NOISE_RUN, *staged):
             from experiments.pamf_lora_main.lora_dura_stage2_reference import RUN as LORA_STAGE2
             rt['frequency_from']=f'{project}/runs/{FACTOR_RUN}'
             rt['lora_stage2']=f'{project}/runs/{LORA_STAGE2}'
@@ -985,6 +999,13 @@ def main():
             rt['repeat_edit_from'] = f'{project}/runs/{ANCHOR_RUN}'
             rt['allowed_gpus'] = [0, 3, 5, 7]
             rt['external_releases'].append(rt['repeat_edit_from'])
+        if run == PREAMBLE_NOISE_RUN:
+            rt['shared_model'] = True
+            rt['observed_anchor'] = True
+            rt['preamble_noise'] = True
+            rt['allowed_gpus'] = [0, 3, 5, 7]
+            rt['noise_panel_from'] = f'{project}/runs/{ANCHOR_RUN}'
+            rt['external_releases'].append(rt['noise_panel_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)
