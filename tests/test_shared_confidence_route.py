@@ -1,8 +1,9 @@
 import unittest
 
+import numpy as np
 import torch
 
-from experiments.pamf_lora_main.shared_confidence_route import select_by_confidence
+from experiments.pamf_lora_main.shared_confidence_route import prediction_classes, select_by_confidence
 
 
 class SharedConfidenceRouteTest(unittest.TestCase):
@@ -20,6 +21,11 @@ class SharedConfidenceRouteTest(unittest.TestCase):
             select_by_confidence(x, x, torch.tensor([[float('nan'), 0.], [0., 1.]]), torch.zeros(2, 2))
         with self.assertRaises(ValueError):
             select_by_confidence(x, x, torch.zeros(2, 3), torch.zeros(2, 2))
+
+    def test_predictions_are_plain_safe_integer_arrays(self):
+        result = prediction_classes(torch.tensor([[1., 4.], [5., 2.]]))
+        self.assertEqual(result.dtype, np.dtype('int16'))
+        self.assertEqual(result.tolist(), [1, 0])
 
 
 if __name__ == '__main__':

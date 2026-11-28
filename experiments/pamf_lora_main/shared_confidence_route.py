@@ -29,6 +29,11 @@ def select_by_confidence(real, r17, real_logits, r17_logits):
     return torch.where((real_conf > r17_conf)[:, None], real, r17)
 
 
+def prediction_classes(logits):
+    # tolist avoids the project's PyTorch/NumPy ABI mismatch on N607.
+    return np.asarray(logits.argmax(1).cpu().tolist(), dtype=np.int16)
+
+
 @torch.no_grad()
 def lora_predictions(rt):
     from experiments.cric_dura_comparison.bootstrap import activate
@@ -62,7 +67,7 @@ def lora_predictions(rt):
         a, b = real(y), r17(y)
         la, lb = logits(a), logits(b)
         fused = select_by_confidence(a, b, la, lb)
-        return np.stack([logits(z).argmax(1).cpu().numpy().astype(np.int16) for z in (y, b, a, fused)])
+        return np.stack([prediction_classes(logits(z)) for z in (y, b, a, fused)])
 
     sample = joint.source_role(source, contract, 'U_s')[0][:2]
     if decisions(sample).shape != (4, 2):
@@ -105,7 +110,7 @@ def wisig_predictions(rt):
         a = ((estimate + control(observed, estimate)) * group_scale).flatten(-2) * scale
         b, _ = r17(y)
         fused = select_by_confidence(a, b, logits(a), logits(b))
-        return np.stack([logits(z).argmax(1).cpu().numpy().astype(np.int16) for z in (y, b, a, fused)])
+        return np.stack([prediction_classes(logits(z)) for z in (y, b, a, fused)])
 
     source, _, calibration = original.core.source_iq(Path(config['source_root']))
     if decisions(source[calibration[:2]]).shape != (4, 2):
