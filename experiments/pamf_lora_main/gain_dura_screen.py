@@ -30,10 +30,12 @@ FACTOR_RUN = '20261128-phase1-lora-wisig-gain-dura-factor-s2026113051-r01'
 FREQUENCY_RUN = '20261128-phase1-lora-wisig-dura-real-update-s2026113061-r01'
 FREQUENCY_RETRY = FREQUENCY_RUN.removesuffix('r01') + 'r02'
 STAGE_RUN = '20261128-phase1-lora-wisig-gain-dura-stages-s2026113067-r01'
+PAIRED_RUN = '20261128-phase1-lora-wisig-gain-dura-paired-detail-s2026113071-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
 STAGE_SEED = 2026113067
+PAIRED_SEED = 2026113071
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
@@ -43,6 +45,7 @@ MODES = ('direct', 'dura', 'real_gain', 'fusion')
 FACTOR_MODES = (*MODES,'data_only','companion_only')
 FREQUENCY_MODES = (*MODES[:3], 'frequency_real', 'data_only')
 STAGE_MODES = (*MODES[:3], 'stage_frequency', 'stage_packet')
+PAIRED_MODES = (*MODES[:3], 'paired_detail', 'matched_waveform')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
@@ -118,25 +121,27 @@ def score_frequency_panel(predictions, labels):
     return result
 
 
-def score_stage_panel(predictions, labels):
-    if predictions.shape != (2, len(STAGE_MODES), FACTOR_COUNT):
+def score_stage_panel(predictions, labels, *, modes=STAGE_MODES, seed=STAGE_SEED):
+    if predictions.shape != (2, len(modes), FACTOR_COUNT):
         raise ValueError('Incomplete matched in-stage screen')
     results = {}
-    for i, candidate in enumerate(STAGE_MODES[3:], 3):
+    for i, candidate in enumerate(modes[3:], 3):
         results[candidate] = score_panel(predictions[:, [0, 1, 2, i]], labels, count=FACTOR_COUNT,
-                                         seed=STAGE_SEED, modes=(*STAGE_MODES[:3], candidate))
+                                         seed=seed, modes=(*modes[:3], candidate))
     hit = (predictions == labels).astype(np.int8)
     wrong = ~(hit[:, 1].astype(bool) | hit[:, 2].astype(bool))
     gains = {name: {view: int((hit[i, j] & wrong[i]).sum()) for i, view in enumerate(SCREEN_VIEWS)}
-             for j, name in enumerate(STAGE_MODES[3:], 3)}
-    draws = np.random.default_rng(STAGE_SEED+2).integers(0, FACTOR_COUNT, size=(4000, FACTOR_COUNT))
-    return dict(candidates=results, per_tx=tx_counts(predictions, labels, STAGE_MODES),
+             for j, name in enumerate(modes[3:], 3)}
+    draws = np.random.default_rng(seed+2).integers(0, FACTOR_COUNT, size=(4000, FACTOR_COUNT))
+    return dict(candidates=results, per_tx=tx_counts(predictions, labels, modes),
                 matched_ablation=paired_panel(hit[:, 3]-hit[:, 4], draws),
                 both_experts_wrong=dict(zip(SCREEN_VIEWS, wrong.sum(-1).tolist(), strict=True)),
                 corrected_when_both_wrong=gains)
 
 
 def panel_dimensions(rt):
+    if rt.get('paired_from'):
+        return FACTOR_COUNT, PAIRED_MODES
     if rt.get('stage_from'):
         return FACTOR_COUNT, STAGE_MODES
     if rt.get('frequency_from'):
@@ -145,52 +150,39 @@ def panel_dimensions(rt):
 
 
 def receiver_index(dataset, modes):
+    if dataset == 'wisig' and modes == PAIRED_MODES:
+        return 4
     return 3 if dataset == 'wisig' and modes in (FREQUENCY_MODES, STAGE_MODES) else RX[dataset]
 
 
 def panel_rows(rt, dataset, ids, rx, *, excluded=()):
-    ids,rx = np.asarray(ids),np.asarray(rx)
-    if not rt.get('factor_from'):
-        return screen_rows(ids,rx,RX[dataset],excluded=excluded)
-    root = Path(rt['factor_from'])
-    if root != Path(rt['run_root']).parent/RUN:
-        raise ValueError('Expected the exact prior screening root')
-    folder = root/dataset
-    if read(folder/'complete.json') != panel_receipt(dataset,COUNT,MODES):
-        raise ValueError('Expected the earlier blind panel for exclusion')
-    with np.load(folder/'predictions.npz',allow_pickle=False) as old:
-        past = np.flatnonzero(np.isin(ids,old['ids']))
-    if len(past)!=COUNT or not (rx[past]==RX[dataset]).all():
-        raise ValueError('Previous screen physical ID mismatch')
-    blocked = np.union1d(excluded, past)
-    if rt.get('frequency_from'):
-        factor = Path(rt['frequency_from'])
-        if factor != root.parent / FACTOR_RUN:
-            raise ValueError('Expected the exact earlier factor screening root')
-        previous = factor / dataset
-        if read(previous / 'complete.json') != panel_receipt(dataset, FACTOR_COUNT, FACTOR_MODES):
-            raise ValueError('Expected frozen matching factor screen before row selection')
-        with np.load(previous / 'predictions.npz', allow_pickle=False) as old:
-            fact = np.flatnonzero(np.isin(ids, old['ids']))
-        if len(fact) != FACTOR_COUNT or not (rx[fact] == RX[dataset]).all():
-            raise ValueError('Factor screen physical ID mismatch')
-        blocked = np.union1d(blocked, fact)
-        if rt.get('stage_from'):
-            earlier = Path(rt['stage_from'])
-            if earlier != root.parent / FREQUENCY_RETRY:
-                raise ValueError('Expected prior frozen real-gain stage screen')
-            source = earlier / dataset
-            if read(source/'complete.json') != panel_receipt(dataset, FACTOR_COUNT, FREQUENCY_MODES):
-                raise ValueError('Expected the prior frequency panel physical IDs')
-            with np.load(source/'predictions.npz', allow_pickle=False) as old:
-                last = np.flatnonzero(np.isin(ids, old['ids']))
-            if len(last) != FACTOR_COUNT or not (rx[last] == receiver_index(dataset, FREQUENCY_MODES)).all():
-                raise ValueError('Previous frequency panel physical ID mismatch')
-            return screen_rows(ids, rx, receiver_index(dataset, STAGE_MODES),
-                               excluded=np.union1d(blocked, last), limit=FACTOR_COUNT, seed=STAGE_SEED)
-        return screen_rows(ids, rx, receiver_index(dataset, FREQUENCY_MODES),
-                           excluded=blocked, limit=FACTOR_COUNT, seed=FREQUENCY_SEED)
-    return screen_rows(ids,rx,RX[dataset],excluded=blocked,limit=FACTOR_COUNT,seed=FACTOR_SEED)
+    ids, rx = np.asarray(ids), np.asarray(rx)
+    count, modes = panel_dimensions(rt)
+    rule = {
+        MODES: SEED, FACTOR_MODES: FACTOR_SEED, FREQUENCY_MODES: FREQUENCY_SEED,
+        STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED,
+    }
+    history = (
+        ('factor_from', RUN, COUNT, MODES),
+        ('frequency_from', FACTOR_RUN, FACTOR_COUNT, FACTOR_MODES),
+        ('stage_from', FREQUENCY_RETRY, FACTOR_COUNT, FREQUENCY_MODES),
+        ('paired_from', STAGE_RUN, FACTOR_COUNT, STAGE_MODES),
+    )
+    blocked = excluded
+    for key, run_id, old_count, old_modes in history:
+        if not rt.get(key):
+            continue
+        prior = Path(rt[key])
+        folder = prior / dataset
+        if (prior != Path(rt['run_root']).parent / run_id
+                or read(folder/'complete.json') != panel_receipt(dataset, old_count, old_modes)):
+            raise ValueError(f'Expected frozen panel from {run_id}')
+        with np.load(folder/'predictions.npz', allow_pickle=False) as old:
+            past = np.flatnonzero(np.isin(ids, old['ids']))
+        if len(past) != old_count or not (rx[past] == receiver_index(dataset, old_modes)).all():
+            raise ValueError(f'Physical ID mismatch for prior screen {run_id}')
+        blocked = np.union1d(blocked, past)
+    return screen_rows(ids, rx, receiver_index(dataset, modes), excluded=blocked, limit=count, seed=rule[modes])
 
 
 def fusion_outputs(rt, observed, anchor, companion, action, variance):
@@ -230,9 +222,9 @@ def time_frequency_update(path, observed, anchor, action, variance):
     ), 'B1 standalone observation update only, fixed action and anchor')
 
 
-def stage_outputs(gates, received, real_gain, context, priors, timing):
+def stage_outputs(gates, received, real_gain, context, priors, timing, modes):
     operations = [(name, partial(gate, received, real_gain, context, priors))
-                  for name, gate in zip(STAGE_MODES[3:], gates, strict=True)]
+                  for name, gate in zip(modes[3:], gates, strict=True)]
     if timing is not None:
         time_readouts(timing, operations, 'B1 two stages including priors and CG, frozen inputs/context')
     outputs = tuple(operation()[-1] for _, operation in operations)
@@ -419,7 +411,7 @@ def predict_lora(rt, folder):
                 time_frequency_update(timing, y/scale, anchor, action, variance)
             solved = fusion_outputs(rt,y/scale,anchor,companion,action,variance)
         else:
-            solved = stage_outputs(gates, received, real_gain/scale, context, dura.prior, timing)
+            solved = stage_outputs(gates, received, real_gain/scale, context, dura.prior, timing, modes)
         values = (y,recovered,real_gain,*(z*scale for z in solved))
         return np.stack([classify_lora(joint,reader,z) for z in values])
 
@@ -444,6 +436,7 @@ def wifi_predictor(rt, original, config, gain):
     reader = original.tri.reader_factory(config).eval().requires_grad_(False)
     engine = original.tri.core.original_r69(Path(config['parent_root']))
     base = engine.pipeline.model
+    _, modes = panel_dimensions(rt)
     gates = None
     if rt.get('stage_from'):
         from experiments.pamf_lora_main.gain_dura_stage_fit import load_gates
@@ -463,7 +456,7 @@ def wifi_predictor(rt, original, config, gain):
                 time_frequency_update(timing, y, anchor, action, variance)
             solved = fusion_outputs(rt,y,anchor,companion,action,variance)
         else:
-            solved = stage_outputs(gates, iq, companion, context, base.prior, timing)
+            solved = stage_outputs(gates, iq, companion, context, base.prior, timing, modes)
         return np.asarray([original.classify(reader,z).argmax(1).tolist()
                            for z in (y,anchor,companion,*solved)],dtype=np.int16)
 
@@ -572,7 +565,8 @@ def independent_score(rt):
         lora_truth=data['y'][index]
     wifi_truth=np.load(wifi_source/'V/labels.npy',allow_pickle=False)[np.asarray(order)[selected]]
     if rt.get('stage_from'):
-        calculate = score_stage_panel
+        seed = PAIRED_SEED if rt.get('paired_from') else STAGE_SEED
+        calculate = partial(score_stage_panel, modes=modes, seed=seed)
     else:
         calculate = score_frequency_panel if rt.get('frequency_from') else score_factor_panel if rt.get('factor_from') else score_panel
     outputs={k:calculate(rows[k][1],y) for k,y in (('lora',lora_truth),('wisig',wifi_truth))}
@@ -685,6 +679,7 @@ def main():
     modes.add_argument('--frequency-screen',action='store_true')
     modes.add_argument('--retry-frequency',action='store_true')
     modes.add_argument('--stage-screen',action='store_true')
+    modes.add_argument('--paired-detail-screen',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
@@ -693,6 +688,8 @@ def main():
         releases=f'{project}/releases'
         if args.retry_frequency:
             run = FREQUENCY_RETRY
+        elif args.paired_detail_screen:
+            run = PAIRED_RUN
         elif args.stage_screen:
             run = STAGE_RUN
         else:
@@ -706,10 +703,10 @@ def main():
         if args.retry_score:
             rt['score_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['score_from'])
-        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN):
+        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
-        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN):
+        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN):
             from experiments.pamf_lora_main.lora_dura_stage2_reference import RUN as LORA_STAGE2
             rt['frequency_from']=f'{project}/runs/{FACTOR_RUN}'
             rt['lora_stage2']=f'{project}/runs/{LORA_STAGE2}'
@@ -718,10 +715,13 @@ def main():
         if args.retry_frequency:
             rt['reuse_wisig'] = f'{project}/runs/{FREQUENCY_RUN}'
             rt['external_releases'].append(rt['reuse_wisig'])
-        if args.stage_screen:
+        if run in (STAGE_RUN, PAIRED_RUN):
             rt['stage_from'] = f'{project}/runs/{FREQUENCY_RETRY}'
             rt['external_releases'].append(rt['stage_from'])
             rt['allowed_gpus'] = [0, 2, 3, 5, 7]
+        if run == PAIRED_RUN:
+            rt['paired_from'] = f'{project}/runs/{STAGE_RUN}'
+            rt['external_releases'].append(rt['paired_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)

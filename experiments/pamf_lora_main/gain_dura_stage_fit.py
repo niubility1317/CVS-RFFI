@@ -40,6 +40,39 @@ def phase_sensitive_loss(stages, clean):
             + .15 * weak_spectrum + .25 * iq_error(stages[0], clean))
 
 
+def packet_spectra(wave, reference):
+    """Use one common phase gauge per packet so chirp/block differences survive."""
+    wave = wave / capture_scale(wave)
+    with torch.no_grad():
+        phase = (reference * wave.conj()).sum(-1, keepdim=True).angle()
+        align = torch.polar(torch.ones_like(phase), phase)
+    return torch.fft.fft((wave * align).unflatten(-1, (8, -1)), norm='ortho')
+
+
+def paired_detail_loss(first, second, clean):
+    reference = clean / capture_scale(clean)
+    clean_spectra = packet_spectra(reference, reference)
+    scale = .03 + clean_spectra.abs().square().mean(dim=1, keepdim=True)
+    differences = clean_spectra.diff(dim=1)
+    diff_scale = .03 + differences.abs().square().mean(dim=1, keepdim=True)
+    first = packet_spectra(first, reference)
+    second = packet_spectra(second, reference)
+
+    def distance(a, b):
+        error = ((a - b).abs().square() / scale).log1p().mean()
+        delta = ((a.diff(dim=1) - b.diff(dim=1)).abs().square() / diff_scale).log1p().mean()
+        return .5 * (error + delta)
+
+    anchored = .5 * (distance(first, clean_spectra) + distance(second, clean_spectra))
+    return anchored + .35 * distance(first, second)
+
+
+def fit_plan(rt):
+    if rt.get('paired_from'):
+        return screen.PAIRED_SEED, screen.PAIRED_MODES[3:]
+    return SEED, ARMS
+
+
 def training_components(rt, dataset, device):
     if dataset == 'lora':
         from experiments.pamf_lora_main.lora_dura_stage2_reference import load_frozen_stage2
@@ -80,15 +113,17 @@ def fit(rt, dataset, device):
     out.mkdir()
     ids, reserved, sample, dura, gain = training_components(rt, dataset, device)
     dura.eval().requires_grad_(False)
-    torch.manual_seed(SEED)
-    branches = [StageGain(packet_only=mode == ARMS[1]).to(device) for mode in ARMS]
+    seed, arms = fit_plan(rt)
+    paired_run = bool(rt.get('paired_from'))
+    torch.manual_seed(seed)
+    branches = [StageGain(packet_only=mode == ARMS[1]).to(device) for mode in arms]
     branches[1].load_state_dict(branches[0].state_dict())
     opts = [torch.optim.AdamW(item.parameters(), lr=3e-4, weight_decay=1e-4) for item in branches]
     schedules = [torch.optim.lr_scheduler.CosineAnnealingLR(opt, STEPS, eta_min=3e-5) for opt in opts]
-    rng = torch.Generator(device=device).manual_seed(SEED + 1)
-    draws = np.random.default_rng(SEED)
+    rng = torch.Generator(device=device).manual_seed(seed + 1)
+    draws = np.random.default_rng(seed)
 
-    def objectives(raw):
+    def view(raw):
         with torch.no_grad():
             clean, observed = source_training_pair(raw, rng)
             native_scale = capture_scale(raw)
@@ -101,14 +136,26 @@ def fit(rt, dataset, device):
                 real_prior = gain(observed)
             received = pair(observed)
             context = dura.estimate_context(received)
-        return [phase_sensitive_loss(item(received, real_prior, context, dura.prior), clean) for item in branches]
+        return received, real_prior, context, clean
+
+    def objectives(raw):
+        views = [view(raw) for _ in range(2 if paired_run else 1)]
+        result = []
+        for name, item in zip(arms, branches, strict=True):
+            outputs = [item(received, prior, context, dura.prior) for received, prior, context, _ in views]
+            bulk = torch.stack([phase_sensitive_loss(stages, data[-1])
+                                for stages, data in zip(outputs, views, strict=True)]).mean()
+            if paired_run and name == arms[0]:
+                bulk = .20 * bulk + .80 * paired_detail_loss(outputs[0][-1], outputs[1][-1], raw)
+            result.append(bulk)
+        return result
 
     for item, objective in zip(branches, objectives(sample(reserved[:2])), strict=True):
         gradient, = torch.autograd.grad(objective, item.network[-1].weight)
         if not bool(torch.isfinite(gradient).all() and gradient.norm() > 0):
             raise ValueError('Real source fit smoke did not reach the active gate')
     write(out/'smoke.json', dict(status='PASS', target_reads=0, F_reads=0, V_reads=0, TX_reads=0))
-    rng.manual_seed(SEED + 1)
+    rng.manual_seed(seed + 1)
     torch.cuda.reset_peak_memory_stats()
     start = perf_counter()
     for step in range(1, STEPS + 1):
@@ -125,9 +172,9 @@ def fit(rt, dataset, device):
 
     torch.cuda.synchronize()
     with (out/'gates.pt').open('xb') as stream:
-        torch.save({name: item.state_dict() for name, item in zip(ARMS, branches, strict=True)}, stream)
-    write(out/'fit.json', dict(status='SOURCE_FROZEN', dataset=dataset, seed=SEED, steps=STEPS,
-          batch=BATCH, arms=list(ARMS), source_training_ids=len(ids),
+        torch.save({name: item.state_dict() for name, item in zip(arms, branches, strict=True)}, stream)
+    write(out/'fit.json', dict(status='SOURCE_FROZEN', dataset=dataset, seed=seed, steps=STEPS,
+          batch=BATCH, arms=list(arms), source_training_ids=len(ids), views_per_source_packet=2 if paired_run else 1,
           parameters=sum(p.numel() for p in branches[0].parameters()), seconds=perf_counter()-start,
           peak_cuda_bytes=torch.cuda.max_memory_allocated(), F_reads=0, V_reads=0, TX_reads=0, target_reads=0))
 
@@ -135,13 +182,15 @@ def fit(rt, dataset, device):
 def load_gates(rt, dataset, device):
     root = Path(rt['run_root']) / ('fit-' + dataset)
     proof = read(root/'fit.json')
+    seed, arms = fit_plan(rt)
     if ((proof['status'], proof['dataset'], proof['seed'], proof['steps'], proof['arms'])
-            != ('SOURCE_FROZEN', dataset, SEED, STEPS, list(ARMS))
+            != ('SOURCE_FROZEN', dataset, seed, STEPS, list(arms))
+            or (rt.get('paired_from') and proof.get('views_per_source_packet') != 2)
             or any(proof[k] for k in ('F_reads', 'V_reads', 'TX_reads', 'target_reads'))):
         raise ValueError('Expected complete source-only gates with fixed budget')
     weights = torch.load(root/'gates.pt', map_location=device, weights_only=True)
     branches = []
-    for name in ARMS:
+    for name in arms:
         item = StageGain(packet_only=name == ARMS[1]).to(device).eval().requires_grad_(False)
         item.load_state_dict(weights[name], strict=True)
         branches.append(item)

@@ -4,8 +4,12 @@ import torch
 from torch import nn
 
 from experiments.pamf_action_restore.operators import Action
-from experiments.pamf_lora_main.gain_dura_screen import FACTOR_COUNT, STAGE_MODES, score_stage_panel
-from experiments.pamf_lora_main.gain_dura_stage_fit import phase_sensitive_loss, source_training_pair
+from experiments.pamf_lora_main.gain_dura_screen import (
+    FACTOR_COUNT, PAIRED_MODES, PAIRED_SEED, STAGE_MODES, panel_dimensions, receiver_index, score_stage_panel,
+)
+from experiments.pamf_lora_main.gain_dura_stage_fit import (
+    fit_plan, paired_detail_loss, phase_sensitive_loss, source_training_pair,
+)
 from experiments.pamf_lora_main.gain_dura_stages import StageGain
 from experiments.pamf_r65_four_route.stage_polyphase import _stages
 from experiments.pamf_restoration.models import complex_iq, pair
@@ -63,3 +67,23 @@ def test_independent_screen_counts_corrections_when_both_frozen_experts_are_wron
     assert result['corrected_when_both_wrong']['stage_packet']['practical_low_urban'] == 5
     assert result['candidates']['stage_frequency']['promote']
     assert not result['candidates']['stage_packet']['promote']
+
+
+@pytest.mark.parametrize('points', [256, 8192])
+def test_paired_detail_rejects_common_collapse_and_preserves_relative_complex_phase(points):
+    clean, _, _, _ = example(points)
+    phase = torch.polar(torch.ones(8), torch.linspace(-.4, .6, 8)).repeat_interleave(points // 8)
+    distorted = (clean * phase).detach().requires_grad_(True)
+    assert paired_detail_loss(clean*1j, -clean*.5, clean) < 1e-10
+    anchored = paired_detail_loss(distorted, distorted, clean)
+    assert anchored > .01
+    assert paired_detail_loss(clean, distorted, clean) > .5*anchored
+    anchored.backward()
+    assert torch.isfinite(distorted.grad).all() and distorted.grad.norm() > 0
+
+
+def test_paired_detail_uses_two_frequency_arms_and_new_fixed_wifi_receiver():
+    runtime = {'paired_from': 'frozen'}
+    assert fit_plan(runtime) == (PAIRED_SEED, PAIRED_MODES[3:])
+    assert panel_dimensions(runtime) == (FACTOR_COUNT, PAIRED_MODES)
+    assert receiver_index('wisig', PAIRED_MODES) == 4
