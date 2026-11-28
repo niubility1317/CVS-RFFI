@@ -16,7 +16,7 @@ from torch import nn
 
 from experiments.cric_dura_comparison.bootstrap import numerical_policy
 from experiments.cric_dura_comparison.io import read, tensor, write
-from experiments.pamf_lora_main.gain_dura_fusion import fuse
+from experiments.pamf_lora_main.gain_dura_fusion import fuse, companion_only
 from experiments.pamf_lora_main.w24_native_dura import capture_scale, iq_error
 from experiments.pamf_lora_main.w24_native_spectral_innovation import SpectralInnovation
 from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
@@ -25,38 +25,43 @@ from experiments.pamf_restoration.models import complex_iq, pair
 
 RUN = '20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01'
 SCORE_RUN = RUN.removesuffix('r01') + 'r02'
+FACTOR_RUN = '20261128-phase1-lora-wisig-gain-dura-factor-s2026113051-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
+FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
 ARCHIVE = '20261127-phase1-lora-wisig-packet-dura-s2026113021-r03'
 WISIG_REF = '20261125-phase1-wisig-native-fir-source-m4-r01'
 MODES = ('direct', 'dura', 'real_gain', 'fusion')
+FACTOR_MODES = (*MODES,'data_only','companion_only')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
 
-def screen_rows(ids, receivers, receiver, *, excluded=(), limit=COUNT):
+def screen_rows(ids, receivers, receiver, *, excluded=(), limit=COUNT, seed=SEED):
     if len(ids) != len(receivers) or len(set(ids.tolist())) != len(ids):
         raise ValueError('Expected one blind receiver record per physical ID')
     rows = np.setdiff1d(np.flatnonzero(receivers == receiver), excluded)
     if len(rows) < limit:
         raise ValueError('Insufficient fixed receiver coverage')
-    return np.sort(np.random.default_rng(SEED).choice(rows,limit,replace=False))
+    return np.sort(np.random.default_rng(seed).choice(rows,limit,replace=False))
 
 
-def score_panel(predictions, labels):
-    if predictions.shape != (len(SCREEN_VIEWS), len(MODES), COUNT) or labels.shape != (COUNT,):
+def paired_panel(change, draws):
+    return {view: dict(repairs=int((diff>0).sum()),harms=int((diff<0).sum()),
+               net=int(diff.sum()),ci95=np.quantile(diff[draws].sum(1),(.025,.975)).tolist())
+            for view,diff in zip(SCREEN_VIEWS,change,strict=True)}
+
+
+def score_panel(predictions, labels, *, count=COUNT, seed=SEED):
+    if predictions.shape != (len(SCREEN_VIEWS), len(MODES), count) or labels.shape != (count,):
         raise ValueError('Incomplete same-packet screen')
     hit = predictions == labels
     correct = hit.sum(-1)
-    idx = np.random.default_rng(SEED+2).integers(0,COUNT,size=(4000,COUNT))
-    paired = {}
-    for i, name in enumerate(MODES[:-1]):
-        change = hit[:, -1].astype(np.int8) - hit[:, i]
-        paired[name] = {view: dict(repairs=int((diff>0).sum()),harms=int((diff<0).sum()),
-             net=int(diff.sum()),ci95=np.quantile(diff[idx].sum(1),(.025,.975)).tolist())
-             for view,diff in zip(SCREEN_VIEWS,change,strict=True)}
+    idx = np.random.default_rng(seed+2).integers(0,count,size=(4000,count))
+    candidate = hit[:,-1].astype(np.int8)
+    paired = {name:paired_panel(candidate-hit[:,i],idx) for i,name in enumerate(MODES[:-1])}
     clean_pass = bool(correct[0,-1] >= correct[0,:-1].max())
     difficult_pass = all(out[SCREEN_VIEWS[-1]]['net'] >= 8 and out[SCREEN_VIEWS[-1]]['ci95'][0] > 0
                          for out in paired.values())
@@ -64,6 +69,50 @@ def score_panel(predictions, labels):
                          for v,c in zip(SCREEN_VIEWS,correct,strict=True)},
                 paired=paired,clean_pass=clean_pass,low_urban_pass=difficult_pass,
                 promote=clean_pass and difficult_pass)
+
+
+def score_factor_panel(predictions, labels):
+    if predictions.shape != (2,len(FACTOR_MODES),FACTOR_COUNT) or labels.shape!=(FACTOR_COUNT,):
+        raise ValueError('Incomplete independent factor screening matrix')
+    candidates = {mode:score_panel(predictions[:,[0,1,2,i]],labels,count=FACTOR_COUNT,seed=FACTOR_SEED)
+                  for i,mode in enumerate(FACTOR_MODES) if i>=3}
+    hit = (predictions==labels).astype(np.int8)
+    correct = {v:dict(zip(FACTOR_MODES,c.tolist(),strict=True))
+               for v,c in zip(SCREEN_VIEWS,hit.sum(-1),strict=True)}
+    draws = np.random.default_rng(FACTOR_SEED+2).integers(0,FACTOR_COUNT,size=(4000,FACTOR_COUNT))
+    pairs = {(f'{FACTOR_MODES[a]}_vs_{FACTOR_MODES[b]}'):paired_panel(hit[:,a]-hit[:,b],draws)
+             for a,b in ((3,4),(3,5),(4,5))}
+    return dict(correct=correct,candidates=candidates,factor_pairs=pairs)
+
+
+def panel_dimensions(rt):
+    return (FACTOR_COUNT,FACTOR_MODES) if rt.get('factor_from') else (COUNT,MODES)
+
+
+def panel_rows(rt, dataset, ids, rx, *, excluded=()):
+    ids,rx = np.asarray(ids),np.asarray(rx)
+    if not rt.get('factor_from'):
+        return screen_rows(ids,rx,RX[dataset],excluded=excluded)
+    root = Path(rt['factor_from'])
+    if root != Path(rt['run_root']).parent/RUN:
+        raise ValueError('Expected the exact prior screening root')
+    folder = root/dataset
+    if read(folder/'complete.json') != panel_receipt(dataset,COUNT,MODES):
+        raise ValueError('Expected the earlier blind panel for exclusion')
+    with np.load(folder/'predictions.npz',allow_pickle=False) as old:
+        past = np.flatnonzero(np.isin(ids,old['ids']))
+    if len(past)!=COUNT or not (rx[past]==RX[dataset]).all():
+        raise ValueError('Previous screen physical ID mismatch')
+    return screen_rows(ids,rx,RX[dataset],excluded=np.union1d(excluded,past),limit=FACTOR_COUNT,seed=FACTOR_SEED)
+
+
+def fusion_outputs(rt, observed, anchor, companion, action, variance):
+    ranked = (fuse(observed,anchor,companion,action,variance),)
+    if rt.get('factor_from'):
+        ranked += (fuse(observed,anchor,anchor,action,variance),companion_only(observed,anchor,companion))
+    if not all(bool(torch.isfinite(v).all()) for v in ranked):
+        raise ValueError('Nonfinite fusion')
+    return ranked
 
 
 class WiSigRealGain(nn.Module):
@@ -156,24 +205,28 @@ def fit_wifi(folder, original, source):
     return model.eval().requires_grad_(False)
 
 
-def lora_panel(joint, source, contract):
+def lora_panel(rt, joint, source, contract):
     old,_,_ = joint.panel(source,contract)
     with np.load(source/'V_metadata.npz',allow_pickle=False) as metadata:
         ids,rx = metadata['ids'].copy(),metadata['rx_i'].copy()
-    rows = screen_rows(ids,rx,RX['lora'],excluded=old)
+    rows = panel_rows(rt,'lora',ids,rx,excluded=old)
     return rows,ids[rows]
 
 
-def freeze(folder, dataset, ids, decisions):
-    if len(ids)!=COUNT or set(decisions)!=set(SCREEN_VIEWS):
+def panel_receipt(dataset, count, modes):
+    return dict(dataset=dataset,receiver=RX[dataset],views=list(SCREEN_VIEWS),modes=list(modes),n=count,
+                source_truth_reads=0,target_reads=0,status='PREDICTIONS_FROZEN')
+
+
+def freeze(folder, dataset, ids, decisions, *, count=COUNT, modes=MODES):
+    if len(ids)!=count or set(decisions)!=set(SCREEN_VIEWS):
         raise ValueError('Incomplete preregistered screen')
     for d in decisions.values():
-        if d.shape!=(len(MODES),COUNT):
+        if d.shape!=(len(modes),count):
             raise ValueError('Wrong primary and comparison coverage')
     with (folder/'predictions.npz').open('xb') as stream:
         np.savez(stream,ids=ids,**decisions)
-    write(folder/'complete.json',dict(dataset=dataset,receiver=RX[dataset],views=list(SCREEN_VIEWS),
-           modes=list(MODES),n=COUNT,source_truth_reads=0,target_reads=0,status='PREDICTIONS_FROZEN'))
+    write(folder/'complete.json',panel_receipt(dataset,count,modes))
 
 
 def classify_lora(joint, reader, wave):
@@ -183,6 +236,7 @@ def classify_lora(joint, reader, wave):
 
 @torch.no_grad()
 def predict_lora(rt, folder):
+    count,modes = panel_dimensions(rt)
     config = read(Path(rt['lora_ref'])/'runtime.json')
     if (config['run_id'],config['code_commit']) != (LO_RA,LO_RA_COMMIT):
         raise ValueError('Wrong frozen LoRa 8192-point real gain version')
@@ -207,27 +261,26 @@ def predict_lora(rt, folder):
         coarse,action,variance = dura.estimate(received)
         recovered = complex_iq(dura.unroll(received,coarse,action,variance))*scale
         anchor = gain(y)
-        combined = fuse(y/scale,anchor/scale,recovered/scale,action,variance)*scale
-        if not torch.isfinite(combined).all():
-            raise ValueError('Nonfinite LoRa fusion')
-        return np.stack([classify_lora(joint,reader,z) for z in (y,recovered,anchor,combined)])
+        solved = fusion_outputs(rt,y/scale,anchor/scale,recovered/scale,action,variance)
+        values = (y,recovered,anchor,*(z*scale for z in solved))
+        return np.stack([classify_lora(joint,reader,z) for z in values])
 
     sample = joint.source_role(source,contract,'U_s')[0][:2]
-    if apply(sample).shape != (len(MODES),2):
+    if apply(sample).shape != (len(modes),2):
         raise ValueError('LoRa no-query checkpoint smoke failed')
     write(folder/'smoke.json',dict(status='PASS',source_count=2,source_V_reads=0,target_reads=0))
-    rows,ids = lora_panel(joint,source,contract)
+    rows,ids = lora_panel(rt,joint,source,contract)
     x = joint.native(source,'V',contract['counts']['V'])[rows]
-    jobs = list(zip(rows.tolist(),[joint.SOURCE[RX['lora']]]*COUNT,x,strict=True))
+    jobs = list(zip(rows.tolist(),[joint.SOURCE[RX['lora']]]*count,x,strict=True))
     decisions = {}
     with ThreadPoolExecutor(max_workers=3) as pool:
         for view in SCREEN_VIEWS:
             packets = np.stack(list(pool.map(partial(joint.source_receive,view),jobs)))
-            decisions[view] = np.concatenate([apply(packets[i:i+8]) for i in range(0,COUNT,8)],axis=1)
-    freeze(folder,'lora',ids,decisions)
+            decisions[view] = np.concatenate([apply(packets[i:i+8]) for i in range(0,count,8)],axis=1)
+    freeze(folder,'lora',ids,decisions,count=count,modes=modes)
 
 
-def wifi_predictor(original, config, gain):
+def wifi_predictor(rt, original, config, gain):
     reader = original.tri.reader_factory(config).eval().requires_grad_(False)
     engine = original.tri.core.original_r69(Path(config['parent_root']))
     base = engine.pipeline.model
@@ -240,11 +293,9 @@ def wifi_predictor(original, config, gain):
         (output,) = engine(iq)
         anchor = complex_iq(output)
         companion = gain(y)[-1]
-        combined = fuse(y,anchor,companion,action,variance)
-        if not torch.isfinite(combined).all():
-            raise ValueError('Nonfinite WiSig fusion')
+        solved = fusion_outputs(rt,y,anchor,companion,action,variance)
         return np.asarray([original.classify(reader,z).argmax(1).tolist()
-                           for z in (y,anchor,companion,combined)],dtype=np.int16)
+                           for z in (y,anchor,companion,*solved)],dtype=np.int16)
 
     return apply
 
@@ -254,37 +305,50 @@ def smoke_wifi(rt, folder):
     source = Path(config['source_root'])
     gain = WiSigRealGain().to(DEV).eval().requires_grad_(False)
     data,_,rows = original.core.source_iq(source)
-    if wifi_predictor(original,config,gain)(data[rows[:4]]).shape != (len(MODES),4):
+    if wifi_predictor(rt,original,config,gain)(data[rows[:4]]).shape != (len(MODES),4):
         raise ValueError('Original R69 and Tri-SIG default head smoke failed')
     write(folder/'smoke.json',dict(status='PASS',source_count=4,source_V_reads=0,target_reads=0))
 
 
 def predict_wifi(rt, folder, runtime):
-    subprocess.run([sys.executable,'-u','-m',__spec__.name,'wifi-smoke',str(runtime)],check=True)
+    count,modes = panel_dimensions(rt)
+    if not rt.get('factor_from'):
+        subprocess.run([sys.executable,'-u','-m',__spec__.name,'wifi-smoke',str(runtime)],check=True)
     original,config = wifi_context(rt)
     source = Path(config['source_root'])
-    gain = fit_wifi(folder,original,source)
-    gain.load_state_dict(torch.load(folder/'real_gain.pt',map_location=DEV,weights_only=True),strict=True)
-    apply = wifi_predictor(original,config,gain)
+    if rt.get('factor_from'):
+        prior = Path(rt['factor_from'])/'wisig'
+        proof = read(prior/'fit.json')
+        if (proof['status'],proof['steps'],proof['seed'],proof['training_ids'])!=('SOURCE_FROZEN',STEPS,SEED,52604) \
+                or any(proof[k] for k in ('TX_reads','V_reads','F_reads','target_reads')):
+            raise ValueError('Missing legal frozen WiSig real-gain ancestor')
+        gain = WiSigRealGain().to(DEV).eval().requires_grad_(False)
+        checkpoint = prior/'real_gain.pt'
+    else:
+        gain = fit_wifi(folder,original,source)
+        checkpoint = folder/'real_gain.pt'
+    gain.load_state_dict(torch.load(checkpoint,map_location=DEV,weights_only=True),strict=True)
+    apply = wifi_predictor(rt,original,config,gain)
     data,_,smoke_rows = original.core.source_iq(source)
-    if apply(data[smoke_rows[:4]]).shape != (len(MODES),4):
+    if apply(data[smoke_rows[:4]]).shape != (len(modes),4):
         raise ValueError('WiSig no-query checkpoint smoke failed')
     write(folder/'frozen-smoke.json',dict(status='PASS',source_count=4,source_V_reads=0,target_reads=0))
     cache,_,_,_,ids,rx,_ = original.tri.core.handles(config)
-    selected = screen_rows(np.asarray(ids),np.asarray(rx),RX['wisig'])
+    selected = panel_rows(rt,'wisig',ids,rx)
     decisions={}
     for view in SCREEN_VIEWS:
         array=np.load(cache/'validation_full'/f'{view}.npy',mmap_mode='r',allow_pickle=False)
         if array.shape!=(len(ids),2,256) or array.dtype!=np.float32:
             raise ValueError('Mismatched WiSig source V capture')
-        decisions[view]=np.concatenate([apply(array[selected[i:i+32]]) for i in range(0,COUNT,32)],axis=1)
-    freeze(folder,'wisig',np.asarray(ids)[selected],decisions)
+        decisions[view]=np.concatenate([apply(array[selected[i:i+32]]) for i in range(0,count,32)],axis=1)
+    freeze(folder,'wisig',np.asarray(ids)[selected],decisions,count=count,modes=modes)
 
 
 def independent_score(rt):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Expected separate CPU truth connection')
     root = Path(rt['run_root'])
+    count,modes = panel_dimensions(rt)
     predictions = root
     if rt.get('score_from'):
         predictions = Path(rt['score_from'])
@@ -294,15 +358,14 @@ def independent_score(rt):
     for dataset in RX:
         folder = predictions/dataset
         proof = read(folder/'complete.json')
-        if proof!=dict(dataset=dataset,receiver=RX[dataset],views=list(SCREEN_VIEWS),
-                modes=list(MODES),n=COUNT,source_truth_reads=0,target_reads=0,status='PREDICTIONS_FROZEN'):
+        if proof!=panel_receipt(dataset,count,modes):
             raise ValueError('Both screening matrices must freeze before source truth')
         with np.load(folder/'predictions.npz',allow_pickle=False) as data:
             ids = data['ids'].copy()
             matrix = np.stack([data[v] for v in SCREEN_VIEWS])
         classes = 10 if dataset=='lora' else 6
-        if (matrix.shape!=(2,4,COUNT) or matrix.dtype.kind not in 'iu'
-                or not ((0<=matrix)&(matrix<classes)).all() or len(set(ids.tolist()))!=COUNT):
+        if (matrix.shape!=(2,len(modes),count) or matrix.dtype.kind not in 'iu'
+                or not ((0<=matrix)&(matrix<classes)).all() or len(set(ids.tolist()))!=count):
             raise ValueError('Invalid frozen predictions')
         rows[dataset] = ids,matrix
 
@@ -310,7 +373,7 @@ def independent_score(rt):
     # another pamf_unrolled_restore namespace.
     original,wifi=wifi_context(rt)
     _,_,wifi_source,_,ids,rx,order=original.tri.core.handles(wifi)
-    selected=screen_rows(np.asarray(ids),np.asarray(rx),RX['wisig'])
+    selected=panel_rows(rt,'wisig',ids,rx)
     if not np.array_equal(rows['wisig'][0],np.asarray(ids)[selected]):
         raise ValueError('WiSig screen order drift')
 
@@ -327,14 +390,15 @@ def independent_score(rt):
         exclude = np.flatnonzero(np.isin(names,lora_old['physical_ids']))
         if len(exclude)!=300:
             raise ValueError('The original 300 source validation packets must be excluded')
-        index = screen_rows(names,rx,RX['lora'],excluded=exclude)
+        index = panel_rows(rt,'lora',names,rx,excluded=exclude)
         if not np.array_equal(rows['lora'][0],names[index]):
             raise ValueError('LoRa screen order drift')
         lora_truth=data['y'][index]
     wifi_truth=np.load(wifi_source/'V/labels.npy',allow_pickle=False)[np.asarray(order)[selected]]
-    outputs={k:score_panel(rows[k][1],y) for k,y in (('lora',lora_truth),('wisig',wifi_truth))}
-    write(root/'scores.json',dict(status='ANALYZED',truth_last=True,target_reads=0,n_per_view=COUNT,
-                                  modes=list(MODES),views=list(SCREEN_VIEWS),results=outputs))
+    calculate = score_factor_panel if rt.get('factor_from') else score_panel
+    outputs={k:calculate(rows[k][1],y) for k,y in (('lora',lora_truth),('wisig',wifi_truth))}
+    write(root/'scores.json',dict(status='ANALYZED',truth_last=True,target_reads=0,n_per_view=count,
+                                  modes=list(modes),views=list(SCREEN_VIEWS),results=outputs))
 
 
 def dispatch(runtime, rt):
@@ -386,14 +450,16 @@ def main():
     parser.add_argument('runtime',type=Path)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--ssh-config',type=Path)
-    parser.add_argument('--retry-score',action='store_true')
+    modes=parser.add_mutually_exclusive_group()
+    modes.add_argument('--retry-score',action='store_true')
+    modes.add_argument('--factor-screen',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
         from experiments.pamf_lora_main.publish import release,release_commit
         project=rt['project']
         releases=f'{project}/releases'
-        run = SCORE_RUN if args.retry_score else RUN
+        run = SCORE_RUN if args.retry_score else FACTOR_RUN if args.factor_screen else RUN
         rt={k:rt[k] for k in ('project','python','frozen_sources')}
         rt.update(run_id=run,code_commit=release_commit(Path.cwd()),runner=__spec__.name,
                   release_root=f'{releases}/{run}-release',run_root=f'{project}/runs/{run}',
@@ -403,6 +469,9 @@ def main():
         if args.retry_score:
             rt['score_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['score_from'])
+        if args.factor_screen:
+            rt['factor_from']=f'{project}/runs/{RUN}'
+            rt['external_releases'].append(rt['factor_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)

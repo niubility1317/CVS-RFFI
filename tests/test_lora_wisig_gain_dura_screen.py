@@ -8,7 +8,7 @@ from experiments.pamf_lora_main import gain_dura_screen as screen
 from experiments.pamf_lora_main.gain_dura_screen import (
     COUNT, MODES, SCREEN_VIEWS, WiSigRealGain, score_panel, screen_rows,
 )
-from experiments.pamf_lora_main.gain_dura_fusion import fuse
+from experiments.pamf_lora_main.gain_dura_fusion import fuse, companion_only
 
 
 class Identity:
@@ -30,6 +30,35 @@ def test_fusion_uses_the_companion_in_a_new_direction_and_caps_edit():
     assert 0<delta[0,1].real<4 and delta[0,0].abs()<1e-6
     assert delta[0].norm()<=.25*anchor[0].norm()+1e-6
     assert torch.equal(estimate[1],anchor[1])
+
+
+def test_factorization_keeps_the_same_projection_and_edit_cap():
+    x=torch.zeros(1,8,dtype=torch.complex64)
+    anchor=x.clone()
+    anchor[...,1]=1
+    peer=anchor.clone()
+    peer[...,1]+=2j
+    peer[...,2]=2j
+    physical=fuse(x,anchor,anchor,Identity(),torch.ones(1))
+    data_free=companion_only(x,anchor,peer)
+    torch.testing.assert_close(physical,anchor,rtol=0,atol=0)
+    torch.testing.assert_close(data_free[...,1],anchor[...,1],rtol=0,atol=0)
+    torch.testing.assert_close(data_free[...,2],torch.full((1,),.25j))
+
+
+def test_factor_panel_checks_candidate_against_controls_under_fixed_budget():
+    modes=screen.FACTOR_MODES
+    count=screen.FACTOR_COUNT
+    labels=np.zeros(count,dtype=np.int16)
+    mat=np.zeros((2,len(modes),count),dtype=np.int16)
+    mat[1,:3,:14]=1
+    mat[1,modes.index('data_only'),:2]=1
+    mat[1,modes.index('companion_only'),:14]=1
+    out=screen.score_factor_panel(mat,labels)
+    assert out['candidates']['fusion']['promote']
+    assert out['candidates']['data_only']['promote']
+    assert not out['candidates']['companion_only']['promote']
+    assert out['factor_pairs']['fusion_vs_data_only']['practical_low_urban']['net']==2
 
 
 def test_single_receiver_panel_is_stable_and_does_not_select_excluded_rows():
