@@ -44,7 +44,7 @@ LoRa 实增益原版的历史 Full：六景均值 82.2967%、低城区 62.1167%�
 | practical 源域无新增教师匹配对照 | 32 | 330 | 两侧未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-practical-mse-s2026112957-r01/report.md)。同包教师版相对本对照 LoRa 改对 4 改错 1、净 +3（区间 -1 至 +7），WiSig 改对 5 改错 3、净 +2（区间 -3 至 +8）；LoRa 实增益父专家保留历史教师祖先 |
 | 共享逐包专家对齐实增益 | 34 | 332 | 两侧未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-aligned-gain-s2026112957-r01/report.md)。LoRa 相对实增益改对 1、改错 1；WiSig 相对 R17 改对 2、改错 2，clean 均保持 |
 | 源教师一致性门控锚点损失 | 35 | 332 | 两侧未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-agreement-loss-s2026112957-r01/report.md)。LoRa 相对实增益改对 1、改错 0；WiSig 相对 R17 改对 3、改错 3，clean 均保持 |
-| 共同实增益与 R17 末步先验联合训练 | 待完成 | 待完成 | `20261128-phase1-shared-trainprior-gain-s2026112957-r01` 正在训练；冻结粗恢复、信道估计与前两步先验，各数据集独立使用其合法源权重与教师，推理无需教师 |
+| 共同实增益与 R17 末步先验联合训练 | 34 | 321 | 两侧未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-trainprior-gain-s2026112957-r01/report.md)。LoRa 相对实增益改对 0、改错 0；WiSig 相对 R17 改对 1、改错 12，clean 均保持 |
 
 真实预测、逐对照 clean、改对改错、分半结果和配对区间见各报告及其 `screen-score.json`，不得从表中推断正式测试分数。示例：教师包级连续融合在 WiSig 类别 3 为 10/55，R17 为 46/55，存在明确单类退化。源 U 教师训练得到用户单独授权，方法属于 F-guided，祖先、伪标签和额外成本见各报告。无教师训练控制只表示新增模块不读取教师，LoRa 实增益父专家仍保留既有 E104 指导祖先。
 
