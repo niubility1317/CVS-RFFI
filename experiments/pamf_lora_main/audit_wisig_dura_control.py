@@ -16,6 +16,9 @@ CASES = {
     '20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01': (
         4, ('direct', 'wisig_r17', 'real_gain', 'first_fusion', 'second_fusion', 'joint_fusion'),
         2026112872, 2026112877),
+    '20261128-phase1-wisig-r17-spectral-gain-s2026112877-r01': (
+        6, ('direct', 'wisig_r17', 'real_gain', 'prior_fusion', 'fusion'),
+        2026112881, 2026112886),
 }
 
 parser = argparse.ArgumentParser(description=__doc__)
