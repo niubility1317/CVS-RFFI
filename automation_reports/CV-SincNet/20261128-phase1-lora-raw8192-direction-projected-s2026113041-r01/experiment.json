@@ -1,0 +1,293 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa 原生 8,192 点固定粗修正剂量与方向投影（Full）",
+  "description": "Both equal-capacity arms fix the coarse dose at 1.5 and train a time/frequency refinement. The candidate projects that refinement outside the complex span of the coarse edit measured at the linear W24 center, so its head cannot rescale or rotate that edit as a whole.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "raw8192",
+    "w24",
+    "fixed-e104",
+    "full-only",
+    "truth-last",
+    "direction-projected"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "20261126-phase1-lora-w24-joint-pamf-clean-pl-s2026112991-r01",
+    "20261126-phase1-lora-w24-fixed-e104-clean-pl-s2026112991-r01",
+    "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+    "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa native raw performance goal, frozen E104 training loss and high-confidence source clean U_s pseudo-label authorization.",
+  "code": {
+    "commit": "a88088eea2643836ca03f76b8827381511d39ae2",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI archived W24 and immutable release; local CPU independent truth-last collector.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "Native 8192-point IQ through phase tracking, coarse estimator and time/spectral refiner. Candidate uses the linear W24 center as an orthogonality metric and writes the correction back in raw IQ. E104 preprocessing remains 8x2x432.",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Authorized L_s and U_s capturing native source IQ, original generic waveform simulation, L_s true CE, frozen E104 clean U_s pseudo-CE at confidence .95; no U_s TX, V, exact benchmark traces or target during training. Both rows fixed before official Full seven-view prediction."
+  },
+  "checkpoint": {
+    "initialization": "Same immutable lawful 313796-parameter native E104 18k parent for both arms. Same zero-output 11684-parameter dual-domain refiner. Both start at 1.5 times their original coarse edit. Updated coarse and refiner weights frozen at 30000.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-e104-strong-s2026113011-r01",
+        "role": "Same raw observation contract and pretarget source-qualified initialization. Recursively verify formal archival parent."
+      },
+      {
+        "ref": "20261127-phase1-lora-w24-strong-source-s2026112997-r01",
+        "role": "Same-contract G initialization and archived Full comparison."
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen source training teacher and evaluation default head."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "Pretarget source-qualified 18k original parent. The 1.5 factor comes from the previous isolated source gain audit only. Other parent, readout, and budget choices were fixed in this comparison before target access.",
+    "selection_rule": "Fixed 30000 continuations. Both enter Full for all seven views regardless of source accuracy. Source V is reference only. Target performance requires at least 162000/180000, 25500/30000 and 28566/30000 for practical six, low urban and clean respectively."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 [0,7,5,2,6,3], at least 12 GiB actual free and fewer than eight contexts, two or fewer workers, one per card.",
+    "remote_run_root": "runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01",
+    "remote_log_root": "runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --raw-direction-projected --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/release",
+    "stop_rule": "Stop on wrong data/checkpoint, nonfinite update, nonzero or wrong initial edit, missing E104 or pair-loss gradient, failed source freeze, or invalid Full artifact. Source accuracy cannot stop formal."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "source-reference-status.json",
+    "predictions/{full-shard}/complete.json",
+    "independent scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak",
+      "clean U_s pseudo-label accepted exposures",
+      "clean U_s pseudo-label accepted rate",
+      "sampled waveform and clean training losses",
+      "strong source branch actual sampled exposures and nominal SNR range",
+      "observed change of fixed W24 aperture",
+      "W24 center complex geometric diagnostics: residual coarse-axis overlap, directional dose, axis-independent residual, accuracy by fixed Full view"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "same physical packet",
+      "receiver",
+      "TX",
+      "readout, fixed coarse dose and matched projection ablation"
+    ],
+    "prediction_ref": "runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/predictions for both arms across the same 30000 physical IDs.",
+    "scorer_ref": "Local independent w24_joint_pamf collect reads truth only after all three formal shards and both modes are fixed. Source V readouts are reference."
+  },
+  "rows": [
+    {
+      "row_id": "direction_free_native",
+      "method": "Free refinement with fixed base dose",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/direction_free_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "trainable_parameters": 325480,
+        "direction_projected": false,
+        "coarse_dose": 1.5,
+        "direction_loss_weight": 0.35
+      },
+      "seeds": {
+        "model": 2026113041,
+        "split": 392005,
+        "data": 2026113041,
+        "augmentation": 2026113041,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113041 shared source draw and generic augmentation, plus 1 for identical strong branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30000 new updates after the fixed raw parent, 8 L_s and 8 U_s per update.",
+      "output_root": "runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/direction_free_native",
+      "log_path": "runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/direction_free_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/direction_free_native/fit-inputs.json direction_free_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "direction_projected_native",
+      "method": "Projected refinement with fixed base dose",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/w24_native_training.py",
+      "resolved_config_ref": "runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/direction_projected_native/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 8,
+        "U_batch": 8,
+        "V_after_freeze": 300,
+        "route": "full_native",
+        "restoration_points": 8192,
+        "sample_rate_hz": 1000000,
+        "clean_pseudo_threshold": 0.95,
+        "strong_fraction": 0.3333333333333333,
+        "strong_nominal_snr_db": [
+          -8,
+          4
+        ],
+        "trainable_parameters": 325480,
+        "direction_projected": true,
+        "coarse_dose": 1.5,
+        "direction_loss_weight": 0.35
+      },
+      "seeds": {
+        "model": 2026113041,
+        "split": 392005,
+        "data": 2026113041,
+        "augmentation": 2026113041,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "2026113041 shared source draw and generic augmentation, plus 1 for identical strong branch.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW 4e-5 cosine to 2e-6, WD1e-4, max grad norm 1",
+      "lr": 4e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30000 new updates after the fixed raw parent, 8 L_s and 8 U_s per update.",
+      "output_root": "runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/direction_projected_native",
+      "log_path": "runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/direction_projected_native-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01/direction_projected_native/fit-inputs.json direction_projected_native",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both arms retain the original native coarse architecture and add the same phase-tracked time and spectral refiner, with a full 8192-point output. The coarse dose is fixed at 1.5. The refiner proposes an independent complex correction with per-chirp DC removed in the tracked frame.",
+    "The candidate applies a packetwise complex projection against the coarse edit in all eight linear W24 center windows, then bounds raw RMS at the original proposal RMS. The projection removes real and imaginary coarse coefficients from the full native IQ proposal. The control applies the same proposal without projection.",
+    "On generic pure additive pairs only, both arms add weight .35 for remaining waveform error outside the coarse span. The coarse axis and pair reference are stopped-gradient. The fixed original E104 true CE, confidence-filtered clean U_s pseudo CE, waveform spectral/MSE and identity losses are unchanged. Original E104 is frozen. No exact noise/channel array used in fitting.",
+    "Same seed, generic draw and 30000 8+8 update budget. After freeze both rows perform all seven fixed Full views on 30000 matched physical packets and 15 unseen receivers. Source V is explanatory only; independent formal truth-last after all shards are frozen."
+  ],
+  "registered_at": "2026-11-28T01:59:28+00:00"
+}
