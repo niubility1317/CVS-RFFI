@@ -223,7 +223,7 @@ def dispatch(runtime, worker_module=None):
     for row in WIDTH:
         (root / row).mkdir()
     try:
-        gpus = free_gpus()
+        gpus = [gpu for gpu in free_gpus() if gpu in rt.get('allowed_gpus', tuple(range(8)))]
         if len(gpus) < 2:
             raise RuntimeError('Two distinct GPUs with 8 GiB free required')
         jobs = {}

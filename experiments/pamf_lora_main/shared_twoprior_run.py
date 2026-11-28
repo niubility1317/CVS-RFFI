@@ -68,7 +68,14 @@ def fit(rt, dataset):
         output, prior = restore_scaled(r17, gain, model, observed)
         preserved, clean_prior = restore_scaled(r17, gain, model, clean)
         if step == 1:
-            torch.testing.assert_close(output, prior, rtol=0, atol=0)
+            if hasattr(model, 'initial_reference'):
+                scale = observed.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
+                with torch.no_grad():
+                    physical, _ = r17(observed/scale)
+                    expected = model.initial_reference(prior, physical*scale)
+                torch.testing.assert_close(output, expected, rtol=1e-5, atol=2e-6)
+            else:
+                torch.testing.assert_close(output, prior, rtol=0, atol=0)
         error = output - clean
         spectrum = torch.fft.fft(clean, norm='ortho').abs().square()
         spectral = (torch.fft.fft(error, norm='ortho').abs().square() / (.03+spectrum)).log1p().mean()

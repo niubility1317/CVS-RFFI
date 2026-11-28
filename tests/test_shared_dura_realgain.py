@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import torch
 
-from experiments.pamf_lora_main.shared_dura_realgain import SharedDuraRealGain, SharedTwoPriorGain
+from experiments.pamf_lora_main.shared_dura_realgain import SharedConvexGain, SharedDuraRealGain, SharedTwoPriorGain
 
 
 class IdentityAction:
@@ -15,6 +15,27 @@ class IdentityAction:
 
 
 class SharedDuraRealGainTest(unittest.TestCase):
+    def test_convex_gate_uses_same_weights_and_stays_between_experts(self):
+        torch.manual_seed(15)
+        short, long = SharedConvexGain(32), SharedConvexGain(1024)
+        long.load_state_dict(short.state_dict(), strict=True)
+        for model, width in ((short, 32), (long, 1024)):
+            y = torch.randn(2, 8 * width, dtype=torch.complex64)
+            a, b = torch.randn_like(y), torch.randn_like(y)
+            result = model(y, a, b, IdentityAction())
+            torch.testing.assert_close(result, model.initial_reference(a, b), rtol=1e-5, atol=2e-6)
+            (result-y).abs().square().mean().backward()
+            self.assertTrue(torch.isfinite(model.net[-1].weight.grad).all())
+            self.assertGreater(model.net[-1].weight.grad.norm().item(), 0)
+            with torch.no_grad():
+                model.net[-1].weight.normal_(0, .05)
+                model.net[-1].bias.fill_(.2)
+            result = model(y, a, b, IdentityAction())
+            ratio = (torch.fft.fft((result-a).unflatten(-1, (8, width)), norm='ortho') /
+                     torch.fft.fft((b-a).unflatten(-1, (8, width)), norm='ortho'))
+            self.assertTrue((ratio.real >= -1e-4).all() and (ratio.real <= 1+1e-4).all())
+            self.assertLess(ratio.imag.abs().max().item(), 1e-4)
+
     def test_lora_r69_adaptation_is_a_matched_control_with_distinct_provenance(self):
         from experiments.pamf_lora_main.shared_dura_realgain_run import screening_status
         comparisons = {'lora_r69_adapt': {'passes': True}}
