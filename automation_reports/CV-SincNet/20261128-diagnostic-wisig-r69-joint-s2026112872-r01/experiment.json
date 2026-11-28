@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-diagnostic-wisig-r69-joint-s2026112872-r01",
+  "group_id": "phase1-wisig-r17-real-gain-two-prior",
+  "display_name": "WiSig R17 联合微调筛查补充 DURA v1 同包对照",
+  "description": "事前固定源 RX4 的 R69、联合融合、clean 和低城区同包比较；完整预测冻结后独立评分。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "wisig",
+    "r69",
+    "dura-v1",
+    "source-screen",
+    "truth-last",
+    "paired"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求每数据集筛查比较 DURA、实增益与候选；源V预测冻结后独立评分。",
+  "code": {
+    "commit": "078a9df2920e80c322f7e32bbf6f30f6fa409e82",
+    "checkout": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python CPU; no files written on N607",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig/ManySig Main",
+    "version": "original 7/63/30 source cache",
+    "representation": "256 complex points, same Full observations and original Tri-SIG-TIME default head",
+    "contract_ref": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01/screen.npz",
+    "label_map_ref": "original six classes; source V opened after both predictions fixed",
+    "source_receivers": [
+      4
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Main six TX; source V labels in scorer only",
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": 360
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "original ManySig Main F0 seed392005",
+    "validation_ref": "existing source cache and matching historical 1800 physical IDs; exact direct decisions match",
+    "support_query_ref": null,
+    "leo_config_ref": "registered source Full clean and practical_low_urban"
+  },
+  "permissions": {
+    "regime": "frozen_evaluation",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Only source V after two frozen prediction artifacts; no fitting and no target access."
+  },
+  "checkpoint": {
+    "initialization": "no training",
+    "sources": [
+      {
+        "ref": "20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01",
+        "role": "frozen fusion predictions on RX3"
+      },
+      {
+        "ref": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+        "role": "previously frozen original R69 source predictions"
+      }
+    ],
+    "contract_check_ref": "IDs and original direct predictions exactly match for both views",
+    "provenance_verdict": "Two fixed same-source-panel predictions, before source V truth linkage",
+    "selection_rule": "Predeclared supplemental R69 comparison: low urban net >=2 in each of two fixed halves; clean net >=-2 over 360 source RX4 examples; promotion also needs all candidate preregistered controls."
+  },
+  "execution": {
+    "host": "N607 CPU read-only",
+    "launch_owner": "Codex chat 01a2204f-bfeb-7fa1-bda9-d8961e4ee178",
+    "gpu_policy": "CPU only",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo/automation_reports/CV-SincNet/20261128-diagnostic-wisig-r69-joint-s2026112872-r01",
+    "launch_command": "Get-Content -Raw -Encoding UTF8 'E:\\codex\\home\\worktrees\\wisig-r69-screen-audit\\CVS-RFFI-repo\\experiments\\pamf_lora_main\\audit_wisig_dura_control.py' | ssh -F E:\\type10-7\\tools\\n607_ssh_config -o BatchMode=yes -o ConnectTimeout=10 N607 'cd /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01-release && CUDA_VISIBLE_DEVICES= /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python - 20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01'",
+    "stop_rule": "Stop on incomplete frozen predictions, inconsistent IDs, changed direct decisions, incorrect RX or truth boundary."
+  },
+  "expected_artifacts": [
+    "r69_source_audit.json",
+    "report.md",
+    "audit_wisig_dura_control.py"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct count",
+      "paired repaired/harmed/net",
+      "95% paired bootstrap",
+      "two fixed half nets"
+    ],
+    "dimensions": [
+      "source RX4",
+      "360 physical IDs",
+      "clean",
+      "practical_low_urban"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01/screen.npz",
+    "scorer_ref": "experiments/pamf_lora_main/audit_wisig_dura_control.py"
+  },
+  "rows": [
+    {
+      "row_id": "wisig-rx4-r69",
+      "method": "fixed WiSig fusion versus fixed original DURA v1 R69",
+      "purpose": "supplemental_source_comparison",
+      "config_ref": "experiments/pamf_lora_main/audit_wisig_dura_control.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01-release/runtime.json",
+      "data_overrides": {
+        "RX": 4,
+        "V": 360,
+        "labels": "source scorer only"
+      },
+      "seeds": {
+        "model": 2026112869,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112872
+      },
+      "seed_notes": "Model seed inherited; no new sampling or augmentation; support inapplicable; half seed 2026112872 and bootstrap seed 2026112877.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "frozen predictions only, no updates",
+      "output_root": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo/automation_reports/CV-SincNet/20261128-diagnostic-wisig-r69-joint-s2026112872-r01",
+      "log_path": null,
+      "command": "Python read-only audit over frozen NPZ and source V truth",
+      "expected_artifacts": [
+        "r69_source_audit.json",
+        "report.md"
+      ]
+    }
+  ],
+  "notes": [
+    "Comparator and half/clean thresholds fixed while candidate training is still in progress and before this screen score.",
+    "This is source V developmental screening, with prior historical exposure; held-out target seven-view data are not accessed.",
+    "Verify frozen candidate and historical R69 prediction artifacts, physical IDs and exact direct decisions before accessing source V labels.",
+    "No new F/G training or GPU inference is required; R69 predictions come from previously frozen same-panel baseline."
+  ],
+  "registered_at": "2026-11-28T05:01:29+00:00"
+}
