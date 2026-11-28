@@ -9,12 +9,16 @@ from experiments.pamf_restoration.models import complex_iq, pair
 from experiments.pamf_uncertainty_restore.models import weighted_map
 
 
-def fused_unroll(r17, gain, received, real_prior, *, train_action=False, return_action=False):
+def fused_unroll(r17, gain, received, real_prior, *, train_action=False, train_coarse=False, return_action=False):
     if received.ndim != 2 or received.shape != real_prior.shape or received.shape[-1] != 256:
         raise ValueError('Expected matching complex WiSig packets')
     received_pair = pair(received)
-    with nullcontext() if train_action else torch.no_grad():
-        base, action, native = r17.frozen.estimate(received_pair)
+    if train_coarse:
+        base = r17.frozen.coarse(received_pair)
+        action, native = r17.frozen.estimator(received_pair, base)
+    else:
+        with nullcontext() if train_action else torch.no_grad():
+            base, action, native = r17.frozen.estimate(received_pair)
     variance = native[:, None].expand(-1, 256)
     logvar = native.log().clamp(-16, 4)[:, None, None].expand(-1, 1, 256) / 8
     current = base

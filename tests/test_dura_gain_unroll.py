@@ -73,6 +73,39 @@ def test_solver_can_propagate_into_source_trainable_action_estimator():
     assert gradient is not None and torch.isfinite(gradient) and gradient.abs() > 0
 
 
+def test_solver_can_train_coarse_when_estimate_normally_detaches_it():
+    class Estimator(nn.Module):
+        def forward(self, received, base):
+            y = complex_iq(received)
+            action = Action(torch.ones(len(y), 1, dtype=y.dtype), torch.ones_like(y), torch.zeros_like(y))
+            return action, torch.full((len(y),), .1)
+
+    class Frozen(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.coarse = nn.Conv1d(2, 2, 1)
+            self.estimator = Estimator()
+
+        def estimate(self, received):
+            with torch.no_grad():
+                base = self.coarse(received)
+            action, variance = self.estimator(received, base)
+            return base, action, variance
+
+    torch.manual_seed(17)
+    r17 = UnrolledRestorer('unroll_unshared', Frozen()).eval().requires_grad_(False)
+    r17.frozen.coarse.requires_grad_(True)
+    gain = R17AmplitudeGain(32)
+    y = torch.randn(1, 256, dtype=torch.complex64)
+    reference = complex_iq(r17(pair(y)))
+    output = fused_unroll(r17, gain, y, .5 * y, train_coarse=True)
+    torch.testing.assert_close(output, reference, rtol=1e-5, atol=1e-6)
+    output.abs().square().mean().backward()
+    gradient = r17.frozen.coarse.weight.grad
+    assert gradient is not None and torch.isfinite(gradient).all() and gradient.norm() > 0
+    assert all(p.grad is None for p in r17.prior.parameters())
+
+
 def test_anchor_solver_can_train_action_without_updating_prior():
     class Native(nn.Module):
         def __init__(self):
