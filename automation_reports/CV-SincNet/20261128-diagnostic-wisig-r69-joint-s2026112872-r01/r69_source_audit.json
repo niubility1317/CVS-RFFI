@@ -1,0 +1,42 @@
+{
+  "status": "READ_ONLY_SOURCE_AUDIT",
+  "run": "20261128-phase1-wisig-r17-joint-realgain-source-s2026112869-r01",
+  "reference": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+  "receiver": 4,
+  "truth_last": true,
+  "direct_predictions_match": true,
+  "views": {
+    "clean": {
+      "n": 360,
+      "fusion_correct": 350,
+      "r69_correct": 351,
+      "repaired": 0,
+      "harmed": 1,
+      "net": -1,
+      "half_nets": [
+        -1,
+        0
+      ],
+      "ci95": [
+        -3,
+        0
+      ]
+    },
+    "practical_low_urban": {
+      "n": 360,
+      "fusion_correct": 246,
+      "r69_correct": 311,
+      "repaired": 10,
+      "harmed": 75,
+      "net": -65,
+      "half_nets": [
+        -31,
+        -34
+      ],
+      "ci95": [
+        -82,
+        -48
+      ]
+    }
+  }
+}

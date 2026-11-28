@@ -3,27 +3,29 @@
 - run_id：`20261128-diagnostic-wisig-r69-joint-s2026112872-r01`
 - group_id：`phase1-wisig-r17-real-gain-two-prior`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 状态：ANALYZED；两景预测冻结后完成独立 CPU 同包核对。
 
 ## 目的与对照
 
-事前固定源 RX4 的 R69、联合融合、clean 和低城区同包比较；完整预测冻结后独立评分。
+事前固定在源 RX 4 的 360 个物理样本比较 WiSig R17 联合微调候选和原 DURA v1（R69），作为源域筛查的补充对照；与前两次 RX 1 和 RX 3 的筛查物理记录互斥。
 
 ## 数据、seed与模型来源
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+两组均复用 WiSig Main 源 V 的同一批 Full 接收观测和冻结 Tri-SIG-TIME SSL 默认分类头。候选和历史 R69 预测分别由父 run 固定；执行时先核实预测冻结标志、物理 ID，以及 clean 和低城区逐包直通决策一致，再读取源 V 真值。没有新训练、GPU 推理或目标数据访问。源 V 及历史目标测试已有曝光；数据与模型来源见 [experiment.json](experiment.json)。
 
 ## 执行与存储
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+补充对照及筛查门槛在候选训练期间事前登记，评分脚本提交为 `28e3f1b468df10b59a89ad871551971b29e77289`。低城区要求两个固定半样本各净增至少 2 条，clean 容忍相对 R69 净减最多 2 条；半样本种子 2026112872，2,000 次配对自助重采样种子 2026112877。
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+| 场景 | 候选正确数 | R69 正确数 | 改对／改错／净变化 | 95% 配对区间 | 两个固定半样本净变化 |
+| --- | ---: | ---: | --- | --- | --- |
+| Clean | 350/360 | 351/360 | 0／1／−1 | −3 至 0 | −1、0 |
+| practical_low_urban | 246/360 | 311/360 | 10／75／−65 | −82 至 −48 | −31、−34 |
+
+候选低城区两半均低于 R69，未通过该对照的筛查门槛。父 run 的独立评分也显示候选低于 R17：246/360 对 312/360，改对 11 条、改错 77 条。详细补充计数见 [r69_source_audit.json](r69_source_audit.json)。
 
 ## 交接
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+本结果是已曝光源域的开发性负结果，当前候选不进入完整测试。目标接收机七景与双数据集最终验收仍待后续通过筛查的候选完成。

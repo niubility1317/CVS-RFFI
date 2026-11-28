@@ -1,0 +1,155 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-diagnostic-lora-r17-partitions-s2026112863-r01",
+  "group_id": "phase1-lora-r17-real-gain-supervised-fusion",
+  "display_name": "LoRa 融合筛查的预测一致性与 TX 分组分析",
+  "description": "冻结源 V 筛查后，按 R17 与实增益预测是否一致以及原类别分组，分析实增益到融合的改对和改错。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "r17",
+    "real-gain",
+    "source-screen",
+    "post-hoc",
+    "paired"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261128-phase1-lora-r17-realgain-e104-s2026112861-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求筛查负结果后分析原因，报告同包改对改错及逐发射机表现。",
+  "code": {
+    "commit": "86f374f315a6f4531758bdbb61c79e2e64fbc4f4",
+    "checkout": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI PyTorch CUDA FP32 TF32off, independent CPU scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-r17-realgain-e104-s2026112861-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa",
+    "version": "lora_full_packets_v1",
+    "representation": "8192 complex points in 8 x 1024 chirps; frozen W24 E104/default head",
+    "contract_ref": "lora_rx5_main_v1:392005",
+    "physical_ids_ref": "V RX b200_1: deterministic seed 2026112863 select 300 IDs excluding the prior 60 joint.panel IDs",
+    "label_map_ref": "TX31-40 mapped 0-9; L_s labels only in training, U_s true TX hidden; source V truth only in independent scorer",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "15 registered held-out LoRa RX remain unopened by this run"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original ten-class source contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": "300 selected on b200_1"
+    },
+    "train_ratio": "original 7/63/30",
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Existing VALIDATED_ONCE source contract and physical ID ordering",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered source Full clean and practical_low_urban views"
+  },
+  "permissions": {
+    "regime": "frozen_evaluation",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "已冻结源V预测的事后分组分析，独立只读标签，无新训练或目标访问。"
+  },
+  "checkpoint": {
+    "initialization": "无训练；复用同一冻结预测矩阵",
+    "sources": [
+      {
+        "ref": "20261128-phase1-lora-r17-realgain-e104-s2026112861-r01",
+        "role": "已冻结候选与三个对照的源V预测"
+      }
+    ],
+    "contract_check_ref": "Prior frozen checkpoints and same lora_rx5_main_v1:392005 role/receiver/ten-class identities; strict loads",
+    "provenance_verdict": "No cross-dataset checkpoint. LoRa source-only pretarget fixed weights; historic target results have been exposed and source V used by E104 selection.",
+    "selection_rule": "事后描述性分析，未使用统计量拟合推理规则或宣称新筛查通过"
+  },
+  "execution": {
+    "host": "N607 CPU read-only",
+    "launch_owner": "Codex chat 01a2204f-bfeb-7fa1-bda9-d8961e4ee178",
+    "gpu_policy": "CPU only",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261128-diagnostic-lora-r17-partitions-s2026112863-r01",
+    "launch_command": "Get-Content -Raw -Encoding UTF8 'E:\\codex\\home\\visualizations\\2026\\11\\28\\01a2204f-bfeb-7fa1-bda9-d8961e4ee178\\audit_lora_screen_partitions.py' | ssh -F E:\\type10-7\\tools\\n607_ssh_config -o BatchMode=yes -o ConnectTimeout=10 N607 'cd /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-r17-realgain-e104-s2026112861-r01-release && CUDA_VISIBLE_DEVICES= /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -'",
+    "stop_rule": "任一预测或身份不匹配时停止，不写远端或读取目标。"
+  },
+  "expected_artifacts": [
+    "partitions.json",
+    "report.md",
+    "audit_lora_screen_partitions.py"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "prediction agreement counts",
+      "correct count",
+      "paired repair/harm/net",
+      "per-TX class"
+    ],
+    "dimensions": [
+      "source b200_1",
+      "300 physical IDs",
+      "practical_low_urban"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-r17-realgain-e104-s2026112861-r01/screen.npz",
+    "scorer_ref": "experiments/pamf_lora_main/audit_lora_screen_partitions.py"
+  },
+  "rows": [
+    {
+      "row_id": "lora-v-rx-b200-1",
+      "method": "Frozen R17 vs realgain vs fusion: agreement partitions and original class indices",
+      "purpose": "post_screen_analysis",
+      "config_ref": "experiments/pamf_lora_main/audit_lora_screen_partitions.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-r17-realgain-e104-s2026112861-r01-release/runtime.json",
+      "data_overrides": {
+        "V": 300,
+        "source_RX": "b200_1"
+      },
+      "seeds": {
+        "model": 2026112861,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112863
+      },
+      "seed_notes": "Parent candidate and screen seeds inherited; no new training, sampling, augmentation or support.",
+      "k": null,
+      "scenario": [
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "zero updates; existing frozen predictions",
+      "output_root": "E:/type10-7/automation_reports/CV-SincNet/20261128-diagnostic-lora-r17-partitions-s2026112863-r01",
+      "log_path": null,
+      "command": "Read-only source screen NPZ and V metadata after prediction freeze",
+      "expected_artifacts": [
+        "partitions.json",
+        "report.md"
+      ]
+    }
+  ],
+  "notes": [
+    "This retrospective analysis follows the source screening score and does not define a deployment rule.",
+    "Prediction agreements are available per packet but subgroup comparisons use source labels; they are descriptive and can be noisy.",
+    "Source V was historically exposed and target data were not accessed.",
+    "All IDs, scene and classifier match the parent frozen screen."
+  ],
+  "registered_at": "2026-11-28T05:10:14+00:00"
+}
