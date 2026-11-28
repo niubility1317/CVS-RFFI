@@ -38,8 +38,9 @@ LoRa 实增益原版的历史 Full：六景均值 82.2967%、低城区 62.1167%�
 | 大容量共享逐频实增益 | 31 | 331 | 两侧未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-wide-gain-s2026112957-r01/report.md)。LoRa 相对实增益改对 0 改错 3；WiSig 相对 R17 改对 1 改错 2。网络 467,842 参数，clean 保持 |
 | 源 U practical 模拟配对训练 | 34 | 334 | 两侧未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-practical-pairs-s2026112957-r01/report.md)。LoRa 相对实增益改对 0、改错 0；WiSig 相对 R17 改对 5、改错 3、半区 +3/-1，区间 -4 至 +8 |
 | 4096 包源 U practical 模拟配对训练 | 34 | 333 | 两侧未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-practical4k-s2026112957-r01/report.md)。LoRa 相对实增益净 0；WiSig 相对 R17 改对 2、改错 1、半区 +1/0，区间 -2 至 +4 |
-| 低城区加权源 U practical 模拟训练 | 待完成 | 待完成 | `20261128-phase1-shared-practical-urban-s2026112957-r01` 正在源域训练；4096 包中 1792 个低城区、512 个 clean，其余五景各 358 或 359 个；WiSig 均衡版已曝光、LoRa 结果尚未读取时登记 |
+| 低城区加权源 U practical 模拟训练 | 35 | 332 | 两侧未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-practical-urban-s2026112957-r01/report.md)。LoRa 相对实增益改对 1、改错 0、半区 +1/0，区间 0 至 +3；WiSig 相对 R17 改对 2、改错 2、半区 -1/+1，区间 -4 至 +4 |
 | 20% 修正的低城区加权源 U 模拟 | 待完成 | 待完成 | `20261128-phase1-shared-practical-urban20-s2026112957-r01` 正在源域训练；共同模型与源模拟同 5% 加权版，训练和推理 cap 均改为 20%，两侧真实权重首步通过 |
+| 共享专家互谱相位实增益 | 待完成 | 待完成 | `20261128-phase1-shared-phase-gain-s2026112957-r01` 正在源域训练；共同实增益网络加入实增益/R17 的归一化复数互谱，保留 5% cap 与 DURA 物理残差 |
 
 真实预测、逐对照 clean、改对改错、分半结果和配对区间见各报告及其 `screen-score.json`，不得从表中推断正式测试分数。示例：教师包级连续融合在 WiSig 类别 3 为 10/55，R17 为 46/55，存在明确单类退化。源 U 教师训练得到用户单独授权，方法属于 F-guided，祖先、伪标签和额外成本见各报告。无教师训练控制只表示新增模块不读取教师，LoRa 实增益父专家仍保留既有 E104 指导祖先。
 
