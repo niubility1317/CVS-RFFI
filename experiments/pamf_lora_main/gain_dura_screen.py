@@ -31,11 +31,13 @@ FREQUENCY_RUN = '20261128-phase1-lora-wisig-dura-real-update-s2026113061-r01'
 FREQUENCY_RETRY = FREQUENCY_RUN.removesuffix('r01') + 'r02'
 STAGE_RUN = '20261128-phase1-lora-wisig-gain-dura-stages-s2026113067-r01'
 PAIRED_RUN = '20261128-phase1-lora-wisig-gain-dura-paired-detail-s2026113071-r01'
+COMPLEX_RUN = '20261128-phase1-lora-wisig-dura-complex-residual-s2026113081-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
 STAGE_SEED = 2026113067
 PAIRED_SEED = 2026113071
+COMPLEX_SEED = 2026113081
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
@@ -46,6 +48,7 @@ FACTOR_MODES = (*MODES,'data_only','companion_only')
 FREQUENCY_MODES = (*MODES[:3], 'frequency_real', 'data_only')
 STAGE_MODES = (*MODES[:3], 'stage_frequency', 'stage_packet')
 PAIRED_MODES = (*MODES[:3], 'paired_detail', 'matched_waveform')
+COMPLEX_MODES = (*MODES[:3], 'complex_residual', 'aligned_residual')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
@@ -140,6 +143,8 @@ def score_stage_panel(predictions, labels, *, modes=STAGE_MODES, seed=STAGE_SEED
 
 
 def panel_dimensions(rt):
+    if rt.get('complex_from'):
+        return FACTOR_COUNT, COMPLEX_MODES
     if rt.get('paired_from'):
         return FACTOR_COUNT, PAIRED_MODES
     if rt.get('stage_from'):
@@ -150,7 +155,7 @@ def panel_dimensions(rt):
 
 
 def receiver_index(dataset, modes):
-    if dataset == 'wisig' and modes == PAIRED_MODES:
+    if dataset == 'wisig' and modes in (PAIRED_MODES, COMPLEX_MODES):
         return 4
     return 3 if dataset == 'wisig' and modes in (FREQUENCY_MODES, STAGE_MODES) else RX[dataset]
 
@@ -160,13 +165,14 @@ def panel_rows(rt, dataset, ids, rx, *, excluded=()):
     count, modes = panel_dimensions(rt)
     rule = {
         MODES: SEED, FACTOR_MODES: FACTOR_SEED, FREQUENCY_MODES: FREQUENCY_SEED,
-        STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED,
+        STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED, COMPLEX_MODES: COMPLEX_SEED,
     }
     history = (
         ('factor_from', RUN, COUNT, MODES),
         ('frequency_from', FACTOR_RUN, FACTOR_COUNT, FACTOR_MODES),
         ('stage_from', FREQUENCY_RETRY, FACTOR_COUNT, FREQUENCY_MODES),
         ('paired_from', STAGE_RUN, FACTOR_COUNT, STAGE_MODES),
+        ('complex_from', PAIRED_RUN, FACTOR_COUNT, PAIRED_MODES),
     )
     blocked = excluded
     for key, run_id, old_count, old_modes in history:
@@ -565,7 +571,7 @@ def independent_score(rt):
         lora_truth=data['y'][index]
     wifi_truth=np.load(wifi_source/'V/labels.npy',allow_pickle=False)[np.asarray(order)[selected]]
     if rt.get('stage_from'):
-        seed = PAIRED_SEED if rt.get('paired_from') else STAGE_SEED
+        seed = {STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED, COMPLEX_MODES: COMPLEX_SEED}[modes]
         calculate = partial(score_stage_panel, modes=modes, seed=seed)
     else:
         calculate = score_frequency_panel if rt.get('frequency_from') else score_factor_panel if rt.get('factor_from') else score_panel
@@ -680,6 +686,7 @@ def main():
     modes.add_argument('--retry-frequency',action='store_true')
     modes.add_argument('--stage-screen',action='store_true')
     modes.add_argument('--paired-detail-screen',action='store_true')
+    modes.add_argument('--complex-residual-screen',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
@@ -688,6 +695,8 @@ def main():
         releases=f'{project}/releases'
         if args.retry_frequency:
             run = FREQUENCY_RETRY
+        elif args.complex_residual_screen:
+            run = COMPLEX_RUN
         elif args.paired_detail_screen:
             run = PAIRED_RUN
         elif args.stage_screen:
@@ -703,10 +712,10 @@ def main():
         if args.retry_score:
             rt['score_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['score_from'])
-        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN):
+        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN, COMPLEX_RUN):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
-        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN):
+        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN, COMPLEX_RUN):
             from experiments.pamf_lora_main.lora_dura_stage2_reference import RUN as LORA_STAGE2
             rt['frequency_from']=f'{project}/runs/{FACTOR_RUN}'
             rt['lora_stage2']=f'{project}/runs/{LORA_STAGE2}'
@@ -715,13 +724,16 @@ def main():
         if args.retry_frequency:
             rt['reuse_wisig'] = f'{project}/runs/{FREQUENCY_RUN}'
             rt['external_releases'].append(rt['reuse_wisig'])
-        if run in (STAGE_RUN, PAIRED_RUN):
+        if run in (STAGE_RUN, PAIRED_RUN, COMPLEX_RUN):
             rt['stage_from'] = f'{project}/runs/{FREQUENCY_RETRY}'
             rt['external_releases'].append(rt['stage_from'])
             rt['allowed_gpus'] = [0, 2, 3, 5, 7]
-        if run == PAIRED_RUN:
+        if run in (PAIRED_RUN, COMPLEX_RUN):
             rt['paired_from'] = f'{project}/runs/{STAGE_RUN}'
             rt['external_releases'].append(rt['paired_from'])
+        if run == COMPLEX_RUN:
+            rt['complex_from'] = f'{project}/runs/{PAIRED_RUN}'
+            rt['external_releases'].append(rt['complex_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)

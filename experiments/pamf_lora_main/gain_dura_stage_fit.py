@@ -7,12 +7,13 @@ import torch
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main import gain_dura_screen as screen
-from experiments.pamf_lora_main.gain_dura_stages import StageGain
+from experiments.pamf_lora_main.gain_dura_stages import ComplexPriorResidual, StageGain
 from experiments.pamf_lora_main.w24_native_dura import capture_scale, iq_error, source_pair
 from experiments.pamf_restoration.models import complex_iq, pair
 
 
 SEED, STEPS, BATCH = 2026113067, 3200, 8
+COMPLEX_STEPS = 4800
 ARMS = ('stage_frequency', 'stage_packet')
 
 
@@ -68,9 +69,18 @@ def paired_detail_loss(first, second, clean):
 
 
 def fit_plan(rt):
+    if rt.get('complex_from'):
+        return screen.COMPLEX_SEED, screen.COMPLEX_MODES[3:]
     if rt.get('paired_from'):
         return screen.PAIRED_SEED, screen.PAIRED_MODES[3:]
     return SEED, ARMS
+
+
+def make_branch(name):
+    correction = None
+    if name in screen.COMPLEX_MODES[3:]:
+        correction = ComplexPriorResidual(aligned_only=name == screen.COMPLEX_MODES[-1])
+    return StageGain(packet_only=name == ARMS[1], correction=correction)
 
 
 def training_components(rt, dataset, device):
@@ -115,11 +125,13 @@ def fit(rt, dataset, device):
     dura.eval().requires_grad_(False)
     seed, arms = fit_plan(rt)
     paired_run = bool(rt.get('paired_from'))
+    complex_run = bool(rt.get('complex_from'))
+    steps = COMPLEX_STEPS if complex_run else STEPS
     torch.manual_seed(seed)
-    branches = [StageGain(packet_only=mode == ARMS[1]).to(device) for mode in arms]
+    branches = [make_branch(mode).to(device) for mode in arms]
     branches[1].load_state_dict(branches[0].state_dict())
     opts = [torch.optim.AdamW(item.parameters(), lr=3e-4, weight_decay=1e-4) for item in branches]
-    schedules = [torch.optim.lr_scheduler.CosineAnnealingLR(opt, STEPS, eta_min=3e-5) for opt in opts]
+    schedules = [torch.optim.lr_scheduler.CosineAnnealingLR(opt, steps, eta_min=3e-5) for opt in opts]
     rng = torch.Generator(device=device).manual_seed(seed + 1)
     draws = np.random.default_rng(seed)
 
@@ -139,6 +151,14 @@ def fit(rt, dataset, device):
         return received, real_prior, context, clean
 
     def objectives(raw):
+        if complex_run:
+            received, prior, context, clean = view(raw.repeat(2, 1))
+            losses = []
+            for model in branches:
+                stages = model(received, prior, context, dura.prior)
+                first, second = stages[-1].chunk(2, dim=0)
+                losses.append(.20 * phase_sensitive_loss(stages, clean) + .80 * paired_detail_loss(first, second, raw))
+            return losses
         views = [view(raw) for _ in range(2 if paired_run else 1)]
         result = []
         for name, item in zip(arms, branches, strict=True):
@@ -151,14 +171,17 @@ def fit(rt, dataset, device):
         return result
 
     for item, objective in zip(branches, objectives(sample(reserved[:2])), strict=True):
-        gradient, = torch.autograd.grad(objective, item.network[-1].weight)
-        if not bool(torch.isfinite(gradient).all() and gradient.norm() > 0):
-            raise ValueError('Real source fit smoke did not reach the active gate')
+        heads = [item.network[-1].weight]
+        if item.correction is not None:
+            heads.extend((item.correction.temporal[-1].weight, item.correction.spectral[-1].weight))
+        gradients = torch.autograd.grad(objective, heads)
+        if not all(bool(torch.isfinite(g).all() and g.norm() > 0) for g in gradients):
+            raise ValueError('Real source fit smoke did not reach every active head')
     write(out/'smoke.json', dict(status='PASS', target_reads=0, F_reads=0, V_reads=0, TX_reads=0))
     rng.manual_seed(seed + 1)
     torch.cuda.reset_peak_memory_stats()
     start = perf_counter()
-    for step in range(1, STEPS + 1):
+    for step in range(1, steps + 1):
         raw = sample(draws.choice(ids, BATCH, replace=False))
         losses = objectives(raw)
         for item, optimizer, schedule, loss in zip(branches, opts, schedules, losses, strict=True):
@@ -173,8 +196,8 @@ def fit(rt, dataset, device):
     torch.cuda.synchronize()
     with (out/'gates.pt').open('xb') as stream:
         torch.save({name: item.state_dict() for name, item in zip(arms, branches, strict=True)}, stream)
-    write(out/'fit.json', dict(status='SOURCE_FROZEN', dataset=dataset, seed=seed, steps=STEPS,
-          batch=BATCH, arms=list(arms), source_training_ids=len(ids), views_per_source_packet=2 if paired_run else 1,
+    write(out/'fit.json', dict(status='SOURCE_FROZEN', dataset=dataset, seed=seed, steps=steps,
+          batch=BATCH, arms=list(arms), source_training_ids=len(ids), views_per_source_packet=2 if paired_run or complex_run else 1,
           parameters=sum(p.numel() for p in branches[0].parameters()), seconds=perf_counter()-start,
           peak_cuda_bytes=torch.cuda.max_memory_allocated(), F_reads=0, V_reads=0, TX_reads=0, target_reads=0))
 
@@ -183,15 +206,16 @@ def load_gates(rt, dataset, device):
     root = Path(rt['run_root']) / ('fit-' + dataset)
     proof = read(root/'fit.json')
     seed, arms = fit_plan(rt)
+    steps = COMPLEX_STEPS if rt.get('complex_from') else STEPS
     if ((proof['status'], proof['dataset'], proof['seed'], proof['steps'], proof['arms'])
-            != ('SOURCE_FROZEN', dataset, seed, STEPS, list(arms))
-            or (rt.get('paired_from') and proof.get('views_per_source_packet') != 2)
+            != ('SOURCE_FROZEN', dataset, seed, steps, list(arms))
+            or ((rt.get('paired_from') or rt.get('complex_from')) and proof.get('views_per_source_packet') != 2)
             or any(proof[k] for k in ('F_reads', 'V_reads', 'TX_reads', 'target_reads'))):
         raise ValueError('Expected complete source-only gates with fixed budget')
     weights = torch.load(root/'gates.pt', map_location=device, weights_only=True)
     branches = []
     for name in arms:
-        item = StageGain(packet_only=name == ARMS[1]).to(device).eval().requires_grad_(False)
+        item = make_branch(name).to(device).eval().requires_grad_(False)
         item.load_state_dict(weights[name], strict=True)
         branches.append(item)
     return branches

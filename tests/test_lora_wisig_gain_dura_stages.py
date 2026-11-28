@@ -5,12 +5,13 @@ from torch import nn
 
 from experiments.pamf_action_restore.operators import Action
 from experiments.pamf_lora_main.gain_dura_screen import (
-    FACTOR_COUNT, PAIRED_MODES, PAIRED_SEED, STAGE_MODES, panel_dimensions, receiver_index, score_stage_panel,
+    COMPLEX_MODES, FACTOR_COUNT, PAIRED_MODES, PAIRED_SEED, STAGE_MODES,
+    panel_dimensions, receiver_index, score_stage_panel,
 )
 from experiments.pamf_lora_main.gain_dura_stage_fit import (
-    fit_plan, paired_detail_loss, phase_sensitive_loss, source_training_pair,
+    fit_plan, make_branch, paired_detail_loss, phase_sensitive_loss, source_training_pair,
 )
-from experiments.pamf_lora_main.gain_dura_stages import StageGain
+from experiments.pamf_lora_main.gain_dura_stages import ComplexPriorResidual, StageGain
 from experiments.pamf_r65_four_route.stage_polyphase import _stages
 from experiments.pamf_restoration.models import complex_iq, pair
 
@@ -87,3 +88,37 @@ def test_paired_detail_uses_two_frequency_arms_and_new_fixed_wifi_receiver():
     assert fit_plan(runtime) == (PAIRED_SEED, PAIRED_MODES[3:])
     assert panel_dimensions(runtime) == (FACTOR_COUNT, PAIRED_MODES)
     assert receiver_index('wisig', PAIRED_MODES) == 4
+
+
+def test_complex_head_adds_an_independent_quadrature_with_same_budget_as_aligned_control():
+    received, _, _, _ = example(256)
+    fields = (received,) * 5
+    variance = received.real.new_full((len(received), 1), .1)
+    direction = torch.ones_like(received)
+    free = ComplexPriorResidual()
+    aligned = ComplexPriorResidual(aligned_only=True)
+    with torch.no_grad():
+        free.spectral[-1].bias[1] = 1.
+    aligned.load_state_dict(free.state_dict(), strict=True)
+    delta = free(fields, fields, variance, direction)
+    projected = aligned(fields, fields, variance, direction)
+    assert torch.count_nonzero(delta.imag) > 0
+    assert torch.count_nonzero(delta.real) == 0
+    assert torch.count_nonzero(projected) == 0
+    assert (delta.abs().square().mean(-1).sqrt()
+            <= .45 * received.abs().square().mean(-1).sqrt() + 1e-6).all()
+
+
+@pytest.mark.parametrize('mode', COMPLEX_MODES[3:])
+def test_residual_heads_are_live_inside_both_dura_stages(mode):
+    observed, gain, context, priors = example(256)
+    baseline = StageGain()
+    branch = make_branch(mode)
+    branch.network.load_state_dict(baseline.network.state_dict())
+    outputs = branch(pair(observed), gain, context, priors)
+    control = baseline(pair(observed), gain, context, priors)
+    torch.testing.assert_close(outputs[-1], control[-1])
+    loss = phase_sensitive_loss(outputs, observed)
+    for value in torch.autograd.grad(loss, (branch.correction.temporal[-1].weight,
+                                            branch.correction.spectral[-1].weight)):
+        assert torch.isfinite(value).all() and value.norm() > 0
