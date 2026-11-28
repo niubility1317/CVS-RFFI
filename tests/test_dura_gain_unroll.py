@@ -48,3 +48,26 @@ def test_anchor_unroll_starts_at_real_gain_prior_and_trains_all_directions():
     output.abs().square().mean().backward()
     gradients = gain.net[-1].weight.grad.flatten(1).norm(dim=1)
     assert torch.isfinite(gradients).all() and (gradients > 0).all()
+
+
+def test_solver_can_propagate_into_source_trainable_action_estimator():
+    class Frozen(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.coefficient = nn.Parameter(torch.tensor(.9))
+
+        def estimate(self, received):
+            y = complex_iq(received)
+            action = Action(torch.ones(len(y), 1, dtype=y.dtype),
+                            self.coefficient * torch.ones_like(y), torch.zeros_like(y))
+            return .8 * received, action, torch.full((len(y),), .1)
+
+    torch.manual_seed(15)
+    r17 = UnrolledRestorer('unroll_unshared', Frozen()).eval().requires_grad_(False)
+    r17.frozen.coefficient.requires_grad_(True)
+    gain = R17AmplitudeGain(32)
+    y = torch.randn(1, 256, dtype=torch.complex64)
+    output, action = fused_unroll(r17, gain, y, .5 * y, train_action=True, return_action=True)
+    (output.abs().square().mean() + (action(.7 * y) - y).abs().square().mean()).backward()
+    gradient = r17.frozen.coefficient.grad
+    assert gradient is not None and torch.isfinite(gradient) and gradient.abs() > 0

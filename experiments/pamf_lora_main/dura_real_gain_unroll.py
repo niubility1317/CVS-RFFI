@@ -1,5 +1,7 @@
 """Inject real spectral gains into each frozen R17 physical solve."""
 
+from contextlib import nullcontext
+
 import torch
 
 from experiments.pamf_action_restore.models import SCALE
@@ -7,11 +9,11 @@ from experiments.pamf_restoration.models import complex_iq, pair
 from experiments.pamf_uncertainty_restore.models import weighted_map
 
 
-def fused_unroll(r17, gain, received, real_prior):
+def fused_unroll(r17, gain, received, real_prior, *, train_action=False, return_action=False):
     if received.ndim != 2 or received.shape != real_prior.shape or received.shape[-1] != 256:
         raise ValueError('Expected matching complex WiSig packets')
     received_pair = pair(received)
-    with torch.no_grad():
+    with nullcontext() if train_action else torch.no_grad():
         base, action, native = r17.frozen.estimate(received_pair)
     variance = native[:, None].expand(-1, 256)
     logvar = native.log().clamp(-16, 4)[:, None, None].expand(-1, 1, 256) / 8
@@ -24,7 +26,8 @@ def fused_unroll(r17, gain, received, real_prior):
         corrected = gain(received, complex_iq(proposal), real_prior, action)
         current = pair(weighted_map(action, received, corrected, variance, steps=2,
                                     initial=complex_iq(current)))
-    return complex_iq(current)
+    output = complex_iq(current)
+    return (output, action) if return_action else output
 
 
 def fused_anchor_unroll(r17, gain, received, anchor):
