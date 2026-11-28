@@ -1,2 +1,3 @@
 {"at": "2026-11-28T10:07:15+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-28T10:09:34+00:00", "status": "RUNNING", "note": "Both source practical pool workers launched and real checkpoint smoke passed", "evidence": ["N607:runs/20261128-phase1-shared-practical4k-s2026112957-r01/state.json"], "row_id": null}
+{"at": "2026-11-28T10:21:30+00:00", "status": "ANALYZED", "note": "Both source screens failed preregistered promotion; paired 1024 pool comparison retained", "evidence": ["N607:runs/20261128-phase1-shared-practical4k-s2026112957-r01/state.json"], "row_id": null}
