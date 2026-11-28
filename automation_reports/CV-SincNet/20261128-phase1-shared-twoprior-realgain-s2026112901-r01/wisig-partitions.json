@@ -1,0 +1,175 @@
+{
+  "status": "POSTHOC_SOURCE_V_DESCRIPTION",
+  "run": "20261128-phase1-shared-twoprior-realgain-s2026112901-r01",
+  "dataset": "wisig",
+  "modes": [
+    "direct",
+    "wisig_r17",
+    "real_gain",
+    "dura_v1",
+    "fusion"
+  ],
+  "observation": "practical_low_urban",
+  "groups": {
+    "r17_same_real_gain": {
+      "n": 183,
+      "correct": [
+        164,
+        181,
+        181,
+        178,
+        127
+      ],
+      "changed_from_r17": 55,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 54
+    },
+    "r17_differs_real_gain": {
+      "n": 177,
+      "correct": [
+        36,
+        151,
+        9,
+        135,
+        30
+      ],
+      "changed_from_r17": 150,
+      "repaired_vs_r17": 6,
+      "harmed_vs_r17": 127
+    },
+    "r17_correct": {
+      "n": 332,
+      "correct": [
+        197,
+        332,
+        181,
+        304,
+        151
+      ],
+      "changed_from_r17": 181,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 181
+    },
+    "r17_wrong": {
+      "n": 28,
+      "correct": [
+        3,
+        0,
+        9,
+        9,
+        6
+      ],
+      "changed_from_r17": 24,
+      "repaired_vs_r17": 6,
+      "harmed_vs_r17": 0
+    },
+    "candidate_same_r17": {
+      "n": 155,
+      "correct": [
+        122,
+        151,
+        129,
+        148,
+        151
+      ],
+      "changed_from_r17": 0,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 0
+    },
+    "candidate_changed_r17": {
+      "n": 205,
+      "correct": [
+        78,
+        181,
+        61,
+        165,
+        6
+      ],
+      "changed_from_r17": 205,
+      "repaired_vs_r17": 6,
+      "harmed_vs_r17": 181
+    }
+  },
+  "classes": {
+    "0": {
+      "n": 68,
+      "correct": [
+        37,
+        62,
+        34,
+        59,
+        38
+      ],
+      "changed_from_r17": 30,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 24
+    },
+    "1": {
+      "n": 54,
+      "correct": [
+        23,
+        43,
+        26,
+        37,
+        23
+      ],
+      "changed_from_r17": 30,
+      "repaired_vs_r17": 2,
+      "harmed_vs_r17": 22
+    },
+    "2": {
+      "n": 65,
+      "correct": [
+        34,
+        65,
+        35,
+        64,
+        13
+      ],
+      "changed_from_r17": 52,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 52
+    },
+    "3": {
+      "n": 55,
+      "correct": [
+        25,
+        46,
+        27,
+        36,
+        8
+      ],
+      "changed_from_r17": 51,
+      "repaired_vs_r17": 4,
+      "harmed_vs_r17": 42
+    },
+    "4": {
+      "n": 60,
+      "correct": [
+        35,
+        60,
+        30,
+        60,
+        33
+      ],
+      "changed_from_r17": 27,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 27
+    },
+    "5": {
+      "n": 58,
+      "correct": [
+        46,
+        56,
+        38,
+        57,
+        42
+      ],
+      "changed_from_r17": 15,
+      "repaired_vs_r17": 0,
+      "harmed_vs_r17": 14
+    }
+  },
+  "target_reads": 0,
+  "use": "diagnostic_only_no_deployment_gate"
+}
