@@ -1,0 +1,96 @@
+{
+  "status": "SOURCE_SCREEN_SCORED",
+  "truth_last": true,
+  "count": 360,
+  "modes": [
+    "direct",
+    "wisig_r17",
+    "real_gain",
+    "dura_v1",
+    "fusion"
+  ],
+  "correct": {
+    "clean": [
+      360,
+      360,
+      360,
+      360,
+      360
+    ],
+    "practical_low_urban": [
+      200,
+      332,
+      190,
+      313,
+      233
+    ]
+  },
+  "low_urban_pairs": {
+    "direct": {
+      "repaired": 86,
+      "harmed": 53,
+      "net": 33,
+      "half_nets": [
+        14,
+        19
+      ],
+      "ci95": [
+        10.0,
+        56.0
+      ],
+      "passes": true
+    },
+    "wisig_r17": {
+      "repaired": 6,
+      "harmed": 105,
+      "net": -99,
+      "half_nets": [
+        -52,
+        -47
+      ],
+      "ci95": [
+        -119.0,
+        -82.0
+      ],
+      "passes": false
+    },
+    "real_gain": {
+      "repaired": 93,
+      "harmed": 50,
+      "net": 43,
+      "half_nets": [
+        18,
+        25
+      ],
+      "ci95": [
+        20.0,
+        66.0
+      ],
+      "passes": true
+    },
+    "dura_v1": {
+      "repaired": 19,
+      "harmed": 99,
+      "net": -80,
+      "half_nets": [
+        -40,
+        -40
+      ],
+      "ci95": [
+        -100.0,
+        -61.0
+      ],
+      "passes": false
+    }
+  },
+  "clean_net": {
+    "direct": 0,
+    "wisig_r17": 0,
+    "real_gain": 0,
+    "dura_v1": 0
+  },
+  "promote": false,
+  "missing_controls": [],
+  "exposure": "Previously exposed source V panel; no target read",
+  "formal_acceptance_complete": false
+}

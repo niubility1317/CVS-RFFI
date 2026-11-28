@@ -1,0 +1,83 @@
+{
+  "status": "SOURCE_SCREEN_SCORED",
+  "truth_last": true,
+  "modes": [
+    "direct",
+    "real_gain",
+    "lora_r69_half"
+  ],
+  "views": {
+    "clean": {
+      "correct": [
+        60,
+        60,
+        60
+      ],
+      "versus_direct": {
+        "repaired": 0,
+        "harmed": 0,
+        "net": 0,
+        "half_nets": [
+          0,
+          0
+        ],
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "passes": false
+      },
+      "versus_real_gain": {
+        "repaired": 0,
+        "harmed": 0,
+        "net": 0,
+        "half_nets": [
+          0,
+          0
+        ],
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "passes": false
+      }
+    },
+    "practical_low_urban": {
+      "correct": [
+        30,
+        34,
+        33
+      ],
+      "versus_direct": {
+        "repaired": 4,
+        "harmed": 1,
+        "net": 3,
+        "half_nets": [
+          1,
+          2
+        ],
+        "ci95": [
+          -1.0,
+          8.0
+        ],
+        "passes": true
+      },
+      "versus_real_gain": {
+        "repaired": 5,
+        "harmed": 6,
+        "net": -1,
+        "half_nets": [
+          2,
+          -3
+        ],
+        "ci95": [
+          -7.0,
+          5.0
+        ],
+        "passes": false
+      }
+    }
+  },
+  "exposure": "Previously exposed source V panel; no target access",
+  "identity": "LoRa-trained R69 architecture adaptation, not frozen WiSig v1 checkpoint"
+}

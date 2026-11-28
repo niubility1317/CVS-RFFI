@@ -1,0 +1,34 @@
+{
+  "status": "SOURCE_PAIRED_AUDIT",
+  "truth_last": true,
+  "same_ids": true,
+  "direct_predictions_match": true,
+  "views": {
+    "clean": {
+      "n": 60,
+      "shared_correct": 59,
+      "lora_r69_correct": 60,
+      "repaired": 0,
+      "harmed": 1,
+      "net": -1,
+      "ci95": [
+        -3,
+        0
+      ]
+    },
+    "practical_low_urban": {
+      "n": 60,
+      "shared_correct": 15,
+      "lora_r69_correct": 33,
+      "repaired": 4,
+      "harmed": 22,
+      "net": -18,
+      "ci95": [
+        -27,
+        -9
+      ]
+    }
+  },
+  "control_identity": "LoRa-trained R69 architecture adaptation; not original WiSig weights",
+  "exposure": "previously exposed source V, target_reads=0"
+}

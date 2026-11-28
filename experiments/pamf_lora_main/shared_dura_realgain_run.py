@@ -208,7 +208,7 @@ def score(rt, dataset):
           exposure='Previously exposed source V panel; no target read', formal_acceptance_complete=False))
 
 
-def dispatch(runtime):
+def dispatch(runtime, worker_module=None):
     rt = read(runtime)
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
@@ -223,7 +223,7 @@ def dispatch(runtime):
             env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='2',
                        OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='2')
             with (root / f'{row}-worker.log').open('x', encoding='utf-8') as log:
-                jobs[row] = subprocess.Popen([sys.executable, '-u', '-m', __spec__.name, 'worker',
+                jobs[row] = subprocess.Popen([sys.executable, '-u', '-m', worker_module or __spec__.name, 'worker',
                                                str(runtime), row], env=env, stdin=subprocess.DEVNULL,
                                               stdout=log, stderr=subprocess.STDOUT)
         write(root / 'state.json', dict(status='RUNNING', workers={k: p.pid for k, p in jobs.items()},

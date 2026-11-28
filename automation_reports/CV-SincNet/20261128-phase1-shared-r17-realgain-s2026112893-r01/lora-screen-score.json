@@ -1,0 +1,80 @@
+{
+  "status": "SOURCE_SCREEN_SCORED",
+  "truth_last": true,
+  "count": 60,
+  "modes": [
+    "direct",
+    "lora_native_r17",
+    "real_gain",
+    "fusion"
+  ],
+  "correct": {
+    "clean": [
+      60,
+      59,
+      60,
+      59
+    ],
+    "practical_low_urban": [
+      30,
+      15,
+      34,
+      15
+    ]
+  },
+  "low_urban_pairs": {
+    "direct": {
+      "repaired": 4,
+      "harmed": 19,
+      "net": -15,
+      "half_nets": [
+        -6,
+        -9
+      ],
+      "ci95": [
+        -24.0,
+        -6.0
+      ],
+      "passes": false
+    },
+    "lora_native_r17": {
+      "repaired": 0,
+      "harmed": 0,
+      "net": 0,
+      "half_nets": [
+        0,
+        0
+      ],
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "passes": false
+    },
+    "real_gain": {
+      "repaired": 4,
+      "harmed": 23,
+      "net": -19,
+      "half_nets": [
+        -5,
+        -14
+      ],
+      "ci95": [
+        -28.0,
+        -10.975000000000136
+      ],
+      "passes": false
+    }
+  },
+  "clean_net": {
+    "direct": -1,
+    "lora_native_r17": 0,
+    "real_gain": -1
+  },
+  "promote": false,
+  "missing_controls": [
+    "same-contract LoRa DURA v1"
+  ],
+  "exposure": "Previously exposed source V panel; no target read",
+  "formal_acceptance_complete": false
+}

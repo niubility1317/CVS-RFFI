@@ -1,0 +1,125 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+  "group_id": "phase1-crossdata-shared-dura-realgain",
+  "display_name": "LoRa Full R69 结构适配同包 W24 源对照",
+  "description": "复用 LoRa 合法源训练的 256 点 R69 架构适配及其源门控，投影回同一 8192 点 Full 接收包并接冻结 E104，对既有 60 个源 V 包做 low urban 与 clean 对照。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "authorization": "用户要求建立同数据集匹配 DURA 对照并保持固定权重来源；LoRa 与 WiSig 不跨契约继承。",
+  "parent_run_ids": [
+    "20261122-phase1-lora-dura-r69-aligned-m2-r01",
+    "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+    "20261128-phase1-shared-r17-realgain-s2026112893-r01"
+  ],
+  "code": {
+    "commit": "cdee6cf829de5aaa6ef644d2dc065697c6cbdd56",
+    "checkout": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI FP32 CUDA prediction and independent CPU truth-last scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa",
+    "contract_ref": "lora_rx5_main_v1:392005, previously VALIDATED_ONCE",
+    "representation": "8192 native Full received IQ; six normalized 256-point chirp windows; E104 W24 original head",
+    "source_receivers": [
+      "b200_1"
+    ],
+    "target_receivers": [],
+    "roles": {
+      "train": 0,
+      "V": 60
+    },
+    "physical_ids_ref": "Exact previously exposed 60-packet b200_1 panel in 20261128-phase1-dura-realgain-crossdata-s2026112845-r02/lora/screen.npz; exact direct predictions checked",
+    "views": [
+      "clean",
+      "practical_low_urban"
+    ],
+    "exposure": "source V panel and historical baseline already exposed, no target access"
+  },
+  "permissions": {
+    "regime": "frozen_evaluation",
+    "query_use": "none",
+    "claim_scope": "No training or threshold fitting. Existing LoRa R69 model, original source gate and half correction; true labels only after both screen views fixed."
+  },
+  "checkpoint": {
+    "initialization": "LoRa-trained R65 from scratch and R69 student; no cross-dataset weight transfer",
+    "sources": [
+      {
+        "ref": "20261122-phase1-lora-dura-r69-aligned-m2-r01",
+        "role": "frozen LoRa Full source-trained R69 and source-only gate"
+      },
+      {
+        "ref": "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+        "role": "same LoRa contract, frozen E104 reader and archived real-gain predictions"
+      }
+    ],
+    "selection_rule": "Fixed source-trained half-dose with frozen gate; no training, no target-based selection. Report as LoRa R69 architecture adaptation, not original WiSig fixed DURA v1 checkpoint."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex chat 01a2204f-bfeb-7fa1-bda9-d8961e4ee178",
+    "gpu_policy": "one worker on first available GPU of 7,2,3,6,1,4 with >=8192 MiB free, protecting GPU0/5 current shared experiment and other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.lora_r69_w24_source_control publish --repo E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo --output E:/type10-7/local_artifacts/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01/release --context E:/type10-7/local_artifacts/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01/context.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop this run on source contract/checkpoint mismatch, smoke bypass or failed R69 forward, nonfinite output, differing physical IDs or direct predictions, output collision, or truth-before-freeze. Preserve other owner tasks."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "screen.npz",
+    "screen-frozen.json",
+    "screen-score.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct count",
+      "paired repairs/harms/net",
+      "95% paired bootstrap",
+      "clean retention"
+    ],
+    "dimensions": [
+      "source V b200_1",
+      "60 paired physical IDs",
+      "clean",
+      "practical_low_urban"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01/screen.npz",
+    "scorer_ref": "experiments/pamf_lora_main/lora_r69_w24_source_control.py"
+  },
+  "rows": [
+    {
+      "row_id": "lora_r69_half",
+      "method": "LoRa Full source-trained R69 architecture adaptation, frozen source gate, half-dose, W24 E104",
+      "purpose": "matched_structural_control",
+      "config_ref": "experiments/pamf_lora_main/lora_r69_w24_source_control.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01-release/runtime.json",
+      "data_overrides": {
+        "source_RX": "b200_1",
+        "V": 60
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112852
+      },
+      "seed_notes": "Frozen source-trained model and deterministic historical panel; no new training, augmentation or support.",
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+      "command": "python -u -m experiments.pamf_lora_main.lora_r69_w24_source_control dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-diagnostic-lora-r69-full-w24-s2026112895-r01-release/runtime.json"
+    }
+  ],
+  "notes": [
+    "Prediction and truth-last score only; not a new candidate or full matrix.",
+    "This structural LoRa adaptation uses distinct weights and preprocessing; the fixed WiSig DURA v1 result remains unavailable under LoRa contract.",
+    "Candidate pairing later requires its own complete frozen prediction artifact and exact physical IDs."
+  ]
+}
