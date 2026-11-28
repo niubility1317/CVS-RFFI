@@ -3,6 +3,7 @@ import argparse
 import importlib
 import os
 from pathlib import Path, PurePosixPath
+import shutil
 import subprocess
 import sys
 import time
@@ -20,17 +21,26 @@ from experiments.pamf_lora_main import shared_physicalsolve_run as candidate
 from experiments.pamf_lora_main.shared_practical_urban_run import source_teacher
 from experiments.pamf_restoration.models import complex_iq, pair
 
-RUN = '20261128-phase1-shared-physicalsolve-target-pilot-s2026112957-r02'
+RUN = '20261128-phase1-shared-physicalsolve-target-pilot-s2026112957-r03'
+PREVIOUS = '20261128-phase1-shared-physicalsolve-target-pilot-s2026112957-r02'
 PARENT = '20261128-phase1-shared-physicalsolve-gain-s2026112957-r01'
 VIEWS = ('clean', 'practical_low_urban')
 MODES = ('direct', 'r17', 'real_gain', 'dura', 'fusion')
 LORA_RX, LORA_N = 'b200_2', 200
 WISIG_RX, WISIG_N = 0, 2000
+WISIG_RX_LABEL = '1-1'
 SEED = 2026112852
 
 
 def modes_for(dataset):
     return ('direct', 'r17', 'real_gain', 'lora_r69_adapt' if dataset == 'lora' else 'dura_v1', 'fusion')
+
+
+def evenly_spaced_indices(total):
+    indices = np.linspace(0, total-1, WISIG_N, dtype=np.int64)
+    if len(np.unique(indices)) != WISIG_N:
+        raise ValueError('Predeclared evenly spaced blind positions overlap')
+    return indices
 
 
 def bind(rt, dataset):
@@ -113,8 +123,9 @@ def predict(rt, dataset):
         manifest, all_ids, positions = handle(parent, cfg['classes'])
         if manifest['channel'] != 'full/post_sync/noeq' or WISIG_RX not in manifest['target_rxs']:
             raise ValueError('Wrong target receiver or full observation contract')
-        selected_ids = all_ids[:WISIG_N].copy()
-        selection = np.arange(WISIG_N) if positions is None else positions[:WISIG_N]
+        blind_indices = evenly_spaced_indices(len(all_ids))
+        selected_ids = all_ids[blind_indices].copy()
+        selection = blind_indices if positions is None else positions[blind_indices]
         for view in VIEWS:
             path = Path(manifest['clean_ref']) if view == 'clean' else Path(manifest['observations_root'])/(view+'.npy')
             observed = np.load(path, mmap_mode='r', allow_pickle=False)
@@ -128,7 +139,7 @@ def predict(rt, dataset):
     write(folder/'frozen.json', dict(status='PREDICTIONS_FROZEN', dataset=dataset, views=list(VIEWS),
         modes=list(modes_for(dataset)), count=len(selected_ids), receiver=LORA_RX if dataset == 'lora' else WISIG_RX,
         receiver_selection='fixed first 200 blind indices' if dataset == 'lora' else
-                           'RX0 among fixed first 2000 blind-index positions, group only after freeze',
+                           'RX0 among fixed 2000 evenly spaced blind-index positions, group after freeze',
         truth_read=False, target_fit=False, candidate=PARENT))
 
 
@@ -192,13 +203,18 @@ def score_wisig(rt):
                'score__main_split-repl-shuffled_time-3view-s2026092701.json')
     truth = read(Path(cfg['tests']['cross_rx']['truth']))
     rows = [truth[str(x)] for x in ids]
-    mask = np.asarray([str(x['receiver']) == str(WISIG_RX) for x in rows])
+    mask = np.asarray([str(x['receiver']) == WISIG_RX_LABEL for x in rows])
     labels = np.asarray([x['label'] for x in rows], dtype=np.int64)[mask]
     days = np.asarray([str(x['day']) for x in rows])[mask]
     if mask.sum() < 40:
         raise ValueError('Insufficient predetermined RX0 target packets')
-    score = score_values(ids[mask], {v:x[:, mask] for v, x in values.items()}, labels, WISIG_RX, days, 'wisig')
+    score = score_values(ids[mask], {v:x[:, mask] for v, x in values.items()}, labels, WISIG_RX_LABEL, days, 'wisig')
+    score['receiver_index'] = WISIG_RX
     score['predicted_blind_pool'] = len(ids)
+    score['prior_truth_exposure'] = ('Previous failed scoring opened target truth after r02 predictions; '
+        'r03 predictions were not yet frozen. No WiSig accuracy was computed in that failure. '
+        'The first 2000 r02 packets were later found to cover only one TX. '
+        'This is an exposed development test, not a blind independent acceptance.')
     write(root/'wisig'/'target-score.json', score)
 
 
@@ -225,21 +241,24 @@ def launch(runtime):
     for name in ('lora', 'wisig'):
         (root/name).mkdir()
     try:
+        previous = Path(rt['project'])/'runs'/PREVIOUS
+        # Preserve and reuse the already-frozen LoRa predictions; do not rerun target data.
+        frozen_pair(previous)
+        for name in ('frozen.json', 'predictions.npz'):
+            shutil.copyfile(previous/'lora'/name, root/'lora'/name)
         gpus = [i for i in free_gpus() if i in rt['allowed_gpus']]
-        if len(gpus) < 2:
-            raise RuntimeError('Two distinct GPUs with 8 GiB free required')
-        jobs = {}
-        for name, gpu in zip(('lora', 'wisig'), gpus[:2], strict=True):
-            env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='2',
-                       OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='2')
-            with (root/f'{name}-worker.log').open('x', encoding='utf-8') as out:
-                jobs[name] = subprocess.Popen([sys.executable, '-u', '-m', __spec__.name, 'worker',
-                    str(runtime), name], env=env, stdin=subprocess.DEVNULL, stdout=out, stderr=subprocess.STDOUT)
-        write(root/'state.json', dict(status='TARGET_PREDICTING', workers={k: p.pid for k,p in jobs.items()},
-                                     gpus=dict(zip(('lora','wisig'), gpus[:2], strict=True))))
-        failures = {name: proc.wait() for name, proc in jobs.items()}
-        if any(failures.values()):
-            raise RuntimeError(f'Target prediction workers failed: {failures}')
+        if not gpus:
+            raise RuntimeError('One GPU with 8 GiB free required')
+        gpu = gpus[0]
+        env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='2',
+                   OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='2')
+        with (root/'wisig-worker.log').open('x', encoding='utf-8') as out:
+            proc = subprocess.Popen([sys.executable, '-u', '-m', __spec__.name, 'worker',
+                str(runtime), 'wisig'], env=env, stdin=subprocess.DEVNULL, stdout=out, stderr=subprocess.STDOUT)
+        write(root/'state.json', dict(status='TARGET_PREDICTING', workers={'wisig':proc.pid},
+                                     gpus={'wisig':gpu}, reused_lora=PREVIOUS))
+        if proc.wait():
+            raise RuntimeError('WiSig target prediction worker failed')
         frozen_pair(root)
         write(root/'state.json', dict(status='TARGET_PREDICTIONS_FROZEN', truth_read=False), exclusive=False)
         result = subprocess.run([sys.executable, '-u', '-m', __spec__.name, 'score-wisig', str(runtime)],
@@ -247,7 +266,7 @@ def launch(runtime):
         if result.returncode:
             raise RuntimeError('Independent WiSig target scoring failed')
         write(root/'state.json', dict(status='TARGET_PREDICTIONS_FROZEN_WISIG_SCORED',
-            lora_score='pending independent local truth', truth_last=True), exclusive=False)
+            lora_score='independently scored offline in r02 local artifact', truth_last=True), exclusive=False)
     except Exception as error:
         write(root/'state.json', dict(status='FAILED', error=str(error)), exclusive=False)
         raise
@@ -262,7 +281,7 @@ def publish(repo, output, context, ssh_config):
     rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
         release_root=str(releases/f'{RUN}-release'), run_root=str(runs/RUN),
         lora_frozen_root=str(runs/candidate.PARENT), allowed_gpus=[2, 3],
-        external_releases=[str(runs/PARENT), str(releases/REFERENCE),
+        external_releases=[str(runs/PARENT), str(runs/PREVIOUS), str(releases/REFERENCE),
                            str(runs/'20261123-phase1-wisig-r69-paired-main-m6-r01')])
     release(repo, output, rt, ssh_config, archive_extras=('tools/r17_activation_factorization.py',))
 

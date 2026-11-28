@@ -57,3 +57,11 @@ def test_source_smoke_sends_raw_array_to_single_conversion(monkeypatch, tmp_path
         np.ones((2, 8192), dtype=np.complex64), np.arange(2), decide))
     with pytest.raises(SmokeProbe):
         pilot.predict({'run_root': str(tmp_path), 'project': str(tmp_path)}, 'lora')
+
+
+def test_fixed_uniform_blind_selection_uses_no_truth():
+    positions = pilot.evenly_spaced_indices(126000)
+    assert len(positions) == 2000 and len(set(positions.tolist())) == 2000
+    assert positions[0] == 0 and positions[-1] == 125999
+    with pytest.raises(ValueError):
+        pilot.evenly_spaced_indices(1999)
