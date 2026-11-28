@@ -94,6 +94,28 @@ def configure_action(model):
     return model
 
 
+def select(rt):
+    project, root = Path(rt['project']), Path(rt['run_root'])
+    reference = project / 'runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference'
+    manifest = read(reference / 'manifest.json')
+    if manifest['status'] != 'FORMAL_REFERENCE_READY' or manifest['count'] != 168000 or not manifest['original_IQ_bytes_reused']:
+        raise ValueError('Expected original registered received observations')
+    all_ids = np.load(reference / 'physical_ids.npy', allow_pickle=False)
+    # Isolated CPU metadata step: the historical file also contains TX labels.
+    # Only receiver is extracted, no labels are used or passed to prediction.
+    truth = read(project / 'runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json')
+    eligible = np.asarray([i for i, key in enumerate(all_ids) if str(truth[str(key)]['receiver']) == RX])
+    del truth
+    if len(eligible) != 24000:
+        raise ValueError('Registered receiver coverage differs')
+    selected = np.sort(np.random.default_rng(SEED + 2).choice(eligible, 300, replace=False))
+    write(root / 'panel.json', dict(status='FIXED_BEFORE_PREDICTION', receiver=RX,
+          count=300, seed=SEED+2, physical_ids=all_ids[selected].tolist(),
+          selection='uniform among receiver IDs, no TX label or signal use',
+          receiver_metadata='isolated CPU process reads historical truth index and extracts receiver only',
+          historic_formal_exposure=True))
+
+
 @torch.no_grad()
 def predict(rt):
     import importlib
@@ -158,19 +180,13 @@ def predict(rt):
     if manifest['status'] != 'FORMAL_REFERENCE_READY' or manifest['count'] != 168000 or not manifest['original_IQ_bytes_reused']:
         raise ValueError('Expected original registered received observations')
     all_ids = np.load(reference / 'physical_ids.npy', allow_pickle=False)
-    # Receiver metadata is stored alongside labels; this preparatory access extracts only receiver.
-    # No TX labels, IQ, predictions or performance statistics influence sampling.
-    truth = read(project / 'runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json')
-    eligible = np.asarray([i for i, key in enumerate(all_ids) if str(truth[str(key)]['receiver']) == RX])
-    del truth
-    if len(eligible) != 24000:
-        raise ValueError('Registered receiver coverage differs')
-    selected = np.sort(np.random.default_rng(SEED + 2).choice(eligible, 300, replace=False))
-    write(root / 'panel.json', dict(status='FIXED_BEFORE_PREDICTION', receiver=RX,
-          count=300, seed=SEED+2, physical_ids=all_ids[selected].tolist(),
-          selection='uniform among receiver IDs, no TX label or signal use',
-          receiver_metadata='receiver field only extracted from historical truth index',
-          historic_formal_exposure=True))
+    panel = read(root / 'panel.json')
+    if (panel['status'], panel['receiver'], panel['count'], panel['seed']) != ('FIXED_BEFORE_PREDICTION', RX, 300, SEED+2):
+        raise ValueError('Expected fixed target panel')
+    lookup = {str(value): i for i, value in enumerate(all_ids)}
+    selected = np.asarray([lookup[x] for x in panel['physical_ids']], dtype=np.int64)
+    if len(selected) != 300 or len(np.unique(selected)) != 300:
+        raise ValueError('Target panel must have 300 unique IDs')
     outputs = {}
     for view in VIEWS:
         received = np.load(reference / (view + '.npy'), mmap_mode='r', allow_pickle=False)
@@ -223,8 +239,8 @@ def dispatch(runtime):
         if not available:
             raise RuntimeError('No GPU with 8 GiB available')
         gpu = next(value for value in (7, 2, 3, 6, 1, 4, 0, 5) if value in available)
-        for action in ('predict', 'score'):
-            device = None if action == 'score' else gpu
+        for action in ('select', 'predict', 'score'):
+            device = gpu if action == 'predict' else None
             env = dict(os.environ, CUDA_VISIBLE_DEVICES='' if device is None else str(device),
                        OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='2')
             args = [sys.executable, '-u', '-m', __spec__.name, action, str(runtime)]
@@ -257,7 +273,7 @@ def publish(repo, output, context, ssh_config):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='action', required=True)
-    for action in ('dispatch', 'predict', 'score'):
+    for action in ('dispatch', 'select', 'predict', 'score'):
         commands.add_parser(action).add_argument('runtime', type=Path)
     pub = commands.add_parser('publish')
     for field in ('repo', 'output', 'context', 'ssh-config'):
@@ -269,4 +285,4 @@ if __name__ == '__main__':
     elif action == 'dispatch':
         dispatch(**args)
     else:
-        {'predict': predict, 'score': score}[action](read(args['runtime']))
+        {'select': select, 'predict': predict, 'score': score}[action](read(args['runtime']))
