@@ -35,7 +35,8 @@ LoRa 实增益原版的历史 Full：六景均值 82.2967%、低城区 62.1167%�
 | 源伪标签保守专家路由 | 34 | 332 | 未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-risk-router-s2026112957-r01/report.md)。LoRa 和 WiSig 相对各自强锚点均改对 0、改错 0；推理仅使用当前包与两个专家 |
 | 源伪标签纠错加权专家路由 | 34 | 190 | 未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-risk8-router-s2026112957-r01/report.md)。LoRa 相对实增益净 0；WiSig 相对 R17 改对 9、改错 151，净 -142；正例权重 8，负例 1 |
 | 冻结识别器置信度辅助路由 | 34 | 332 | 两侧均未晋级；相对各自强锚点改对 0、改错 0。LoRa 首次加载失败后通过[技术补跑](../../automation_reports/CV-SincNet/20261128-phase1-shared-confidence-lora-retry-s2026112957-r01/report.md)完成筛查。训练及推理使用同数据集冻结 F，推理每包额外两次 F 前向 |
-| 大容量共享逐频实增益 | 待完成 | 待完成 | `20261128-phase1-shared-wide-gain-s2026112957-r01` 正在训练；128 通道扩张卷积、DURA 物理残差、共享损失与 5% 上限，各数据集单独权重 |
+| 大容量共享逐频实增益 | 31 | 331 | 两侧未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-wide-gain-s2026112957-r01/report.md)。LoRa 相对实增益改对 0 改错 3；WiSig 相对 R17 改对 1 改错 2。网络 467,842 参数，clean 保持 |
+| 源 U practical 模拟配对训练 | 待完成 | 待完成 | `20261128-phase1-shared-practical-pairs-s2026112957-r01` 训练中；每数据集固定 1024 个源 U 包及源训练专用模拟随机流，覆盖 clean 与六景；两侧真实权重首步通过 |
 
 真实预测、逐对照 clean、改对改错、分半结果和配对区间见各报告及其 `screen-score.json`，不得从表中推断正式测试分数。示例：教师包级连续融合在 WiSig 类别 3 为 10/55，R17 为 46/55，存在明确单类退化。源 U 教师训练得到用户单独授权，方法属于 F-guided，祖先、伪标签和额外成本见各报告。无教师训练控制只表示新增模块不读取教师，LoRa 实增益父专家仍保留既有 E104 指导祖先。
 
