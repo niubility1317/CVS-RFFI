@@ -1,0 +1,216 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-shared-wide-gain-s2026112957-r01",
+  "group_id": "phase1-crossdata-shared-dura-realgain",
+  "display_name": "LoRa 与 WiSig 共用大容量逐频实增益与 DURA 残差筛查",
+  "description": "128 通道扩张卷积共同预测逐频实增益，组合 DURA 物理残差，使用 5% 修正上限及冻结教师和锚点保持损失。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "authorization": "用户于 2026-11-28 明确授权两数据集源域教师指导训练；只用各自合法源 U 模拟 clean/受扰配对，隐藏 U 的 TX 真值，禁止源 V 和目标参与训练。",
+  "parent_run_ids": [
+    "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+    "20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+    "20261128-phase1-shared-twoprior-realgain-s2026112901-r01",
+    "20261128-phase1-shared-convex-realgain-s2026112905-r01",
+    "20261128-phase1-shared-selector-realgain-s2026112909-r01",
+    "20261128-phase1-shared-consistency-selector-s2026112913-r01",
+    "20261128-phase1-shared-physics-route-s2026112933-r01",
+    "20261128-phase1-shared-confidence-route-s2026112925-r01",
+    "20261128-phase1-shared-teacher-selector-s2026112937-r01",
+    "20261128-phase1-shared-matched-mse-s2026112937-r01",
+    "20261128-phase1-shared-teacher-mixture-s2026112941-r01",
+    "20261128-phase1-shared-matched-mixture-s2026112941-r01",
+    "20261128-phase1-shared-teacher-direct-s2026112945-r01",
+    "20261128-phase1-shared-matched-direct-s2026112945-r01",
+    "20261128-phase1-shared-r17-teacher-direct-s2026112949-r01",
+    "20261128-diagnostic-shared-r17-scale-s2026112953-r01",
+    "20261128-phase1-shared-bounded-teacher-s2026112957-r01",
+    "20261128-phase1-shared-bounded2-teacher-s2026112957-r01",
+    "20261128-phase1-shared-bounded2-teacher-s2026112957-r01",
+    "20261128-phase1-shared-anchor5-consistency-s2026112957-r01"
+  ],
+  "code": {
+    "commit": "f3047d963cd70989b9a17bef13ba143db6a6529e",
+    "checkout": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI CUDA FP32 / TF32 off, CPU independent scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-wide-gain-s2026112957-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa and WiSig/ManySig Main",
+    "contract_ref": "lora_rx5_main_v1:392005; ManySig Main original 7/63/30 F0 seed392005; VALIDATED_ONCE source caches",
+    "representation": "one WideSharedBoundedGain (128 channels, four dilation layers) and common loss, fixed 5% correction cap in training and inference; separate dataset-specific source-selected anchors and weights",
+    "source_receivers": [
+      "LoRa b200_1",
+      "WiSig RX1"
+    ],
+    "target_receivers": [],
+    "roles": {
+      "train": "U_s only",
+      "validation": "LoRa 60, WiSig 360 source V"
+    },
+    "physical_ids_ref": "existing first cross-data screen physical IDs, same paired channel observations",
+    "views": [
+      "clean",
+      "practical_low_urban"
+    ],
+    "exposure": "same source V RX panels and historical comparisons repeatedly exposed by prior development; no target input or truth"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "User-authorized frozen-classifier source-U guidance; frozen LoRa W24 E104 / WiSig Tri-SIG-TIME SSL F0 default heads provide clean teacher distributions and input gradients; no U TX, source V, target IQ/truth/statistics, classifier update or cross-dataset weight transfer. LoRa teacher exact original preprocessing forward with differentiable WideTracker surrogate backward, explicitly disclosed. Adds KL against the classifier distribution of the fixed source expert anchor on simulated observed U; both reference distributions detached."
+  },
+  "checkpoint": {
+    "initialization": "Independent zero correction. LoRa fixed skip buffer selects LoRa real-gain expert; WiSig fixed skip buffer selects WiSig R17. Source V results on this same exposed screening panel informed these initial weights. No target input/truth/statistics used.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+        "role": "LoRa native R02/R07/R17"
+      },
+      {
+        "ref": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "role": "WiSig original full R17 and action"
+      },
+      {
+        "ref": "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+        "role": "LoRa E104 real-gain screen comparison only"
+      },
+      {
+        "ref": "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+        "role": "WiSig independently source-trained real-gain control"
+      },
+      {
+        "ref": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+        "role": "WiSig frozen DURA v1 same-packet screen predictions"
+      },
+      {
+        "ref": "20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+        "role": "frozen same-ID LoRa-trained R69 architecture adaptation; distinct from original WiSig DURA v1 weights"
+      }
+    ],
+    "selection_rule": "Fixed source final step 1000. LoRa hard-scene net >=1 in each fixed half and clean >=-1 versus every available same-packet control including LoRa R69 adaptation. WiSig each half net >=2 and clean >=-2 against each control including fixed DURA v1. Original fixed WiSig DURA v1 checkpoint has no lawful matched LoRa transfer; disclose as unavailable."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex chat 01a2204f-bfeb-7fa1-bda9-d8961e4ee178",
+    "gpu_policy": "Two distinct GPUs from [2,3,4,6], each >=8192 MiB free; one worker per GPU; preserve LoRa confidence retry on GPU 7 and all other owners.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-wide-gain-s2026112957-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-wide-gain-s2026112957-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-shared-wide-gain-s2026112957-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.shared_wide_gain_run publish --repo E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo --output E:/type10-7/local_artifacts/20261128-phase1-shared-wide-gain-s2026112957-r01/release --context E:/type10-7/local_artifacts/20261128-phase1-shared-wide-gain-s2026112957-r01/context.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop affected run on provenance/data-contract mismatch, occupied immutable output, no source-only checkpoint smoke, nonfinite loss/gradient, prediction matrix mismatch, query or truth-boundary violation; preserve partial artifacts and all other processes."
+  },
+  "expected_artifacts": [
+    "lora/gain.pt",
+    "wisig/gain.pt",
+    "lora/screen-score.json",
+    "wisig/screen-score.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "paired repaired/harmed/net",
+      "95% paired bootstrap",
+      "fixed two-half net",
+      "training seconds",
+      "peak GPU bytes",
+      "parameters"
+    ],
+    "dimensions": [
+      "dataset",
+      "single source receiver",
+      "physical ID",
+      "clean",
+      "practical_low_urban"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-wide-gain-s2026112957-r01/{lora,wisig}/screen.npz",
+    "scorer_ref": "experiments/pamf_lora_main/shared_wide_gain_run.py"
+  },
+  "rows": [
+    {
+      "row_id": "lora",
+      "method": "WideSharedBoundedGain, shared 128-channel dilated real-frequency gain, 5% cap, DURA residual and frozen teacher/anchor KL",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/shared_wide_gain_run.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-wide-gain-s2026112957-r01-release/runtime.json",
+      "data_overrides": {
+        "training": "source U simulated received/clean; frozen original default-head teacher, no TX labels, V or target",
+        "source_screen_receiver": "b200_1",
+        "screen_physical_packets": 60
+      },
+      "seeds": {
+        "model": 2026112957,
+        "split": 392005,
+        "data": 2026112957,
+        "augmentation": 2026112958,
+        "support": null,
+        "evaluation": 2026112852
+      },
+      "seed_notes": "Support inapplicable; preregistered existing source V observations and fixed paired half permutation.",
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW lr=0.0003, weight_decay=0.0001, cosine to 0.00003",
+      "budget_ref": "1000 updates x batch 4; three frozen teacher forwards per U exposure plus teacher input-gradient backward",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-wide-gain-s2026112957-r01/lora",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-wide-gain-s2026112957-r01/lora-worker.log",
+      "command": "python -u -m experiments.pamf_lora_main.shared_wide_gain_run worker /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-wide-gain-s2026112957-r01-release/runtime.json lora",
+      "expected_artifacts": [
+        "gain.pt",
+        "fit.json",
+        "screen.npz",
+        "screen-frozen.json",
+        "screen-score.json"
+      ]
+    },
+    {
+      "row_id": "wisig",
+      "method": "WideSharedBoundedGain, shared 128-channel dilated real-frequency gain, 5% cap, DURA residual and frozen teacher/anchor KL",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/shared_wide_gain_run.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-wide-gain-s2026112957-r01-release/runtime.json",
+      "data_overrides": {
+        "training": "source U simulated received/clean; frozen original default-head teacher, no TX labels, V or target",
+        "source_screen_receiver": "RX1",
+        "screen_physical_packets": 360
+      },
+      "seeds": {
+        "model": 2026112957,
+        "split": 392005,
+        "data": 2026112957,
+        "augmentation": 2026112958,
+        "support": null,
+        "evaluation": 2026112852
+      },
+      "seed_notes": "Support inapplicable; preregistered existing source V observations and fixed paired half permutation.",
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW lr=0.0003, weight_decay=0.0001, cosine to 0.00003",
+      "budget_ref": "1000 updates x batch 24; three frozen teacher forwards per U exposure plus teacher input-gradient backward",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-wide-gain-s2026112957-r01/wisig",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-wide-gain-s2026112957-r01/wisig-worker.log",
+      "command": "python -u -m experiments.pamf_lora_main.shared_wide_gain_run worker /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-wide-gain-s2026112957-r01-release/runtime.json wisig",
+      "expected_artifacts": [
+        "gain.pt",
+        "fit.json",
+        "screen.npz",
+        "screen-frozen.json",
+        "screen-score.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Hypothesis: a wider 128-channel network with four dilated convolution layers can model longer-range frequency interactions than the earlier 32-channel network while retaining per-packet 5% bounded correction, DURA physical residual and source-selected fixed expert anchor.",
+    "Training otherwise follows 5% anchor-consistency candidate: KL(F(clean)||F(output)) + KL(F(anchor)||F(output)) + 0.2 normalized IQ MSE + 1.5 clean anchor preservation. Source U seed 2026112957, 1000 updates, same samples and optimizer. Training and inference reconstruct the same architecture and cap.",
+    "Two datasets share architecture and loss with independent weights. LoRa anchor is its own real-gain expert; WiSig anchor is its own R17, selected using repeatedly exposed source V. 5% small candidate yielded LoRa 33/60 vs gain 34 and WiSig 331/360 vs R17 332, insufficient; this development panel informed the design.",
+    "User authorized source U frozen teachers: LoRa W24 E104 exact scipy forward with surrogate backward, WiSig Tri-SIG-TIME SSL F0. 12000/72000 source sample teacher forwards plus backward and ancestral costs. No U TX truth, V or target in training; no classifier at inference.",
+    "Same exposed source V screening physical IDs, paired observations, fixed half-sample thresholds and clean checks. Pass requires separate preregistered additional source replication before formal target testing."
+  ]
+}
