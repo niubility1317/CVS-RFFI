@@ -21,7 +21,7 @@ from experiments.pamf_lora_main.dura_real_gain_unroll import fused_anchor_unroll
 from experiments.pamf_lora_main.dura_real_gain_run import free_gpus
 from experiments.pamf_lora_main.data import TARGET, label_ids, packet_indices, recording
 
-RUN = '20261128-phase1-lora-r07-probe-target-s2026113145-r01'
+RUN = '20261128-phase1-lora-r07-probe-target-s2026113145-r02'
 PARENT = base.RUN
 RX, SEED, COUNT = 'b200_2', 2026113145, 300
 VIEWS = ('clean', 'practical_low_urban')
@@ -167,5 +167,7 @@ if __name__ == '__main__':
         publish(**args)
     elif action == 'score-local':
         score_local(**args)
+    elif action == 'dispatch':
+        dispatch(args['runtime'])
     else:
-        {'dispatch': dispatch, 'predict': predict}[action](read(args['runtime']))
+        predict(read(args['runtime']))
