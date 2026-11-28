@@ -1,2 +1,3 @@
 {"at": "2026-11-28T11:59:40+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-28T12:00:53+00:00", "status": "RUNNING", "note": "Source U checkpoint smokes and both GPU workers verified.", "evidence": ["E:/type10-7/local_artifacts/20261128-phase1-shared-fullspectrum-gain-s2026112957-r01/release/submit.json"], "row_id": null}
+{"at": "2026-11-28T12:20:50+00:00", "status": "ANALYZED", "note": "Both source V screens failed; clean preserved; full spectrum gives WiSig net zero versus R17 and LoRa net -1 versus real gain.", "evidence": ["E:/type10-7/local_artifacts/20261128-phase1-shared-fullspectrum-gain-s2026112957-r01/paired.json"], "row_id": null}
