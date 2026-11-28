@@ -1,0 +1,253 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01",
+  "group_id": "phase1-lora-wisig-gain-dura",
+  "display_name": "LoRa 与 WiSig 通用实增益 DURA 源域筛查",
+  "description": "同一恢复器接收 LoRa 8192 点或 WiSig 256 点原生复数 IQ。两个数据集独立从零训练。候选在每个 DURA 阶段以逐频点实数增益控制观测创新，控制组在同位置将增益取包平均。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "wisig",
+    "real-gain",
+    "dura",
+    "screen",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+    "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+    "20261123-phase1-wisig-r69-paired-main-m6-r01",
+    "20261125-phase1-wisig-native-fir-source-m4-r01",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r03",
+    "20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01",
+    "20261128-phase1-lora-wisig-gain-dura-factor-s2026113051-r01",
+    "20261128-phase1-lora-dura-stage2-reference-s2026113057-r01",
+    "20261128-phase1-lora-wisig-dura-real-update-s2026113061-r01",
+    "20261128-phase1-lora-wisig-dura-real-update-s2026113061-r02",
+    "20261128-phase1-lora-wisig-gain-dura-stages-s2026113067-r01",
+    "20261128-phase1-lora-wisig-gain-dura-paired-detail-s2026113071-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Current user LoRa and WiSig fusion objective and small screening before any complete target release.",
+  "code": {
+    "commit": "9f193af061490e7c0d127eaa0f8ebeaf8256394e",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI PyTorch CUDA FP32, separate CPU scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort multi-receiver LoRa and WiSig/ManySig Main split",
+    "version": "lora_full_packets_v1; WiSig registered R17/WiSig Main source cache",
+    "representation": "LoRa complex 8192 at 1 MS/s -> original W24. WiSig complex 256 -> original Tri-SIG-TIME SSL.",
+    "contract_ref": "LoRa parent frozen source contract.json; WiSig 20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "LoRa b200_mini_1 fixed blind 160 from registered 2400, exclude original 300 LoRa V. WiSig RX3 fixed 160/360, prioritize 40 IDs absent from both frozen RX3 screening panels, supplement 120 previously screened RX3 IDs by fixed seed. Historical WiSig source mother-panel exposure also applies.",
+    "label_map_ref": "Original frozen E104 (10) and WiSig Main seed 2026092701 (6); independent scorer only.",
+    "source_receivers": [
+      "LoRa b200_mini_1",
+      "WiSig physical RX3"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "LoRa U_s fit": 24686,
+      "WiSig U_s fit": 52604,
+      "U_s clean calibration per dataset": 512,
+      "V": 320
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005; WiSig Main split",
+    "validation_ref": "Reuse registered validates-once source handles and fixed physical panels.",
+    "support_query_ref": null,
+    "leo_config_ref": "Only clean and the previously registered source Full practical_low_urban. Targets and other five views are outside this release."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Training uses U_s IQ and independently generated matched pairs only. No frozen F logits/weights, legacy G, true TX labels, V or target data in fitting or clean calibration. Control and candidate predictions frozen before independent CPU V truth scoring."
+  },
+  "checkpoint": {
+    "initialization": "Random joint training from scratch with the same seed, paired batches, architecture and trainable count across datasets. The benchmark loaders are used exclusively for separate frozen control predictions after the new checkpoints freeze.",
+    "sources": [
+      {
+        "ref": "20261128-phase1-lora-dura-stage2-reference-s2026113057-r01",
+        "role": "Same 266,951-parameter LoRa-native R69 topology trained on LoRa source U_s from scratch, fixed at 18,000 steps"
+      },
+      {
+        "ref": "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+        "role": "Original 266,951-parameter WiSig R69 and default deployment graph"
+      },
+      {
+        "ref": "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+        "role": "Standalone LoRa native gain baseline; E104 reader frozen"
+      },
+      {
+        "ref": "20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01",
+        "role": "Standalone WiSig gain baseline from source-only 8k U_s fit; original frozen Tri-SIG-TIME default reader"
+      }
+    ],
+    "contract_check_ref": "Strict frozen checkpoint load and actual no-query U_s smoke on both datasets.",
+    "provenance_verdict": "Dataset-native weights from independent lawful U_s. Same inference graph, shared action/gain/prior/solver code, with original classifier-specific adapters outside recovery.",
+    "selection_rule": "Fixed terminal 6400 steps. After fitting each arm, freeze its .995 clean quality cut from 512 disjoint lawful U_s records, using the same formula. For primary frequency arm, each of the 3 original controls requires >=8/160 net and paired CI lower >0 on low urban, and Clean must match the best. Full phase only if passed and separately preregistered."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current LoRa performance chat, dual dataset objective",
+    "gpu_policy": "N607 physical {3,5,7}, at least 12288 MiB free and fewer than eight existing compute contexts. At most one new worker on each used card. Preserve other owners and concurrent s2026113113 on GPU0/2.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -m experiments.pamf_lora_main.gain_dura_screen publish E:/type10-7/local_artifacts/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01/base-runtime.json --shared-gain-screen --output E:/type10-7/local_artifacts/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01/release --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "One immutable output root. Real lawful U_s gradient smoke before training and real frozen checkpoint U_s prediction smoke before any V prediction. Fail on contract, nonfinite output/loss or absent checked worker output. Both registered panels freeze before truth connection. No automatic target."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "scores.json",
+    "score.log",
+    "fit-lora/smoke.json",
+    "fit-lora/fit.json",
+    "fit-lora/model.pt",
+    "lora/complete.json",
+    "lora/timing.json",
+    "lora/predictions.npz",
+    "lora/smoke.json",
+    "lora.log",
+    "fit-wisig/smoke.json",
+    "fit-wisig/fit.json",
+    "fit-wisig/model.pt",
+    "wisig/complete.json",
+    "wisig/timing.json",
+    "wisig/predictions.npz",
+    "wisig/frozen-smoke.json",
+    "wisig.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy by TX and scene",
+      "paired gains, harms, net and bootstrap CI",
+      "frequency-dependent vs packet-mean real gain",
+      "B1 FP32 median and p95",
+      "peak memory and elapsed time"
+    ],
+    "dimensions": [
+      "source V one receiver per dataset",
+      "same physical packets",
+      "clean and Full low urban",
+      "160 packets per dataset, mixed prior exposure on WiSig RX3"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01/{lora,wisig}/predictions.npz",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01/scores.json, changes and gate source-only with separate truth-last"
+  },
+  "rows": [
+    {
+      "row_id": "lora",
+      "method": "SharedGainDura / packet-mean gain ablation",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/shared_gain_dura_fit.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01-release/runtime.json",
+      "data_overrides": {
+        "V": 160,
+        "U_s_fit": 24686,
+        "batch": 8,
+        "steps_per_arm": 6400,
+        "rx": "b200_mini_1",
+        "views_per_source_packet": 2,
+        "U_s_clean_calibration": 512
+      },
+      "seeds": {
+        "model": 2026113121,
+        "split": 392005,
+        "data": 2026113121,
+        "augmentation": 2026113122,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "One matched model/data/panel seed 2026113121, base simulator 2026113122, additional nuisance 2026113123, LoRa clean-calibration and smoke split 2026113124. WiSig clean-calibration follows fixed reserved source ordered subset.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight decay 1e-4, gradient norm 1 for each arm",
+      "lr": "Cosine 3e-4 to 3e-5, two independent arms same IQ batches",
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "6400 x 8 physical U_s records x 2 independent generic paired views per arm, matched across arms. Objective .40 final and .15 stage-one IQ error, .45 paired weak-spectrum and neighboring-block detail, .10 action error, .02 log-variance regression, .10 observable impairment BCE. Structured time-varying and partly coherent distortion applied with independent source generator. No labels.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01/lora",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01/lora.log",
+      "command": "python -u -m experiments.pamf_lora_main.gain_dura_screen lora /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01-release/runtime.json",
+      "expected_artifacts": [
+        "fit-lora/smoke.json",
+        "fit-lora/fit.json",
+        "fit-lora/model.pt",
+        "lora/complete.json",
+        "lora/timing.json",
+        "lora/predictions.npz",
+        "lora/smoke.json",
+        "lora.log"
+      ]
+    },
+    {
+      "row_id": "wisig",
+      "method": "SharedGainDura / packet-mean gain ablation",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/shared_gain_dura_fit.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01-release/runtime.json",
+      "data_overrides": {
+        "V": 160,
+        "U_s_fit": 52604,
+        "batch": 8,
+        "steps_per_arm": 6400,
+        "rx": "physical RX3",
+        "views_per_source_packet": 2,
+        "U_s_clean_calibration": 512
+      },
+      "seeds": {
+        "model": 2026113121,
+        "split": 392005,
+        "data": 2026113121,
+        "augmentation": 2026113122,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "One matched model/data/panel seed 2026113121, base simulator 2026113122, additional nuisance 2026113123, LoRa clean-calibration and smoke split 2026113124. WiSig clean-calibration follows fixed reserved source ordered subset.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight decay 1e-4, gradient norm 1 for each arm",
+      "lr": "Cosine 3e-4 to 3e-5, two independent arms same IQ batches",
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "6400 x 8 physical U_s records x 2 independent generic paired views per arm, matched across arms. Objective .40 final and .15 stage-one IQ error, .45 paired weak-spectrum and neighboring-block detail, .10 action error, .02 log-variance regression, .10 observable impairment BCE. Structured time-varying and partly coherent distortion applied with independent source generator. No labels.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01/wisig",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01/wisig.log",
+      "command": "python -u -m experiments.pamf_lora_main.gain_dura_screen wisig /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01-release/runtime.json",
+      "expected_artifacts": [
+        "fit-wisig/smoke.json",
+        "fit-wisig/fit.json",
+        "fit-wisig/model.pt",
+        "wisig/complete.json",
+        "wisig/timing.json",
+        "wisig/predictions.npz",
+        "wisig/frozen-smoke.json",
+        "wisig.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Source training consumes no prior restoration checkpoints. DURA observation model is 32 complex FIR taps, an 8-knot interpolated phase and a bounded complex image term. Each stage applies bounded real gain to the adjoint residual, learns a time-domain prior correction and runs 2 weighted MAP CG iterations.",
+    "Matched arm preserves all weights, capacity, losses, inputs and solver settings. Only the frequency gain is replaced with its packet mean. Each dataset uses the same algorithm and method configuration, with its own fitted weights and source clean quality cutoff.",
+    "Exposure: historic screen comparisons informed the research question only. No RX rule inside recovery. Full target never accessed by this run."
+  ],
+  "registered_at": "2026-11-28T09:07:54+00:00"
+}
