@@ -29,9 +29,11 @@ SCORE_RUN = RUN.removesuffix('r01') + 'r02'
 FACTOR_RUN = '20261128-phase1-lora-wisig-gain-dura-factor-s2026113051-r01'
 FREQUENCY_RUN = '20261128-phase1-lora-wisig-dura-real-update-s2026113061-r01'
 FREQUENCY_RETRY = FREQUENCY_RUN.removesuffix('r01') + 'r02'
+STAGE_RUN = '20261128-phase1-lora-wisig-gain-dura-stages-s2026113067-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
+STAGE_SEED = 2026113067
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
@@ -40,6 +42,7 @@ WISIG_REF = '20261125-phase1-wisig-native-fir-source-m4-r01'
 MODES = ('direct', 'dura', 'real_gain', 'fusion')
 FACTOR_MODES = (*MODES,'data_only','companion_only')
 FREQUENCY_MODES = (*MODES[:3], 'frequency_real', 'data_only')
+STAGE_MODES = (*MODES[:3], 'stage_frequency', 'stage_packet')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
@@ -115,14 +118,34 @@ def score_frequency_panel(predictions, labels):
     return result
 
 
+def score_stage_panel(predictions, labels):
+    if predictions.shape != (2, len(STAGE_MODES), FACTOR_COUNT):
+        raise ValueError('Incomplete matched in-stage screen')
+    results = {}
+    for i, candidate in enumerate(STAGE_MODES[3:], 3):
+        results[candidate] = score_panel(predictions[:, [0, 1, 2, i]], labels, count=FACTOR_COUNT,
+                                         seed=STAGE_SEED, modes=(*STAGE_MODES[:3], candidate))
+    hit = (predictions == labels).astype(np.int8)
+    wrong = ~(hit[:, 1].astype(bool) | hit[:, 2].astype(bool))
+    gains = {name: {view: int((hit[i, j] & wrong[i]).sum()) for i, view in enumerate(SCREEN_VIEWS)}
+             for j, name in enumerate(STAGE_MODES[3:], 3)}
+    draws = np.random.default_rng(STAGE_SEED+2).integers(0, FACTOR_COUNT, size=(4000, FACTOR_COUNT))
+    return dict(candidates=results, per_tx=tx_counts(predictions, labels, STAGE_MODES),
+                matched_ablation=paired_panel(hit[:, 3]-hit[:, 4], draws),
+                both_experts_wrong=dict(zip(SCREEN_VIEWS, wrong.sum(-1).tolist(), strict=True)),
+                corrected_when_both_wrong=gains)
+
+
 def panel_dimensions(rt):
+    if rt.get('stage_from'):
+        return FACTOR_COUNT, STAGE_MODES
     if rt.get('frequency_from'):
         return FACTOR_COUNT, FREQUENCY_MODES
     return (FACTOR_COUNT,FACTOR_MODES) if rt.get('factor_from') else (COUNT,MODES)
 
 
 def receiver_index(dataset, modes):
-    return 3 if dataset == 'wisig' and modes == FREQUENCY_MODES else RX[dataset]
+    return 3 if dataset == 'wisig' and modes in (FREQUENCY_MODES, STAGE_MODES) else RX[dataset]
 
 
 def panel_rows(rt, dataset, ids, rx, *, excluded=()):
@@ -151,8 +174,22 @@ def panel_rows(rt, dataset, ids, rx, *, excluded=()):
             fact = np.flatnonzero(np.isin(ids, old['ids']))
         if len(fact) != FACTOR_COUNT or not (rx[fact] == RX[dataset]).all():
             raise ValueError('Factor screen physical ID mismatch')
+        blocked = np.union1d(blocked, fact)
+        if rt.get('stage_from'):
+            earlier = Path(rt['stage_from'])
+            if earlier != root.parent / FREQUENCY_RETRY:
+                raise ValueError('Expected prior frozen real-gain stage screen')
+            source = earlier / dataset
+            if read(source/'complete.json') != panel_receipt(dataset, FACTOR_COUNT, FREQUENCY_MODES):
+                raise ValueError('Expected the prior frequency panel physical IDs')
+            with np.load(source/'predictions.npz', allow_pickle=False) as old:
+                last = np.flatnonzero(np.isin(ids, old['ids']))
+            if len(last) != FACTOR_COUNT or not (rx[last] == receiver_index(dataset, FREQUENCY_MODES)).all():
+                raise ValueError('Previous frequency panel physical ID mismatch')
+            return screen_rows(ids, rx, receiver_index(dataset, STAGE_MODES),
+                               excluded=np.union1d(blocked, last), limit=FACTOR_COUNT, seed=STAGE_SEED)
         return screen_rows(ids, rx, receiver_index(dataset, FREQUENCY_MODES),
-                           excluded=np.union1d(blocked, fact), limit=FACTOR_COUNT, seed=FREQUENCY_SEED)
+                           excluded=blocked, limit=FACTOR_COUNT, seed=FREQUENCY_SEED)
     return screen_rows(ids,rx,RX[dataset],excluded=blocked,limit=FACTOR_COUNT,seed=FACTOR_SEED)
 
 
@@ -169,12 +206,9 @@ def fusion_outputs(rt, observed, anchor, companion, action, variance):
     return ranked
 
 
-def time_frequency_update(path, observed, anchor, action, variance):
+def time_readouts(path, operations, scope):
     costs = {}
-    for method, operation in (
-        ('frequency_real', lambda: frequency_real(observed, anchor, action, variance)),
-        ('data_only', lambda: fuse(observed, anchor, anchor, action, variance)),
-    ):
+    for method, operation in operations:
         for _ in range(8):
             operation()
         torch.cuda.synchronize()
@@ -185,8 +219,26 @@ def time_frequency_update(path, observed, anchor, action, variance):
             torch.cuda.synchronize()
             times.append(1e3 * (perf_counter() - started))
         costs[method] = dict(median_ms=float(np.median(times)), p95_ms=float(np.quantile(times, .95)))
-    write(path, dict(scope='B1 standalone observation update only, fixed action and anchor',
+    write(path, dict(scope=scope,
                      gpu=torch.cuda.get_device_name(), precision='FP32', timings=costs))
+
+
+def time_frequency_update(path, observed, anchor, action, variance):
+    time_readouts(path, (
+        ('frequency_real', lambda: frequency_real(observed, anchor, action, variance)),
+        ('data_only', lambda: fuse(observed, anchor, anchor, action, variance)),
+    ), 'B1 standalone observation update only, fixed action and anchor')
+
+
+def stage_outputs(gates, received, real_gain, context, priors, timing):
+    operations = [(name, partial(gate, received, real_gain, context, priors))
+                  for name, gate in zip(STAGE_MODES[3:], gates, strict=True)]
+    if timing is not None:
+        time_readouts(timing, operations, 'B1 two stages including priors and CG, frozen inputs/context')
+    outputs = tuple(operation()[-1] for _, operation in operations)
+    if not all(bool(torch.isfinite(x).all()) for x in outputs):
+        raise ValueError('Nonfinite in-stage restoration')
+    return outputs
 
 
 class WiSigRealGain(nn.Module):
@@ -308,6 +360,25 @@ def classify_lora(joint, reader, wave):
     return joint.classify_aperture(reader,joint.received_aperture(packets,DEV))
 
 
+def lora_archives(rt):
+    config = read(Path(rt['lora_ref'])/'runtime.json')
+    if (config['run_id'],config['code_commit']) != (LO_RA,LO_RA_COMMIT):
+        raise ValueError('Wrong frozen LoRa 8192-point real gain version')
+    w24 = Path(config['w24_release_root'])
+    sys.path.insert(0,str(w24))
+    archive_replay(rt).archive_imports(config,extra=(w24,))
+    from experiments.pamf_lora_main import w24_joint_pamf as joint, w24_native_training as native
+    return config, joint, native
+
+
+def load_lora_gain(config, native, contract, device):
+    stage = native.PHASE_ARMS[0]
+    gain = native.task_model(None,device)
+    gain.core.innovation = native.spectral_innovation(stage,device)
+    native.load_stage(Path(config['run_root']),stage,contract,gain.core,device)
+    return gain.eval().requires_grad_(False)
+
+
 @torch.no_grad()
 def predict_lora(rt, folder):
     count,modes = panel_dimensions(rt)
@@ -316,25 +387,18 @@ def predict_lora(rt, folder):
         # Bind the native-length solver before the historical W24 import path.
         from experiments.pamf_lora_main.lora_dura_stage2_reference import load_frozen_stage2
 
-    config = read(Path(rt['lora_ref'])/'runtime.json')
-    if (config['run_id'],config['code_commit']) != (LO_RA,LO_RA_COMMIT):
-        raise ValueError('Wrong frozen LoRa 8192-point real gain version')
-    w24 = Path(config['w24_release_root'])
-    sys.path.insert(0,str(w24))
-    archive_replay(rt).archive_imports(config,extra=(w24,))
-    from experiments.pamf_lora_main import w24_joint_pamf as joint, w24_native_training as native
-
+    config, joint, native = lora_archives(rt)
     source = Path(config['source_root'])
     contract,reader,_,_ = joint.boot(config,DEV)
-    stage = native.PHASE_ARMS[0]
-    gain = native.task_model(None,DEV)
-    gain.core.innovation = native.spectral_innovation(stage,DEV)
-    native.load_stage(Path(config['run_root']),stage,contract,gain.core,DEV)
-    gain.eval().requires_grad_(False)
+    gain = load_lora_gain(config, native, contract, DEV)
     if unified:
         dura = load_frozen_stage2(Path(rt['lora_stage2']), DEV)
     else:
         dura = native.dura_model(Path(rt['project'])/'runs'/native.DURA_RUN,contract,DEV).eval().requires_grad_(False)
+    gates = None
+    if rt.get('stage_from'):
+        from experiments.pamf_lora_main.gain_dura_stage_fit import load_gates
+        gates = load_gates(rt, 'lora', DEV)
 
     def apply(packets, timing=None):
         y = tensor(np.ascontiguousarray(packets).view(np.float32),DEV).view(torch.complex64)
@@ -350,9 +414,12 @@ def predict_lora(rt, folder):
             coarse,action,variance = dura.estimate(received)
             recovered = complex_iq(dura.unroll(received,coarse,action,variance))*scale
             anchor, companion = real_gain/scale, recovered/scale
-        if timing is not None:
-            time_frequency_update(timing, y/scale, anchor, action, variance)
-        solved = fusion_outputs(rt,y/scale,anchor,companion,action,variance)
+        if gates is None:
+            if timing is not None:
+                time_frequency_update(timing, y/scale, anchor, action, variance)
+            solved = fusion_outputs(rt,y/scale,anchor,companion,action,variance)
+        else:
+            solved = stage_outputs(gates, received, real_gain/scale, context, dura.prior, timing)
         values = (y,recovered,real_gain,*(z*scale for z in solved))
         return np.stack([classify_lora(joint,reader,z) for z in values])
 
@@ -377,18 +444,26 @@ def wifi_predictor(rt, original, config, gain):
     reader = original.tri.reader_factory(config).eval().requires_grad_(False)
     engine = original.tri.core.original_r69(Path(config['parent_root']))
     base = engine.pipeline.model
+    gates = None
+    if rt.get('stage_from'):
+        from experiments.pamf_lora_main.gain_dura_stage_fit import load_gates
+        gates = load_gates(rt, 'wisig', DEV)
 
     @torch.no_grad()
     def apply(block, timing=None):
         iq = tensor(block,DEV)
         y = complex_iq(iq)
-        (_,action,variance) = base.estimate_context(iq)
+        context = base.estimate_context(iq)
+        _,action,variance = context
         (output,) = engine(iq)
         anchor = complex_iq(output)
         companion = gain(y)[-1]
-        if timing is not None:
-            time_frequency_update(timing, y, anchor, action, variance)
-        solved = fusion_outputs(rt,y,anchor,companion,action,variance)
+        if gates is None:
+            if timing is not None:
+                time_frequency_update(timing, y, anchor, action, variance)
+            solved = fusion_outputs(rt,y,anchor,companion,action,variance)
+        else:
+            solved = stage_outputs(gates, iq, companion, context, base.prior, timing)
         return np.asarray([original.classify(reader,z).argmax(1).tolist()
                            for z in (y,anchor,companion,*solved)],dtype=np.int16)
 
@@ -405,6 +480,17 @@ def smoke_wifi(rt, folder):
     write(folder/'smoke.json',dict(status='PASS',source_count=4,source_V_reads=0,target_reads=0))
 
 
+def load_wifi_gain(rt, device):
+    prior = Path(rt['factor_from'])/'wisig'
+    proof = read(prior/'fit.json')
+    if (proof['status'],proof['steps'],proof['seed'],proof['training_ids'])!=('SOURCE_FROZEN',STEPS,SEED,52604) \
+            or any(proof[k] for k in ('TX_reads','V_reads','F_reads','target_reads')):
+        raise ValueError('Missing legal frozen WiSig real-gain ancestor')
+    gain = WiSigRealGain().to(device).eval().requires_grad_(False)
+    gain.load_state_dict(torch.load(prior/'real_gain.pt',map_location=device,weights_only=True),strict=True)
+    return gain
+
+
 def predict_wifi(rt, folder, runtime):
     count,modes = panel_dimensions(rt)
     if not rt.get('factor_from'):
@@ -412,17 +498,10 @@ def predict_wifi(rt, folder, runtime):
     original,config = wifi_context(rt)
     source = Path(config['source_root'])
     if rt.get('factor_from'):
-        prior = Path(rt['factor_from'])/'wisig'
-        proof = read(prior/'fit.json')
-        if (proof['status'],proof['steps'],proof['seed'],proof['training_ids'])!=('SOURCE_FROZEN',STEPS,SEED,52604) \
-                or any(proof[k] for k in ('TX_reads','V_reads','F_reads','target_reads')):
-            raise ValueError('Missing legal frozen WiSig real-gain ancestor')
-        gain = WiSigRealGain().to(DEV).eval().requires_grad_(False)
-        checkpoint = prior/'real_gain.pt'
+        gain = load_wifi_gain(rt, DEV)
     else:
         gain = fit_wifi(folder,original,source)
-        checkpoint = folder/'real_gain.pt'
-    gain.load_state_dict(torch.load(checkpoint,map_location=DEV,weights_only=True),strict=True)
+        gain.load_state_dict(torch.load(folder/'real_gain.pt',map_location=DEV,weights_only=True),strict=True)
     apply = wifi_predictor(rt,original,config,gain)
     data,_,smoke_rows = original.core.source_iq(source)
     if apply(data[smoke_rows[:4]]).shape != (len(modes),4):
@@ -492,7 +571,10 @@ def independent_score(rt):
             raise ValueError('LoRa screen order drift')
         lora_truth=data['y'][index]
     wifi_truth=np.load(wifi_source/'V/labels.npy',allow_pickle=False)[np.asarray(order)[selected]]
-    calculate = score_frequency_panel if rt.get('frequency_from') else score_factor_panel if rt.get('factor_from') else score_panel
+    if rt.get('stage_from'):
+        calculate = score_stage_panel
+    else:
+        calculate = score_frequency_panel if rt.get('frequency_from') else score_factor_panel if rt.get('factor_from') else score_panel
     outputs={k:calculate(rows[k][1],y) for k,y in (('lora',lora_truth),('wisig',wifi_truth))}
     write(root/'scores.json',dict(status='ANALYZED',truth_last=True,target_reads=0,n_per_view=count,
                                   modes=list(modes),views=list(SCREEN_VIEWS),results=outputs))
@@ -560,7 +642,7 @@ def dispatch(runtime, rt):
         jobs={}
         for i,dataset in enumerate(('wisig','lora')):
             card=cards[min(i,len(cards)-1)]
-            if dataset == 'lora' and rt.get('frequency_from'):
+            if dataset == 'lora' and rt.get('frequency_from') and not rt.get('stage_from'):
                 wifi = jobs['wisig']
                 write(state, dict(status='RUNNING', workers={'wisig':wifi.pid},
                                   pending='lora_stage2_source_freeze'), exclusive=False)
@@ -593,7 +675,7 @@ def dispatch(runtime, rt):
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('action',choices=('publish','dispatch','lora','wisig','wifi-smoke','score'))
+    parser.add_argument('action',choices=('publish','dispatch','lora','wisig','wifi-smoke','score','stage-fit-lora','stage-fit-wisig'))
     parser.add_argument('runtime',type=Path)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--ssh-config',type=Path)
@@ -602,6 +684,7 @@ def main():
     modes.add_argument('--factor-screen',action='store_true')
     modes.add_argument('--frequency-screen',action='store_true')
     modes.add_argument('--retry-frequency',action='store_true')
+    modes.add_argument('--stage-screen',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
@@ -610,6 +693,8 @@ def main():
         releases=f'{project}/releases'
         if args.retry_frequency:
             run = FREQUENCY_RETRY
+        elif args.stage_screen:
+            run = STAGE_RUN
         else:
             run = SCORE_RUN if args.retry_score else FREQUENCY_RUN if args.frequency_screen else FACTOR_RUN if args.factor_screen else RUN
         rt={k:rt[k] for k in ('project','python','frozen_sources')}
@@ -621,10 +706,10 @@ def main():
         if args.retry_score:
             rt['score_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['score_from'])
-        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY):
+        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
-        if run in (FREQUENCY_RUN, FREQUENCY_RETRY):
+        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN):
             from experiments.pamf_lora_main.lora_dura_stage2_reference import RUN as LORA_STAGE2
             rt['frequency_from']=f'{project}/runs/{FACTOR_RUN}'
             rt['lora_stage2']=f'{project}/runs/{LORA_STAGE2}'
@@ -633,6 +718,10 @@ def main():
         if args.retry_frequency:
             rt['reuse_wisig'] = f'{project}/runs/{FREQUENCY_RUN}'
             rt['external_releases'].append(rt['reuse_wisig'])
+        if args.stage_screen:
+            rt['stage_from'] = f'{project}/runs/{FREQUENCY_RETRY}'
+            rt['external_releases'].append(rt['stage_from'])
+            rt['allowed_gpus'] = [0, 2, 3, 5, 7]
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)
@@ -641,8 +730,15 @@ def main():
     elif args.action=='wifi-smoke':
         numerical_policy()
         smoke_wifi(rt,Path(rt['run_root'])/'wisig')
+    elif args.action.startswith('stage-fit-'):
+        from experiments.pamf_lora_main.gain_dura_stage_fit import fit
+        numerical_policy()
+        fit(rt, args.action.removeprefix('stage-fit-'), DEV)
     else:
         numerical_policy()
+        if rt.get('stage_from'):
+            subprocess.run([sys.executable,'-u','-m',__spec__.name,'stage-fit-'+args.action,
+                            str(args.runtime)], check=True)
         folder=Path(rt['run_root'])/args.action
         folder.mkdir()
         if args.action=='lora':

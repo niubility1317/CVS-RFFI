@@ -1,0 +1,148 @@
+"""Fit both matched in-stage fusion arms on lawful, unlabeled source IQ."""
+from pathlib import Path
+from time import perf_counter
+
+import numpy as np
+import torch
+
+from experiments.cric_dura_comparison.io import read, tensor, write
+from experiments.pamf_lora_main import gain_dura_screen as screen
+from experiments.pamf_lora_main.gain_dura_stages import StageGain
+from experiments.pamf_lora_main.w24_native_dura import capture_scale, iq_error, source_pair
+from experiments.pamf_restoration.models import complex_iq, pair
+
+
+SEED, STEPS, BATCH = 2026113067, 3200, 8
+ARMS = ('stage_frequency', 'stage_packet')
+
+
+def source_training_pair(raw, rng):
+    clean, observed, _, _ = source_pair(raw, rng)
+    options = dict(device=observed.device, generator=rng, dtype=observed.real.dtype)
+    draw = torch.rand((len(observed), 3), **options)
+    # Additional generic colored, bursty receiver noise, independent of the test generator.
+    n = torch.randn(observed.shape, device=observed.device, generator=rng, dtype=observed.dtype)
+    filtered = n + .65 * torch.roll(n, 1, dims=-1) - .25 * torch.roll(n, 3, dims=-1)
+    time = torch.linspace(0, 1, observed.shape[-1], device=observed.device)
+    envelope = torch.exp(-.5 * ((time - draw[:, 1:2]) / (.02 + .12 * draw[:, 2:3])).square())
+    stress = (draw[:, :1] < .35) * (.15 + .6 * draw[:, 2:3]) * envelope
+    recorded = observed + stress * filtered / capture_scale(filtered)
+    scale = capture_scale(recorded)
+    return clean / scale, recorded / scale
+
+
+def phase_sensitive_loss(stages, clean):
+    out = stages[-1]
+    error = torch.fft.fft(out - clean, norm='ortho').abs().square()
+    denom = .03 + torch.fft.fft(clean, norm='ortho').abs().square()
+    weak_spectrum = (error / denom).log1p().mean()
+    return (iq_error(out, clean) + .2 * iq_error(out.diff(), clean.diff())
+            + .15 * weak_spectrum + .25 * iq_error(stages[0], clean))
+
+
+def training_components(rt, dataset, device):
+    if dataset == 'lora':
+        from experiments.pamf_lora_main.lora_dura_stage2_reference import load_frozen_stage2
+
+        config, joint, native = screen.lora_archives(rt)
+        joint.activate(config)
+        source = Path(config['source_root'])
+        contract = joint.source_contract(source)
+        data = joint.source_role(source, contract, 'U_s')[0]
+        if len(data) != 25200:
+            raise ValueError('Expected approved LoRa source U_s')
+        dura = load_frozen_stage2(Path(rt['lora_stage2']), device)
+        joint.load_restorer(*joint.training_runtime(config), contract, device)
+        gain = screen.load_lora_gain(config, native, contract, device)
+
+        def sample(rows):
+            packets = np.ascontiguousarray(data[rows]).view(np.float32)
+            return tensor(packets, device).view(torch.complex64)
+
+        return np.arange(2, len(data)), np.arange(2), sample, dura, gain
+
+    original, config = screen.wifi_context(rt)
+    data, fit_rows, reserved = original.core.source_iq(Path(config['source_root']))
+    if len(fit_rows) != 52604 or len(np.intersect1d(fit_rows, reserved)):
+        raise ValueError('Expected approved WiSig U_s fit mask and reserved source IQ')
+    engine = original.tri.core.original_r69(Path(config['parent_root']))
+    dura = engine.pipeline.model
+    gain = screen.load_wifi_gain(rt, device)
+
+    def sample(rows):
+        return complex_iq(tensor(data[rows], device))
+
+    return fit_rows, reserved, sample, dura, lambda raw: gain(raw)[-1]
+
+
+def fit(rt, dataset, device):
+    out = Path(rt['run_root']) / ('fit-' + dataset)
+    out.mkdir()
+    ids, reserved, sample, dura, gain = training_components(rt, dataset, device)
+    dura.eval().requires_grad_(False)
+    torch.manual_seed(SEED)
+    branches = [StageGain(packet_only=mode == ARMS[1]).to(device) for mode in ARMS]
+    branches[1].load_state_dict(branches[0].state_dict())
+    opts = [torch.optim.AdamW(item.parameters(), lr=3e-4, weight_decay=1e-4) for item in branches]
+    schedules = [torch.optim.lr_scheduler.CosineAnnealingLR(opt, STEPS, eta_min=3e-5) for opt in opts]
+    rng = torch.Generator(device=device).manual_seed(SEED + 1)
+    draws = np.random.default_rng(SEED)
+
+    def objectives(raw):
+        with torch.no_grad():
+            clean, observed = source_training_pair(raw, rng)
+            native_scale = capture_scale(raw)
+            raw_observed = observed * native_scale
+            if dataset == 'lora':
+                real_prior = gain(raw_observed) / native_scale
+            else:
+                # The archived WiSig DURA checkpoint uses the native cache units.
+                observed, clean = raw_observed, clean * native_scale
+                real_prior = gain(observed)
+            received = pair(observed)
+            context = dura.estimate_context(received)
+        return [phase_sensitive_loss(item(received, real_prior, context, dura.prior), clean) for item in branches]
+
+    for item, objective in zip(branches, objectives(sample(reserved[:2])), strict=True):
+        gradient, = torch.autograd.grad(objective, item.network[-1].weight)
+        if not bool(torch.isfinite(gradient).all() and gradient.norm() > 0):
+            raise ValueError('Real source fit smoke did not reach the active gate')
+    write(out/'smoke.json', dict(status='PASS', target_reads=0, F_reads=0, V_reads=0, TX_reads=0))
+    rng.manual_seed(SEED + 1)
+    torch.cuda.reset_peak_memory_stats()
+    start = perf_counter()
+    for step in range(1, STEPS + 1):
+        raw = sample(draws.choice(ids, BATCH, replace=False))
+        losses = objectives(raw)
+        for item, optimizer, schedule, loss in zip(branches, opts, schedules, losses, strict=True):
+            optimizer.zero_grad(set_to_none=True)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(item.parameters(), 1., error_if_nonfinite=True)
+            optimizer.step()
+            schedule.step()
+        if step == 1 or step % 100 == 0:
+            print(dataset, step, *(float(loss.detach()) for loss in losses), flush=True)
+
+    torch.cuda.synchronize()
+    with (out/'gates.pt').open('xb') as stream:
+        torch.save({name: item.state_dict() for name, item in zip(ARMS, branches, strict=True)}, stream)
+    write(out/'fit.json', dict(status='SOURCE_FROZEN', dataset=dataset, seed=SEED, steps=STEPS,
+          batch=BATCH, arms=list(ARMS), source_training_ids=len(ids),
+          parameters=sum(p.numel() for p in branches[0].parameters()), seconds=perf_counter()-start,
+          peak_cuda_bytes=torch.cuda.max_memory_allocated(), F_reads=0, V_reads=0, TX_reads=0, target_reads=0))
+
+
+def load_gates(rt, dataset, device):
+    root = Path(rt['run_root']) / ('fit-' + dataset)
+    proof = read(root/'fit.json')
+    if ((proof['status'], proof['dataset'], proof['seed'], proof['steps'], proof['arms'])
+            != ('SOURCE_FROZEN', dataset, SEED, STEPS, list(ARMS))
+            or any(proof[k] for k in ('F_reads', 'V_reads', 'TX_reads', 'target_reads'))):
+        raise ValueError('Expected complete source-only gates with fixed budget')
+    weights = torch.load(root/'gates.pt', map_location=device, weights_only=True)
+    branches = []
+    for name in ARMS:
+        item = StageGain(packet_only=name == ARMS[1]).to(device).eval().requires_grad_(False)
+        item.load_state_dict(weights[name], strict=True)
+        branches.append(item)
+    return branches
