@@ -1,0 +1,219 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-shared-practical-urban-s2026112957-r01",
+  "group_id": "phase1-crossdata-shared-dura-realgain",
+  "display_name": "LoRa 与 WiSig 共同恢复的低城区加权源域模拟训练筛查",
+  "description": "按用户优先低城区要求调整源 U 模拟场景比例，保留 clean 和其他五景；共同模型、固定筛查不变。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "authorization": "用户于 2026-11-28 明确授权两数据集源域教师指导训练；只用各自合法源 U 模拟 clean/受扰配对，隐藏 U 的 TX 真值，禁止源 V 和目标参与训练。",
+  "parent_run_ids": [
+    "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+    "20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+    "20261128-phase1-shared-twoprior-realgain-s2026112901-r01",
+    "20261128-phase1-shared-convex-realgain-s2026112905-r01",
+    "20261128-phase1-shared-selector-realgain-s2026112909-r01",
+    "20261128-phase1-shared-consistency-selector-s2026112913-r01",
+    "20261128-phase1-shared-physics-route-s2026112933-r01",
+    "20261128-phase1-shared-confidence-route-s2026112925-r01",
+    "20261128-phase1-shared-teacher-selector-s2026112937-r01",
+    "20261128-phase1-shared-matched-mse-s2026112937-r01",
+    "20261128-phase1-shared-teacher-mixture-s2026112941-r01",
+    "20261128-phase1-shared-matched-mixture-s2026112941-r01",
+    "20261128-phase1-shared-teacher-direct-s2026112945-r01",
+    "20261128-phase1-shared-matched-direct-s2026112945-r01",
+    "20261128-phase1-shared-r17-teacher-direct-s2026112949-r01",
+    "20261128-diagnostic-shared-r17-scale-s2026112953-r01",
+    "20261128-phase1-shared-bounded-teacher-s2026112957-r01",
+    "20261128-phase1-shared-bounded2-teacher-s2026112957-r01",
+    "20261128-phase1-shared-bounded2-teacher-s2026112957-r01",
+    "20261128-phase1-shared-anchor5-consistency-s2026112957-r01",
+    "20261128-phase1-shared-practical-pairs-s2026112957-r01",
+    "20261128-phase1-shared-practical4k-s2026112957-r01"
+  ],
+  "code": {
+    "commit": "8b7e1aeb2a96ac7a2db85f5013527df381317a80",
+    "checkout": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI CUDA FP32 / TF32 off, CPU independent scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-practical-urban-s2026112957-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa and WiSig/ManySig Main",
+    "contract_ref": "lora_rx5_main_v1:392005; ManySig Main original 7/63/30 F0 seed392005; VALIDATED_ONCE source caches",
+    "representation": "same 5% SharedBoundedGain and source teacher/anchor loss as prior small network; a fixed independent 4096-packet U-only practical simulation pool per dataset",
+    "source_receivers": [
+      "LoRa b200_1",
+      "WiSig RX1"
+    ],
+    "target_receivers": [],
+    "roles": {
+      "train": "U_s only",
+      "validation": "LoRa 60, WiSig 360 source V"
+    },
+    "physical_ids_ref": "existing first cross-data screen physical IDs, same paired channel observations",
+    "views": [
+      "clean",
+      "practical_low_urban"
+    ],
+    "exposure": "same source V RX panels and historical comparisons repeatedly exposed by prior development; no target input or truth"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "User-authorized frozen-classifier source-U guidance; frozen LoRa W24 E104 / WiSig Tri-SIG-TIME SSL F0 default heads provide clean teacher distributions and input gradients; no U TX, source V, target IQ/truth/statistics, classifier update or cross-dataset weight transfer. LoRa teacher exact original preprocessing forward with differentiable WideTracker surrogate backward, explicitly disclosed. Adds KL against the classifier distribution of the fixed source expert anchor on simulated observed U; both reference distributions detached."
+  },
+  "checkpoint": {
+    "initialization": "Independent zero correction. LoRa fixed skip buffer selects LoRa real-gain expert; WiSig fixed skip buffer selects WiSig R17. Source V results on this same exposed screening panel informed these initial weights. No target input/truth/statistics used.",
+    "sources": [
+      {
+        "ref": "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+        "role": "LoRa native R02/R07/R17"
+      },
+      {
+        "ref": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "role": "WiSig original full R17 and action"
+      },
+      {
+        "ref": "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+        "role": "LoRa E104 real-gain screen comparison only"
+      },
+      {
+        "ref": "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+        "role": "WiSig independently source-trained real-gain control"
+      },
+      {
+        "ref": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+        "role": "WiSig frozen DURA v1 same-packet screen predictions"
+      },
+      {
+        "ref": "20261128-diagnostic-lora-r69-full-w24-s2026112895-r01",
+        "role": "frozen same-ID LoRa-trained R69 architecture adaptation; distinct from original WiSig DURA v1 weights"
+      }
+    ],
+    "selection_rule": "Fixed source final step 1000. LoRa hard-scene net >=1 in each fixed half and clean >=-1 versus every available same-packet control including LoRa R69 adaptation. WiSig each half net >=2 and clean >=-2 against each control including fixed DURA v1. Original fixed WiSig DURA v1 checkpoint has no lawful matched LoRa transfer; disclose as unavailable."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex chat 01a2204f-bfeb-7fa1-bda9-d8961e4ee178",
+    "gpu_policy": "Two distinct GPUs from [2,3,4,6], each >=8192 MiB free; one worker per GPU; preserve all other owners and original 4096 pool run on GPUs 7 and 1.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-practical-urban-s2026112957-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-practical-urban-s2026112957-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-shared-practical-urban-s2026112957-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.shared_practical_urban_run publish --repo E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo --output E:/type10-7/local_artifacts/20261128-phase1-shared-practical-urban-s2026112957-r01/release --context E:/type10-7/local_artifacts/20261128-phase1-shared-practical-urban-s2026112957-r01/context.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop affected run on provenance/data-contract mismatch, occupied immutable output, no source-only checkpoint smoke, nonfinite loss/gradient, prediction matrix mismatch, query or truth-boundary violation; preserve partial artifacts and all other processes."
+  },
+  "expected_artifacts": [
+    "lora/gain.pt",
+    "wisig/gain.pt",
+    "lora/screen-score.json",
+    "wisig/screen-score.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "paired repaired/harmed/net",
+      "95% paired bootstrap",
+      "fixed two-half net",
+      "training seconds",
+      "peak GPU bytes",
+      "parameters"
+    ],
+    "dimensions": [
+      "dataset",
+      "single source receiver",
+      "physical ID",
+      "clean",
+      "practical_low_urban"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-practical-urban-s2026112957-r01/{lora,wisig}/screen.npz",
+    "scorer_ref": "experiments/pamf_lora_main/shared_practical_urban_run.py"
+  },
+  "rows": [
+    {
+      "row_id": "lora",
+      "method": "SharedBoundedGain trained on source U simulation emphasizing practical_low_urban, with clean and five other practical scenes retained",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/shared_practical_urban_run.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-practical-urban-s2026112957-r01-release/runtime.json",
+      "data_overrides": {
+        "training": "source U simulated received/clean; frozen original default-head teacher, no TX labels, V or target",
+        "source_screen_receiver": "b200_1",
+        "screen_physical_packets": 60
+      },
+      "seeds": {
+        "model": 2026112957,
+        "split": 392005,
+        "data": 2026112957,
+        "augmentation": 2026112958,
+        "support": null,
+        "evaluation": 2026112852
+      },
+      "seed_notes": "Support inapplicable; preregistered existing source V observations and fixed paired half permutation.",
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW lr=0.0003, weight_decay=0.0001, cosine to 0.00003",
+      "budget_ref": "1000 updates x batch 4; 4096 source U simulation pool; teacher forward samples including smoke 12008",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-practical-urban-s2026112957-r01/lora",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-practical-urban-s2026112957-r01/lora-worker.log",
+      "command": "python -u -m experiments.pamf_lora_main.shared_practical_urban_run worker /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-practical-urban-s2026112957-r01-release/runtime.json lora",
+      "expected_artifacts": [
+        "gain.pt",
+        "fit.json",
+        "screen.npz",
+        "screen-frozen.json",
+        "screen-score.json"
+      ]
+    },
+    {
+      "row_id": "wisig",
+      "method": "SharedBoundedGain trained on source U simulation emphasizing practical_low_urban, with clean and five other practical scenes retained",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/shared_practical_urban_run.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-practical-urban-s2026112957-r01-release/runtime.json",
+      "data_overrides": {
+        "training": "source U simulated received/clean; frozen original default-head teacher, no TX labels, V or target",
+        "source_screen_receiver": "RX1",
+        "screen_physical_packets": 360
+      },
+      "seeds": {
+        "model": 2026112957,
+        "split": 392005,
+        "data": 2026112957,
+        "augmentation": 2026112958,
+        "support": null,
+        "evaluation": 2026112852
+      },
+      "seed_notes": "Support inapplicable; preregistered existing source V observations and fixed paired half permutation.",
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW lr=0.0003, weight_decay=0.0001, cosine to 0.00003",
+      "budget_ref": "1000 updates x batch 24; 4096 source U simulation pool; teacher forward samples including smoke 72032",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-practical-urban-s2026112957-r01/wisig",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-shared-practical-urban-s2026112957-r01/wisig-worker.log",
+      "command": "python -u -m experiments.pamf_lora_main.shared_practical_urban_run worker /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-shared-practical-urban-s2026112957-r01-release/runtime.json wisig",
+      "expected_artifacts": [
+        "gain.pt",
+        "fit.json",
+        "screen.npz",
+        "screen-frozen.json",
+        "screen-score.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Hypothesis: user-prioritized low-urban simulation receives more source training exposure while retaining other conditions, improving difficult-case correction. In previously exposed WiSig V, the balanced 4096 run scored 333/360 vs R17 332 (corrected 2, harmed 1, half nets +1/0, 95% CI -2/+4), failing the screen. The balanced LoRa result was not read at preregistration.",
+    "Each dataset draws the same 4096 distinct source U physical indices as the balanced run using seed 2026113018. Fixed assignment: 512 clean, 1792 practical_low_urban, and the other five practical scenes get 358 or 359 each. Some physical samples receive different simulated scenes; source-only namespace and independent simulation seeds remain, no target observations or statistics read.",
+    "Same shared network, 5% cap, optimizer, 1000 steps, source teacher KL and anchor preservation, user-authorized frozen teachers, dataset-specific fixed anchors and independent weights. Teacher forwards including smoke LoRa/WiSig 12008/72032. The simulator and teacher ancestral costs and real inference latency remain to be measured and reported.",
+    "Training clean and received are normalized together by current simulated received RMS; LoRa native 8192 and WiSig 256 adapters retain their registered sample contracts. U TX labels, source V and target IQ/truth/statistics are not used in training or threshold fitting.",
+    "The source V panel was repeatedly exposed and informed this candidate, so screening is development evidence. Fixed difficult-case and clean panel, paired controls, and per-half thresholds unchanged; any pass requires independent preregistered source replication before a formal target matrix. A low-urban emphasis could affect other scenes, which require full reporting after any promotion."
+  ],
+  "registered_at": "2026-11-28T10:17:23+00:00"
+}
