@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import torch
 
-from experiments.pamf_lora_main.shared_dura_realgain import SharedConvexGain, SharedDuraRealGain, SharedTwoPriorGain
+from experiments.pamf_lora_main.shared_dura_realgain import SharedConvexGain, SharedDuraRealGain, SharedPacketSelector, SharedTwoPriorGain
 
 
 class IdentityAction:
@@ -15,6 +15,23 @@ class IdentityAction:
 
 
 class SharedDuraRealGainTest(unittest.TestCase):
+    def test_packet_selector_uses_one_expert_and_supports_both_packet_lengths(self):
+        torch.manual_seed(17)
+        short, long = SharedPacketSelector(32), SharedPacketSelector(1024)
+        long.load_state_dict(short.state_dict(), strict=True)
+        for model, width in ((short, 32), (long, 1024)):
+            y = torch.randn(2, 8 * width, dtype=torch.complex64)
+            a, b = torch.randn_like(y), torch.randn_like(y)
+            logits = model.logits(y, a, b, IdentityAction())
+            self.assertEqual(logits.shape, (2,))
+            torch.testing.assert_close(model(y, a, b, IdentityAction()), b, rtol=0, atol=0)
+            torch.nn.functional.binary_cross_entropy_with_logits(logits, torch.tensor([0., 1.])).backward()
+            self.assertTrue(torch.isfinite(model.head.weight.grad).all())
+            self.assertGreater(model.head.weight.grad.norm().item(), 0)
+            with torch.no_grad():
+                model.head.bias.fill_(-1.)
+            torch.testing.assert_close(model(y, a, b, IdentityAction()), a, rtol=0, atol=0)
+
     def test_convex_gate_uses_same_weights_and_stays_between_experts(self):
         torch.manual_seed(15)
         short, long = SharedConvexGain(32), SharedConvexGain(1024)
