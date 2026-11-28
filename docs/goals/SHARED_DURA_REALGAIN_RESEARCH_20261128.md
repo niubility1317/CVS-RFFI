@@ -30,8 +30,9 @@ LoRa 实增益原版的历史 Full：六景均值 82.2967%、低城区 62.1167%�
 | 源教师指导逐频实增益，从 R17 起步 | 31 | 178 | 未晋级；同 seed F-free 对照为 15/162，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-r17-teacher-direct-s2026112949-r01/report.md) |
 | 源教师指导 1% 有界逐频实增益 | 33 | 333 | 未晋级；同 seed F-free 对照为 34/332，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-bounded-teacher-s2026112957-r01/report.md)。共用网络与上限，独立权重的起点由已曝光源 V 决定：LoRa 实增益、WiSig R17 |
 | 源教师指导 2% 有界逐频实增益 | 34 | 333 | 未晋级；同 seed F-free 对照为 34/332，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-bounded2-teacher-s2026112957-r01/report.md)。LoRa 相对实增益净 0 包，WiSig 相对 R17 净 +1 包，固定半区均未达门槛；2% 根据已曝光的 1% 源筛查结果提出 |
-| 源教师及锚点分布保持 | 待完成 | 待完成 | `20261128-phase1-shared-anchor-consistency-s2026112957-r01` 正在两数据集源 U 训练；同 2% 网络、锚点和 seed，新增受扰源包上的锚点识别分布保持损失 |
-| 5% 修正的源教师及锚点分布保持 | 待完成 | 待完成 | `20261128-phase1-shared-anchor5-consistency-s2026112957-r01` 已发布；采用共同锚点分布保持目标和 5% 逐包 RMS 修正上限，2% 锚点保持版尚未出结果前登记 |
+| 源教师及锚点分布保持 | 34 | 333 | 未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-anchor-consistency-s2026112957-r01/report.md)。相对 LoRa 实增益净 0、WiSig R17 净 +1，两个固定半区均未达门槛；同 seed 2% 教师版对照分别净 0、0 |
+| 5% 修正的源教师及锚点分布保持 | 33 | 331 | 未晋级，[报告](../../automation_reports/CV-SincNet/20261128-phase1-shared-anchor5-consistency-s2026112957-r01/report.md)。相对 LoRa 实增益及 WiSig R17 均净 -1 包；2% 锚点保持版尚未出结果前登记 |
+| 源伪标签保守专家路由 | 待完成 | 待完成 | `20261128-phase1-shared-risk-router-s2026112957-r01` 正在源 U 训练；用各数据集 clean 教师伪标签监督同一网络，优先保留源选择强锚点，推理仅用当前包 |
 
 真实预测、逐对照 clean、改对改错、分半结果和配对区间见各报告及其 `screen-score.json`，不得从表中推断正式测试分数。示例：教师包级连续融合在 WiSig 类别 3 为 10/55，R17 为 46/55，存在明确单类退化。源 U 教师训练得到用户单独授权，方法属于 F-guided，祖先、伪标签和额外成本见各报告。无教师训练控制只表示新增模块不读取教师，LoRa 实增益父专家仍保留既有 E104 指导祖先。
 
