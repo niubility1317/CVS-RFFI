@@ -1,0 +1,42 @@
+{
+  "status": "READ_ONLY_SOURCE_AUDIT",
+  "run": "20261128-phase1-wisig-r17-spectral-gain-s2026112877-r01",
+  "reference": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+  "receiver": 6,
+  "truth_last": true,
+  "direct_predictions_match": true,
+  "views": {
+    "clean": {
+      "n": 360,
+      "fusion_correct": 360,
+      "r69_correct": 360,
+      "repaired": 0,
+      "harmed": 0,
+      "net": 0,
+      "half_nets": [
+        0,
+        0
+      ],
+      "ci95": [
+        0,
+        0
+      ]
+    },
+    "practical_low_urban": {
+      "n": 360,
+      "fusion_correct": 308,
+      "r69_correct": 309,
+      "repaired": 25,
+      "harmed": 26,
+      "net": -1,
+      "half_nets": [
+        5,
+        -6
+      ],
+      "ci95": [
+        -15,
+        12.024999999999864
+      ]
+    }
+  }
+}

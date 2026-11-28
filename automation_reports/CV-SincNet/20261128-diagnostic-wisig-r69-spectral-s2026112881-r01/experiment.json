@@ -1,0 +1,120 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-diagnostic-wisig-r69-spectral-s2026112881-r01",
+  "group_id": "phase1-wisig-r17-real-gain-spectral",
+  "display_name": "WiSig 频域实增益源筛查补充 DURA v1 同包对照",
+  "description": "在频域实增益候选源训练期间固定 RX6 源 V 的 360 个物理包；候选与历史 R69 的 clean 和 low urban 预测全部冻结后独立同包评分。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "authorization": "用户要求各数据集筛查对比 DURA，源 V 预测冻结后独立评分。",
+  "parent_run_ids": [
+    "20261128-phase1-wisig-r17-spectral-gain-s2026112877-r01",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02"
+  ],
+  "code": {
+    "commit": "114265fb51f8bfd1901ad69cb31bfb2e693cfa44",
+    "checkout": "E:/codex/home/worktrees/wisig-r69-screen-audit/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python CPU; read-only",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-wisig-r17-spectral-gain-s2026112877-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig/ManySig Main",
+    "contract_ref": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "representation": "256-point source Full observations and frozen original reader/default head",
+    "source_receivers": [
+      6
+    ],
+    "target_receivers": [],
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": 360
+    },
+    "split_id": "original ManySig Main F0 seed392005",
+    "physical_ids_ref": "candidate screen.npz; equality against historical R69 predictions required",
+    "views": [
+      "clean",
+      "practical_low_urban"
+    ]
+  },
+  "permissions": {
+    "regime": "frozen_evaluation",
+    "query_use": "none",
+    "claim_scope": "Source V developmental screen; historical V exposure; no target access or model fitting."
+  },
+  "checkpoint": {
+    "initialization": "no training",
+    "sources": [
+      {
+        "ref": "20261128-phase1-wisig-r17-spectral-gain-s2026112877-r01",
+        "role": "frozen spectral candidate source predictions"
+      },
+      {
+        "ref": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+        "role": "previously frozen R69 source predictions"
+      }
+    ],
+    "selection_rule": "Low urban net at least +2 in each of two predetermined halves, clean net at least -2 overall; promotion also needs every candidate preregistered comparator. This is a supplemental preregistered baseline; if absent or incompatible, mark missing."
+  },
+  "execution": {
+    "host": "N607 CPU read-only",
+    "launch_owner": "Codex chat 01a2204f-bfeb-7fa1-bda9-d8961e4ee178",
+    "gpu_policy": "CPU only",
+    "launch_command": "Run committed audit_wisig_dura_control.py via SSH standard input in candidate release, with CUDA_VISIBLE_DEVICES empty and candidate run id as argument.",
+    "stop_rule": "Stop on incomplete frozen predictions, unmatched IDs or direct decisions, incorrect RX, or failed truth-last boundary."
+  },
+  "expected_artifacts": [
+    "r69_source_audit.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct count",
+      "paired repaired/harmed/net",
+      "95% paired bootstrap",
+      "two fixed half nets"
+    ],
+    "dimensions": [
+      "source RX6",
+      "360 physical IDs",
+      "clean",
+      "practical_low_urban"
+    ],
+    "scorer_ref": "experiments/pamf_lora_main/audit_wisig_dura_control.py",
+    "bootstrap_draws": 2000,
+    "half_seed": 2026112881,
+    "bootstrap_seed": 2026112886
+  },
+  "rows": [
+    {
+      "row_id": "wisig-rx6-r69",
+      "method": "fixed spectral fusion versus fixed DURA v1 R69",
+      "config_ref": "experiments/pamf_lora_main/audit_wisig_dura_control.py",
+      "data_overrides": {
+        "RX": 6,
+        "V": 360
+      },
+      "seeds": {
+        "model": 2026112877,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112881
+      },
+      "seed_notes": "Model and split fixed by candidate; no new draws except predetermined halves and bootstrap; support not applicable.",
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "output_root": "E:/type10-7/automation_reports/CV-SincNet/20261128-diagnostic-wisig-r69-spectral-s2026112881-r01",
+      "command": "Read-only independent source audit after predictions freeze."
+    }
+  ],
+  "notes": [
+    "Comparator and thresholds specified while candidate training is active, before its screen score.",
+    "Validate identical received-observation direct predictions before source truth linkage.",
+    "Reuse historical R69 predictions only if all physical IDs exist; preserve missing result otherwise."
+  ],
+  "registered_at": "2026-11-28T05:23:27+00:00"
+}
