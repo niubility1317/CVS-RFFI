@@ -7,7 +7,7 @@ from torch import nn
 class SpectralInnovation(nn.Module):
     """Share frequency-power evidence across chirps while retaining individual phase."""
 
-    def __init__(self, *, phase_aware=False, quadrature=False):
+    def __init__(self, *, phase_aware=False, quadrature=False, samples=1024):
         super().__init__()
         if quadrature and not phase_aware:
             raise ValueError('Quadrature gain requires phase observations')
@@ -20,7 +20,7 @@ class SpectralInnovation(nn.Module):
         )
         nn.init.zeros_(self.gain[-1].weight)
         nn.init.zeros_(self.gain[-1].bias)
-        bins = torch.fft.fftfreq(1024).abs()
+        bins = torch.fft.fftfreq(samples).abs()
         self.register_buffer('noise_band', bins >= 1/3, persistent=False)
         self.register_buffer('edit_band', bins > 0, persistent=False)
 
