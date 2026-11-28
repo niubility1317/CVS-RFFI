@@ -104,7 +104,8 @@ FORMAL_ARMS = {RUN: CANDIDATE, RUN_FIXED_PL: FIXED_PL,
                **{run: arms[-1] for run, arms in raw_train.RUNS.items()}}
 FIXED_FULL_ARMS = {raw_train.ALIGN_RUN:raw_train.ALIGN_ARMS,
                    raw_train.INNOVATION_RUN:raw_train.INNOVATION_ARMS,
-                   raw_train.PHASE_RUN:raw_train.PHASE_ARMS}
+                   raw_train.PHASE_RUN:raw_train.PHASE_ARMS,
+                   raw_train.DIRECTION_RUN:raw_train.DIRECTION_ARMS}
 
 
 def formal_arms(run):
@@ -898,6 +899,8 @@ def main():
                                 const=raw_train.INNOVATION_RUN)
     pseudo_options.add_argument('--raw-frequency-quadrature',dest='run_id',action='store_const',
                                 const=raw_train.PHASE_RUN)
+    pseudo_options.add_argument('--raw-direction-projected',dest='run_id',action='store_const',
+                                const=raw_train.DIRECTION_RUN)
     col=actions.add_parser('collect')
     for cmd,fields in ((pub,('repo','context','ssh-config','output')),(col,('submit','dataset','ssh-config','output'))):
         for field in fields:
@@ -963,7 +966,8 @@ def main():
                            raw_train.REL_RUN: [7,6,2,0], raw_train.VISIBLE_RUN: [7,2,6,3],
                            raw_train.GEOMETRY_RUN: [7,2,0,6], raw_train.STREAM_RUN: [6,5,7,2,0],
                            raw_train.PAIR_RUN: [6,7,2,0,3], raw_train.ALIGN_RUN: [0,7,2,6,3],
-                           raw_train.INNOVATION_RUN: [0,7,2,6,3], raw_train.PHASE_RUN: [7,5,2,0,6,3]}
+                           raw_train.INNOVATION_RUN: [0,7,2,6,3], raw_train.PHASE_RUN: [7,5,2,0,6,3],
+                           raw_train.DIRECTION_RUN: [0,7,5,2,6,3]}
         rt.update(run_id=run,runner=__spec__.name,code_commit=release_commit(args.repo),
                   release_root=str(releases/f'{run}-release'),run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),

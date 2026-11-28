@@ -7,6 +7,9 @@ from experiments.pamf_lora_main.w24_clean_geometry import clean_geometry_risk
 from experiments.pamf_lora_main.w24_native_dura import NativeDura, iq_error, source_pair
 from experiments.pamf_lora_main.w24_native_edit_alignment import edit_parts
 from experiments.pamf_lora_main.w24_native_spectral_innovation import SpectralInnovation
+from experiments.pamf_lora_main.w24_native_direction import (
+    DirectionRefiner, projected_pair_loss, remove_coarse_component,
+)
 from experiments.pamf_lora_main.w24_strong_source import StrongSourceMix
 from experiments.pamf_lora_main.w24_native_stream import NativeStreamRefiner
 from experiments.pamf_lora_main.w24_native_noise_pair import NoisePairRefiner, PairedNoiseViews
@@ -127,7 +130,7 @@ def test_raw_formal_receipt_preserves_w24_parent_and_source_control():
         assert not joint.qualifies(scores,mode)
 
 
-@pytest.mark.parametrize('run',(train.ALIGN_RUN,train.INNOVATION_RUN,train.PHASE_RUN))
+@pytest.mark.parametrize('run',(train.ALIGN_RUN,train.INNOVATION_RUN,train.PHASE_RUN,train.DIRECTION_RUN))
 def test_fixed_native_arms_enter_formal_without_reading_source_scores(monkeypatch, tmp_path, run):
     def unexpected_read(*args):
         pytest.fail('Formal prediction tried to open a source score before the baseline')
@@ -208,6 +211,36 @@ def test_phase_aware_innovation_can_turn_a_frequency_residual_with_bounded_gain(
     assert torch.isfinite(candidate(y,y*0)).all()
     with pytest.raises(ValueError,match='phase'):
         SpectralInnovation(quadrature=True)
+
+
+def test_direction_projection_removes_complex_coarse_component_in_deployed_center():
+    rng=torch.Generator().manual_seed(402)
+    coarse=torch.randn(3,8192,dtype=torch.complex64,generator=rng)
+    coarse[1].zero_()
+    proposal=(torch.randn(3,8192,dtype=torch.complex64,generator=rng)+(2+1j)*coarse).requires_grad_()
+
+    class Frontend:
+        def aperture(self, iq):
+            chirps=iq.unflatten(-1,(8,1024))
+            return chirps[..., :432]+.2*chirps.roll(1,dims=1)[...,24:456]
+
+    frontend=Frontend()
+    direction=remove_coarse_component(proposal,coarse,frontend)
+    axis=frontend.aperture(coarse)[..., :384]
+    selected=torch.tensor([True,False,False])
+    inner=(frontend.aperture(direction)[..., :384]*axis.conj()).mean((1,2))
+    torch.testing.assert_close(inner,torch.zeros_like(inner),rtol=0,atol=2e-6)
+    torch.testing.assert_close(direction[1],proposal[1],rtol=0,atol=0)
+    y=frontend.aperture(proposal.detach())[..., :384]
+    target=frontend.aperture(-proposal.detach())[..., :384]
+    loss=projected_pair_loss(frontend.aperture(direction)[..., :384],axis,target-y,selected)
+    assert loss>0
+    loss.backward()
+    assert torch.count_nonzero(proposal.grad[1:])==0 and torch.count_nonzero(proposal.grad[0])>0
+
+    head=DirectionRefiner(projected=True)
+    framed=coarse.unflatten(-1,(8,1024))
+    torch.testing.assert_close(head(framed,framed*.75),torch.zeros_like(framed))
 
 
 def test_native_aperture_projection_annihilates_the_exact_visible_functionals():

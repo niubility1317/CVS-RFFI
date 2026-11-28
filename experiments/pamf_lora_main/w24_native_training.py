@@ -24,6 +24,9 @@ from experiments.pamf_lora_main.w24_native_noise_pair import (
 )
 from experiments.pamf_lora_main.w24_native_edit_alignment import ALIGNMENT_WEIGHT, ORTHOGONAL_WEIGHT, edit_parts
 from experiments.pamf_lora_main.w24_native_spectral_innovation import SpectralInnovation
+from experiments.pamf_lora_main.w24_native_direction import (
+    COARSE_DOSE, DIRECTION_WEIGHT, DirectionRefiner, projected_pair_loss, remove_coarse_component,
+)
 from experiments.pamf_restoration.models import complex_iq, pair
 
 
@@ -47,20 +50,22 @@ INNOVATION_RUN = '20261128-phase1-lora-raw8192-spectral-innovation-s2026113031-r
 INNOVATION_ARMS = ('baseline_continue_native', 'spectral_innovation_native')
 PHASE_RUN = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 PHASE_ARMS = ('frequency_inphase_native', 'frequency_quadrature_native')
+DIRECTION_RUN = '20261128-phase1-lora-raw8192-direction-projected-s2026113041-r01'
+DIRECTION_ARMS = ('direction_free_native', 'direction_projected_native')
 GAIN_ARMS = (INNOVATION_ARMS[-1], *PHASE_ARMS)
 CONTINUATIONS = {REL_RUN: REL_ARMS, VISIBLE_RUN: WAVE_ARMS, GEOMETRY_RUN: GEOMETRY_ARMS,
                  STREAM_RUN: STREAM_ARMS, PAIR_RUN: PAIR_ARMS, ALIGN_RUN: ALIGN_ARMS,
-                 INNOVATION_RUN: INNOVATION_ARMS, PHASE_RUN: PHASE_ARMS}
+                 INNOVATION_RUN: INNOVATION_ARMS, PHASE_RUN: PHASE_ARMS, DIRECTION_RUN: DIRECTION_ARMS}
 TASK_STAGES = (TASK, *(arm for modes in CONTINUATIONS.values() for arm in modes))
 RUNS = {DURA_RUN: STAGES, TASK_RUN: (TASK,), **CONTINUATIONS}
 STAGE_RUN = {stage:run for run,stages in RUNS.items() for stage in stages}
 SEEDS = {DURA_RUN: 2026113009, TASK_RUN: 2026113011, REL_RUN: 2026113015,VISIBLE_RUN: 2026113017,
          GEOMETRY_RUN: 2026113021, STREAM_RUN: 2026113023, PAIR_RUN: 2026113027,
-         ALIGN_RUN: 2026113031, INNOVATION_RUN: 2026113031, PHASE_RUN: 2026113037}
+         ALIGN_RUN: 2026113031, INNOVATION_RUN: 2026113031, PHASE_RUN: 2026113037, DIRECTION_RUN: 2026113041}
 STEPS = {**dict(zip(STAGES,(10000,10000,12000),strict=True)), TASK:18000,
          **dict.fromkeys((*REL_ARMS,*WAVE_ARMS,*GEOMETRY_ARMS),15000), **dict.fromkeys(STREAM_ARMS,18000),
          **dict.fromkeys((*PAIR_ARMS,*ALIGN_ARMS,*INNOVATION_ARMS),20000),
-         **dict.fromkeys(PHASE_ARMS,36000)}
+         **dict.fromkeys(PHASE_ARMS,36000), **dict.fromkeys(DIRECTION_ARMS,30000)}
 BATCH_ROLE = 8
 DURA_LR = 2e-4
 TASK_LR = 4e-5
@@ -76,6 +81,8 @@ class NativeTaskRestorer(nn.Module):
         self.core.stream = None
         self.core.refine = None
         self.core.innovation = None
+        self.core.direction = None
+        self.direction_frontend = None
         if parent is not None:
             state = parent.state_dict()
             pos = state['temporal_position'].T.unsqueeze(0)
@@ -104,6 +111,14 @@ class NativeTaskRestorer(nn.Module):
             state = observed + .5 * (corrected-observed)
             update = self.core.innovation(observed,state)
             return coarse + (update * rotation * rms).flatten(-2)
+        if self.core.direction is not None:
+            reference = raw + COARSE_DOSE * (coarse-raw)
+            state = observed + (.5 * COARSE_DOSE) * (corrected-observed).detach()
+            proposal = (self.core.direction(observed,state) * rotation * rms).flatten(-2)
+            if self.core.direction.projected:
+                proposal = remove_coarse_component(proposal,(reference-raw).detach(),self.direction_frontend)
+            final = reference + proposal
+            return (reference,final) if return_intermediate else final
         return coarse if self.core.stream is None else self.core.stream(raw, coarse)
 
 
@@ -121,6 +136,11 @@ def build_projector(frontend,device):
 
 def spectral_innovation(stage, device):
     return SpectralInnovation(phase_aware=stage in PHASE_ARMS,quadrature=stage==PHASE_ARMS[-1]).to(device)
+
+
+def add_direction_refiner(model, frontend, stage, device):
+    model.direction_frontend = frontend.eval().requires_grad_(False)
+    model.core.direction = DirectionRefiner(projected=stage==DIRECTION_ARMS[-1]).to(device)
 
 
 def _proof(stage,contract,model_proof):
@@ -162,6 +182,10 @@ def _proof(stage,contract,model_proof):
     if stage in PHASE_ARMS and (model_proof['F_trainable'] or model_proof['initialization']!=TASK_RUN
             or model_proof['frequency_quadrature']!=(stage==PHASE_ARMS[-1])):
         raise ValueError('Unexpected native frequency quadrature branch or parent')
+    if stage in DIRECTION_ARMS and (model_proof['F_trainable'] or model_proof['initialization']!=TASK_RUN
+            or model_proof['direction_projected']!=(stage==DIRECTION_ARMS[-1])
+            or model_proof['coarse_dose']!=COARSE_DOSE):
+        raise ValueError('Unexpected native direction-refinement branch or parent')
 
 
 def load_stage(root, stage, contract, module, device):
@@ -186,7 +210,7 @@ def dura_model(root, contract, device, stage=STAGES[-1], *, parents_only=False):
 
 
 def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *, waveform_projector=None,
-                        geometry=None, alignment=False):
+                        geometry=None, alignment=False, direction=False):
     n=len(label)
     raw=raw/capture_scale(raw)
     paired=isinstance(mix,PairedNoiseViews)
@@ -196,12 +220,15 @@ def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *,
         coarse_clean,clean_out=model(raw[:n],return_intermediate=True)
     else:
         native_iq=raw.unflatten(-1,(8,1024))
-        if alignment:
+        if alignment or direction:
             observed,selected=mix(native_iq,rng,return_selection=True)
         else:
             observed=mix(native_iq,rng)
         observed=observed.flatten(-2)
-        restored=model(observed)
+        if direction:
+            reference,restored=model(observed,return_intermediate=True)
+        else:
+            restored=model(observed)
         clean_out=model(raw[:n])
     clean_linear = frontend.aperture(raw)
     restored_linear = frontend.aperture(restored)
@@ -237,6 +264,13 @@ def training_task_parts(joint, model, reader, frontend, mix, raw, label, rng, *,
         para,orth=edit_parts(restored_linear[..., :384]-received_center,
                              clean_linear[..., :384]-received_center,selected)
         parts+=(para,orth)
+    if direction:
+        reference_center=frontend.aperture(reference)[..., :384]
+        observed_center=frontend.aperture(observed)[..., :384]
+        remaining=clean_linear[..., :384]-reference_center
+        axis=reference_center-observed_center
+        edit=restored_linear[..., :384]-reference_center
+        parts+=(projected_pair_loss(edit,axis.detach(),remaining.detach(),selected),)
     return torch.stack(parts)
 
 
@@ -251,7 +285,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     is_task=stage in TASK_STAGES
     seed=SEEDS[run]+(STAGES.index(stage) if stage in STAGES else 0)
     torch.manual_seed(seed)
-    count=2 if smoke and stage not in (*GEOMETRY_ARMS,*STREAM_ARMS,*PAIR_ARMS,*ALIGN_ARMS,*INNOVATION_ARMS,*PHASE_ARMS) else BATCH_ROLE
+    count=2 if smoke and stage not in (*GEOMETRY_ARMS,*STREAM_ARMS,*PAIR_ARMS,*ALIGN_ARMS,
+                                     *INNOVATION_ARMS,*PHASE_ARMS,*DIRECTION_ARMS) else BATCH_ROLE
     steps=1 if smoke else STEPS[stage]
     order=np.random.default_rng(seed)
     rng=torch.Generator(device=device).manual_seed(seed)
@@ -282,6 +317,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                 model.core.refine=NoisePairRefiner().to(device)
             if stage in GAIN_ARMS:
                 model.core.innovation=spectral_innovation(stage,device)
+            if stage in DIRECTION_ARMS:
+                add_direction_refiner(model,frontend,stage,device)
         trained=model.core
         reader.requires_grad_(False).eval()
         if stage in PAIR_ARMS:
@@ -312,6 +349,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     orthogonal_multiplier=ORTHOGONAL_WEIGHT if stage==ALIGN_ARMS[-1] else 1.
     if stage in ALIGN_ARMS:
         extra=(ALIGNMENT_WEIGHT,ALIGNMENT_WEIGHT*orthogonal_multiplier)
+    if stage in DIRECTION_ARMS:
+        extra=(DIRECTION_WEIGHT,)
     weights=torch.tensor((1.,.65,.3,.30,.25,1.5,1.,0.)+extra,device=device)
     started=monotonic()
     fit_gradient = supervised = pseudo_gradient = geometry_gradient = stream_gradient = None
@@ -319,6 +358,7 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
     orthogonal_gradient = None
     innovation_gradient = None
     quadrature_gradient = None
+    direction_gradient = None
     for step in range(1,steps+1):
         l=order.choice(len(l_iq),count,replace=False)
         u=order.choice(len(u_iq),count,replace=False)
@@ -340,8 +380,13 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
             if smoke and stage in GAIN_ARMS:
                 with torch.no_grad():
                     torch.testing.assert_close(model(raw),model(raw,coarse_only=True),rtol=0.,atol=0.)
+            if smoke and stage in DIRECTION_ARMS:
+                with torch.no_grad():
+                    expected=raw+COARSE_DOSE*(model(raw,coarse_only=True)-raw)
+                    torch.testing.assert_close(model(raw),expected,rtol=0.,atol=0.)
             parts=training_task_parts(joint,model,reader,frontend,mix,raw,label,rng,
-                                      waveform_projector=waveform_projector,geometry=geometry,alignment=stage in ALIGN_ARMS)
+                                      waveform_projector=waveform_projector,geometry=geometry,
+                                      alignment=stage in ALIGN_ARMS,direction=stage in DIRECTION_ARMS)
             accepted+=parts[7].detach()
             loss=parts@weights
             if smoke:
@@ -382,6 +427,11 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
                         quadrature_gradient=joint.norm_gradient(g[1] for g in gradients)
                         if not 0<quadrature_gradient<float('inf'):
                             raise ValueError('Frozen E104 must train the quadrature gain')
+                if stage in DIRECTION_ARMS:
+                    direction_gradient=joint.norm_gradient(torch.autograd.grad(
+                        parts[8],trained.direction.parameters(),retain_graph=True))
+                    if not 0<direction_gradient<float('inf'):
+                        raise ValueError('Source directional objective must update the refinement head')
         else:
             clean,observed,exact,variance=source_pair(raw,rng)
             incoming=pair(observed)
@@ -435,6 +485,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
         proof.update(initialization=TASK_RUN,spectral_innovation=stage==INNOVATION_ARMS[-1])
     if stage in PHASE_ARMS:
         proof.update(initialization=TASK_RUN,frequency_quadrature=stage==PHASE_ARMS[-1])
+    if stage in DIRECTION_ARMS:
+        proof.update(initialization=TASK_RUN,direction_projected=stage==DIRECTION_ARMS[-1],coarse_dose=COARSE_DOSE)
     summary=dict(**proof,status='PASS' if smoke else 'SOURCE_FROZEN',
                  gradient=fit_gradient,CE_to_G=supervised,pseudo_CE_to_G=pseudo_gradient,geometry_to_G=geometry_gradient,
                  worker_seconds=monotonic()-started,parameters=sum(x.numel() for x in trained.parameters()),
@@ -449,6 +501,8 @@ def fit(joint, config, stage, *, smoke, device='cuda:0'):
         summary['CE_to_innovation']=innovation_gradient
     if stage==PHASE_ARMS[-1]:
         summary['CE_to_quadrature']=quadrature_gradient
+    if stage in DIRECTION_ARMS:
+        summary['pair_to_direction']=direction_gradient
     if not smoke:
         with (folder/'model.pt').open('xb') as out:
             torch.save(dict(contract=contract,proof=proof,model=trained.state_dict()),out)
@@ -477,6 +531,8 @@ def load_readers(joint, rt, device):
                 restorer.core.refine=NoisePairRefiner().to(device)
             if stage in GAIN_ARMS:
                 restorer.core.innovation=spectral_innovation(stage,device)
+            if stage in DIRECTION_ARMS:
+                add_direction_refiner(restorer,tracker,stage,device)
             load_stage(root,stage,contract,restorer.core,device)
             model[stage]=restorer.eval().requires_grad_(False)
     return f,model,tracker,contract
