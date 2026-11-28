@@ -41,6 +41,7 @@ ANCHOR_RUN = '20261128-phase1-lora-wisig-observed-anchor-s2026113131-r01'
 REPEAT_RUN = '20261128-phase1-lora-wisig-repeated-edit-s2026113137-r01'
 PREAMBLE_NOISE_RUN = '20261128-phase1-lora-wisig-preamble-noise-s2026113147-r01'
 PHASE_AUDIT_RUN = '20261128-phase1-lora-wisig-preamble-phase-s2026113157-r01'
+CLOSURE_RUN = '20261128-phase1-lora-wisig-closure-detail-s2026113167-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
@@ -56,6 +57,7 @@ ANCHOR_SEED = 2026113131
 REPEAT_SEED = 2026113137
 PREAMBLE_NOISE_SEED = 2026113147
 PHASE_AUDIT_SEED = 2026113157
+CLOSURE_SEED = 2026113167
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
@@ -76,6 +78,7 @@ ANCHOR_MODES = (*MODES[:3], 'retained_observation', 'unconstrained_observation')
 REPEAT_MODES = (*MODES[:3], 'preamble_common_edit', 'energy_matched_edit')
 PREAMBLE_NOISE_MODES = (*MODES[:3], 'preamble_noise_map', 'uniform_noise_map')
 PHASE_AUDIT_MODES = (*MODES[:3], 'phase_then_dura', 'matched_dura', 'phase_only', 'reference_phase')
+CLOSURE_MODES = (*MODES[:3], 'phase_closure_detail', 'standard_detail')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
@@ -163,10 +166,18 @@ def score_stage_panel(predictions, labels, *, modes=STAGE_MODES, seed=STAGE_SEED
     gains = {name: {view: int((hit[i, j] & wrong[i]).sum()) for i, view in enumerate(SCREEN_VIEWS)}
              for j, name in enumerate(modes[3:], 3)}
     draws = np.random.default_rng(seed+2).integers(0, FACTOR_COUNT, size=(4000, FACTOR_COUNT))
-    return dict(candidates=results, per_tx=tx_counts(predictions, labels, modes),
-                matched_ablation=paired_panel(hit[:, 3]-hit[:, 4], draws),
-                both_experts_wrong=dict(zip(SCREEN_VIEWS, wrong.sum(-1).tolist(), strict=True)),
-                corrected_when_both_wrong=gains)
+    output = dict(candidates=results, per_tx=tx_counts(predictions, labels, modes),
+                  matched_ablation=paired_panel(hit[:, 3]-hit[:, 4], draws),
+                  both_experts_wrong=dict(zip(SCREEN_VIEWS, wrong.sum(-1).tolist(), strict=True)),
+                  corrected_when_both_wrong=gains)
+    if modes == CLOSURE_MODES:
+        misses = ~hit[:, :3].astype(bool).any(axis=1)
+        output['all_controls_wrong'] = dict(zip(SCREEN_VIEWS, misses.sum(-1).tolist(), strict=True))
+        output['corrected_when_all_controls_wrong'] = {
+            name: {view:int((misses[i] & hit[i,j]).sum()) for i,view in enumerate(SCREEN_VIEWS)}
+            for j,name in enumerate(modes[3:],3)
+        }
+    return output
 
 
 def score_phase_audit(predictions, labels):
@@ -182,6 +193,8 @@ def score_phase_audit(predictions, labels):
 
 
 def panel_dimensions(rt):
+    if rt.get('phase_closure'):
+        return FACTOR_COUNT, CLOSURE_MODES
     if rt.get('phase_audit_from'):
         return FACTOR_COUNT, PHASE_AUDIT_MODES
     if rt.get('preamble_noise'):
@@ -212,7 +225,7 @@ def panel_dimensions(rt):
 
 
 def receiver_index(dataset, modes):
-    if modes in (SHARED_MODES, ANCHOR_MODES, REPEAT_MODES, PREAMBLE_NOISE_MODES, PHASE_AUDIT_MODES):
+    if modes in (SHARED_MODES, ANCHOR_MODES, REPEAT_MODES, PREAMBLE_NOISE_MODES, PHASE_AUDIT_MODES, CLOSURE_MODES):
         return {'lora': 1, 'wisig': 3}[dataset]
     if dataset == 'wisig' and modes in (SPECTRAL_MODES, DRIFT_MODES):
         return 8
@@ -231,6 +244,7 @@ def panel_rows(rt, dataset, ids, rx, *, excluded=()):
         REPEAT_MODES: ('repeat_edit_from', ANCHOR_RUN, ANCHOR_MODES),
         PREAMBLE_NOISE_MODES: ('noise_panel_from', ANCHOR_RUN, ANCHOR_MODES),
         PHASE_AUDIT_MODES: ('phase_audit_from', PREAMBLE_NOISE_RUN, PREAMBLE_NOISE_MODES),
+        CLOSURE_MODES: ('closure_panel_from', PREAMBLE_NOISE_RUN, PREAMBLE_NOISE_MODES),
     }
     if modes in previous_panels:
         key, parent_run, parent_modes = previous_panels[modes]
@@ -848,7 +862,8 @@ def independent_score(rt):
         seed = {STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED,
                 COMPLEX_MODES: COMPLEX_SEED, VARIANCE_MODES: VARIANCE_SEED, TRAIN_BOUND_MODES: TRAIN_BOUND_SEED,
                 SPECTRAL_MODES: SPECTRAL_SEED, DRIFT_MODES: DRIFT_SEED, SHARED_MODES: SHARED_SEED,
-                ANCHOR_MODES: ANCHOR_SEED, REPEAT_MODES: REPEAT_SEED, PREAMBLE_NOISE_MODES: PREAMBLE_NOISE_SEED}[modes]
+                ANCHOR_MODES: ANCHOR_SEED, REPEAT_MODES: REPEAT_SEED, PREAMBLE_NOISE_MODES: PREAMBLE_NOISE_SEED,
+                CLOSURE_MODES: CLOSURE_SEED}[modes]
         calculate = partial(score_stage_panel, modes=modes, seed=seed)
     else:
         calculate = score_frequency_panel if rt.get('frequency_from') else score_factor_panel if rt.get('factor_from') else score_panel
@@ -973,6 +988,7 @@ def main():
     modes.add_argument('--repeated-edit-screen',action='store_true')
     modes.add_argument('--preamble-noise-screen',action='store_true')
     modes.add_argument('--preamble-phase-audit',action='store_true')
+    modes.add_argument('--phase-closure-screen',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
@@ -981,6 +997,8 @@ def main():
         releases=f'{project}/releases'
         if args.retry_frequency:
             run = FREQUENCY_RETRY
+        elif args.phase_closure_screen:
+            run = CLOSURE_RUN
         elif args.preamble_phase_audit:
             run = PHASE_AUDIT_RUN
         elif args.preamble_noise_screen:
@@ -1018,11 +1036,11 @@ def main():
             rt['external_releases'].append(rt['score_from'])
         staged = (STAGE_RUN, PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN, DRIFT_RUN)
         if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN,
-                                         REPEAT_RUN, PREAMBLE_NOISE_RUN, PHASE_AUDIT_RUN, *staged):
+                                         REPEAT_RUN, PREAMBLE_NOISE_RUN, PHASE_AUDIT_RUN, CLOSURE_RUN, *staged):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
         if run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN,
-                   REPEAT_RUN, PREAMBLE_NOISE_RUN, PHASE_AUDIT_RUN, *staged):
+                   REPEAT_RUN, PREAMBLE_NOISE_RUN, PHASE_AUDIT_RUN, CLOSURE_RUN, *staged):
             from experiments.pamf_lora_main.lora_dura_stage2_reference import RUN as LORA_STAGE2
             rt['frequency_from']=f'{project}/runs/{FACTOR_RUN}'
             rt['lora_stage2']=f'{project}/runs/{LORA_STAGE2}'
@@ -1080,6 +1098,14 @@ def main():
             rt['phase_audit_from'] = f'{project}/runs/{PREAMBLE_NOISE_RUN}'
             rt['allowed_gpus'] = [0, 3, 7]
             rt['external_releases'].append(rt['phase_audit_from'])
+        if run == CLOSURE_RUN:
+            rt['shared_model'] = True
+            rt['observed_anchor'] = True
+            rt['preamble_noise'] = True
+            rt['phase_closure'] = True
+            rt['allowed_gpus'] = [0, 3, 5, 7]
+            rt['closure_panel_from'] = f'{project}/runs/{PREAMBLE_NOISE_RUN}'
+            rt['external_releases'].append(rt['closure_panel_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)
