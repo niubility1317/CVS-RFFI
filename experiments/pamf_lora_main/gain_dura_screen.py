@@ -35,6 +35,7 @@ COMPLEX_RUN = '20261128-phase1-lora-wisig-dura-complex-residual-s2026113081-r01'
 VARIANCE_RUN = '20261128-phase1-lora-wisig-dura-variance-cap-s2026113088-r01'
 TRAIN_BOUND_RUN = '20261128-phase1-lora-wisig-dura-train-bound-s2026113097-r01'
 SPECTRAL_RUN = '20261128-phase1-lora-wisig-dura-spectral-guard-s2026113103-r01'
+DRIFT_RUN = '20261128-phase1-lora-wisig-dura-source-drift-s2026113113-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
@@ -44,6 +45,7 @@ COMPLEX_SEED = 2026113081
 VARIANCE_SEED = 2026113088
 TRAIN_BOUND_SEED = 2026113097
 SPECTRAL_SEED = 2026113103
+DRIFT_SEED = 2026113113
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
@@ -58,6 +60,7 @@ COMPLEX_MODES = (*MODES[:3], 'complex_residual', 'aligned_residual')
 VARIANCE_MODES = (*MODES[:3], 'variance_capped', 'same_unbounded')
 TRAIN_BOUND_MODES = (*MODES[:3], 'train_bounded', 'post_bounded')
 SPECTRAL_MODES = (*MODES[:3], 'spectral_guard', 'packet_guard')
+DRIFT_MODES = (*MODES[:3], 'structured_nuisance', 'generic_nuisance')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
@@ -152,6 +155,8 @@ def score_stage_panel(predictions, labels, *, modes=STAGE_MODES, seed=STAGE_SEED
 
 
 def panel_dimensions(rt):
+    if rt.get('drift_from'):
+        return FACTOR_COUNT, DRIFT_MODES
     if rt.get('spectral_from'):
         return FACTOR_COUNT, SPECTRAL_MODES
     if rt.get('train_bound_from'):
@@ -170,7 +175,7 @@ def panel_dimensions(rt):
 
 
 def receiver_index(dataset, modes):
-    if dataset == 'wisig' and modes == SPECTRAL_MODES:
+    if dataset == 'wisig' and modes in (SPECTRAL_MODES, DRIFT_MODES):
         return 8
     if dataset == 'wisig' and modes in (VARIANCE_MODES, TRAIN_BOUND_MODES):
         return 6
@@ -186,6 +191,7 @@ def panel_rows(rt, dataset, ids, rx, *, excluded=()):
         MODES: SEED, FACTOR_MODES: FACTOR_SEED, FREQUENCY_MODES: FREQUENCY_SEED,
         STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED, COMPLEX_MODES: COMPLEX_SEED,
         VARIANCE_MODES: VARIANCE_SEED, TRAIN_BOUND_MODES: TRAIN_BOUND_SEED, SPECTRAL_MODES: SPECTRAL_SEED,
+        DRIFT_MODES: DRIFT_SEED,
     }
     history = (
         ('factor_from', RUN, COUNT, MODES),
@@ -196,6 +202,7 @@ def panel_rows(rt, dataset, ids, rx, *, excluded=()):
         ('variance_from', COMPLEX_RUN, FACTOR_COUNT, COMPLEX_MODES),
         ('train_bound_from', VARIANCE_RUN, FACTOR_COUNT, VARIANCE_MODES),
         ('spectral_from', TRAIN_BOUND_RUN, FACTOR_COUNT, TRAIN_BOUND_MODES),
+        ('drift_from', SPECTRAL_RUN, FACTOR_COUNT, SPECTRAL_MODES),
     )
     blocked = excluded
     for key, run_id, old_count, old_modes in history:
@@ -287,7 +294,7 @@ def stage_readout_config(rt, dataset):
     if rt.get('train_bound_from'):
         from experiments.pamf_lora_main.gain_dura_variance import load_curve
 
-        gate_root = rt.get('spectral_from', rt['run_root'])
+        gate_root = rt.get('spectral_from', rt['run_root']) if not rt.get('drift_from') else rt['run_root']
         gates = load_gates(dict(rt, run_root=gate_root), dataset, DEV)
         return gates, load_curve(dict(rt, run_root=rt['train_bound_from']), dataset)
     if rt.get('variance_from'):
@@ -299,7 +306,7 @@ def stage_readout_config(rt, dataset):
 
 
 def bounded_fit_outputs(gates, received, real_gain, context, priors, raw, scale, curve, reference, timing,
-                        *, spectral=False):
+                        *, spectral=False, readout_modes=TRAIN_BOUND_MODES[3:]):
     from experiments.pamf_lora_main.gain_dura_variance import project_reference_increment, protect_weak_spectrum
 
     observed = complex_iq(received)
@@ -323,7 +330,7 @@ def bounded_fit_outputs(gates, received, real_gain, context, priors, raw, scale,
         def apply(gate):
             return finish(predict(gate))
 
-        operations = [(mode, partial(apply, gate)) for mode, gate in zip(TRAIN_BOUND_MODES[3:], gates, strict=True)]
+        operations = [(mode, partial(apply, gate)) for mode, gate in zip(readout_modes, gates, strict=True)]
         if timing is not None:
             time_readouts(timing, operations, 'B1 reference anchored recovery with final uncertainty envelope')
         outputs = tuple(operation() for _, operation in operations)
@@ -507,7 +514,7 @@ def predict_lora(rt, folder):
         if rt.get('train_bound_from'):
             extras = bounded_fit_outputs(gates, received, real_gain/scale, context, dura.prior,
                                          y, scale, curve, real_gain/scale, timing,
-                                         spectral=bool(rt.get('spectral_from')))
+                                         spectral=modes == SPECTRAL_MODES, readout_modes=modes[3:])
         elif curve is not None:
             extras = variance_outputs(gates[0], received, real_gain/scale, context, dura.prior, y, scale, curve, timing)
         elif gates is None:
@@ -557,7 +564,7 @@ def wifi_predictor(rt, original, config, gain):
         if rt.get('train_bound_from'):
             reference = complex_iq(base.stage_outputs(iq, context)[0][-1])
             solved = bounded_fit_outputs(gates, iq, companion, context, base.prior, y, 1., curve, reference, timing,
-                                          spectral=bool(rt.get('spectral_from')))
+                                          spectral=modes == SPECTRAL_MODES, readout_modes=modes[3:])
         elif curve is not None:
             solved = variance_outputs(gates[0], iq, companion, context, base.prior, y, 1., curve, timing)
         elif gates is None:
@@ -676,7 +683,7 @@ def independent_score(rt):
     if rt.get('stage_from'):
         seed = {STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED,
                 COMPLEX_MODES: COMPLEX_SEED, VARIANCE_MODES: VARIANCE_SEED, TRAIN_BOUND_MODES: TRAIN_BOUND_SEED,
-                SPECTRAL_MODES: SPECTRAL_SEED}[modes]
+                SPECTRAL_MODES: SPECTRAL_SEED, DRIFT_MODES: DRIFT_SEED}[modes]
         calculate = partial(score_stage_panel, modes=modes, seed=seed)
     else:
         calculate = score_frequency_panel if rt.get('frequency_from') else score_factor_panel if rt.get('factor_from') else score_panel
@@ -795,6 +802,7 @@ def main():
     modes.add_argument('--variance-cap-screen',action='store_true')
     modes.add_argument('--train-bound-screen',action='store_true')
     modes.add_argument('--spectral-guard-screen',action='store_true')
+    modes.add_argument('--source-drift-screen',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
@@ -803,6 +811,8 @@ def main():
         releases=f'{project}/releases'
         if args.retry_frequency:
             run = FREQUENCY_RETRY
+        elif args.source_drift_screen:
+            run = DRIFT_RUN
         elif args.spectral_guard_screen:
             run = SPECTRAL_RUN
         elif args.train_bound_screen:
@@ -826,7 +836,7 @@ def main():
         if args.retry_score:
             rt['score_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['score_from'])
-        staged = (STAGE_RUN, PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN)
+        staged = (STAGE_RUN, PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN, DRIFT_RUN)
         if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, *staged):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
@@ -843,21 +853,24 @@ def main():
             rt['stage_from'] = f'{project}/runs/{FREQUENCY_RETRY}'
             rt['external_releases'].append(rt['stage_from'])
             rt['allowed_gpus'] = [0, 2, 3, 5, 7]
-        if run in (PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN):
+        if run in (PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN, DRIFT_RUN):
             rt['paired_from'] = f'{project}/runs/{STAGE_RUN}'
             rt['external_releases'].append(rt['paired_from'])
-        if run in (COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN):
+        if run in (COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN, DRIFT_RUN):
             rt['complex_from'] = f'{project}/runs/{PAIRED_RUN}'
             rt['external_releases'].append(rt['complex_from'])
-        if run in (VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN):
+        if run in (VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN, DRIFT_RUN):
             rt['variance_from'] = f'{project}/runs/{COMPLEX_RUN}'
             rt['external_releases'].append(rt['variance_from'])
-        if run in (TRAIN_BOUND_RUN, SPECTRAL_RUN):
+        if run in (TRAIN_BOUND_RUN, SPECTRAL_RUN, DRIFT_RUN):
             rt['train_bound_from'] = f'{project}/runs/{VARIANCE_RUN}'
             rt['external_releases'].append(rt['train_bound_from'])
-        if run == SPECTRAL_RUN:
+        if run in (SPECTRAL_RUN, DRIFT_RUN):
             rt['spectral_from'] = f'{project}/runs/{TRAIN_BOUND_RUN}'
             rt['external_releases'].append(rt['spectral_from'])
+        if run == DRIFT_RUN:
+            rt['drift_from'] = f'{project}/runs/{SPECTRAL_RUN}'
+            rt['external_releases'].append(rt['drift_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)
@@ -875,7 +888,7 @@ def main():
         fit(rt, args.action.removeprefix('stage-fit-'), DEV)
     else:
         numerical_policy()
-        if rt.get('stage_from') and not rt.get('spectral_from'):
+        if rt.get('stage_from') and (not rt.get('spectral_from') or rt.get('drift_from')):
             subprocess.run([sys.executable,'-u','-m',__spec__.name,'stage-fit-'+args.action,
                             str(args.runtime)], check=True)
         folder=Path(rt['run_root'])/args.action

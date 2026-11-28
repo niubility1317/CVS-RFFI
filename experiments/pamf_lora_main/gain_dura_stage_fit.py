@@ -69,6 +69,8 @@ def paired_detail_loss(first, second, clean):
 
 
 def fit_plan(rt):
+    if rt.get('drift_from'):
+        return screen.DRIFT_SEED, screen.DRIFT_MODES[3:]
     if rt.get('train_bound_from'):
         return screen.TRAIN_BOUND_SEED, screen.TRAIN_BOUND_MODES[3:]
     if rt.get('complex_from'):
@@ -80,7 +82,7 @@ def fit_plan(rt):
 
 def make_branch(name):
     correction = None
-    if name in (*screen.COMPLEX_MODES[3:], *screen.TRAIN_BOUND_MODES[3:]):
+    if name in (*screen.COMPLEX_MODES[3:], *screen.TRAIN_BOUND_MODES[3:], *screen.DRIFT_MODES[3:]):
         correction = ComplexPriorResidual(aligned_only=name == screen.COMPLEX_MODES[-1])
     return StageGain(packet_only=name == ARMS[1], correction=correction)
 
@@ -129,6 +131,7 @@ def fit(rt, dataset, device):
     paired_run = bool(rt.get('paired_from'))
     complex_run = bool(rt.get('complex_from'))
     train_bound = bool(rt.get('train_bound_from'))
+    drift_run = bool(rt.get('drift_from'))
     curve = None
     if train_bound:
         from experiments.pamf_lora_main.gain_dura_variance import load_curve, project_reference_increment
@@ -141,11 +144,15 @@ def fit(rt, dataset, device):
     opts = [torch.optim.AdamW(item.parameters(), lr=3e-4, weight_decay=1e-4) for item in branches]
     schedules = [torch.optim.lr_scheduler.CosineAnnealingLR(opt, steps, eta_min=3e-5) for opt in opts]
     rng = torch.Generator(device=device).manual_seed(seed + 1)
+    if drift_run:
+        from experiments.pamf_lora_main.gain_dura_nuisance import add_packet_nuisance
+
+        nuisance_rng = torch.Generator(device=device).manual_seed(seed + 2)
     draws = np.random.default_rng(seed)
 
-    def view(raw):
+    def view(raw, source_pair_iq=None):
         with torch.no_grad():
-            clean, observed = source_training_pair(raw, rng)
+            clean, observed = source_training_pair(raw, rng) if source_pair_iq is None else source_pair_iq
             native_scale = capture_scale(raw)
             raw_observed = observed * native_scale
             if dataset == 'lora':
@@ -160,16 +167,23 @@ def fit(rt, dataset, device):
 
     def objectives(raw):
         if complex_run:
-            received, prior, context, clean = view(raw.repeat(2, 1))
-            observed = complex_iq(received)
-            reference = None
-            if train_bound:
-                with torch.no_grad():
-                    reference = prior if dataset == 'lora' else complex_iq(dura.stage_outputs(received, context)[0][-1])
+            repeated = raw.repeat(2, 1)
+            if drift_run:
+                base = source_training_pair(repeated, rng)
+                enhanced = add_packet_nuisance(*base, nuisance_rng)
+                contexts = (view(repeated, enhanced), view(repeated, base))
+            else:
+                common = view(repeated)
+                contexts = (common, common)
             losses = []
-            for name, model in zip(arms, branches, strict=True):
+            for name, model, (received, prior, context, clean) in zip(arms, branches, contexts, strict=True):
+                observed = complex_iq(received)
+                reference = None
+                if train_bound:
+                    with torch.no_grad():
+                        reference = prior if dataset == 'lora' else complex_iq(dura.stage_outputs(received, context)[0][-1])
                 stages = model(received, prior, context, dura.prior, reference=reference)
-                if train_bound and name == arms[0]:
+                if train_bound and not drift_run and name == arms[0]:
                     stages = [project_reference_increment(observed, reference, z, context[2], curve) for z in stages]
                 first, second = stages[-1].chunk(2, dim=0)
                 losses.append(.20 * phase_sensitive_loss(stages, clean) + .80 * paired_detail_loss(first, second, raw))
@@ -194,6 +208,8 @@ def fit(rt, dataset, device):
             raise ValueError('Real source fit smoke did not reach every active head')
     write(out/'smoke.json', dict(status='PASS', target_reads=0, F_reads=0, V_reads=0, TX_reads=0))
     rng.manual_seed(seed + 1)
+    if drift_run:
+        nuisance_rng.manual_seed(seed + 2)
     torch.cuda.reset_peak_memory_stats()
     start = perf_counter()
     for step in range(1, steps + 1):
