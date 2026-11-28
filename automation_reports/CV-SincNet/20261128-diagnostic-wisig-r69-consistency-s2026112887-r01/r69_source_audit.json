@@ -1,0 +1,42 @@
+{
+  "status": "READ_ONLY_SOURCE_AUDIT",
+  "run": "20261128-phase1-wisig-r17-consistency-gain-s2026112881-r01",
+  "reference": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+  "receiver": 8,
+  "truth_last": true,
+  "direct_predictions_match": true,
+  "views": {
+    "clean": {
+      "n": 360,
+      "fusion_correct": 355,
+      "r69_correct": 357,
+      "repaired": 0,
+      "harmed": 2,
+      "net": -2,
+      "half_nets": [
+        -1,
+        -1
+      ],
+      "ci95": [
+        -5,
+        0
+      ]
+    },
+    "practical_low_urban": {
+      "n": 360,
+      "fusion_correct": 282,
+      "r69_correct": 318,
+      "repaired": 19,
+      "harmed": 55,
+      "net": -36,
+      "half_nets": [
+        -16,
+        -20
+      ],
+      "ci95": [
+        -52,
+        -20
+      ]
+    }
+  }
+}
