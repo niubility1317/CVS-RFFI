@@ -22,6 +22,7 @@ from experiments.pamf_restoration.models import complex_iq
 
 STEPS, BATCH, CALIBRATION_COUNT = 6400, 8, 512
 CLOSURE_STEPS, CLOSURE_WEIGHT = 7200, .25
+CONTEXT_STEPS = 7200
 ISOLATION = ('F_reads', 'V_reads', 'TX_reads', 'target_reads')
 
 
@@ -83,6 +84,11 @@ def objective(model, clean, observed, *, align_phase=False, closure_weight=0.):
 
 
 def fitting_plan(rt):
+    if rt.get('packet_context'):
+        return screen.CONTEXT_SEED, screen.CONTEXT_MODES[3:], (
+            dict(retain_received=True,packet_context=True),
+            dict(retain_received=True,packet_context=False),
+        )
     if rt.get('phase_closure'):
         return screen.CLOSURE_SEED, screen.CLOSURE_MODES[3:], (
             dict(retain_received=True), dict(retain_received=True),
@@ -105,7 +111,8 @@ def fit(rt, dataset, device):
     seed, modes, model_options = fitting_plan(rt)
     observed_anchor = bool(rt.get('observed_anchor'))
     phase_closure = bool(rt.get('phase_closure'))
-    steps = CLOSURE_STEPS if phase_closure else STEPS
+    packet_context = bool(rt.get('packet_context'))
+    steps = CONTEXT_STEPS if packet_context else CLOSURE_STEPS if phase_closure else STEPS
     closure_weights = (CLOSURE_WEIGHT, 0.) if phase_closure else (0., 0.)
     torch.manual_seed(seed)
     models = [SharedGainDura(**options).to(device) for options in model_options]
@@ -119,7 +126,7 @@ def fit(rt, dataset, device):
         if not torch.isfinite(floor).all():
             raise ValueError('Expected finite clean repeated-preamble variation')
         models[0].clean_noise_floor = floor
-        if phase_closure:
+        if phase_closure or packet_context:
             models[1].clean_noise_floor = floor
         extra['preamble_clean_floor'] = floor.tolist()
     if phase_closure:
@@ -136,8 +143,10 @@ def fit(rt, dataset, device):
 
     batch = views(smoke)
     for model, closure_weight in zip(models, closure_weights, strict=True):
+        stage_weights = (tuple(weight for prior in model.priors for weight in prior.readout_weights())
+                         if packet_context else tuple(prior[-1].weight for prior in model.priors))
         active = (model.coarse[-1].weight, model.channel.weight, model.local_phase.weight,
-                  model.gain[-1].weight, *(prior[-1].weight for prior in model.priors))
+                  model.gain[-1].weight, *stage_weights)
         loss = objective(model, *batch, align_phase=observed_anchor, closure_weight=closure_weight)
         for gradient in torch.autograd.grad(loss, active):
             if not torch.isfinite(gradient).all() or not gradient.norm() > 0:
@@ -186,7 +195,7 @@ def frozen(rt, dataset, device):
     folder = Path(rt['run_root']) / ('fit-' + dataset)
     seed, modes, model_options = fitting_plan(rt)
     calibration_count = (2 if rt.get('observed_anchor') else 1) * CALIBRATION_COUNT
-    steps = CLOSURE_STEPS if rt.get('phase_closure') else STEPS
+    steps = CONTEXT_STEPS if rt.get('packet_context') else CLOSURE_STEPS if rt.get('phase_closure') else STEPS
     proof = read(folder/'fit.json')
     if ((proof['status'], proof['dataset'], proof['seed'], proof['steps'], proof['clean_calibration_ids'], proof['modes'])
             != ('SOURCE_FROZEN', dataset, seed, steps, calibration_count, list(modes))
@@ -201,7 +210,7 @@ def frozen(rt, dataset, device):
         if floor.shape != (PREAMBLE[length][2],) or not np.isfinite(floor).all() or (floor < 0).any():
             raise ValueError('Invalid frozen clean preamble-dispersion reference')
         model_options[0]['clean_noise_floor'] = torch.as_tensor(floor, dtype=torch.float32, device=device)
-        if rt.get('phase_closure'):
+        if rt.get('phase_closure') or rt.get('packet_context'):
             model_options[1]['clean_noise_floor'] = model_options[0]['clean_noise_floor']
     result = []
     for name, options in zip(modes, model_options, strict=True):

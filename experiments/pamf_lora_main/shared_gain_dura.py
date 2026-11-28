@@ -5,6 +5,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from experiments.pamf_action_restore.operators import Action
+from experiments.pamf_lora_main.packet_context_prior import PacketContextPrior
 from experiments.pamf_lora_main.preamble_noise import WhitenedAction, preamble_weights
 from experiments.pamf_lora_main.received_quality import clean_geometry_weight
 from experiments.pamf_lora_main.w24_native_dura import capture_scale
@@ -38,7 +39,7 @@ def retain_observed_component(observed, estimate):
 class SharedGainDura(nn.Module):
     """Estimate degradation, then incorporate a real gain in each DURA prior."""
 
-    def __init__(self, *, packet_gain=False, retain_received=False, clean_noise_floor=None):
+    def __init__(self, *, packet_gain=False, retain_received=False, clean_noise_floor=None, packet_context=None):
         super().__init__()
         self.packet_gain = packet_gain
         self.retain_received = retain_received
@@ -52,7 +53,10 @@ class SharedGainDura(nn.Module):
         nn.init.zeros_(self.local_phase.weight)
         nn.init.zeros_(self.local_phase.bias)
         self.gain = residual_network(6, 1, circular=True)
-        self.priors = nn.ModuleList(residual_network(9, 2) for _ in range(2))
+        if packet_context is None:
+            self.priors = nn.ModuleList(residual_network(9, 2) for _ in range(2))
+        else:
+            self.priors = nn.ModuleList(PacketContextPrior(global_context=packet_context) for _ in range(2))
         delays = torch.zeros(32)
         delays[0] = 1.
         self.register_buffer('identity_kernel', delays)
