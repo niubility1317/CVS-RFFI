@@ -15,6 +15,14 @@ class IdentityAction:
 
 
 class SharedDuraRealGainTest(unittest.TestCase):
+    def test_lora_r69_adaptation_does_not_fill_fixed_v1_gap(self):
+        from experiments.pamf_lora_main.shared_dura_realgain_run import screening_status
+        comparisons = {'lora_r69_adapt': {'passes': True}}
+        available, promote, missing = screening_status('lora', comparisons, {'lora_r69_adapt': 0}, 1)
+        self.assertTrue(available)
+        self.assertFalse(promote)
+        self.assertIn('original fixed DURA v1', missing[0])
+
     def test_two_prior_core_shares_parameters_and_preserves_real_gain_at_start(self):
         torch.manual_seed(13)
         short, long = SharedTwoPriorGain(32), SharedTwoPriorGain(1024)

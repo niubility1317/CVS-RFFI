@@ -159,6 +159,14 @@ def predict(rt, dataset):
           count=len(ids), RX=0 if dataset == 'lora' else 1, source_truth_reads=0, target_reads=0))
 
 
+def screening_status(dataset, comparisons, clean_net, clean_limit):
+    missing = (['original fixed DURA v1 checkpoint under LoRa contract; '
+                'LoRa-trained R69 architecture adaptation is included separately'] if dataset == 'lora' else [])
+    available_pass = (all(x['passes'] for x in comparisons.values()) and
+                      min(clean_net.values()) >= -clean_limit)
+    return available_pass, available_pass and not missing, missing
+
+
 def score(rt, dataset):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Independent CPU scorer required')
@@ -199,12 +207,11 @@ def score(rt, dataset):
                    for i, name in enumerate(modes[:-1])}
     clean_net = {name: int(((clean[-1] == labels).astype(np.int16) -
                             (clean[i] == labels).astype(np.int16)).sum()) for i, name in enumerate(modes[:-1])}
-    missing = []
-    promote = (all(x['passes'] for x in comparisons.values()) and
-               min(clean_net.values()) >= -clean_limit)
+    available_pass, promote, missing = screening_status(dataset, comparisons, clean_net, clean_limit)
     write(root / 'screen-score.json', dict(status='SOURCE_SCREEN_SCORED', truth_last=True, count=count,
           modes=modes, correct={v: (x == labels).sum(1).tolist() for v, x in outputs.items()},
-          low_urban_pairs=comparisons, clean_net=clean_net, promote=promote, missing_controls=missing,
+          low_urban_pairs=comparisons, clean_net=clean_net, available_control_screen_pass=available_pass,
+          promote=promote, missing_controls=missing,
           exposure='Previously exposed source V panel; no target read', formal_acceptance_complete=False))
 
 
