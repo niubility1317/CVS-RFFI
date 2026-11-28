@@ -3,6 +3,7 @@ import importlib
 import json
 import os
 from pathlib import Path
+import sys
 
 import numpy as np
 
@@ -16,8 +17,13 @@ if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
     raise ValueError('Paired analysis runs only in an independent CPU process')
 
 project = Path('/home/szu2070436088/2510044040/CV-SincNet')
-teacher = '20261128-phase1-shared-teacher-selector-s2026112937-r01'
-control = '20261128-phase1-shared-matched-mse-s2026112937-r01'
+if len(sys.argv) == 1:
+    teacher = '20261128-phase1-shared-teacher-selector-s2026112937-r01'
+    control = '20261128-phase1-shared-matched-mse-s2026112937-r01'
+elif len(sys.argv) == 3:
+    teacher, control = sys.argv[1:]
+else:
+    raise ValueError('Expected either no run IDs or a teacher and matched control run ID')
 release = project / 'releases' / (teacher + '-release')
 rt = read(release / 'runtime.json')
 out = project / 'runs' / (teacher + '-paired-mse-analysis-r01')
