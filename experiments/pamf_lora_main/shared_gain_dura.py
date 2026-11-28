@@ -5,6 +5,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from experiments.pamf_action_restore.operators import Action
+from experiments.pamf_lora_main.received_quality import clean_geometry_weight
 from experiments.pamf_lora_main.w24_native_dura import capture_scale
 from experiments.pamf_restoration.models import complex_iq, pair
 from experiments.pamf_uncertainty_restore.models import weighted_map
@@ -24,12 +25,22 @@ def residual_network(inputs, outputs, *, circular=False, zero_output=True):
     return layers
 
 
+def retain_observed_component(observed, estimate):
+    """Bound the removed received component and the orthogonal correction."""
+    strength = observed.abs().square().mean(-1, keepdim=True).clamp_min(1e-12)
+    radial = (estimate * observed.conj()).real.mean(-1, keepdim=True) / strength
+    correction = estimate - radial * observed
+    relative = (correction.abs().square().mean(-1, keepdim=True) / strength).clamp_min(1e-12).sqrt()
+    return radial.clamp(.80, 1.20) * observed + (.75 / relative).clamp(max=1.) * correction
+
+
 class SharedGainDura(nn.Module):
     """Estimate degradation, then incorporate a real gain in each DURA prior."""
 
-    def __init__(self, *, packet_gain=False):
+    def __init__(self, *, packet_gain=False, retain_received=False):
         super().__init__()
         self.packet_gain = packet_gain
+        self.retain_received = retain_received
         self.coarse = residual_network(2, 2)
         self.context_features = residual_network(6, 16, zero_output=False)
         self.channel = nn.Linear(16, 64 + 4)
@@ -90,11 +101,16 @@ class SharedGainDura(nn.Module):
             prior = fitted + .35 * complex_iq(network(features))
             current = weighted_map(action, observed, prior, variance, prior_variance=.20,
                                    steps=2, initial=current)
+            if self.retain_received:
+                current = retain_observed_component(observed, current)
             stages.append(current * scale)
         return stages, action, variance, quality
 
     def forward(self, raw, *, clean_cut):
         stages, _, _, quality = self.restoration(raw)
+        if isinstance(clean_cut, dict):
+            smooth = clean_geometry_weight(raw, clean_cut)
+            return raw + smooth[:, None] * (stages[-1] - raw)
         take = ((quality - clean_cut) / 2.).clamp(0., 1.)
         smooth = take.square() * (3. - 2. * take)
         return raw + smooth[:, None] * (stages[-1] - raw)

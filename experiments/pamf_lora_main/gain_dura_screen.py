@@ -37,6 +37,7 @@ TRAIN_BOUND_RUN = '20261128-phase1-lora-wisig-dura-train-bound-s2026113097-r01'
 SPECTRAL_RUN = '20261128-phase1-lora-wisig-dura-spectral-guard-s2026113103-r01'
 DRIFT_RUN = '20261128-phase1-lora-wisig-dura-source-drift-s2026113113-r01'
 SHARED_RUN = '20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01'
+ANCHOR_RUN = '20261128-phase1-lora-wisig-observed-anchor-s2026113131-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
@@ -48,6 +49,7 @@ TRAIN_BOUND_SEED = 2026113097
 SPECTRAL_SEED = 2026113103
 DRIFT_SEED = 2026113113
 SHARED_SEED = 2026113121
+ANCHOR_SEED = 2026113131
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
@@ -64,6 +66,7 @@ TRAIN_BOUND_MODES = (*MODES[:3], 'train_bounded', 'post_bounded')
 SPECTRAL_MODES = (*MODES[:3], 'spectral_guard', 'packet_guard')
 DRIFT_MODES = (*MODES[:3], 'structured_nuisance', 'generic_nuisance')
 SHARED_MODES = (*MODES[:3], 'shared_frequency_gain', 'shared_packet_gain')
+ANCHOR_MODES = (*MODES[:3], 'retained_observation', 'unconstrained_observation')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
@@ -158,6 +161,8 @@ def score_stage_panel(predictions, labels, *, modes=STAGE_MODES, seed=STAGE_SEED
 
 
 def panel_dimensions(rt):
+    if rt.get('observed_anchor'):
+        return FACTOR_COUNT, ANCHOR_MODES
     if rt.get('shared_model'):
         return FACTOR_COUNT, SHARED_MODES
     if rt.get('drift_from'):
@@ -180,7 +185,7 @@ def panel_dimensions(rt):
 
 
 def receiver_index(dataset, modes):
-    if modes == SHARED_MODES:
+    if modes in (SHARED_MODES, ANCHOR_MODES):
         return {'lora': 1, 'wisig': 3}[dataset]
     if dataset == 'wisig' and modes in (SPECTRAL_MODES, DRIFT_MODES):
         return 8
@@ -194,6 +199,20 @@ def receiver_index(dataset, modes):
 def panel_rows(rt, dataset, ids, rx, *, excluded=()):
     ids, rx = np.asarray(ids), np.asarray(rx)
     count, modes = panel_dimensions(rt)
+    if modes == ANCHOR_MODES:
+        parent = Path(rt['shared_panel_from'])
+        folder = parent / dataset
+        if (parent != Path(rt['run_root']).parent / SHARED_RUN
+                or read(folder/'complete.json') != panel_receipt(dataset, count, SHARED_MODES)):
+            raise ValueError('Expected previous frozen source development panel')
+        with np.load(folder/'predictions.npz', allow_pickle=False) as frozen:
+            old_ids = frozen['ids']
+            rows = np.flatnonzero(np.isin(ids, old_ids))
+            if (len(rows) != count or not np.array_equal(ids[rows], old_ids)
+                    or not (rx[rows] == receiver_index(dataset, modes)).all()
+                    or np.intersect1d(rows, excluded).size):
+                raise ValueError('Previous source panel has incompatible physical records')
+        return rows
     rule = {
         MODES: SEED, FACTOR_MODES: FACTOR_SEED, FREQUENCY_MODES: FREQUENCY_SEED,
         STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED, COMPLEX_MODES: COMPLEX_SEED,
@@ -276,9 +295,9 @@ def time_frequency_update(path, observed, anchor, action, variance):
     ), 'B1 standalone observation update only, fixed action and anchor')
 
 
-def shared_outputs(models, observed, timing):
+def shared_outputs(models, observed, timing, modes):
     operations = [(name, partial(model, observed, clean_cut=cutoff))
-                  for name, (model, cutoff) in zip(SHARED_MODES[3:], models, strict=True)]
+                  for name, (model, cutoff) in zip(modes[3:], models, strict=True)]
     if timing is not None:
         time_readouts(timing, operations, 'B1 standalone recovery on native IQ, including the action estimate and both stages')
     estimates = tuple(operation() for _, operation in operations)
@@ -546,7 +565,7 @@ def predict_lora(rt, folder):
             recovered = complex_iq(dura.unroll(received,coarse,action,variance))*scale
             anchor, companion = real_gain/scale, recovered/scale
         if shared is not None:
-            extras = shared_outputs(shared, y, timing)
+            extras = shared_outputs(shared, y, timing, modes)
         elif rt.get('train_bound_from'):
             extras = bounded_fit_outputs(gates, received, real_gain/scale, context, dura.prior,
                                          y, scale, curve, real_gain/scale, timing,
@@ -603,7 +622,7 @@ def wifi_predictor(rt, original, config, gain):
         anchor = complex_iq(output)
         companion = gain(y)[-1]
         if shared is not None:
-            solved = shared_outputs(shared, y, timing)
+            solved = shared_outputs(shared, y, timing, modes)
         elif rt.get('train_bound_from'):
             reference = complex_iq(base.stage_outputs(iq, context)[0][-1])
             solved = bounded_fit_outputs(gates, iq, companion, context, base.prior, y, 1., curve, reference, timing,
@@ -726,7 +745,8 @@ def independent_score(rt):
     if rt.get('stage_from') or rt.get('shared_model'):
         seed = {STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED,
                 COMPLEX_MODES: COMPLEX_SEED, VARIANCE_MODES: VARIANCE_SEED, TRAIN_BOUND_MODES: TRAIN_BOUND_SEED,
-                SPECTRAL_MODES: SPECTRAL_SEED, DRIFT_MODES: DRIFT_SEED, SHARED_MODES: SHARED_SEED}[modes]
+                SPECTRAL_MODES: SPECTRAL_SEED, DRIFT_MODES: DRIFT_SEED, SHARED_MODES: SHARED_SEED,
+                ANCHOR_MODES: ANCHOR_SEED}[modes]
         calculate = partial(score_stage_panel, modes=modes, seed=seed)
     else:
         calculate = score_frequency_panel if rt.get('frequency_from') else score_factor_panel if rt.get('factor_from') else score_panel
@@ -847,6 +867,7 @@ def main():
     modes.add_argument('--spectral-guard-screen',action='store_true')
     modes.add_argument('--source-drift-screen',action='store_true')
     modes.add_argument('--shared-gain-screen',action='store_true')
+    modes.add_argument('--received-anchor-screen',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
@@ -855,6 +876,8 @@ def main():
         releases=f'{project}/releases'
         if args.retry_frequency:
             run = FREQUENCY_RETRY
+        elif args.received_anchor_screen:
+            run = ANCHOR_RUN
         elif args.shared_gain_screen:
             run = SHARED_RUN
         elif args.source_drift_screen:
@@ -883,10 +906,10 @@ def main():
             rt['score_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['score_from'])
         staged = (STAGE_RUN, PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN, DRIFT_RUN)
-        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, *staged):
+        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN, *staged):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
-        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, *staged):
+        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN, *staged):
             from experiments.pamf_lora_main.lora_dura_stage2_reference import RUN as LORA_STAGE2
             rt['frequency_from']=f'{project}/runs/{FACTOR_RUN}'
             rt['lora_stage2']=f'{project}/runs/{LORA_STAGE2}'
@@ -923,6 +946,12 @@ def main():
             rt['shared_prior_frequency'] = f'{project}/runs/{FREQUENCY_RETRY}'
             rt['shared_prior_stage'] = f'{project}/runs/{STAGE_RUN}'
             rt['external_releases'].extend((rt['shared_prior_frequency'], rt['shared_prior_stage']))
+        if run == ANCHOR_RUN:
+            rt['shared_model'] = True
+            rt['observed_anchor'] = True
+            rt['allowed_gpus'] = [0, 3, 5, 7]
+            rt['shared_panel_from'] = f'{project}/runs/{SHARED_RUN}'
+            rt['external_releases'].append(rt['shared_panel_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)
