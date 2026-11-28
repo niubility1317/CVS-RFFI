@@ -1,0 +1,255 @@
+{
+  "status": "SOURCE_V_PAIRED_ANALYSIS",
+  "truth_last": true,
+  "teacher": "20261128-phase1-shared-teacher-mixture-s2026112941-r01",
+  "control": "20261128-phase1-shared-matched-mixture-s2026112941-r01",
+  "exposure": "repeatedly exposed source V",
+  "target_reads": 0,
+  "caveat": "Same seed/data generator and budget; different GPUs may yield numerical differences",
+  "results": {
+    "lora": {
+      "clean": {
+        "teacher_correct": 60,
+        "mse_correct": 59,
+        "paired": {
+          "repaired": 1,
+          "harmed": 0,
+          "net": 1,
+          "half_nets": [
+            0,
+            1
+          ],
+          "ci95": [
+            0.0,
+            3.0
+          ],
+          "passes": false
+        },
+        "source_tx": {
+          "0": {
+            "n": 7,
+            "teacher_correct": 7,
+            "mse_correct": 7
+          },
+          "1": {
+            "n": 6,
+            "teacher_correct": 6,
+            "mse_correct": 6
+          },
+          "2": {
+            "n": 5,
+            "teacher_correct": 5,
+            "mse_correct": 5
+          },
+          "3": {
+            "n": 5,
+            "teacher_correct": 5,
+            "mse_correct": 5
+          },
+          "4": {
+            "n": 7,
+            "teacher_correct": 7,
+            "mse_correct": 7
+          },
+          "5": {
+            "n": 9,
+            "teacher_correct": 9,
+            "mse_correct": 9
+          },
+          "6": {
+            "n": 8,
+            "teacher_correct": 8,
+            "mse_correct": 8
+          },
+          "7": {
+            "n": 4,
+            "teacher_correct": 4,
+            "mse_correct": 4
+          },
+          "8": {
+            "n": 5,
+            "teacher_correct": 5,
+            "mse_correct": 4
+          },
+          "9": {
+            "n": 4,
+            "teacher_correct": 4,
+            "mse_correct": 4
+          }
+        }
+      },
+      "practical_low_urban": {
+        "teacher_correct": 25,
+        "mse_correct": 15,
+        "paired": {
+          "repaired": 12,
+          "harmed": 2,
+          "net": 10,
+          "half_nets": [
+            5,
+            5
+          ],
+          "ci95": [
+            3.0,
+            17.0
+          ],
+          "passes": true
+        },
+        "source_tx": {
+          "0": {
+            "n": 7,
+            "teacher_correct": 2,
+            "mse_correct": 1
+          },
+          "1": {
+            "n": 6,
+            "teacher_correct": 2,
+            "mse_correct": 1
+          },
+          "2": {
+            "n": 5,
+            "teacher_correct": 2,
+            "mse_correct": 1
+          },
+          "3": {
+            "n": 5,
+            "teacher_correct": 0,
+            "mse_correct": 0
+          },
+          "4": {
+            "n": 7,
+            "teacher_correct": 4,
+            "mse_correct": 3
+          },
+          "5": {
+            "n": 9,
+            "teacher_correct": 6,
+            "mse_correct": 6
+          },
+          "6": {
+            "n": 8,
+            "teacher_correct": 3,
+            "mse_correct": 1
+          },
+          "7": {
+            "n": 4,
+            "teacher_correct": 2,
+            "mse_correct": 1
+          },
+          "8": {
+            "n": 5,
+            "teacher_correct": 4,
+            "mse_correct": 1
+          },
+          "9": {
+            "n": 4,
+            "teacher_correct": 0,
+            "mse_correct": 0
+          }
+        }
+      }
+    },
+    "wisig": {
+      "clean": {
+        "teacher_correct": 360,
+        "mse_correct": 360,
+        "paired": {
+          "repaired": 0,
+          "harmed": 0,
+          "net": 0,
+          "half_nets": [
+            0,
+            0
+          ],
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "passes": false
+        },
+        "source_tx": {
+          "0": {
+            "n": 68,
+            "teacher_correct": 68,
+            "mse_correct": 68
+          },
+          "1": {
+            "n": 54,
+            "teacher_correct": 54,
+            "mse_correct": 54
+          },
+          "2": {
+            "n": 65,
+            "teacher_correct": 65,
+            "mse_correct": 65
+          },
+          "3": {
+            "n": 55,
+            "teacher_correct": 55,
+            "mse_correct": 55
+          },
+          "4": {
+            "n": 60,
+            "teacher_correct": 60,
+            "mse_correct": 60
+          },
+          "5": {
+            "n": 58,
+            "teacher_correct": 58,
+            "mse_correct": 58
+          }
+        }
+      },
+      "practical_low_urban": {
+        "teacher_correct": 220,
+        "mse_correct": 199,
+        "paired": {
+          "repaired": 28,
+          "harmed": 7,
+          "net": 21,
+          "half_nets": [
+            10,
+            11
+          ],
+          "ci95": [
+            10.0,
+            32.024999999999864
+          ],
+          "passes": true
+        },
+        "source_tx": {
+          "0": {
+            "n": 68,
+            "teacher_correct": 39,
+            "mse_correct": 40
+          },
+          "1": {
+            "n": 54,
+            "teacher_correct": 30,
+            "mse_correct": 26
+          },
+          "2": {
+            "n": 65,
+            "teacher_correct": 39,
+            "mse_correct": 35
+          },
+          "3": {
+            "n": 55,
+            "teacher_correct": 10,
+            "mse_correct": 11
+          },
+          "4": {
+            "n": 60,
+            "teacher_correct": 49,
+            "mse_correct": 36
+          },
+          "5": {
+            "n": 58,
+            "teacher_correct": 53,
+            "mse_correct": 51
+          }
+        }
+      }
+    }
+  }
+}

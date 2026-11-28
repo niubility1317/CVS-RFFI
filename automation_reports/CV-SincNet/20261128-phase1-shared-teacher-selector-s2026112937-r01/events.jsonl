@@ -1,2 +1,3 @@
 {"at": "2026-11-28T07:40:58+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-28T07:43:40+00:00", "status": "RUNNING", "note": "User authorized both source teachers. Verified LoRa PID 3767738 GPU0 and WiSig PID 3767739 GPU5; real teacher/expert first steps and log growth.", "evidence": ["N607:runs/20261128-phase1-shared-teacher-selector-s2026112937-r01/state.json"], "row_id": null}
+{"at": "2026-11-28T07:53:47+00:00", "status": "ANALYZED", "note": "Both source screens and matched-pair analysis complete; LoRa and WiSig failed all-control promotion; no target accessed.", "evidence": ["E:/type10-7/local_artifacts/20261128-phase1-shared-teacher-selector-s2026112937-r01/paired.json"], "row_id": null}
