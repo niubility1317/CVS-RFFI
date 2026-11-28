@@ -1,6 +1,10 @@
+import json
+from types import SimpleNamespace
+
 import numpy as np
 import torch
 
+from experiments.pamf_lora_main import gain_dura_screen as screen
 from experiments.pamf_lora_main.gain_dura_screen import (
     COUNT, MODES, SCREEN_VIEWS, WiSigRealGain, score_panel, screen_rows,
 )
@@ -51,3 +55,43 @@ def test_wisig_real_gain_uses_the_same_shape_as_its_observation():
     p,r=model(x)
     torch.testing.assert_close(r,p,rtol=0,atol=0)
     assert r.shape==x.shape and r.is_complex()
+
+
+def test_recovery_scores_only_frozen_source_panels_with_separate_bindings(tmp_path, monkeypatch):
+    monkeypatch.setenv('CUDA_VISIBLE_DEVICES','')
+    prior=tmp_path/screen.RUN
+    root=tmp_path/screen.SCORE_RUN
+    prior.mkdir()
+    root.mkdir()
+    screen.write(prior/'state.json',{'status':'FAILED'})
+    lora_release=tmp_path/'ref'
+    lora_run=tmp_path/'original'
+    lora_source=tmp_path/'lora_source'
+    lora_release.mkdir()
+    lora_source.mkdir()
+    (lora_run/'full_native').mkdir(parents=True)
+    screen.write(lora_release/'runtime.json',{'source_root':str(lora_source),'run_root':str(lora_run)})
+    lora_ids=np.array([f'lora{i}' for i in range(COUNT+300)])
+    screen.write(lora_source/'contract.json',{'role_ids':{'V':lora_ids.tolist()}})
+    screen.write(lora_run/'full_native'/'source-predictions.json',
+                 dict(status='PREDICTIONS_FROZEN',source_truth_reads=0,target_reads=0,physical_ids=lora_ids[:300].tolist()))
+    np.savez(lora_source/'V_metadata.npz',ids=lora_ids,rx_i=np.zeros(len(lora_ids),dtype=int),y=np.ones(len(lora_ids),dtype=int))
+    wifi_source=tmp_path/'wifi_source'
+    (wifi_source/'V').mkdir(parents=True)
+    np.save(wifi_source/'V'/'labels.npy',np.zeros(COUNT,dtype=int))
+    wifi_ids=np.array([f'wifi{i}' for i in range(COUNT)])
+    handles=lambda _: (None,None,wifi_source,None,wifi_ids,np.ones(COUNT,dtype=int),np.arange(COUNT))
+    monkeypatch.setattr(screen,'wifi_context',
+        lambda rt:(SimpleNamespace(tri=SimpleNamespace(core=SimpleNamespace(handles=handles))),{}))
+    for dataset,ids,desired in (('lora',lora_ids[300:],1),('wisig',wifi_ids,0)):
+        folder=prior/dataset
+        folder.mkdir()
+        predictions={v:np.full((len(MODES),COUNT),desired,dtype=np.int16) for v in SCREEN_VIEWS}
+        screen.freeze(folder,dataset,ids,predictions)
+    screen.independent_score(dict(run_root=str(root),score_from=str(prior),lora_ref=str(lora_release)))
+    results=json.loads((root/'scores.json').read_bytes())
+    assert results['truth_last'] and not results['target_reads']
+    for d in ('lora','wisig'):
+        assert results['results'][d]['correct']['clean']['fusion']==COUNT
+        assert not results['results'][d]['promote']
+    assert not (prior/'scores.json').exists()

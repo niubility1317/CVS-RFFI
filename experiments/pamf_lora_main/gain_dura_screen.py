@@ -24,6 +24,7 @@ from experiments.pamf_restoration.models import complex_iq, pair
 
 
 RUN = '20261128-phase1-lora-wisig-gain-dura-screen-s2026113047-r01'
+SCORE_RUN = RUN.removesuffix('r01') + 'r02'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
@@ -284,9 +285,14 @@ def independent_score(rt):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Expected separate CPU truth connection')
     root = Path(rt['run_root'])
+    predictions = root
+    if rt.get('score_from'):
+        predictions = Path(rt['score_from'])
+        if predictions != root.parent/RUN or read(predictions/'state.json')['status'] != 'FAILED':
+            raise ValueError('Expected the immutable, previously failed score stage')
     rows={}
     for dataset in RX:
-        folder = root/dataset
+        folder = predictions/dataset
         proof = read(folder/'complete.json')
         if proof!=dict(dataset=dataset,receiver=RX[dataset],views=list(SCREEN_VIEWS),
                 modes=list(MODES),n=COUNT,source_truth_reads=0,target_reads=0,status='PREDICTIONS_FROZEN'):
@@ -300,21 +306,32 @@ def independent_score(rt):
             raise ValueError('Invalid frozen predictions')
         rows[dataset] = ids,matrix
 
-    from experiments.pamf_lora_main import w24_joint_pamf as joint
-
-    lora = read(Path(rt['lora_ref'])/'runtime.json')
-    source = Path(lora['source_root'])
-    index,ids = lora_panel(joint,source,joint.source_contract(source))
-    if not np.array_equal(rows['lora'][0],ids):
-        raise ValueError('LoRa screen order drift')
-    with np.load(source/'V_metadata.npz',allow_pickle=False) as data:
-        lora_truth=data['y'][index]
+    # Activate the WiSig archive before importing any LoRa package that can load
+    # another pamf_unrolled_restore namespace.
     original,wifi=wifi_context(rt)
-    _,_,source,_,ids,rx,order=original.tri.core.handles(wifi)
+    _,_,wifi_source,_,ids,rx,order=original.tri.core.handles(wifi)
     selected=screen_rows(np.asarray(ids),np.asarray(rx),RX['wisig'])
     if not np.array_equal(rows['wisig'][0],np.asarray(ids)[selected]):
         raise ValueError('WiSig screen order drift')
-    wifi_truth=np.load(source/'V/labels.npy',allow_pickle=False)[np.asarray(order)[selected]]
+
+    lora = read(Path(rt['lora_ref'])/'runtime.json')
+    source = Path(lora['source_root'])
+    lora_old = read(Path(lora['run_root'])/'full_native'/'source-predictions.json')
+    if lora_old['status']!='PREDICTIONS_FROZEN' or lora_old['target_reads'] or lora_old['source_truth_reads']:
+        raise ValueError('Expected the fixed earlier source panel exclusion')
+    with np.load(source/'V_metadata.npz',allow_pickle=False) as data:
+        names,rx = data['ids'].copy(),data['rx_i'].copy()
+        role = read(source/'contract.json')['role_ids']['V']
+        if names.tolist()!=role:
+            raise ValueError('LoRa source validation roles differ')
+        exclude = np.flatnonzero(np.isin(names,lora_old['physical_ids']))
+        if len(exclude)!=300:
+            raise ValueError('The original 300 source validation packets must be excluded')
+        index = screen_rows(names,rx,RX['lora'],excluded=exclude)
+        if not np.array_equal(rows['lora'][0],names[index]):
+            raise ValueError('LoRa screen order drift')
+        lora_truth=data['y'][index]
+    wifi_truth=np.load(wifi_source/'V/labels.npy',allow_pickle=False)[np.asarray(order)[selected]]
     outputs={k:score_panel(rows[k][1],y) for k,y in (('lora',lora_truth),('wisig',wifi_truth))}
     write(root/'scores.json',dict(status='ANALYZED',truth_last=True,target_reads=0,n_per_view=COUNT,
                                   modes=list(MODES),views=list(SCREEN_VIEWS),results=outputs))
@@ -335,6 +352,13 @@ def dispatch(runtime, rt):
                                      stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,env=env)
 
     try:
+        if rt.get('score_from'):
+            job = launch('score',None)
+            write(state,dict(status='SCORING_FROZEN',pid=job.pid),exclusive=False)
+            if job.wait():
+                raise RuntimeError('Independent scoring of the previously frozen screen failed')
+            write(state,dict(status='ANALYZED',target_reads=0,reused_predictions=rt['score_from']),exclusive=False)
+            return
         deadline=monotonic()+600
         while not (cards:=available(rt['allowed_gpus'],max_compute_processes=8)):
             if monotonic()>=deadline:
@@ -362,18 +386,23 @@ def main():
     parser.add_argument('runtime',type=Path)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--ssh-config',type=Path)
+    parser.add_argument('--retry-score',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
         from experiments.pamf_lora_main.publish import release,release_commit
         project=rt['project']
         releases=f'{project}/releases'
+        run = SCORE_RUN if args.retry_score else RUN
         rt={k:rt[k] for k in ('project','python','frozen_sources')}
-        rt.update(run_id=RUN,code_commit=release_commit(Path.cwd()),runner=__spec__.name,
-                  release_root=f'{releases}/{RUN}-release',run_root=f'{project}/runs/{RUN}',
+        rt.update(run_id=run,code_commit=release_commit(Path.cwd()),runner=__spec__.name,
+                  release_root=f'{releases}/{run}-release',run_root=f'{project}/runs/{run}',
                   lora_ref=f'{releases}/{LO_RA}-release',wisig_ref=f'{releases}/{WISIG_REF}-release',
                   archive_root=f'{releases}/{ARCHIVE}-release',allowed_gpus=[5,2,6,3,0,7])
         rt['external_releases']=[rt[key] for key in ('lora_ref','wisig_ref','archive_root')]
+        if args.retry_score:
+            rt['score_from']=f'{project}/runs/{RUN}'
+            rt['external_releases'].append(rt['score_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)
