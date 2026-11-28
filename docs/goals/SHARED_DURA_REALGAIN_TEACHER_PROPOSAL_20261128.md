@@ -1,8 +1,10 @@
-# 共用源域识别器指导选择器：待授权方案
+# 共用源域识别器指导选择器方案
+
+**授权状态：**用户于 2026-11-28 明确选择“授权两数据集的源域教师指导训练”。本授权及原数据边界见 `docs/PROJECT_PROTOCOL.md` 中的当前任务条款。
 
 ## 需要明确的权限
 
-本方案拟在 **WiSig 当前融合任务**中使用其冻结 Tri-SIG-TIME SSL F0 和原默认头指导恢复器训练。现行 `docs/PROJECT_PROTOCOL.md` 第 167–169 行对源域 F 指导的既有授权限定于另列 Phase1 F50 对照，不能据此自动扩展到本任务的 WiSig F0。本方案的 WiSig 训练在用户明确授权前保持未启动。LoRa 的实增益祖先已有 E104 指导和伪标签历史；新共同选择器使用 E104 指导时同样明示该知识来源。
+本方案在 **WiSig 当前融合任务**中使用其冻结 Tri-SIG-TIME SSL F0 和原默认头指导恢复器训练。此前协议对源域 F 指导的既有授权限定于另列 Phase1 F50 对照；本任务的 WiSig F0 使用现已获用户单独授权。LoRa 的实增益祖先已有 E104 指导和伪标签历史；新共同选择器使用 E104 指导时同样明示该知识来源。
 
 ## 两数据集共用的方法
 
@@ -22,4 +24,4 @@ LoRa 与 WiSig 共用同一个 `SharedPacketSelector`、物理残差特征、KL 
 
 ## 当前实现状态
 
-候选代码 `experiments/pamf_lora_main/shared_teacher_selector_run.py` 及合成张量测试已准备；截至本文件创建尚未在 WiSig 打开教师权重进行此候选训练、未启动候选、未访问目标。获得所需明确授权后仍执行项目规定的实际 checkpoint 无 query 首步检查、登记、一次独立 P0/P1 审查、N607 预检和 truth-last 筛查。
+候选代码 `experiments/pamf_lora_main/shared_teacher_selector_run.py` 及合成张量测试已准备；获得本次授权前未在 WiSig 打开教师权重进行此候选训练、未启动候选、未访问目标。执行项目规定的实际 checkpoint 无 query 首步检查、登记、一次独立 P0/P1 审查、N607 预检和 truth-last 筛查。
