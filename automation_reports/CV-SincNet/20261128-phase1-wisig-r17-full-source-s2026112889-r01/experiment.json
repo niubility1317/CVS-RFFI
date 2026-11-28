@@ -1,0 +1,206 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-wisig-r17-full-source-s2026112889-r01",
+  "group_id": "phase1-wisig-r17-real-gain-full-source",
+  "display_name": "WiSig R17 实增益使用原生 full 信道源训练",
+  "description": "冻结 R17，使用已登记源 U full 信道与 clean 配对训练实增益，测试排除既有源筛查物理包的 RX1 新样本。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "wisig",
+    "r02",
+    "r07",
+    "r17",
+    "real-gain",
+    "F-free",
+    "source-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+    "20261128-phase1-wisig-r17-spectral-gain-s2026112877-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "当前聊天 01a2204f-647a-7903-ba29-81cfe8f8749b 的融合研发目标及 N607 有显存即启动要求。",
+  "code": {
+    "commit": "d7208489d750d6609eeaa13c390058d2f291939a",
+    "checkout": "E:/codex/home/worktrees/dura-real-gain-fusion/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI PyTorch CUDA FP32 TF32off; independent CPU scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-wisig-r17-full-source-s2026112889-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig/ManySig Main",
+    "version": "original 7/63/30 source cache",
+    "representation": "256 complex points, 8 x 32 groups; frozen Tri-SIG-TIME SSL default head for evaluation only",
+    "contract_ref": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "Source V RX1: deterministic seed 2026112889+day choose 100 records per day 1/2/3 after excluding every physical ID in existing validation_full 1800 panel.",
+    "label_map_ref": "Original six classes; no L/U TX label used in training, source V label only after independent freeze",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "original Main six TX",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 360
+    },
+    "train_ratio": "7/63/30; use 52604 U after existing calibration exclusion",
+    "capsule_id": null,
+    "split_id": "original ManySig Main F0 seed392005",
+    "validation_ref": "Reuse existing registered source cache and validated source roles",
+    "support_query_ref": null,
+    "leo_config_ref": "Original source full/post_sync/noEQ, 25MHz, 2462MHz, reference SNR 30 dB, reflect boundary, restoration/validation/draw0; clean and practical_low_urban."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Only source U_s IQ and simulated paired disturbances. Frozen R17/realgain IQ models; no F weights or outputs in fit, no TX labels or V/target. Source V labels only in independent scorer after all two-view predictions fixed."
+  },
+  "checkpoint": {
+    "initialization": "New real spectral gain head zero initialized; full WiSig R17 frozen. Existing source-only realgain and first fusion used as evaluation controls; prior candidates not loaded for training.",
+    "sources": [
+      {
+        "ref": "20261128-phase1-dura-realgain-crossdata-s2026112845-r02",
+        "role": "WiSig source-only realgain and prior physical-gain candidate as frozen controls; source V RX1 already exposed"
+      },
+      {
+        "ref": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "role": "Full unroll_unshared R17 E20/4940; source-only TX-free F-free training"
+      },
+      {
+        "ref": "20261127-phase1-lora-wisig-packet-dura-s2026113021-r02",
+        "role": "WiSig source U-trained PacketUNet parent of realgain"
+      }
+    ],
+    "contract_check_ref": "Original F0 source roles, existing validation_full IDs, strict source-only frozen checkpoint proofs",
+    "provenance_verdict": "No LoRa checkpoints used. WiSig source U-only parents and fixed source-selected R17 have compatible original contract; prior RX1 screen used for development.",
+    "selection_rule": "Fixed final 2000 steps. Source RX1 low urban same-packet net >=2 in each deterministic half against direct, R17, realgain and first fusion; clean net >=-2 against each; 2000 paired-bootstrap 95% interval."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "current Codex chat 01a2204f-647a-7903-ba29-81cfe8f8749b",
+    "gpu_policy": "One worker on first GPU with >=8192 MiB free in order 7,2,3,6,1,4,0,5; LoRa GPU5 protected.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-wisig-r17-full-source-s2026112889-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-wisig-r17-full-source-s2026112889-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-wisig-r17-full-source-s2026112889-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.dura_real_gain_wisig_full_source publish --repo E:/codex/home/worktrees/dura-real-gain-fusion/CVS-RFFI-repo --output E:/type10-7/local_artifacts/20261128-phase1-wisig-r17-full-source-s2026112889-r01/release --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop on mismatched source roles/clean-full order, nonfinite values, no first-step gain gradient, collision, incomplete predictions or independent scorer failure. Preserve other owners and all partial outputs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "fit.log",
+    "fit.json",
+    "gain.pt",
+    "predict.log",
+    "screen.npz",
+    "screen-frozen.json",
+    "score.log",
+    "screen-score.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "paired repaired/harmed/net",
+      "two half nets",
+      "2000 paired-bootstrap 95% interval",
+      "source fit seconds",
+      "peak CUDA memory"
+    ],
+    "dimensions": [
+      "source V RX1, 100/day for days 1,2,3",
+      "300 physical records excluding prior 1800",
+      "clean",
+      "practical_low_urban"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-wisig-r17-full-source-s2026112889-r01/screen.npz",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-wisig-r17-full-source-s2026112889-r01/screen-score.json"
+  },
+  "rows": [
+    {
+      "row_id": "wisig_r17_full_source_gain",
+      "method": "Frozen full R17 plus real spectral gain trained on actual precomputed source U Full observations with waveform and R17 retention.",
+      "purpose": "candidate",
+      "config_ref": "experiments/pamf_lora_main/dura_real_gain_wisig_full_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-wisig-r17-full-source-s2026112889-r01-release/runtime.json",
+      "data_overrides": {
+        "U_batch": 24,
+        "V": 300,
+        "screen_RX": 1,
+        "screen_per_day": 100,
+        "exclude_previous_panel": 1800,
+        "F_reads": 0
+      },
+      "seeds": {
+        "model": 2026112889,
+        "split": 392005,
+        "data": 2026112889,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026112892
+      },
+      "seed_notes": "Existing epoch 01 full source observations and data seed 2026101901; evaluation source selector uses model seed + day, halves use +3. No support.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight_decay 1e-4 cosine 3e-4 to 3e-5",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2000 updates x 24 U_s, 48000 unlabeled exposures; inherited model training costs separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-wisig-r17-full-source-s2026112889-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-wisig-r17-full-source-s2026112889-r01/fit.log",
+      "command": "python -u -m experiments.pamf_lora_main.dura_real_gain_wisig_full_source fit /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-wisig-r17-full-source-s2026112889-r01-release/runtime.json",
+      "expected_artifacts": [
+        "state.json",
+        "fit.log",
+        "fit.json",
+        "gain.pt",
+        "predict.log",
+        "screen.npz",
+        "screen-frozen.json",
+        "score.log",
+        "screen-score.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Existing 1800-panel source IDs have all been screened; this RX1 panel excludes them but source V historically used for model development.",
+    "An additional RX1/day1 source V ID 5fa0fd382eb8af0fbc4cc08b was exposed to a prelaunch channel-generation smoke without labels or classifier; explicitly excluded from this and future unexposed screens.",
+    "Train only U_s with quantile>=0.15 in the originally registered epoch 01 full array; paired clean has identical index, no F or TX label reads.",
+    "Loss: waveform MSE + 0.3 spectral error + 1.5 clean R17 retention + 2 disturbed R17 retention; packet normalization consistent with inference.",
+    "Independent frozen default-head source scoring follows complete predictions; source V truth is read only by CPU scorer.",
+    "Prior target results have exposure; fixed DURA v1 and full target evaluation remain missing."
+  ],
+  "registered_at": "2026-11-28T06:40:16+00:00"
+}
