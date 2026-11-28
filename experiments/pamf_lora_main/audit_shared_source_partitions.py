@@ -7,7 +7,8 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path('/home/szu2070436088/2510044040/CV-SincNet')
-RUN = '20261128-phase1-shared-r17-realgain-s2026112893-r01'
+RUNS = ('20261128-phase1-shared-r17-realgain-s2026112893-r01',
+        '20261128-phase1-shared-twoprior-realgain-s2026112901-r01')
 LORA_GAIN = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 REFERENCE = '20261125-phase1-wisig-native-fir-source-m4-r01-release'
 VIEWS = ('clean', 'practical_low_urban')
@@ -19,12 +20,16 @@ def read(path):
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('dataset', choices=('lora', 'wisig'))
-dataset = parser.parse_args().dataset
+parser.add_argument('run', choices=RUNS)
+args = parser.parse_args()
+dataset, RUN = args.dataset, args.run
 folder = ROOT / 'runs' / RUN / dataset
 mark = read(folder / 'screen-frozen.json')
 count = 60 if dataset == 'lora' else 360
 modes = (['direct', 'lora_native_r17', 'real_gain', 'fusion'] if dataset == 'lora' else
          ['direct', 'wisig_r17', 'real_gain', 'dura_v1', 'fusion'])
+if dataset == 'lora' and RUN == RUNS[1]:
+    modes.insert(-1, 'lora_r69_adapt')
 if (mark['status'], mark['views'], mark['modes'], mark['count'],
         mark['source_truth_reads'], mark['target_reads']) != (
         'PREDICTIONS_FROZEN', list(VIEWS), modes, count, 0, 0):
