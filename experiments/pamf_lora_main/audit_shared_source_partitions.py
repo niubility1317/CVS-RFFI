@@ -76,6 +76,19 @@ groups = {'r17_same_real_gain': summary(r17 == real),
 classes = {str(int(value)): summary(truth == value) for value in np.unique(truth)}
 if sum(row['n'] for row in classes.values()) != count:
     raise ValueError('Class partition does not cover the fixed panel')
+real_correct, r17_correct = real == truth, r17 == truth
+either = real_correct | r17_correct
+order = np.random.default_rng(2026112852).permutation(count)
+oracle = dict(both_correct=int((real_correct & r17_correct).sum()),
+              only_real_gain=int((real_correct & ~r17_correct).sum()),
+              only_r17=int((r17_correct & ~real_correct).sum()),
+              neither_correct=int((~real_correct & ~r17_correct).sum()),
+              oracle_correct=int(either.sum()),
+              max_net_over_real_halves=[int((either[x].astype(np.int16)-real_correct[x].astype(np.int16)).sum())
+                                        for x in np.array_split(order, 2)],
+              max_net_over_r17_halves=[int((either[x].astype(np.int16)-r17_correct[x].astype(np.int16)).sum())
+                                       for x in np.array_split(order, 2)],
+              use='truth_dependent_oracle_not_deployable')
 print(json.dumps(dict(status='POSTHOC_SOURCE_V_DESCRIPTION', run=RUN, dataset=dataset,
-    modes=modes, observation='practical_low_urban', groups=groups, classes=classes,
+    modes=modes, observation='practical_low_urban', groups=groups, classes=classes, oracle=oracle,
     target_reads=0, use='diagnostic_only_no_deployment_gate'), ensure_ascii=False))
