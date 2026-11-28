@@ -32,12 +32,14 @@ FREQUENCY_RETRY = FREQUENCY_RUN.removesuffix('r01') + 'r02'
 STAGE_RUN = '20261128-phase1-lora-wisig-gain-dura-stages-s2026113067-r01'
 PAIRED_RUN = '20261128-phase1-lora-wisig-gain-dura-paired-detail-s2026113071-r01'
 COMPLEX_RUN = '20261128-phase1-lora-wisig-dura-complex-residual-s2026113081-r01'
+VARIANCE_RUN = '20261128-phase1-lora-wisig-dura-variance-cap-s2026113088-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
 STAGE_SEED = 2026113067
 PAIRED_SEED = 2026113071
 COMPLEX_SEED = 2026113081
+VARIANCE_SEED = 2026113088
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
@@ -49,6 +51,7 @@ FREQUENCY_MODES = (*MODES[:3], 'frequency_real', 'data_only')
 STAGE_MODES = (*MODES[:3], 'stage_frequency', 'stage_packet')
 PAIRED_MODES = (*MODES[:3], 'paired_detail', 'matched_waveform')
 COMPLEX_MODES = (*MODES[:3], 'complex_residual', 'aligned_residual')
+VARIANCE_MODES = (*MODES[:3], 'variance_capped', 'same_unbounded')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
@@ -143,6 +146,8 @@ def score_stage_panel(predictions, labels, *, modes=STAGE_MODES, seed=STAGE_SEED
 
 
 def panel_dimensions(rt):
+    if rt.get('variance_from'):
+        return FACTOR_COUNT, VARIANCE_MODES
     if rt.get('complex_from'):
         return FACTOR_COUNT, COMPLEX_MODES
     if rt.get('paired_from'):
@@ -155,6 +160,8 @@ def panel_dimensions(rt):
 
 
 def receiver_index(dataset, modes):
+    if dataset == 'wisig' and modes == VARIANCE_MODES:
+        return 6
     if dataset == 'wisig' and modes in (PAIRED_MODES, COMPLEX_MODES):
         return 4
     return 3 if dataset == 'wisig' and modes in (FREQUENCY_MODES, STAGE_MODES) else RX[dataset]
@@ -166,6 +173,7 @@ def panel_rows(rt, dataset, ids, rx, *, excluded=()):
     rule = {
         MODES: SEED, FACTOR_MODES: FACTOR_SEED, FREQUENCY_MODES: FREQUENCY_SEED,
         STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED, COMPLEX_MODES: COMPLEX_SEED,
+        VARIANCE_MODES: VARIANCE_SEED,
     }
     history = (
         ('factor_from', RUN, COUNT, MODES),
@@ -173,6 +181,7 @@ def panel_rows(rt, dataset, ids, rx, *, excluded=()):
         ('stage_from', FREQUENCY_RETRY, FACTOR_COUNT, FREQUENCY_MODES),
         ('paired_from', STAGE_RUN, FACTOR_COUNT, STAGE_MODES),
         ('complex_from', PAIRED_RUN, FACTOR_COUNT, PAIRED_MODES),
+        ('variance_from', COMPLEX_RUN, FACTOR_COUNT, COMPLEX_MODES),
     )
     blocked = excluded
     for key, run_id, old_count, old_modes in history:
@@ -237,6 +246,36 @@ def stage_outputs(gates, received, real_gain, context, priors, timing, modes):
     if not all(bool(torch.isfinite(x).all()) for x in outputs):
         raise ValueError('Nonfinite in-stage restoration')
     return outputs
+
+
+def variance_outputs(gate, received, real_gain, context, priors, raw, scale, curve, timing):
+    from experiments.pamf_lora_main.gain_dura_variance import project_output
+
+    def unbounded():
+        return gate(received, real_gain, context, priors)[-1] * scale
+
+    def bounded(wave):
+        return project_output(raw, wave, complex_iq(received), context[2], curve)
+
+    if timing is not None:
+        time_readouts(timing, [('variance_capped', lambda: bounded(unbounded())), ('same_unbounded', unbounded)],
+                      'B1 two-stage recovery with or without final variance projection')
+    recovered = unbounded()
+    outputs = (bounded(recovered), recovered)
+    if not all(bool(torch.isfinite(x).all()) for x in outputs):
+        raise ValueError('Expected finite independent and variance-projected outputs')
+    return outputs
+
+
+def stage_readout_config(rt, dataset):
+    from experiments.pamf_lora_main.gain_dura_stage_fit import load_gates
+
+    if rt.get('variance_from'):
+        from experiments.pamf_lora_main.gain_dura_variance import load_curve
+
+        gates = load_gates(dict(rt, run_root=rt['variance_from']), dataset, DEV)
+        return gates, load_curve(rt, dataset)
+    return load_gates(rt, dataset, DEV), None
 
 
 class WiSigRealGain(nn.Module):
@@ -393,10 +432,9 @@ def predict_lora(rt, folder):
         dura = load_frozen_stage2(Path(rt['lora_stage2']), DEV)
     else:
         dura = native.dura_model(Path(rt['project'])/'runs'/native.DURA_RUN,contract,DEV).eval().requires_grad_(False)
-    gates = None
+    gates, curve = None, None
     if rt.get('stage_from'):
-        from experiments.pamf_lora_main.gain_dura_stage_fit import load_gates
-        gates = load_gates(rt, 'lora', DEV)
+        gates, curve = stage_readout_config(rt, 'lora')
 
     def apply(packets, timing=None):
         y = tensor(np.ascontiguousarray(packets).view(np.float32),DEV).view(torch.complex64)
@@ -412,13 +450,15 @@ def predict_lora(rt, folder):
             coarse,action,variance = dura.estimate(received)
             recovered = complex_iq(dura.unroll(received,coarse,action,variance))*scale
             anchor, companion = real_gain/scale, recovered/scale
-        if gates is None:
+        if curve is not None:
+            extras = variance_outputs(gates[0], received, real_gain/scale, context, dura.prior, y, scale, curve, timing)
+        elif gates is None:
             if timing is not None:
                 time_frequency_update(timing, y/scale, anchor, action, variance)
-            solved = fusion_outputs(rt,y/scale,anchor,companion,action,variance)
+            extras = (z*scale for z in fusion_outputs(rt,y/scale,anchor,companion,action,variance))
         else:
-            solved = stage_outputs(gates, received, real_gain/scale, context, dura.prior, timing, modes)
-        values = (y,recovered,real_gain,*(z*scale for z in solved))
+            extras = (z*scale for z in stage_outputs(gates, received, real_gain/scale, context, dura.prior, timing, modes))
+        values = (y,recovered,real_gain,*extras)
         return np.stack([classify_lora(joint,reader,z) for z in values])
 
     sample = joint.source_role(source,contract,'U_s')[0][:2]
@@ -443,10 +483,9 @@ def wifi_predictor(rt, original, config, gain):
     engine = original.tri.core.original_r69(Path(config['parent_root']))
     base = engine.pipeline.model
     _, modes = panel_dimensions(rt)
-    gates = None
+    gates, curve = None, None
     if rt.get('stage_from'):
-        from experiments.pamf_lora_main.gain_dura_stage_fit import load_gates
-        gates = load_gates(rt, 'wisig', DEV)
+        gates, curve = stage_readout_config(rt, 'wisig')
 
     @torch.no_grad()
     def apply(block, timing=None):
@@ -457,7 +496,9 @@ def wifi_predictor(rt, original, config, gain):
         (output,) = engine(iq)
         anchor = complex_iq(output)
         companion = gain(y)[-1]
-        if gates is None:
+        if curve is not None:
+            solved = variance_outputs(gates[0], iq, companion, context, base.prior, y, 1., curve, timing)
+        elif gates is None:
             if timing is not None:
                 time_frequency_update(timing, y, anchor, action, variance)
             solved = fusion_outputs(rt,y,anchor,companion,action,variance)
@@ -571,7 +612,8 @@ def independent_score(rt):
         lora_truth=data['y'][index]
     wifi_truth=np.load(wifi_source/'V/labels.npy',allow_pickle=False)[np.asarray(order)[selected]]
     if rt.get('stage_from'):
-        seed = {STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED, COMPLEX_MODES: COMPLEX_SEED}[modes]
+        seed = {STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED,
+                COMPLEX_MODES: COMPLEX_SEED, VARIANCE_MODES: VARIANCE_SEED}[modes]
         calculate = partial(score_stage_panel, modes=modes, seed=seed)
     else:
         calculate = score_frequency_panel if rt.get('frequency_from') else score_factor_panel if rt.get('factor_from') else score_panel
@@ -687,6 +729,7 @@ def main():
     modes.add_argument('--stage-screen',action='store_true')
     modes.add_argument('--paired-detail-screen',action='store_true')
     modes.add_argument('--complex-residual-screen',action='store_true')
+    modes.add_argument('--variance-cap-screen',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
@@ -695,6 +738,8 @@ def main():
         releases=f'{project}/releases'
         if args.retry_frequency:
             run = FREQUENCY_RETRY
+        elif args.variance_cap_screen:
+            run = VARIANCE_RUN
         elif args.complex_residual_screen:
             run = COMPLEX_RUN
         elif args.paired_detail_screen:
@@ -712,10 +757,10 @@ def main():
         if args.retry_score:
             rt['score_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['score_from'])
-        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN, COMPLEX_RUN):
+        if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
-        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN, COMPLEX_RUN):
+        if run in (FREQUENCY_RUN, FREQUENCY_RETRY, STAGE_RUN, PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN):
             from experiments.pamf_lora_main.lora_dura_stage2_reference import RUN as LORA_STAGE2
             rt['frequency_from']=f'{project}/runs/{FACTOR_RUN}'
             rt['lora_stage2']=f'{project}/runs/{LORA_STAGE2}'
@@ -724,16 +769,19 @@ def main():
         if args.retry_frequency:
             rt['reuse_wisig'] = f'{project}/runs/{FREQUENCY_RUN}'
             rt['external_releases'].append(rt['reuse_wisig'])
-        if run in (STAGE_RUN, PAIRED_RUN, COMPLEX_RUN):
+        if run in (STAGE_RUN, PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN):
             rt['stage_from'] = f'{project}/runs/{FREQUENCY_RETRY}'
             rt['external_releases'].append(rt['stage_from'])
             rt['allowed_gpus'] = [0, 2, 3, 5, 7]
-        if run in (PAIRED_RUN, COMPLEX_RUN):
+        if run in (PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN):
             rt['paired_from'] = f'{project}/runs/{STAGE_RUN}'
             rt['external_releases'].append(rt['paired_from'])
-        if run == COMPLEX_RUN:
+        if run in (COMPLEX_RUN, VARIANCE_RUN):
             rt['complex_from'] = f'{project}/runs/{PAIRED_RUN}'
             rt['external_releases'].append(rt['complex_from'])
+        if run == VARIANCE_RUN:
+            rt['variance_from'] = f'{project}/runs/{COMPLEX_RUN}'
+            rt['external_releases'].append(rt['variance_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)
@@ -743,7 +791,10 @@ def main():
         numerical_policy()
         smoke_wifi(rt,Path(rt['run_root'])/'wisig')
     elif args.action.startswith('stage-fit-'):
-        from experiments.pamf_lora_main.gain_dura_stage_fit import fit
+        if rt.get('variance_from'):
+            from experiments.pamf_lora_main.gain_dura_variance import calibrate_source as fit
+        else:
+            from experiments.pamf_lora_main.gain_dura_stage_fit import fit
         numerical_policy()
         fit(rt, args.action.removeprefix('stage-fit-'), DEV)
     else:
