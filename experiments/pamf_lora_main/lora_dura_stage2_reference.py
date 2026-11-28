@@ -122,15 +122,22 @@ def previous_panel(rt):
         return original['ids'].copy(), {v: original[v][:3].copy() for v in VIEWS}
 
 
+def load_frozen_stage2(root, device):
+    proof = read(root / 'fit.json')
+    if (proof['status'] != 'SOURCE_FROZEN' or proof['seed'] != SEED
+            or proof['phases'] != [list(p) for p in PHASES] or proof['source_role'] != 'U_s'
+            or proof['panel_count'] != 25200 or proof['source_contract'] != 'lora_full_packets_v1'
+            or any(proof[k] for k in ('V_reads', 'TX_reads', 'F_reads', 'target_reads'))):
+        raise ValueError('Expected final scheduled source-only LoRa checkpoint')
+    g = LoRaStage2().to(device).eval().requires_grad_(False)
+    g.load_state_dict(torch.load(root / 'dura_stage2.pt', map_location=device, weights_only=True), strict=True)
+    return g
+
+
 @torch.no_grad()
 def predict(rt):
     root = Path(rt['run_root'])
-    proof = read(root / 'fit.json')
-    if (proof['status'] != 'SOURCE_FROZEN' or proof['seed'] != SEED
-            or any(proof[k] for k in ('V_reads', 'TX_reads', 'F_reads', 'target_reads'))):
-        raise ValueError('Expected final scheduled source-only LoRa checkpoint')
-    g = LoRaStage2().to(DEVICE).eval().requires_grad_(False)
-    g.load_state_dict(torch.load(root / 'dura_stage2.pt', map_location=DEVICE, weights_only=True), strict=True)
+    g = load_frozen_stage2(root, DEVICE)
     config = lora_config(rt)
     w24 = Path(config['w24_release_root'])
     sys.path.insert(0, str(w24))

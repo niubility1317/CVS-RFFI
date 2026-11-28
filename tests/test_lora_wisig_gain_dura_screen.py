@@ -8,7 +8,7 @@ from experiments.pamf_lora_main import gain_dura_screen as screen
 from experiments.pamf_lora_main.gain_dura_screen import (
     COUNT, MODES, SCREEN_VIEWS, WiSigRealGain, score_panel, screen_rows,
 )
-from experiments.pamf_lora_main.gain_dura_fusion import fuse, companion_only
+from experiments.pamf_lora_main.gain_dura_fusion import companion_only, frequency_real, fuse
 
 
 class Identity:
@@ -44,6 +44,47 @@ def test_factorization_keeps_the_same_projection_and_edit_cap():
     torch.testing.assert_close(physical,anchor,rtol=0,atol=0)
     torch.testing.assert_close(data_free[...,1],anchor[...,1],rtol=0,atol=0)
     torch.testing.assert_close(data_free[...,2],torch.full((1,),.25j))
+
+
+def test_frequency_update_preserves_phase_and_old_edit_constraints():
+    from experiments.pamf_action_restore.operators import Action
+
+    generator = torch.Generator().manual_seed(61)
+    observed = torch.randn(3, 64, generator=generator, dtype=torch.complex64)
+    anchor = observed.clone()
+    anchor[:2] += .25 * torch.randn(2, 64, generator=generator, dtype=torch.complex64)
+    kernels = torch.tensor([[1, .3j]]).expand(3, -1)
+    operator = Action(kernels, torch.ones_like(anchor), torch.full_like(anchor, .12j))
+    output = frequency_real(observed, anchor, operator, torch.full((3,), .003))
+    delta = output - anchor
+    cross = torch.fft.fft(output) * torch.fft.fft(anchor).conj()
+    assert cross.imag.abs().max() < 8e-5
+    assert cross.real.min() >= 0
+    torch.testing.assert_close((delta * (anchor-observed).conj()).sum(-1),
+                               torch.zeros(3,dtype=torch.complex64), rtol=0, atol=2e-6)
+    assert (delta.norm(dim=-1) <= .25 * (anchor-observed).norm(dim=-1) + 2e-6).all()
+    assert (delta[:2].norm(dim=-1) > 0).all()
+    assert torch.equal(output[2], anchor[2])
+    assert ((observed-operator(output)).norm(dim=-1) <= (observed-operator(anchor)).norm(dim=-1)).all()
+
+
+def test_frequency_screen_freezes_next_fixed_receiver_and_excludes_both_older_panels(tmp_path):
+    dataset = 'wisig'
+    labels = np.repeat((1, 3), screen.COUNT + screen.FACTOR_COUNT)
+    ids = np.array([f'packet-{i}' for i in range(len(labels))])
+    first = tmp_path / screen.RUN
+    factor = tmp_path / screen.FACTOR_RUN
+    rows = np.flatnonzero(labels == 1)
+    for directory, indices, modes in ((first, rows[:screen.COUNT], screen.MODES),
+                                      (factor, rows[screen.COUNT:], screen.FACTOR_MODES)):
+        folder = directory / dataset
+        folder.mkdir(parents=True)
+        predictions = {view: np.zeros((len(modes), len(indices)), dtype=np.int16) for view in SCREEN_VIEWS}
+        screen.freeze(folder, dataset, ids[indices], predictions, count=len(indices), modes=modes)
+    rt = dict(run_root=str(tmp_path/screen.FREQUENCY_RUN), factor_from=str(first), frequency_from=str(factor))
+    selected = screen.panel_rows(rt, dataset, ids, labels)
+    assert len(selected) == screen.FACTOR_COUNT and (labels[selected] == 3).all()
+    assert screen.panel_receipt(dataset, len(selected), screen.FREQUENCY_MODES)['receiver'] == 3
 
 
 def test_factor_panel_checks_candidate_against_controls_under_fixed_budget():
