@@ -1,16 +1,24 @@
 """Read-only post-screen analysis of prediction agreement and source TX."""
+import argparse
 import json
 from pathlib import Path
 import numpy as np
 
 project = Path('/home/szu2070436088/2510044040/CV-SincNet')
-run = project / 'runs/20261128-phase1-lora-r17-realgain-e104-s2026112861-r01'
+cases = {
+    '20261128-phase1-lora-r17-realgain-e104-s2026112861-r01': 'fusion',
+    '20261128-phase1-lora-joint-r17-realgain-s2026112873-r01': 'joint_fusion',
+}
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('run', choices=tuple(cases))
+selected = parser.parse_args().run
+run = project / 'runs' / selected
 parent = project / 'runs/20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 def read(p):
     with p.open(encoding='utf-8') as stream:
         return json.load(stream)
 frozen = read(run / 'screen-frozen.json')
-modes = ('direct', 'lora_native_r17', 'real_gain', 'fusion')
+modes = ('direct', 'lora_native_r17', 'real_gain', cases[selected])
 assert frozen['status'] == 'PREDICTIONS_FROZEN' and frozen['modes'] == list(modes)
 assert frozen['source_truth_reads'] == 0 and frozen['target_reads'] == 0 and frozen['count'] == 300
 with np.load(run / 'screen.npz', allow_pickle=False) as data:
