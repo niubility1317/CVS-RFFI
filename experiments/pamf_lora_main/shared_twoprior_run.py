@@ -106,14 +106,15 @@ def fit(rt, dataset):
 
 
 @torch.no_grad()
-def predict(rt, dataset):
+def predict(rt, dataset, *, allow_source_f_guidance=False):
     from experiments.pamf_lora_main import dura_real_gain_screen as screen
     root, project = Path(rt['run_root']), Path(rt['project'])
     _, _, r17, real = experts(rt, dataset)
     proof = read(root / dataset / 'fit.json')
     checkpoint = torch.load(root / dataset / 'gain.pt', map_location=DEVICE, weights_only=True)
     if (checkpoint['proof'] != proof or (proof['dataset'], proof['seed'], proof['updates']) !=
-            (dataset, SEED, STEPS) or any(proof[k] for k in ('F_reads', 'TX_reads', 'V_reads', 'target_reads'))):
+            (dataset, SEED, STEPS) or any(proof[k] for k in ('TX_reads', 'V_reads', 'target_reads')) or
+            (proof['F_reads'] and not allow_source_f_guidance)):
         raise ValueError('Expected the fixed source-only shared gain checkpoint')
     model = SharedTwoPriorGain(WIDTH[dataset]).to(DEVICE).eval().requires_grad_(False)
     model.load_state_dict(checkpoint['weights'], strict=True)
