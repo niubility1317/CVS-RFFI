@@ -3,7 +3,7 @@
 - run_id：`20261128-phase1-wisig-r17-spectral-gain-s2026112877-r01`
 - group_id：`phase1-wisig-r17-spectral-gain`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前状态：RUNNING；源训练在 N607 GPU 7 执行。
+- 当前状态：SOURCE_SCREEN_SCORED；未达到预登记晋级条件。
 
 ## 目的与对照
 
@@ -21,8 +21,12 @@
 
 ## 结果与覆盖
 
-训练后自动固定 RX6 的 360 包 clean 和 low urban 预测，再由独立 CPU 评分。该接收机与前次 RX1、RX3、RX4 筛查互斥；历史源 V 和目标基准已曝光。当前无本候选筛查结果，完整七景及固定 DURA v1 的匹配正式对照仍待完成。
+训练完成 2000 步，源 U 曝光 48000 次，耗时 343.96 秒，峰值 CUDA 分配 57982976 字节，新增头 11233 参数；训练未读取 F、TX 标签、V 或目标数据。
+
+固定 RX6 的 360 包 clean 和 low urban 预测后，独立 CPU 评分。直通、R17、实增益、第一版融合、新候选在 low urban 的正确数分别为 228、320、197、313、308；clean 五者均为 360。相对 R17 改对 9 包、改错 21 包，净减 12 包，两个半区各净减 6 包，配对 bootstrap 95% 区间 [−23, −1] 包。相对实增益净增 111 包，相对第一版融合净减 5 包；未达到逐半区相对所有对照净增至少 2 包的门槛。
+
+RX6 与前次 RX1、RX3、RX4 筛查互斥；历史源 V 和目标基准已曝光。完整七景及固定 DURA v1 的匹配正式对照仍待完成。
 
 ## 交接
 
-恢复时先核查原 run 的 `state.json`、PID 与日志，避免重复启动。
+保留权重及负结果；后续候选另行预登记并避开已用于方案选择的物理样本。
