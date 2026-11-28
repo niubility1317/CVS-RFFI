@@ -74,7 +74,7 @@ class StageGain(nn.Module):
             logits = logits.mean(-1, keepdim=True)
         return logits.sigmoid()
 
-    def forward(self, received, gain_prior, context, priors):
+    def forward(self, received, gain_prior, context, priors, *, reference=None):
         """DURA input is real IQ; its gain reference and returned stages are complex."""
         base, action, variance = context
         observed = complex_iq(received)
@@ -83,7 +83,7 @@ class StageGain(nn.Module):
         variance = variance.reshape(len(received), 1)
         noise = variance.clamp_min(1e-5) + .005
         logvar = (variance.log().clamp(-16, 4) / 8)[:, None].expand(-1, 1, observed.shape[-1])
-        current = complex_iq(base)
+        current = complex_iq(base) if reference is None else reference
         stages = []
         for prior_core in priors:
             innovation = action.adjoint(observed - action(current))
@@ -99,10 +99,16 @@ class StageGain(nn.Module):
             if self.correction is not None:
                 temporal = (observed, gain_prior, dura, current, innovation)
                 spectral = (y_freq, gain_freq, dura_freq, torch.fft.fft(current, norm='ortho'), innovation_freq)
-                prior_freq = prior_freq + self.correction(temporal, spectral, variance, direction)
-            prior = torch.fft.ifft(prior_freq, norm='ortho')
+                correction = self.correction(temporal, spectral, variance, direction)
+                if reference is None:
+                    prior = torch.fft.ifft(prior_freq + correction, norm='ortho')
+                else:
+                    prior = current + torch.fft.ifft(correction, norm='ortho')
+            else:
+                prior = torch.fft.ifft(prior_freq, norm='ortho') if reference is None else current
             solved = weighted_map(action, observed, prior, variance, steps=2, initial=current)
             solve_delta = torch.fft.fft(solved - prior, norm='ortho')
-            current = prior + torch.fft.ifft(trust * solve_delta, norm='ortho')
+            solve_gain = trust if reference is None else 2. * trust - 1.
+            current = prior + torch.fft.ifft(solve_gain * solve_delta, norm='ortho')
             stages.append(current)
         return stages

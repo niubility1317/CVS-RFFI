@@ -69,6 +69,8 @@ def paired_detail_loss(first, second, clean):
 
 
 def fit_plan(rt):
+    if rt.get('train_bound_from'):
+        return screen.TRAIN_BOUND_SEED, screen.TRAIN_BOUND_MODES[3:]
     if rt.get('complex_from'):
         return screen.COMPLEX_SEED, screen.COMPLEX_MODES[3:]
     if rt.get('paired_from'):
@@ -78,7 +80,7 @@ def fit_plan(rt):
 
 def make_branch(name):
     correction = None
-    if name in screen.COMPLEX_MODES[3:]:
+    if name in (*screen.COMPLEX_MODES[3:], *screen.TRAIN_BOUND_MODES[3:]):
         correction = ComplexPriorResidual(aligned_only=name == screen.COMPLEX_MODES[-1])
     return StageGain(packet_only=name == ARMS[1], correction=correction)
 
@@ -126,6 +128,12 @@ def fit(rt, dataset, device):
     seed, arms = fit_plan(rt)
     paired_run = bool(rt.get('paired_from'))
     complex_run = bool(rt.get('complex_from'))
+    train_bound = bool(rt.get('train_bound_from'))
+    curve = None
+    if train_bound:
+        from experiments.pamf_lora_main.gain_dura_variance import load_curve, project_reference_increment
+
+        curve = load_curve(dict(rt, run_root=rt['train_bound_from']), dataset)
     steps = COMPLEX_STEPS if complex_run else STEPS
     torch.manual_seed(seed)
     branches = [make_branch(mode).to(device) for mode in arms]
@@ -153,9 +161,16 @@ def fit(rt, dataset, device):
     def objectives(raw):
         if complex_run:
             received, prior, context, clean = view(raw.repeat(2, 1))
+            observed = complex_iq(received)
+            reference = None
+            if train_bound:
+                with torch.no_grad():
+                    reference = prior if dataset == 'lora' else complex_iq(dura.stage_outputs(received, context)[0][-1])
             losses = []
-            for model in branches:
-                stages = model(received, prior, context, dura.prior)
+            for name, model in zip(arms, branches, strict=True):
+                stages = model(received, prior, context, dura.prior, reference=reference)
+                if train_bound and name == arms[0]:
+                    stages = [project_reference_increment(observed, reference, z, context[2], curve) for z in stages]
                 first, second = stages[-1].chunk(2, dim=0)
                 losses.append(.20 * phase_sensitive_loss(stages, clean) + .80 * paired_detail_loss(first, second, raw))
             return losses

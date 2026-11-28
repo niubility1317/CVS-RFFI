@@ -4,7 +4,7 @@ from torch import nn
 
 from experiments.pamf_lora_main import gain_dura_screen as screen
 from experiments.pamf_lora_main.gain_dura_variance import (
-    CALIBRATION_PACKETS, calibrate_values, project_output,
+    CALIBRATION_PACKETS, calibrate_values, project_output, project_reference_increment,
 )
 from experiments.pamf_restoration.models import pair
 
@@ -56,3 +56,37 @@ def test_variance_screen_keeps_same_label_free_mode_and_fixed_receiver():
     rt = {'variance_from': 'prior'}
     assert screen.panel_dimensions(rt) == (160, screen.VARIANCE_MODES)
     assert screen.receiver_index('wisig', screen.VARIANCE_MODES) == 6
+
+
+def test_reference_projection_bypasses_good_iq_and_caps_only_the_new_increment():
+    raw = torch.ones((3, 256), dtype=torch.complex64)
+    reference = raw + 2j
+    delta = torch.tensor([0j, 1j, .1j])[:, None]
+    proposal = (reference + delta).requires_grad_(True)
+    curve = dict(lower_logvar=-10., upper_logvar=-4., max_radius=.5)
+    variance = torch.tensor([-12., -4., -3.]).exp()
+    applied = project_reference_increment(raw, reference, proposal, variance, curve)
+    assert torch.equal(applied[0], raw[0])
+    torch.testing.assert_close(applied[1].imag, torch.full((256,), 2.15))
+    torch.testing.assert_close(applied[2], proposal[2])
+    applied.abs().square().mean().backward()
+    assert torch.isfinite(proposal.grad).all()
+    assert torch.count_nonzero(proposal.grad[0]) == 0
+    assert proposal.grad[2].norm() > 0
+
+
+def test_both_bounded_fit_readouts_use_matched_inference_projection():
+    class Gate(nn.Module):
+        def forward(self, received, real_gain, context, priors, *, reference):
+            return [reference + 1j]
+
+    raw = torch.full((2, 256), 2 + 0j, dtype=torch.complex64)
+    normalized = raw / 2
+    curve = dict(lower_logvar=-10., upper_logvar=-4., max_radius=.5)
+    context = (None, None, torch.tensor([-12., -3.]).exp())
+    reference = normalized + .3j
+    a, b = screen.bounded_fit_outputs([Gate(), Gate()], pair(normalized), reference, context, None,
+                                     raw, 2., curve, reference, None)
+    assert torch.equal(a, b)
+    assert torch.equal(a[0], raw[0])
+    torch.testing.assert_close(a[1], raw[1] + .9j)

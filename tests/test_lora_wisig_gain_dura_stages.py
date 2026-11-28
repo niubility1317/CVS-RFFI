@@ -122,3 +122,16 @@ def test_residual_heads_are_live_inside_both_dura_stages(mode):
     for value in torch.autograd.grad(loss, (branch.correction.temporal[-1].weight,
                                             branch.correction.spectral[-1].weight)):
         assert torch.isfinite(value).all() and value.norm() > 0
+
+
+@pytest.mark.parametrize('mode', ('train_bounded', 'post_bounded'))
+def test_reference_heads_start_at_exact_legal_reference(mode):
+    observed, gain, context, priors = example(256)
+    gate = make_branch(mode)
+    reference = .6 * observed
+    stages = gate(pair(observed), gain, context, priors, reference=reference)
+    assert all(torch.equal(stage, reference) for stage in stages)
+    outputs = torch.autograd.grad(phase_sensitive_loss(stages, observed),
+                                 (gate.network[-1].weight, gate.correction.temporal[-1].weight,
+                                  gate.correction.spectral[-1].weight))
+    assert all(torch.isfinite(grad).all() and grad.norm() > 0 for grad in outputs)

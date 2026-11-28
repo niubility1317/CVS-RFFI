@@ -39,16 +39,30 @@ def calibrate_values(clean_logvar, perturbed_logvar, perturbation_rms):
                 strong_samples=int(impaired.sum()))
 
 
-def project_output(received, recovered, normalized_received, variance, curve):
-    """Preserve raw IQ exactly when the calibrated radius is zero."""
+def variance_weight(normalized_received, variance, curve):
     logvar = log_relative_variance(variance, normalized_received)
     position = ((logvar - curve['lower_logvar']) /
                 (curve['upper_logvar'] - curve['lower_logvar'])).clamp(0., 1.)
-    radius = curve['max_radius'] * position.square() * (3. - 2. * position)
+    return position.square() * (3. - 2. * position)
+
+
+def project_output(received, recovered, normalized_received, variance, curve):
+    """Preserve raw IQ exactly when the calibrated radius is zero."""
+    radius = curve['max_radius'] * variance_weight(normalized_received, variance, curve)
     edit = recovered - received
     relative_rms = edit.abs().square().mean(-1).sqrt() / capture_scale(received).flatten()
     amount = (radius / relative_rms.clamp_min(1e-12)).clamp(max=1.)
     return received + amount[:, None] * edit
+
+
+def project_reference_increment(received, reference, proposal, variance, curve):
+    """Keep the high-noise reference edit and limit any incremental correction."""
+    weight = variance_weight(received, variance, curve)[:, None]
+    delta = proposal - reference
+    rms = delta.abs().square().mean(-1, keepdim=True).clamp_min(1e-16).sqrt()
+    increment_radius = .30 * curve['max_radius'] * capture_scale(received)
+    bounded = delta * (increment_radius / rms).clamp(max=1.)
+    return received + weight * ((reference - received) + bounded)
 
 
 @torch.no_grad()
