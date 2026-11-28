@@ -93,8 +93,11 @@ class SharedTwoPriorGainR17(SharedTwoPriorGain):
 class SharedBoundedGain(SharedTwoPriorGain):
     """Shared real-frequency correction with a source-selected frozen skip anchor."""
 
-    def __init__(self, width, *, anchor_real):
+    def __init__(self, width, *, anchor_real, correction_cap=.01):
         super().__init__(width)
+        if not 0. < correction_cap <= 1.:
+            raise ValueError('Expected a positive bounded correction fraction')
+        self.correction_cap = float(correction_cap)
         self.register_buffer('anchor_real', torch.tensor(bool(anchor_real)))
 
     def forward(self, received, real_gain, r17, action):
@@ -116,7 +119,7 @@ class SharedBoundedGain(SharedTwoPriorGain):
         delta = torch.fft.ifft(correction, norm='ortho').flatten(-2)
         delta_rms = delta.abs().square().mean(-1, keepdim=True).clamp_min(1e-20).sqrt()
         anchor_rms = anchor.abs().square().mean(-1, keepdim=True).sqrt()
-        factor = (.01 * anchor_rms / delta_rms).clamp(max=1.)
+        factor = (self.correction_cap * anchor_rms / delta_rms).clamp(max=1.)
         return anchor + factor*delta
 
 

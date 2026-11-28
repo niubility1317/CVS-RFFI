@@ -23,13 +23,18 @@ class BoundedGainTest(unittest.TestCase):
             def adjoint(self, x): return x
         y = torch.randn(3, 256, dtype=torch.complex64)
         real, r17 = 2*y, .5*y
-        model = SharedBoundedGain(32, anchor_real=False)
-        with torch.no_grad():
-            model.net[-1].bias.fill_(5.)
-        out = model(y, real, r17, Identity())
-        delta_rms = (out-r17).abs().square().mean(-1).sqrt()
-        anchor_rms = r17.abs().square().mean(-1).sqrt()
-        self.assertTrue((delta_rms <= .010001*anchor_rms).all())
+        for cap in (.01, .02):
+            model = SharedBoundedGain(32, anchor_real=False, correction_cap=cap)
+            with torch.no_grad():
+                model.net[-1].bias.fill_(5.)
+            out = model(y, real, r17, Identity())
+            delta_rms = (out-r17).abs().square().mean(-1).sqrt()
+            anchor_rms = r17.abs().square().mean(-1).sqrt()
+            self.assertTrue((delta_rms <= (cap + .000001)*anchor_rms).all())
+
+    def test_invalid_cap_fails(self):
+        with self.assertRaises(ValueError):
+            SharedBoundedGain(32, anchor_real=False, correction_cap=0.)
 
 
 if __name__ == '__main__':
