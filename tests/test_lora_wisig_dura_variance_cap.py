@@ -1,10 +1,11 @@
 import numpy as np
+import pytest
 import torch
 from torch import nn
 
 from experiments.pamf_lora_main import gain_dura_screen as screen
 from experiments.pamf_lora_main.gain_dura_variance import (
-    CALIBRATION_PACKETS, calibrate_values, project_output, project_reference_increment,
+    CALIBRATION_PACKETS, calibrate_values, project_output, project_reference_increment, protect_weak_spectrum,
 )
 from experiments.pamf_restoration.models import pair
 
@@ -90,3 +91,37 @@ def test_both_bounded_fit_readouts_use_matched_inference_projection():
     assert torch.equal(a, b)
     assert torch.equal(a[0], raw[0])
     torch.testing.assert_close(a[1], raw[1] + .9j)
+
+
+@pytest.mark.parametrize('bins', [32, 1024])
+def test_weak_bin_guard_controls_relative_iq_and_does_not_change_strong_bins(bins):
+    magnitude = torch.linspace(.001, 2., bins).expand(2, 8, -1)
+    spectrum = magnitude.to(torch.complex64)
+    reference = torch.fft.ifft(spectrum, norm='ortho').flatten(-2)
+    proposed = torch.fft.ifft(spectrum + .6j, norm='ortho').flatten(-2)
+    guarded = protect_weak_spectrum(reference, proposed)
+    delta = torch.fft.fft((guarded-reference).unflatten(-1, (8, bins)), norm='ortho')
+    cutoff = bins // 2
+    torch.testing.assert_close(delta[..., :cutoff].imag, .30 * magnitude[..., :cutoff], atol=2e-6, rtol=2e-5)
+    torch.testing.assert_close(delta[..., cutoff:].imag, torch.full_like(magnitude[..., cutoff:], .6))
+    assert delta.real.abs().max() < 2e-6
+
+
+def test_spectral_pair_uses_one_frozen_proposal_and_common_clean_bypass():
+    class Gate(nn.Module):
+        calls = 0
+
+        def forward(self, received, real_gain, context, priors, *, reference):
+            self.calls += 1
+            return [reference + torch.linspace(-1., 1., reference.shape[-1]).to(reference) * 1j]
+
+    raw = torch.full((2, 256), 2 + 0j, dtype=torch.complex64)
+    normalized = raw / 2
+    curve = dict(lower_logvar=-10., upper_logvar=-4., max_radius=.5)
+    context = (None, None, torch.tensor([-12., -3.]).exp())
+    gate = Gate()
+    local, packet = screen.bounded_fit_outputs([gate], pair(normalized), normalized, context, None,
+                                               raw, 2., curve, normalized, None, spectral=True)
+    assert gate.calls == 1
+    assert torch.equal(local[0], raw[0]) and torch.equal(packet[0], raw[0])
+    assert (local[1]-raw[1]).norm() < (packet[1]-raw[1]).norm()

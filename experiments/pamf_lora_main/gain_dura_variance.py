@@ -65,6 +65,18 @@ def project_reference_increment(received, reference, proposal, variance, curve):
     return received + weight * ((reference - received) + bounded)
 
 
+def protect_weak_spectrum(reference, proposal):
+    """Limit weak-bin corrections to 30% of their reference magnitude."""
+    anchor = torch.fft.fft(reference.unflatten(-1, (8, -1)), norm='ortho')
+    correction = torch.fft.fft((proposal - reference).unflatten(-1, (8, -1)), norm='ortho')
+    magnitude = anchor.abs()
+    median = magnitude.flatten(1).median(-1).values[:, None, None]
+    low_energy = magnitude <= median
+    weight = (.30 * magnitude / correction.abs().clamp_min(1e-12)).clamp(max=1.)
+    guarded = torch.where(low_energy, weight * correction, correction)
+    return reference + torch.fft.ifft(guarded, norm='ortho').flatten(-2)
+
+
 @torch.no_grad()
 def calibrate_source(rt, dataset, device):
     from experiments.pamf_lora_main.gain_dura_stage_fit import source_training_pair, training_components
