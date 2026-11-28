@@ -11,6 +11,8 @@ SCALE = .1169459182403555
 
 
 class ActionEstimator(nn.Module):
+    input_points = 256
+
     def __init__(self):
         super().__init__()
         self.core = Core(incoming=4, outgoing=4)
@@ -22,8 +24,8 @@ class ActionEstimator(nn.Module):
         self.register_buffer('initial_kernel', impulse)
 
     def _encode(self, received, coarse):
-        if received.ndim != 3 or received.shape[1:] != (2, 256) or coarse.shape != received.shape:
-            raise ValueError('Only current received/coarse IQ2x256 is accepted')
+        if received.ndim != 3 or received.shape[1:] != (2, self.input_points) or coarse.shape != received.shape:
+            raise ValueError(f'Only current received/coarse IQ2x{self.input_points} is accepted')
         return self.core.encoder(torch.cat((received, coarse), 1))
 
     @staticmethod

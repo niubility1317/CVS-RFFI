@@ -57,14 +57,14 @@ def _report(parent, model, supplied, *, mode, copied, transformed=0):
     )
 
 
-def _stages(priors, received, context, solve_map=weighted_map):
+def _stages(priors, received, context, solve_map=weighted_map, *, points=256):
     """Original stage algorithm, with exactly one iteration per supplied prior."""
-    if received.ndim != 3 or received.shape[1:] != (2, 256):
-        raise ValueError('Current received IQ2x256 is required')
+    if received.ndim != 3 or received.shape[1:] != (2, points):
+        raise ValueError(f'Current received IQ2x{points} is required')
     base, action, native = context
-    variance = native[:, None].expand(-1, 256)
+    variance = native[:, None].expand(-1, points)
     observed, current, outputs = complex_iq(received), base, []
-    logvar = native.log().clamp(-16, 4)[:, None, None].expand(-1, 1, 256)/8
+    logvar = native.log().clamp(-16, 4)[:, None, None].expand(-1, 1, points)/8
     for prior_core in priors:
         innovation = pair(action.adjoint(observed-action(complex_iq(current))))
         innovation = innovation/(innovation.square().mean((1, 2), keepdim=True)+1e-6).sqrt()
