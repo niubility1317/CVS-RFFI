@@ -1,0 +1,179 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261128-phase1-lora-dura-stage2-reference-s2026113057-r01",
+  "group_id": "phase1-lora-wisig-gain-dura",
+  "display_name": "LoRa 原生 8192 点双阶段 DURA 结构对照",
+  "description": "以 LoRa 源 U_s IQ 从零训练与 WiSig R69 参数结构相同的两阶段 DURA。检验相对 LoRa 三阶段 R17、实增益和直通的差异，固定旧 160 源包，补齐对照。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "dura",
+    "raw8192",
+    "scratch",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261127-phase1-lora-raw8192-r02-r07-r17-s2026113009-r01",
+    "20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01",
+    "20261128-phase1-lora-wisig-gain-dura-factor-s2026113051-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Current user LoRa and WiSig fusion objective and small screening before any complete target release.",
+  "code": {
+    "commit": "81097985be6b21c69fef14c2470d7bae56aaa3d3",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI PyTorch CUDA FP32, separate CPU scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort multi-receiver LoRa",
+    "version": "lora_full_packets_v1",
+    "representation": "LoRa continuous complex IQ at 1 MS/s; 8192 points, then original W24 view.",
+    "contract_ref": "Source contract.json of the pinned lora_full_packets_v1 runtime",
+    "physical_ids_ref": "Exact earlier LoRa factor b200_1 160 V packets. Reuse matched frozen decisions and view simulation.",
+    "label_map_ref": "Frozen W24 E104 class mapping; TX labels accessed only by CPU scorer.",
+    "source_receivers": [
+      "registered LoRa five receiver source; screen b200_1 only"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 25200,
+      "V": 160
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "Reuse registered validates-once source handles and fixed physical panels.",
+    "support_query_ref": null,
+    "leo_config_ref": "Only clean and the previously registered source Full practical_low_urban. Targets and other five views are outside this release."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source U_s IQ plus generic simulator for fitting. No W24, TX, V or target in fit. No target in this experiment."
+  },
+  "checkpoint": {
+    "initialization": "Scratch two-stage 266951-parameter R69 topology; no external weight, TX, F or distill teacher.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 default head used after G freeze"
+      },
+      {
+        "ref": "20261128-phase1-lora-wisig-gain-dura-factor-s2026113051-r01",
+        "role": "Reuse first three paired prediction rows; no prior decisions used by optimizer"
+      }
+    ],
+    "contract_check_ref": "Pinned LoRa source contract and sealed earlier blind panel identity.",
+    "provenance_verdict": "Same LoRa contract and no inherited learned parameters. WiSig weights excluded.",
+    "selection_rule": "Fixed final 18000 steps. This structural comparator receives the two source views irrespective of outcome; no automatic Full launch."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Current LoRa performance chat, dual dataset objective",
+    "gpu_policy": "GPU order [0,7,2,5,6,3]. One worker with >=12288 MiB free, fewer than eight existing compute contexts; no other PID touched.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -m experiments.pamf_lora_main.lora_dura_stage2_reference publish E:/type10-7/local_artifacts/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01/base-runtime.json --output E:/type10-7/local_artifacts/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01/release --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Fixed steps. Nonfinite gradient, missing legal source/ancestor, failed real checkpoint smoke or mismatched paired rows stop this run and block downstream jobs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "fit.json",
+    "dura_stage2.pt",
+    "smoke.json",
+    "timing.json",
+    "predictions.npz",
+    "complete.json",
+    "scores.json",
+    "fit.log",
+    "predict.log",
+    "score.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct_count",
+      "accuracy",
+      "paired repairs/harms/net",
+      "paired 95% percentile interval",
+      "train peak allocated bytes",
+      "B1 eager latency"
+    ],
+    "dimensions": [
+      "LoRa",
+      "source V b200_1",
+      "clean and Full practical_low_urban",
+      "same physical ID"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01/predictions.npz",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01/scores.json, separate CPU truth-last"
+  },
+  "rows": [
+    {
+      "row_id": "dura_stage2",
+      "method": "LoRa two-stage structural DURA reference from scratch",
+      "purpose": "baseline",
+      "config_ref": "experiments/pamf_lora_main/lora_dura_stage2_reference.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01-release/runtime.json",
+      "data_overrides": {
+        "V": 160,
+        "U_s": 25200,
+        "receiver": "b200_1",
+        "training_steps": 18000,
+        "batch": 6
+      },
+      "seeds": {
+        "model": 2026113057,
+        "split": 392005,
+        "data": 2026113057,
+        "augmentation": 2026113058,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Separate NumPy sampler and Torch simulator; reuse source V IDs drawn previously with 2026113051.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, wd=1e-4, gradient clip=1",
+      "lr": "cosine by phase: 2e-4->2e-5, 2e-4->2e-5, 1.5e-4->1.5e-5",
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "3000 coarse IQ+log-spectrum; 3000 physical action and noise variance; 12000 joint two-stage with final IQ+log-spectrum and 0.15 intermediate IQ. Fresh optimizer each phase.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01/fit.log",
+      "command": "python -u -m experiments.pamf_lora_main.lora_dura_stage2_reference fit /home/szu2070436088/2510044040/CV-SincNet/releases/20261128-phase1-lora-dura-stage2-reference-s2026113057-r01-release/runtime.json",
+      "expected_artifacts": [
+        "state.json",
+        "fit.json",
+        "dura_stage2.pt",
+        "smoke.json",
+        "timing.json",
+        "predictions.npz",
+        "complete.json",
+        "scores.json",
+        "fit.log",
+        "predict.log",
+        "score.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Test whether the companion proposal or the DURA likelihood update is responsible for the observed loss. The fused control is the prior complete method. Data-only sets the companion residual to zero, while keeping the two constrained CG steps and regularizer. Companion-only turns off the likelihood and uses the exact minimizer of that same prior alone.",
+    "All paths retain the same primary waveform, linear complex projection and raw correction norm cap 25%. LoRa primary is the fixed real-gain waveform, WiSig is original R69. This source source V comparison uses no new parameter updates and only clean and registered Full low urban.",
+    "Disjoint from earlier 192 screening packets by exact read-only frozen IDs. LoRa also excludes the earlier 300 V. WiSig known archive exposure is retained. Full target remains unchanged and unread."
+  ],
+  "registered_at": "2026-11-28T05:31:07+00:00"
+}
