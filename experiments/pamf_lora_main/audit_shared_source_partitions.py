@@ -8,7 +8,9 @@ import numpy as np
 
 ROOT = Path('/home/szu2070436088/2510044040/CV-SincNet')
 RUNS = ('20261128-phase1-shared-r17-realgain-s2026112893-r01',
-        '20261128-phase1-shared-twoprior-realgain-s2026112901-r01')
+        '20261128-phase1-shared-twoprior-realgain-s2026112901-r01',
+        '20261128-phase1-shared-convex-realgain-s2026112905-r01',
+        '20261128-phase1-shared-selector-realgain-s2026112909-r01')
 LORA_GAIN = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 REFERENCE = '20261125-phase1-wisig-native-fir-source-m4-r01-release'
 VIEWS = ('clean', 'practical_low_urban')
@@ -28,7 +30,7 @@ mark = read(folder / 'screen-frozen.json')
 count = 60 if dataset == 'lora' else 360
 modes = (['direct', 'lora_native_r17', 'real_gain', 'fusion'] if dataset == 'lora' else
          ['direct', 'wisig_r17', 'real_gain', 'dura_v1', 'fusion'])
-if dataset == 'lora' and RUN == RUNS[1]:
+if dataset == 'lora' and RUN != RUNS[0]:
     modes.insert(-1, 'lora_r69_adapt')
 if (mark['status'], mark['views'], mark['modes'], mark['count'],
         mark['source_truth_reads'], mark['target_reads']) != (
@@ -68,6 +70,7 @@ def summary(mask):
 
 groups = {'r17_same_real_gain': summary(r17 == real),
           'r17_differs_real_gain': summary(r17 != real),
+          'candidate_differs_both': summary((candidate != r17) & (candidate != real)),
           'r17_correct': summary(r17 == truth), 'r17_wrong': summary(r17 != truth),
           'candidate_same_r17': summary(candidate == r17), 'candidate_changed_r17': summary(candidate != r17)}
 classes = {str(int(value)): summary(truth == value) for value in np.unique(truth)}
