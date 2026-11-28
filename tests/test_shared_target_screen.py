@@ -42,3 +42,18 @@ def test_paired_scoring_counts_repairs_and_clean_loss():
     pair = result['views']['practical_low_urban']['pairs']['direct']
     assert (pair['repaired'], pair['harmed'], pair['net']) == (3, 2, 1)
     assert result['clean_net']['direct'] == 0
+
+
+def test_source_smoke_sends_raw_array_to_single_conversion(monkeypatch, tmp_path):
+    class SmokeProbe(Exception):
+        pass
+
+    def decide(sample):
+        assert isinstance(sample, np.ndarray)
+        assert sample.shape == (2, 8192)
+        raise SmokeProbe
+
+    monkeypatch.setattr(pilot, 'bind', lambda rt, dataset: (
+        np.ones((2, 8192), dtype=np.complex64), np.arange(2), decide))
+    with pytest.raises(SmokeProbe):
+        pilot.predict({'run_root': str(tmp_path), 'project': str(tmp_path)}, 'lora')

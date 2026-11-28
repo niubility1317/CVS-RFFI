@@ -20,7 +20,7 @@ from experiments.pamf_lora_main import shared_physicalsolve_run as candidate
 from experiments.pamf_lora_main.shared_practical_urban_run import source_teacher
 from experiments.pamf_restoration.models import complex_iq, pair
 
-RUN = '20261128-phase1-shared-physicalsolve-target-pilot-s2026112957-r01'
+RUN = '20261128-phase1-shared-physicalsolve-target-pilot-s2026112957-r02'
 PARENT = '20261128-phase1-shared-physicalsolve-gain-s2026112957-r01'
 VIEWS = ('clean', 'practical_low_urban')
 MODES = ('direct', 'r17', 'real_gain', 'dura', 'fusion')
@@ -89,7 +89,7 @@ def predict(rt, dataset):
     numerical_policy()
     root, project = Path(rt['run_root']), Path(rt['project'])
     source, ids, decide = bind(rt, dataset)
-    sample = as_complex(source[np.asarray(ids[:2])])
+    sample = source[np.asarray(ids[:2])]
     if decide(sample).shape != (len(MODES), 2):
         raise ValueError('Real source-U no-query checkpoint smoke failed')
     print('TARGET_PILOT_REAL_CHECKPOINT_SMOKE', dataset, 'PASS', flush=True)
