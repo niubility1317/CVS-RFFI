@@ -106,7 +106,7 @@ def fit(rt, dataset):
 
 
 @torch.no_grad()
-def predict(rt, dataset, *, allow_source_f_guidance=False):
+def predict(rt, dataset, *, allow_source_f_guidance=False, candidate_name='fusion'):
     from experiments.pamf_lora_main import dura_real_gain_screen as screen
     root, project = Path(rt['run_root']), Path(rt['project'])
     _, _, r17, real = experts(rt, dataset)
@@ -169,6 +169,7 @@ def predict(rt, dataset, *, allow_source_f_guidance=False):
                 values[view] = np.concatenate((values[view][:-1], history[1, indices][None],
                                                values[view][-1:]), axis=0)
     modes = list(screen.MODES[dataset])
+    modes[-1] = candidate_name
     modes.insert(-1, 'lora_r69_adapt' if dataset == 'lora' else 'dura_v1')
     folder = root / dataset
     with (folder / 'screen.npz').open('xb') as stream:

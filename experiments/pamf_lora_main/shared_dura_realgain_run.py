@@ -168,7 +168,7 @@ def screening_status(dataset, comparisons, clean_net, clean_limit):
     return available_pass, available_pass, unavailable
 
 
-def score(rt, dataset):
+def score(rt, dataset, *, candidate_name='fusion'):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Independent CPU scorer required')
     from experiments.pamf_lora_main.dura_real_gain_fit import activate_wisig_archive
@@ -178,6 +178,7 @@ def score(rt, dataset):
     count = 60 if dataset == 'lora' else 360
     modes = (['direct', 'lora_native_r17', 'real_gain', 'lora_r69_adapt', 'fusion'] if dataset == 'lora' else
              ['direct', 'wisig_r17', 'real_gain', 'dura_v1', 'fusion'])
+    modes[-1] = candidate_name
     if (frozen['status'], frozen['views'], frozen['modes'], frozen['count'],
             frozen['source_truth_reads'], frozen['target_reads']) != (
             'PREDICTIONS_FROZEN', list(VIEWS), modes, count, 0, 0):
