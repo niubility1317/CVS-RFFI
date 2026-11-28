@@ -40,6 +40,7 @@ SHARED_RUN = '20261128-phase1-lora-wisig-shared-gain-dura-s2026113121-r01'
 ANCHOR_RUN = '20261128-phase1-lora-wisig-observed-anchor-s2026113131-r01'
 REPEAT_RUN = '20261128-phase1-lora-wisig-repeated-edit-s2026113137-r01'
 PREAMBLE_NOISE_RUN = '20261128-phase1-lora-wisig-preamble-noise-s2026113147-r01'
+PHASE_AUDIT_RUN = '20261128-phase1-lora-wisig-preamble-phase-s2026113157-r01'
 SEED, COUNT, STEPS, BATCH = 2026113047, 192, 8000, 24
 FACTOR_SEED, FACTOR_COUNT = 2026113051, 160
 FREQUENCY_SEED = 2026113061
@@ -54,6 +55,7 @@ SHARED_SEED = 2026113121
 ANCHOR_SEED = 2026113131
 REPEAT_SEED = 2026113137
 PREAMBLE_NOISE_SEED = 2026113147
+PHASE_AUDIT_SEED = 2026113157
 DEV = 'cuda:0'
 LO_RA = '20261128-phase1-lora-raw8192-frequency-quadrature-s2026113037-r01'
 LO_RA_COMMIT = '38c7b18d779e4ee5815a2ef3b49ef2c8d23297bf'
@@ -73,6 +75,7 @@ SHARED_MODES = (*MODES[:3], 'shared_frequency_gain', 'shared_packet_gain')
 ANCHOR_MODES = (*MODES[:3], 'retained_observation', 'unconstrained_observation')
 REPEAT_MODES = (*MODES[:3], 'preamble_common_edit', 'energy_matched_edit')
 PREAMBLE_NOISE_MODES = (*MODES[:3], 'preamble_noise_map', 'uniform_noise_map')
+PHASE_AUDIT_MODES = (*MODES[:3], 'phase_then_dura', 'matched_dura', 'phase_only', 'reference_phase')
 SCREEN_VIEWS = ('clean', 'practical_low_urban')
 RX = {'lora': 0, 'wisig': 1}
 
@@ -166,7 +169,21 @@ def score_stage_panel(predictions, labels, *, modes=STAGE_MODES, seed=STAGE_SEED
                 corrected_when_both_wrong=gains)
 
 
+def score_phase_audit(predictions, labels):
+    results = score_stage_panel(predictions,labels,modes=PHASE_AUDIT_MODES,seed=PHASE_AUDIT_SEED)
+    standalone = {}
+    for name in PHASE_AUDIT_MODES[5:]:
+        comparison = results['candidates'].pop(name)
+        standalone[name] = {key:comparison[key] for key in ('correct','paired')}
+    results['isolated_phase_diagnostics'] = standalone
+    available = (predictions[:, :3] == labels).any(axis=1).sum(axis=-1)
+    results['existing_control_union_correct'] = dict(zip(SCREEN_VIEWS, available.tolist(), strict=True))
+    return results
+
+
 def panel_dimensions(rt):
+    if rt.get('phase_audit_from'):
+        return FACTOR_COUNT, PHASE_AUDIT_MODES
     if rt.get('preamble_noise'):
         return FACTOR_COUNT, PREAMBLE_NOISE_MODES
     if rt.get('repeat_edit_from'):
@@ -195,7 +212,7 @@ def panel_dimensions(rt):
 
 
 def receiver_index(dataset, modes):
-    if modes in (SHARED_MODES, ANCHOR_MODES, REPEAT_MODES, PREAMBLE_NOISE_MODES):
+    if modes in (SHARED_MODES, ANCHOR_MODES, REPEAT_MODES, PREAMBLE_NOISE_MODES, PHASE_AUDIT_MODES):
         return {'lora': 1, 'wisig': 3}[dataset]
     if dataset == 'wisig' and modes in (SPECTRAL_MODES, DRIFT_MODES):
         return 8
@@ -213,6 +230,7 @@ def panel_rows(rt, dataset, ids, rx, *, excluded=()):
         ANCHOR_MODES: ('shared_panel_from', SHARED_RUN, SHARED_MODES),
         REPEAT_MODES: ('repeat_edit_from', ANCHOR_RUN, ANCHOR_MODES),
         PREAMBLE_NOISE_MODES: ('noise_panel_from', ANCHOR_RUN, ANCHOR_MODES),
+        PHASE_AUDIT_MODES: ('phase_audit_from', PREAMBLE_NOISE_RUN, PREAMBLE_NOISE_MODES),
     }
     if modes in previous_panels:
         key, parent_run, parent_modes = previous_panels[modes]
@@ -317,7 +335,37 @@ def shared_screen_models(rt, dataset):
     if rt.get('repeat_edit_from'):
         previous = dict(rt, run_root=rt['repeat_edit_from'], observed_anchor=True)
         return frozen(previous, dataset, DEV)[:1]
+    if rt.get('phase_audit_from'):
+        previous = dict(rt, run_root=rt['phase_audit_from'], observed_anchor=True, preamble_noise=True)
+        return frozen(previous, dataset, DEV)[:1]
     return frozen(rt, dataset, DEV)
+
+
+def phase_audit_outputs(models, observed, reference, timing):
+    from experiments.pamf_lora_main.preamble_phase import diagnostic_reference, restore_received
+
+    (model, cutoff), = models
+
+    def phase_only():
+        return restore_received(observed, cutoff)
+
+    def phase_then_dura():
+        return model(phase_only(), clean_cut=cutoff)
+
+    def matched_dura():
+        return model(observed, clean_cut=cutoff)
+
+    if timing is not None:
+        time_readouts(timing, list(zip(PHASE_AUDIT_MODES[3:6],(phase_then_dura,matched_dura,phase_only),strict=True)),
+                      'B1 actual receive-only branches, with no source reference')
+    phase = phase_only()
+    combined = model(phase, clean_cut=cutoff)
+    matched = matched_dura()
+    diagnostic = diagnostic_reference(observed, reference, cutoff)
+    outputs = (combined, matched, phase, diagnostic)
+    if not all(bool(torch.isfinite(estimate).all()) for estimate in outputs):
+        raise ValueError('Nonfinite preamble phase estimate')
+    return outputs
 
 
 def shared_outputs(models, observed, timing, modes):
@@ -582,12 +630,13 @@ def predict_lora(rt, folder):
         dura = native.dura_model(Path(rt['project'])/'runs'/native.DURA_RUN,contract,DEV).eval().requires_grad_(False)
     gates, curve = None, None
     shared = None
-    if rt.get('shared_model') or rt.get('repeat_edit_from'):
+    phase_audit = bool(rt.get('phase_audit_from'))
+    if rt.get('shared_model') or rt.get('repeat_edit_from') or phase_audit:
         shared = shared_screen_models(rt, 'lora')
     if rt.get('stage_from'):
         gates, curve = stage_readout_config(rt, 'lora')
 
-    def apply(packets, timing=None):
+    def apply(packets, timing=None, reference=None):
         y = tensor(np.ascontiguousarray(packets).view(np.float32),DEV).view(torch.complex64)
         scale = capture_scale(y)
         received = pair(y/scale)
@@ -601,7 +650,11 @@ def predict_lora(rt, folder):
             coarse,action,variance = dura.estimate(received)
             recovered = complex_iq(dura.unroll(received,coarse,action,variance))*scale
             anchor, companion = real_gain/scale, recovered/scale
-        if shared is not None:
+        if phase_audit:
+            paired_reference = y if reference is None else tensor(
+                np.ascontiguousarray(reference).view(np.float32),DEV).view(torch.complex64)
+            extras = phase_audit_outputs(shared,y,paired_reference,timing)
+        elif shared is not None:
             extras = shared_outputs(shared, y, timing, modes)
         elif rt.get('train_bound_from'):
             extras = bounded_fit_outputs(gates, received, real_gain/scale, context, dura.prior,
@@ -631,7 +684,8 @@ def predict_lora(rt, folder):
     with ThreadPoolExecutor(max_workers=3) as pool:
         for view in SCREEN_VIEWS:
             packets = np.stack(list(pool.map(partial(joint.source_receive,view),jobs)))
-            decisions[view] = np.concatenate([apply(packets[i:i+8]) for i in range(0,count,8)],axis=1)
+            decisions[view] = np.concatenate([apply(packets[i:i+8],reference=x[i:i+8] if phase_audit else None)
+                                               for i in range(0,count,8)],axis=1)
     freeze(folder,'lora',ids,decisions,count=count,modes=modes)
 
 
@@ -642,13 +696,14 @@ def wifi_predictor(rt, original, config, gain):
     _, modes = panel_dimensions(rt)
     gates, curve = None, None
     shared = None
-    if rt.get('shared_model') or rt.get('repeat_edit_from'):
+    phase_audit = bool(rt.get('phase_audit_from'))
+    if rt.get('shared_model') or rt.get('repeat_edit_from') or phase_audit:
         shared = shared_screen_models(rt, 'wisig')
     if rt.get('stage_from'):
         gates, curve = stage_readout_config(rt, 'wisig')
 
     @torch.no_grad()
-    def apply(block, timing=None):
+    def apply(block, timing=None, reference=None):
         iq = tensor(block,DEV)
         y = complex_iq(iq)
         context = base.estimate_context(iq)
@@ -656,7 +711,10 @@ def wifi_predictor(rt, original, config, gain):
         (output,) = engine(iq)
         anchor = complex_iq(output)
         companion = gain(y)[-1]
-        if shared is not None:
+        if phase_audit:
+            paired_reference = y if reference is None else complex_iq(tensor(reference,DEV))
+            solved = phase_audit_outputs(shared,y,paired_reference,timing)
+        elif shared is not None:
             solved = shared_outputs(shared, y, timing, modes)
         elif rt.get('train_bound_from'):
             reference = complex_iq(base.stage_outputs(iq, context)[0][-1])
@@ -717,12 +775,19 @@ def predict_wifi(rt, folder, runtime):
         apply(data[smoke_rows[:1]], timing=folder/'timing.json')
     cache,_,_,_,ids,rx,_ = original.tri.core.handles(config)
     selected = panel_rows(rt,'wisig',ids,rx)
+    reference = None
+    if rt.get('phase_audit_from'):
+        clean = np.load(cache/'validation_full'/'clean.npy',mmap_mode='r',allow_pickle=False)
+        if clean.shape!=(len(ids),2,256) or clean.dtype!=np.float32:
+            raise ValueError('Mismatched diagnostic paired WiSig source V')
+        reference = clean[selected]
     decisions={}
     for view in SCREEN_VIEWS:
         array=np.load(cache/'validation_full'/f'{view}.npy',mmap_mode='r',allow_pickle=False)
         if array.shape!=(len(ids),2,256) or array.dtype!=np.float32:
             raise ValueError('Mismatched WiSig source V capture')
-        decisions[view]=np.concatenate([apply(array[selected[i:i+32]]) for i in range(0,count,32)],axis=1)
+        decisions[view]=np.concatenate([apply(array[selected[i:i+32]],reference=None if reference is None else reference[i:i+32])
+                                        for i in range(0,count,32)],axis=1)
     freeze(folder,'wisig',np.asarray(ids)[selected],decisions,count=count,modes=modes)
 
 
@@ -777,7 +842,9 @@ def independent_score(rt):
             raise ValueError('LoRa screen order drift')
         lora_truth=data['y'][index]
     wifi_truth=np.load(wifi_source/'V/labels.npy',allow_pickle=False)[np.asarray(order)[selected]]
-    if rt.get('stage_from') or rt.get('shared_model') or rt.get('repeat_edit_from'):
+    if rt.get('phase_audit_from'):
+        calculate = score_phase_audit
+    elif rt.get('stage_from') or rt.get('shared_model') or rt.get('repeat_edit_from'):
         seed = {STAGE_MODES: STAGE_SEED, PAIRED_MODES: PAIRED_SEED,
                 COMPLEX_MODES: COMPLEX_SEED, VARIANCE_MODES: VARIANCE_SEED, TRAIN_BOUND_MODES: TRAIN_BOUND_SEED,
                 SPECTRAL_MODES: SPECTRAL_SEED, DRIFT_MODES: DRIFT_SEED, SHARED_MODES: SHARED_SEED,
@@ -905,6 +972,7 @@ def main():
     modes.add_argument('--received-anchor-screen',action='store_true')
     modes.add_argument('--repeated-edit-screen',action='store_true')
     modes.add_argument('--preamble-noise-screen',action='store_true')
+    modes.add_argument('--preamble-phase-audit',action='store_true')
     args=parser.parse_args()
     rt=read(args.runtime)
     if args.action=='publish':
@@ -913,6 +981,8 @@ def main():
         releases=f'{project}/releases'
         if args.retry_frequency:
             run = FREQUENCY_RETRY
+        elif args.preamble_phase_audit:
+            run = PHASE_AUDIT_RUN
         elif args.preamble_noise_screen:
             run = PREAMBLE_NOISE_RUN
         elif args.repeated_edit_screen:
@@ -948,11 +1018,11 @@ def main():
             rt['external_releases'].append(rt['score_from'])
         staged = (STAGE_RUN, PAIRED_RUN, COMPLEX_RUN, VARIANCE_RUN, TRAIN_BOUND_RUN, SPECTRAL_RUN, DRIFT_RUN)
         if args.factor_screen or run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN,
-                                         REPEAT_RUN, PREAMBLE_NOISE_RUN, *staged):
+                                         REPEAT_RUN, PREAMBLE_NOISE_RUN, PHASE_AUDIT_RUN, *staged):
             rt['factor_from']=f'{project}/runs/{RUN}'
             rt['external_releases'].append(rt['factor_from'])
         if run in (FREQUENCY_RUN, FREQUENCY_RETRY, SHARED_RUN, ANCHOR_RUN,
-                   REPEAT_RUN, PREAMBLE_NOISE_RUN, *staged):
+                   REPEAT_RUN, PREAMBLE_NOISE_RUN, PHASE_AUDIT_RUN, *staged):
             from experiments.pamf_lora_main.lora_dura_stage2_reference import RUN as LORA_STAGE2
             rt['frequency_from']=f'{project}/runs/{FACTOR_RUN}'
             rt['lora_stage2']=f'{project}/runs/{LORA_STAGE2}'
@@ -1006,6 +1076,10 @@ def main():
             rt['allowed_gpus'] = [0, 3, 5, 7]
             rt['noise_panel_from'] = f'{project}/runs/{ANCHOR_RUN}'
             rt['external_releases'].append(rt['noise_panel_from'])
+        if run == PHASE_AUDIT_RUN:
+            rt['phase_audit_from'] = f'{project}/runs/{PREAMBLE_NOISE_RUN}'
+            rt['allowed_gpus'] = [0, 3, 7]
+            rt['external_releases'].append(rt['phase_audit_from'])
         release(Path.cwd(),args.output,rt,args.ssh_config)
     elif args.action=='dispatch':
         dispatch(args.runtime,rt)
