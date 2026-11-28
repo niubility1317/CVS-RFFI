@@ -1,2 +1,3 @@
 {"at": "2026-11-28T06:33:30+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-28T06:34:47+00:00", "status": "RUNNING", "note": "Verified GPU5 PID 3677967 and controller PID 3677838; real checkpoint first step passed.", "evidence": ["N607:runs/20261128-phase1-lora-r17-recognition-retain-s2026112885-r01/state.json"], "row_id": null}
+{"at": "2026-11-28T06:54:51+00:00", "status": "ANALYZED", "note": "Source screen did not meet preregistered paired gain threshold; no formal target test.", "evidence": ["local_artifacts/20261128-phase1-lora-r17-recognition-retain-s2026112885-r01/readback/screen-score.json"], "row_id": null}
