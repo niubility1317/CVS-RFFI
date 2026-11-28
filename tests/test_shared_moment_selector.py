@@ -1,8 +1,10 @@
 import unittest
+from unittest.mock import patch
 
 import torch
 
 from experiments.pamf_lora_main.shared_moment_selector_run import moment_features
+from experiments.pamf_lora_main import shared_moment_selector_run as runner
 
 
 class SharedMomentSelectorTest(unittest.TestCase):
@@ -25,6 +27,16 @@ class SharedMomentSelectorTest(unittest.TestCase):
             moment_features(torch.ones(4, 256))
         with self.assertRaises(ValueError):
             moment_features(torch.ones(4, 8, dtype=torch.complex64))
+
+    def test_worker_predicts_with_the_actual_training_budget(self):
+        def check_budget(_runtime, _dataset):
+            self.assertEqual(runner.shared.STEPS, runner.STEPS)
+
+        with patch.object(runner, 'read', return_value={}), patch.object(runner, 'fit'), \
+             patch.object(runner.shared, 'predict', side_effect=check_budget), \
+             patch.object(runner.subprocess, 'run') as score:
+            score.return_value.returncode = 0
+            runner.worker('runtime.json', 'wisig')
 
 
 if __name__ == '__main__':

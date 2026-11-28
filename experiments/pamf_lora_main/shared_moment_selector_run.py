@@ -102,6 +102,7 @@ def fit(rt, dataset):
 def worker(runtime, dataset):
     shared.SharedTwoPriorGain = SharedPacketSelector
     shared.SEED = SEED
+    shared.STEPS = STEPS
     rt = read(runtime)
     fit(rt, dataset)
     shared.predict(rt, dataset)
