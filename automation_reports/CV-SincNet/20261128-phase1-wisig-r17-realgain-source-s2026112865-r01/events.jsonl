@@ -1,2 +1,3 @@
 {"at": "2026-11-28T04:42:22+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-28T04:44:31+00:00", "status": "RUNNING", "note": "WiSig R17 and independent realgain source-only fit running on GPU7; first real-checkpoint dual-branch gradient smoke passed.", "evidence": ["N607:runs/20261128-phase1-wisig-r17-realgain-source-s2026112865-r01/state.json"], "row_id": null}
+{"at": "2026-11-28T04:51:48+00:00", "status": "ANALYZED", "note": "RX3 source screen failed; low urban 274/360 vs R17 292/360, paired net -18 with 95 percent interval -30 to -6; no target access.", "evidence": ["N607:runs/20261128-phase1-wisig-r17-realgain-source-s2026112865-r01/screen-score.json"], "row_id": null}
